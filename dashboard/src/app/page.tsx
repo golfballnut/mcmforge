@@ -1,6 +1,7 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 async function getStats() {
+  const supabase = await createClient();
   const [companies, tasks, pendingApprovals, agents] = await Promise.all([
     supabase.from("company_registry").select("*", { count: "exact" }).eq("status", "active"),
     supabase.from("task_queue").select("*", { count: "exact" }),
@@ -24,6 +25,7 @@ async function getStats() {
 }
 
 async function getRecentTasks() {
+  const supabase = await createClient();
   const { data } = await supabase
     .from("task_queue")
     .select("*, company_registry(name, slug)")
@@ -33,6 +35,7 @@ async function getRecentTasks() {
 }
 
 async function getPendingApprovals() {
+  const supabase = await createClient();
   const { data } = await supabase
     .from("approval_queue")
     .select("*, company_registry(name, slug)")

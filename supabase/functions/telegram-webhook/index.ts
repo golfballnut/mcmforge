@@ -51,6 +51,10 @@ Deno.serve(async (req: Request) => {
       return new Response("OK", { status: 200 });
     }
 
+    // Parse company tag: [mcmforge], [dirtsync], [linkschoice], [golfballnut], [hotgolfbrands]
+    const companyMatch = text.match(/\[(\w+)\]/i);
+    const companySlug = companyMatch ? companyMatch[1].toLowerCase() : "mcmforge";
+
     // Parse task type from hashtag if present: #research, #code, #content, #ops
     const typeMatch = text.match(/#(code|research|content|ops|chat)/i);
     const taskType = typeMatch ? typeMatch[1].toLowerCase() : "code";
@@ -58,6 +62,10 @@ Deno.serve(async (req: Request) => {
     // Parse priority from hashtag: #critical, #high, #low
     const priorityMatch = text.match(/#(critical|high|medium|low)/i);
     const priority = priorityMatch ? priorityMatch[1].toLowerCase() : "medium";
+
+    // Parse CLI target from hashtag: #claude, #gemini, #codex (default: claude)
+    const cliMatch = text.match(/#(claude|gemini|codex)/i);
+    const cliTarget = cliMatch ? cliMatch[1].toLowerCase() : "claude";
 
     // Handle screenshot upload if present
     let screenshotUrl: string | null = null;
@@ -111,12 +119,21 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Look up DirtSync company_id (default for now)
+    // Look up company by slug (parsed from [tag] in message, defaults to mcmforge)
     const { data: company } = await supabase
       .from("company_registry")
-      .select("id")
-      .eq("slug", "dirtsync")
+      .select("id, name, slug")
+      .eq("slug", companySlug)
       .single();
+
+    if (!company) {
+      await sendTelegram(
+        botToken,
+        chatId,
+        `Unknown company: [${companySlug}]. Valid tags: [dirtsync] [mcmforge] [linkschoice] [golfballnut] [hotgolfbrands]`
+      );
+      return new Response("OK", { status: 200 });
+    }
 
     const fullDescription = [
       description,
@@ -125,15 +142,18 @@ Deno.serve(async (req: Request) => {
       .filter(Boolean)
       .join("\n");
 
+    // Strip [company] tags and #hashtags from the title
+    const cleanTitle = title.replace(/\[\w+\]/g, "").replace(/#\w+/g, "").trim();
+
     const { data: task, error: insertError } = await supabase
       .from("task_queue")
       .insert({
-        title: title.replace(/#\w+/g, "").trim(),
+        title: cleanTitle,
         description: fullDescription || null,
-        company_id: company?.id || null,
+        company_id: company.id,
         priority,
         task_type: taskType,
-        cli_target: "claude",
+        cli_target: cliTarget,
         status: "todo",
         assigned_to: "agent-executor",
         created_by: "telegram",
@@ -147,8 +167,9 @@ Deno.serve(async (req: Request) => {
     }
 
     const confirmMsg = [
-      `Task created: ${title.replace(/#\w+/g, "").trim()}`,
-      `Type: ${taskType} | Priority: ${priority}`,
+      `Task created: ${cleanTitle}`,
+      `Company: ${company.name} | Type: ${taskType} | CLI: ${cliTarget}`,
+      `Priority: ${priority}`,
       screenshotUrl ? "Screenshot attached" : "",
       `ID: ${task.id.slice(0, 8)}`,
     ]

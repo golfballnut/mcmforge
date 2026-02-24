@@ -37,12 +37,12 @@ export default function NewTaskForm({ companies }: { companies: Company[] }) {
   }
 
   return (
-    <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 mb-8">
+    <div className="bg-stone-900 border border-stone-700 rounded-lg p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-white">Create Task</h2>
         <button
           onClick={() => { setOpen(false); setResult(null); }}
-          className="text-gray-400 hover:text-white"
+          className="text-stone-400 hover:text-white"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -58,31 +58,31 @@ export default function NewTaskForm({ companies }: { companies: Company[] }) {
 
       <form action={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
+          <label className="block text-sm font-medium text-stone-300 mb-1">Title</label>
           <input
             name="title"
             required
             placeholder="e.g. Fix map toolbar responsive layout"
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500"
+            className="w-full px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 placeholder-stone-500 focus:outline-none focus:border-orange-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+          <label className="block text-sm font-medium text-stone-300 mb-1">Description</label>
           <textarea
             name="description"
             rows={4}
             placeholder="Describe the bug or feature. Include what you see, what you expect, and any context."
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 resize-y"
+            className="w-full px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 placeholder-stone-500 focus:outline-none focus:border-orange-500 resize-y"
           />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Company</label>
+            <label className="block text-sm font-medium text-stone-300 mb-1">Company</label>
             <select
               name="company_id"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 focus:outline-none focus:border-orange-500"
             >
               {companies.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -91,11 +91,11 @@ export default function NewTaskForm({ companies }: { companies: Company[] }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Priority</label>
+            <label className="block text-sm font-medium text-stone-300 mb-1">Priority</label>
             <select
               name="priority"
               defaultValue="high"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 focus:outline-none focus:border-orange-500"
             >
               <option value="critical">Critical</option>
               <option value="high">High</option>
@@ -105,11 +105,11 @@ export default function NewTaskForm({ companies }: { companies: Company[] }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>
+            <label className="block text-sm font-medium text-stone-300 mb-1">Type</label>
             <select
               name="task_type"
               defaultValue="code"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 focus:outline-none focus:border-orange-500"
             >
               <option value="code">Code</option>
               <option value="research">Research</option>
@@ -120,11 +120,11 @@ export default function NewTaskForm({ companies }: { companies: Company[] }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">CLI</label>
+            <label className="block text-sm font-medium text-stone-300 mb-1">CLI</label>
             <select
               name="cli_target"
               defaultValue="claude"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 focus:outline-none focus:border-orange-500"
             >
               <option value="claude">Claude</option>
               <option value="gemini">Gemini</option>
@@ -137,7 +137,7 @@ export default function NewTaskForm({ companies }: { companies: Company[] }) {
           <button
             type="button"
             onClick={() => { setOpen(false); setResult(null); }}
-            className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+            className="px-4 py-2 text-sm text-stone-400 hover:text-white transition-colors"
           >
             Cancel
           </button>

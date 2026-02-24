@@ -33,37 +33,37 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+    <div className="min-h-screen bg-stone-950 flex items-center justify-center">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">
-            <span className="text-blue-500">MCM</span> Forge
+            <span className="text-orange-500">MCM</span> Forge
           </h1>
-          <p className="text-gray-500 text-sm mt-2">Command Center</p>
+          <p className="text-stone-500 text-sm mt-2">Command Center</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Email</label>
+            <label className="block text-sm text-stone-400 mb-1">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-3 bg-stone-900 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-orange-500 transition-colors"
               placeholder="steve@mcmforge.com"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1">
+            <label className="block text-sm text-stone-400 mb-1">
               Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-3 bg-stone-900 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-orange-500 transition-colors"
               placeholder="Enter password"
               required
             />
@@ -78,7 +78,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            className="w-full py-3 bg-orange-600 hover:bg-orange-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>

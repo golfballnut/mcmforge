@@ -50,8 +50,8 @@ export default async function MetricsPage() {
   return (
     <div>
       <div className="mb-6 md:mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold">Skill Metrics</h1>
-        <p className="text-gray-500 mt-1 text-sm md:text-base">Agent skill execution performance and cost tracking</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-stone-100">Skill Metrics</h1>
+        <p className="text-stone-500 mt-1 text-sm md:text-base">Agent skill execution performance and cost tracking</p>
       </div>
 
       {/* Summary Cards */}
@@ -59,7 +59,7 @@ export default async function MetricsPage() {
         <SummaryCard
           label="Total Executions"
           value={totalExecutions.toLocaleString()}
-          color="blue"
+          color="orange"
         />
         <SummaryCard
           label="Success Rate"
@@ -69,7 +69,7 @@ export default async function MetricsPage() {
         <SummaryCard
           label="Avg Execution Time"
           value={formatMs(avgExecutionMs)}
-          color="purple"
+          color="yellow"
         />
         <SummaryCard
           label="Total Cost"
@@ -80,9 +80,9 @@ export default async function MetricsPage() {
 
       {/* Recent Executions */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">Recent Executions</h2>
+        <h2 className="text-lg font-semibold mb-4 text-stone-200">Recent Executions</h2>
         {rows.length === 0 ? (
-          <div className="text-gray-600 text-sm p-12 border border-gray-800 rounded-xl text-center">
+          <div className="text-stone-600 text-sm p-12 border border-stone-800 rounded-xl text-center">
             No metrics recorded yet
           </div>
         ) : (
@@ -92,13 +92,13 @@ export default async function MetricsPage() {
               {rows.map((row) => (
                 <div
                   key={row.id}
-                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-4"
+                  className="bg-stone-900/50 border border-stone-800 rounded-lg p-4"
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
                       <p className="font-medium text-white text-sm">{row.skill_name}</p>
                       {row.company_registry?.name && (
-                        <p className="text-xs text-gray-600">{row.company_registry.name}</p>
+                        <p className="text-xs text-stone-600">{row.company_registry.name}</p>
                       )}
                     </div>
                     {row.success ? (
@@ -113,19 +113,19 @@ export default async function MetricsPage() {
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
                     <div>
-                      <p className="text-gray-600">Time</p>
-                      <p className="text-gray-300">{formatMs(row.execution_time_ms)}</p>
+                      <p className="text-stone-600">Time</p>
+                      <p className="text-stone-300">{formatMs(row.execution_time_ms)}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Tokens</p>
-                      <p className="text-gray-300">{row.token_count != null ? row.token_count.toLocaleString() : "—"}</p>
+                      <p className="text-stone-600">Tokens</p>
+                      <p className="text-stone-300">{row.token_count != null ? row.token_count.toLocaleString() : "—"}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Cost</p>
-                      <p className="text-gray-300">{formatCost(row.estimated_cost_cents)}</p>
+                      <p className="text-stone-600">Cost</p>
+                      <p className="text-stone-300">{formatCost(row.estimated_cost_cents)}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                  <div className="flex items-center gap-2 mt-2 text-xs text-stone-500">
                     <span className="font-mono">{row.model_used ?? "—"}</span>
                     <span>&middot;</span>
                     <span>{formatDate(row.created_at)}</span>
@@ -135,45 +135,45 @@ export default async function MetricsPage() {
             </div>
 
             {/* Desktop: Table layout */}
-            <div className="hidden md:block border border-gray-800 rounded-xl overflow-hidden">
+            <div className="hidden md:block border border-stone-800 rounded-xl overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-800 bg-gray-900/80">
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Skill</th>
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Model</th>
-                    <th className="text-right px-4 py-3 text-gray-500 font-medium">Time</th>
-                    <th className="text-right px-4 py-3 text-gray-500 font-medium">Tokens</th>
-                    <th className="text-right px-4 py-3 text-gray-500 font-medium">Cost</th>
-                    <th className="text-center px-4 py-3 text-gray-500 font-medium">Status</th>
-                    <th className="text-right px-4 py-3 text-gray-500 font-medium">When</th>
+                  <tr className="border-b border-stone-800 bg-stone-900/80">
+                    <th className="text-left px-4 py-3 text-stone-500 font-medium">Skill</th>
+                    <th className="text-left px-4 py-3 text-stone-500 font-medium">Model</th>
+                    <th className="text-right px-4 py-3 text-stone-500 font-medium">Time</th>
+                    <th className="text-right px-4 py-3 text-stone-500 font-medium">Tokens</th>
+                    <th className="text-right px-4 py-3 text-stone-500 font-medium">Cost</th>
+                    <th className="text-center px-4 py-3 text-stone-500 font-medium">Status</th>
+                    <th className="text-right px-4 py-3 text-stone-500 font-medium">When</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((row, i) => (
                     <tr
                       key={row.id}
-                      className={`border-b border-gray-800/50 ${
-                        i % 2 === 0 ? "bg-gray-900/30" : "bg-gray-900/10"
-                      } hover:bg-gray-900/60 transition-colors`}
+                      className={`border-b border-stone-800/50 ${
+                        i % 2 === 0 ? "bg-stone-900/30" : "bg-stone-900/10"
+                      } hover:bg-stone-900/60 transition-colors`}
                     >
                       <td className="px-4 py-3 font-medium text-white">
                         {row.skill_name}
                         {row.company_registry?.name && (
-                          <span className="ml-2 text-xs text-gray-600">
+                          <span className="ml-2 text-xs text-stone-600">
                             {row.company_registry.name}
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-gray-400 font-mono text-xs">
+                      <td className="px-4 py-3 text-stone-400 font-mono text-xs">
                         {row.model_used ?? "—"}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-300">
+                      <td className="px-4 py-3 text-right text-stone-300">
                         {formatMs(row.execution_time_ms)}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-300">
+                      <td className="px-4 py-3 text-right text-stone-300">
                         {row.token_count != null ? row.token_count.toLocaleString() : "—"}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-300">
+                      <td className="px-4 py-3 text-right text-stone-300">
                         {formatCost(row.estimated_cost_cents)}
                       </td>
                       <td className="px-4 py-3 text-center">
@@ -190,7 +190,7 @@ export default async function MetricsPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-500 text-xs whitespace-nowrap">
+                      <td className="px-4 py-3 text-right text-stone-500 text-xs whitespace-nowrap">
                         {formatDate(row.created_at)}
                       </td>
                     </tr>
@@ -215,10 +215,10 @@ function SummaryCard({
   color: string;
 }) {
   const colors: Record<string, string> = {
-    blue: "bg-blue-500/10 border-blue-500/20 text-blue-400",
+    orange: "bg-orange-500/10 border-orange-500/20 text-orange-400",
     green: "bg-green-500/10 border-green-500/20 text-green-400",
     amber: "bg-amber-500/10 border-amber-500/20 text-amber-400",
-    purple: "bg-purple-500/10 border-purple-500/20 text-purple-400",
+    yellow: "bg-yellow-500/10 border-yellow-500/20 text-yellow-400",
   };
 
   return (

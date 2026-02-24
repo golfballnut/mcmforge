@@ -38,10 +38,10 @@ export default async function ApprovalsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen text-white">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6 md:mb-8">
-        <h1 className="text-xl md:text-2xl font-bold">Approvals</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-stone-100">Approvals</h1>
         {pendingItems.length > 0 && (
           <span className="flex items-center gap-1.5 bg-amber-500/20 text-amber-400 text-sm font-medium px-3 py-1 rounded-full border border-amber-500/30">
             <span className="relative flex h-2 w-2">
@@ -60,7 +60,7 @@ export default async function ApprovalsPage() {
         </h2>
 
         {pendingItems.length === 0 ? (
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-8 text-center text-gray-500">
+          <div className="bg-stone-900/50 border border-stone-800 rounded-xl p-8 text-center text-stone-500">
             No pending approvals
           </div>
         ) : (
@@ -68,23 +68,23 @@ export default async function ApprovalsPage() {
             {pendingItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-gray-900/50 border border-amber-500/20 rounded-xl p-5"
+                className="bg-stone-900/50 border border-amber-500/20 rounded-xl p-5"
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <h3 className="font-semibold text-white">{item.title}</h3>
-                      <span className="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full border border-gray-700">
+                      <span className="text-xs bg-stone-800 text-stone-300 px-2 py-0.5 rounded-full border border-stone-700">
                         {item.approval_type}
                       </span>
                       {item.company_registry?.name && (
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-stone-400">
                           {item.company_registry.name}
                         </span>
                       )}
                     </div>
                     {item.description && (
-                      <p className="text-sm text-gray-400 line-clamp-2">
+                      <p className="text-sm text-stone-400 line-clamp-2">
                         {item.description}
                       </p>
                     )}
@@ -102,7 +102,7 @@ export default async function ApprovalsPage() {
 
                 <div className="flex items-center gap-4 flex-wrap text-sm">
                   {formatCost(item.estimated_cost) && (
-                    <span className="text-gray-300">
+                    <span className="text-stone-300">
                       Cost:{" "}
                       <span className="font-medium text-white">
                         {formatCost(item.estimated_cost)}
@@ -114,18 +114,18 @@ export default async function ApprovalsPage() {
                       href={item.preview_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                      className="text-orange-400 hover:text-orange-300 underline underline-offset-2"
                     >
                       Preview
                     </a>
                   )}
-                  <span className="text-gray-500">
+                  <span className="text-stone-500">
                     Submitted {formatDate(item.created_at)}
                   </span>
                 </div>
 
                 {/* Approve / Reject Actions */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4 pt-4 border-t border-gray-800">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4 pt-4 border-t border-stone-800">
                   <form action={approveItem}>
                     <input type="hidden" name="id" value={item.id} />
                     <button
@@ -141,7 +141,7 @@ export default async function ApprovalsPage() {
                       type="text"
                       name="notes"
                       placeholder="Rejection reason (optional)"
-                      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 w-full sm:w-64"
+                      className="px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder-stone-500 focus:outline-none focus:border-red-500 w-full sm:w-64"
                     />
                     <button
                       type="submit"
@@ -159,12 +159,12 @@ export default async function ApprovalsPage() {
 
       {/* Decision History */}
       <section>
-        <h2 className="text-lg font-semibold text-gray-300 mb-4">
+        <h2 className="text-lg font-semibold text-stone-300 mb-4">
           Decision History
         </h2>
 
         {historyItems.length === 0 ? (
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-8 text-center text-gray-500">
+          <div className="bg-stone-900/50 border border-stone-800 rounded-xl p-8 text-center text-stone-500">
             No decisions yet
           </div>
         ) : (
@@ -174,23 +174,23 @@ export default async function ApprovalsPage() {
               return (
                 <div
                   key={item.id}
-                  className="bg-gray-900/50 border border-gray-800 rounded-xl p-5"
+                  className="bg-stone-900/50 border border-stone-800 rounded-xl p-5"
                 >
                   <div className="flex items-start justify-between gap-4 mb-2">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <h3 className="font-medium text-white">{item.title}</h3>
-                        <span className="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full border border-gray-700">
+                        <span className="text-xs bg-stone-800 text-stone-300 px-2 py-0.5 rounded-full border border-stone-700">
                           {item.approval_type}
                         </span>
                         {item.company_registry?.name && (
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-stone-400">
                             {item.company_registry.name}
                           </span>
                         )}
                       </div>
                       {item.description && (
-                        <p className="text-sm text-gray-500 line-clamp-1">
+                        <p className="text-sm text-stone-500 line-clamp-1">
                           {item.description}
                         </p>
                       )}
@@ -208,9 +208,9 @@ export default async function ApprovalsPage() {
 
                   <div className="flex items-center gap-4 flex-wrap text-sm">
                     {formatCost(item.estimated_cost) && (
-                      <span className="text-gray-400">
+                      <span className="text-stone-400">
                         Cost:{" "}
-                        <span className="text-gray-300">
+                        <span className="text-stone-300">
                           {formatCost(item.estimated_cost)}
                         </span>
                       </span>
@@ -220,26 +220,26 @@ export default async function ApprovalsPage() {
                         href={item.preview_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                        className="text-orange-400 hover:text-orange-300 underline underline-offset-2"
                       >
                         Preview
                       </a>
                     )}
                     {item.decided_by && (
-                      <span className="text-gray-400">
+                      <span className="text-stone-400">
                         By{" "}
-                        <span className="text-gray-300">{item.decided_by}</span>
+                        <span className="text-stone-300">{item.decided_by}</span>
                       </span>
                     )}
                     {item.decided_at && (
-                      <span className="text-gray-500">
+                      <span className="text-stone-500">
                         {formatDate(item.decided_at)}
                       </span>
                     )}
                   </div>
 
                   {item.decision_notes && (
-                    <p className="mt-2 text-sm text-gray-400 bg-gray-800/50 rounded-lg px-3 py-2">
+                    <p className="mt-2 text-sm text-stone-400 bg-stone-800/50 rounded-lg px-3 py-2">
                       {item.decision_notes}
                     </p>
                   )}

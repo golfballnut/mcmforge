@@ -32,16 +32,16 @@ export default async function AgentsPage() {
     <div>
       <div className="mb-6 md:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <h1 className="text-2xl md:text-3xl font-bold">Agent Roster</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-stone-100">Agent Roster</h1>
           <span className="px-3 py-1 bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-full">
             {activeCount} / {agents.length} active
           </span>
         </div>
-        <p className="text-gray-500 mt-1">All registered AI agents and their current status</p>
+        <p className="text-stone-500 mt-1">All registered AI agents and their current status</p>
       </div>
 
       {agents.length === 0 ? (
-        <div className="text-gray-600 text-sm p-12 border border-gray-800 rounded-xl text-center">
+        <div className="text-stone-600 text-sm p-12 border border-stone-800 rounded-xl text-center">
           No agents registered
         </div>
       ) : (
@@ -84,57 +84,57 @@ function AgentCard({ agent }: { agent: Record<string, unknown> }) {
 
   return (
     <div
-      className={`bg-gray-900/50 border rounded-xl p-5 flex flex-col gap-4 ${statusStyle.border}`}
+      className={`bg-stone-900/50 border rounded-xl p-5 flex flex-col gap-4 ${statusStyle.border}`}
     >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-base font-bold leading-tight">{agent.name as string}</p>
-          <span className="inline-block mt-1 px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs rounded">
+          <p className="text-base font-bold leading-tight text-stone-100">{agent.name as string}</p>
+          <span className="inline-block mt-1 px-2 py-0.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs rounded">
             {agent.agent_type as string}
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className={`w-2 h-2 rounded-full ${statusStyle.dot} animate-pulse`} />
-          <span className="text-xs text-gray-400">{statusStyle.label}</span>
+          <span className="text-xs text-stone-400">{statusStyle.label}</span>
         </div>
       </div>
 
       {/* Meta */}
-      <div className="space-y-1.5 text-xs text-gray-400">
+      <div className="space-y-1.5 text-xs text-stone-400">
         <div className="flex justify-between">
-          <span className="text-gray-600">CLI</span>
+          <span className="text-stone-600">CLI</span>
           <span className="font-mono">{agent.cli_target as string}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600">Machine</span>
+          <span className="text-stone-600">Machine</span>
           <span>{agent.machine as string}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600">Last heartbeat</span>
+          <span className="text-stone-600">Last heartbeat</span>
           <span>{formatRelativeTime(lastHeartbeat)}</span>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-800">
+      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-stone-800">
         <div className="text-center">
           <p className="text-lg font-bold text-white">{tasksCompleted ?? 0}</p>
-          <p className="text-xs text-gray-600">Tasks done</p>
+          <p className="text-xs text-stone-600">Tasks done</p>
         </div>
         <div className="text-center">
           <p className="text-lg font-bold text-white">
             {successRate != null ? `${Number(successRate).toFixed(1)}%` : "—"}
           </p>
-          <p className="text-xs text-gray-600">Success rate</p>
+          <p className="text-xs text-stone-600">Success rate</p>
         </div>
       </div>
 
       {/* Working indicator */}
       {currentTaskId && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-          <span className="text-xs text-blue-400">Working on task...</span>
+        <div className="flex items-center gap-2 px-3 py-2 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+          <span className="text-xs text-orange-400">Working on task...</span>
         </div>
       )}
     </div>

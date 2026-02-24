@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const nav = [
@@ -32,11 +32,15 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
   const router = useRouter();
   const supabase = createClient();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [prevPath, setPrevPath] = useState(pathname);
 
   // Close sidebar on route change
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+  if (prevPath !== pathname) {
+    setPrevPath(pathname);
+    if (mobileOpen) {
+      setMobileOpen(false);
+    }
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -47,11 +51,11 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-gray-900 border-b border-gray-800 flex items-center justify-between px-4 h-14">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-stone-900 border-b border-stone-700/50 flex items-center justify-between px-4 h-14">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 -ml-2 text-gray-400 hover:text-white"
+            className="p-2 -ml-2 text-stone-400 hover:text-white"
             aria-label="Toggle menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,7 +67,7 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
             </svg>
           </button>
           <h1 className="text-lg font-bold">
-            <span className="text-blue-500">MCM</span> Forge
+            <span className="text-orange-500">MCM</span> Forge
           </h1>
         </div>
       </div>
@@ -79,17 +83,17 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed md:static z-50 top-0 left-0 h-full w-64 bg-gray-900 border-r border-gray-800 flex flex-col
+          fixed md:static z-50 top-0 left-0 h-full w-64 bg-stone-900 border-r border-stone-700/50 flex flex-col
           transition-transform duration-200 ease-in-out
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
         `}
       >
-        <div className="p-6 border-b border-gray-800">
+        <div className="p-6 border-b border-stone-700/50">
           <h1 className="text-xl font-bold">
-            <span className="text-blue-500">MCM</span> Forge
+            <span className="text-orange-500">MCM</span> Forge
           </h1>
-          <p className="text-xs text-gray-500 mt-1">Command Center</p>
+          <p className="text-xs text-stone-500 mt-1">Command Center</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -101,8 +105,8 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                   isActive
-                    ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                    : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"
+                    ? "bg-orange-500/10 text-orange-400 border border-orange-500/20"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-stone-800/50"
                 }`}
               >
                 {icons[item.icon]}
@@ -112,17 +116,17 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-gray-800">
+        <div className="p-4 border-t border-stone-700/50">
           <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">SM</div>
+            <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 text-xs font-bold">SM</div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium">Steve McMillian</p>
-              <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+              <p className="text-sm font-medium text-stone-200">Steve McMillian</p>
+              <p className="text-xs text-stone-500 truncate">{userEmail}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="mt-2 w-full text-left px-3 py-2 text-sm text-gray-500 hover:text-red-400 hover:bg-gray-800/50 rounded-lg transition-colors"
+            className="mt-2 w-full text-left px-3 py-2 text-sm text-stone-500 hover:text-red-400 hover:bg-stone-800/50 rounded-lg transition-colors"
           >
             Sign Out
           </button>

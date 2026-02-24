@@ -1,4 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import KillSwitch from "@/components/KillSwitch";
+
+async function getDispatcherStatus() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("system_config")
+    .select("value")
+    .eq("key", "dispatcher_status")
+    .single();
+  return data?.value || "unknown";
+}
 
 async function getStats() {
   const supabase = await createClient();
@@ -48,15 +59,21 @@ async function getPendingApprovals() {
 export const revalidate = 30;
 
 export default async function Dashboard() {
-  const stats = await getStats();
-  const recentTasks = await getRecentTasks();
-  const approvals = await getPendingApprovals();
+  const [stats, recentTasks, approvals, dispatcherStatus] = await Promise.all([
+    getStats(),
+    getRecentTasks(),
+    getPendingApprovals(),
+    getDispatcherStatus(),
+  ]);
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Command Center</h1>
-        <p className="text-gray-500 mt-1">MCM Forge Operations Overview</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Command Center</h1>
+          <p className="text-gray-500 mt-1">MCM Forge Operations Overview</p>
+        </div>
+        <KillSwitch status={dispatcherStatus} />
       </div>
 
       {/* KPI Cards */}

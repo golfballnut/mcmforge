@@ -1,0 +1,388 @@
+{
+  "platform_name": "MCM Forge",
+  "tagline": "Build + launch a fully autonomous AI-run business every day.",
+  "description": "MCM Forge is an AI agent factory and parent company (MCM = McMIllian legacy). It orchestrates autonomous AI-run businesses at scale — COO (Claude) runs the companies, gives Steve tasks, not the other way around.",
+  "type": "platform",
+  "status": "operational",
+  "founded": "2026-02-23",
+
+  "identity": {
+    "parent_company": "MCM Forge",
+    "abbreviation": "MCM (McMIllian legacy)",
+    "domain": "mcmforge.com",
+    "github_repo": "golfballnut/mcmforge",
+    "dashboard_url": "https://mcmforge.com",
+    "legal": {
+      "status": "pending_LLC",
+      "trademark": "pending",
+      "attorney": "Richard & John"
+    }
+  },
+
+  "infrastructure": {
+    "dashboard": {
+      "framework": "Next.js 16",
+      "hosting": "Vercel",
+      "repo": "golfballnut/mcmforge",
+      "status": "live",
+      "pages": [
+        "Dashboard",
+        "Companies",
+        "Tasks",
+        "Approvals",
+        "Agents",
+        "Metrics",
+        "Research",
+        "Briefs"
+      ],
+      "zero_404s": true
+    },
+    "brain_supabase": {
+      "project_id": "ncwxeeqvujgyiggkviqq",
+      "region": "us-east-1",
+      "purpose": "Central orchestration — NOT business data",
+      "extensions": ["pgvector"],
+      "capabilities": ["semantic search", "agent memory", "task routing"],
+      "tables": [
+        "task_queue",
+        "agent_memory",
+        "agent_learnings",
+        "skill_metrics",
+        "company_registry",
+        "agent_roster",
+        "approval_queue",
+        "communication_log",
+        "coo_decisions",
+        "daily_briefs"
+      ]
+    },
+    "dispatcher": {
+      "file": "dispatcher/dispatcher.ts",
+      "status": "built (PR #4 ready to merge)",
+      "behavior": "Polls task_queue, reads project_id, routes to correct repo directory on Mac Mini, runs git pull + claude --print, reports results back to brain DB",
+      "host": "Mac Mini (always-on executor)",
+      "polling_interval": "5 minutes"
+    },
+    "mac_mini": {
+      "role": "Always-on executor node",
+      "pm2": true,
+      "env_loading": "dotenv internally (NOT --update-env for .env files)",
+      "setup_status": "pending (Session 9 task)"
+    },
+    "communication": {
+      "channels": [
+        {
+          "name": "War Room",
+          "participants": "Steve + COO",
+          "purpose": "Strategy, task creation, skill design, quality review"
+        },
+        {
+          "name": "Automated Pipeline",
+          "participants": "Brain DB + Mac Mini + agents",
+          "purpose": "Execution — task arrives, agent runs, reports back"
+        },
+        {
+          "name": "Telegram",
+          "bot": "@dirtSync_agent_bot",
+          "capability": "Text-to-ship in 155s"
+        }
+      ]
+    }
+  },
+
+  "auth": {
+    "admin_account": "steve@mcmforge.com",
+    "agent_account": {
+      "email": "agent@mcmforge.com",
+      "status": "pending creation (Session 9)",
+      "rls_policy": {
+        "allowed": [
+          "SELECT task_queue",
+          "SELECT company_registry",
+          "UPDATE task_queue",
+          "INSERT approval_queue",
+          "INSERT communication_log"
+        ],
+        "blocked": [
+          "DELETE any table",
+          "touch auth",
+          "modify company_registry",
+          "use service_role key"
+        ]
+      }
+    }
+  },
+
+  "companies": [
+    {
+      "id": "C-001",
+      "name": "DirtSync",
+      "status": "operational",
+      "domain": "dirtsync.app",
+      "supabase_project_id": "lldipxvwocpqncixlnxj",
+      "repo": "golfballnut/DirtSync",
+      "tagline": "Turn-by-Turn Trail Navigation — Built by Riders, for Riders.",
+      "registered_date": "2026-02-23",
+      "description": "iOS + Web trail navigation app for off-road riders (ATV, UTV, dirt bike, 4x4). Company #1 under MCM Forge."
+    }
+  ],
+
+  "roles": {
+    "steve": {
+      "title": "CEO",
+      "responsibilities": [
+        "Decisions and approvals",
+        "Hardware and API keys",
+        "Final say on merges and deploys"
+      ],
+      "rule": "NEVER touches code"
+    },
+    "claude": {
+      "title": "COO",
+      "responsibilities": [
+        "Orchestrates all companies",
+        "Spawns agent teams",
+        "Creates and enhances skills",
+        "Reviews agent results",
+        "Approves/rejects agent plans",
+        "Creates SyncBoard tasks for executor agents"
+      ],
+      "rule": "STRATEGIST only. NEVER writes code, runs scripts, executes SQL, or micromanages agents. COO session = WAR ROOM (thinking, not doing).",
+      "anti_patterns": [
+        "Spawning code-executing agents during CEO/COO sessions",
+        "Pasting SQL/bash into agent prompts",
+        "Checking gate results by running queries directly",
+        "Reviewing by re-running what agents already ran"
+      ],
+      "correct_flow": [
+        "1. Read ship-plan",
+        "2. Discuss with CEO what is next",
+        "3. Enhance skills if needed",
+        "4. Create SyncBoard tasks for executor agents",
+        "5. Review results when agents report back",
+        "6. Approve or reject",
+        "7. Update ship-plan"
+      ]
+    },
+    "ashley": {
+      "title": "BSM (Brand & Social Manager)",
+      "responsibilities": [
+        "Marketing approval",
+        "Content oversight",
+        "Customer service oversight",
+        "SyncBoard marketing dashboard"
+      ],
+      "rule": "NEVER touches code"
+    }
+  },
+
+  "agent_guardrails": {
+    "no_approval_needed": [
+      "Create branches",
+      "Write code",
+      "Run tests",
+      "Create PRs",
+      "Take screenshots",
+      "Read/write brain DB",
+      "Send Telegram messages",
+      "Fetch public web data"
+    ],
+    "requires_steve_approval": [
+      "Merge PRs",
+      "Deploy to production",
+      "Send emails",
+      "Create Supabase projects",
+      "Modify DNS",
+      "Spend more than $5",
+      "Delete data",
+      "Modify permissions"
+    ],
+    "agent_types": {
+      "coo": {
+        "can": ["Strategy, task creation, skill design, quality review"],
+        "cannot": ["Write code, run scripts, deploy, execute SQL"]
+      },
+      "builder": {
+        "can": ["Code, test, create PRs"],
+        "cannot": ["Merge or deploy to production"]
+      },
+      "researcher": {
+        "can": ["Scrape, analyze, summarize"],
+        "cannot": ["Publish or post externally"]
+      },
+      "ops": {
+        "can": ["Health checks, status reports"],
+        "cannot": ["Modify infrastructure"]
+      }
+    }
+  },
+
+  "adding_a_company": {
+    "steps": [
+      "git clone the new app repo",
+      "INSERT row into company_registry in brain Supabase",
+      "Set env vars on Mac Mini",
+      "Zero code changes to dispatcher required"
+    ],
+    "notes": "This is the zero-overhead onboarding model. Dispatcher routes by project_id — any new company is automatically supported."
+  },
+
+  "roadmap": {
+    "phase_1_brain_setup": {
+      "name": "Brain Setup",
+      "timeline": "Week 1 (completed Feb 23, 2026)",
+      "status": "mostly_complete",
+      "deliverables": [
+        "DNS live (mcmforge.com → Vercel)",
+        "Auth working (steve@mcmforge.com)",
+        "All 9 dashboard pages functional (zero 404s)",
+        "Approve/reject buttons with server actions",
+        "MCM Forge dispatcher built (PR #4 ready)",
+        "RLS policy on approval_queue"
+      ]
+    },
+    "phase_2_factory_v2": {
+      "name": "Factory v2",
+      "timeline": "Week 2",
+      "status": "planned",
+      "deliverables": [
+        "Merge PR #4 (dispatcher)",
+        "Create agent@mcmforge.com with locked-down RLS",
+        "Update dispatcher to use anon key + agent auth (NOT service_role)",
+        "SSH Mac Mini → clone mcmforge → env setup → pm2 start",
+        "End-to-end test: task → dispatcher → approval → dashboard",
+        "Brain DB integration for all companies",
+        "Webhook triggers for task completion"
+      ]
+    },
+    "phase_3_app_2": {
+      "name": "App #2",
+      "timeline": "Week 3",
+      "status": "planned",
+      "deliverables": [
+        "Clone DirtSync template",
+        "Register in company_registry",
+        "Build for Company #1 AND Company #2 simultaneously",
+        "Prove multi-company dispatcher routing"
+      ]
+    },
+    "phase_4_scale": {
+      "name": "Scale",
+      "timeline": "Week 4+",
+      "status": "future",
+      "deliverables": [
+        "1 new app per day cadence",
+        "Portfolio dashboard across all companies",
+        "Ashley marketing dashboard",
+        "Self-improving agents (analyze failures → update skills automatically)",
+        "Daily brief: COO emails Steve 5 tasks each morning",
+        "Research crons: agents scan AI news, competitors, opportunities",
+        "Multi-CLI: Claude (reasoning), Codex (pure code), Gemini (research)"
+      ]
+    }
+  },
+
+  "session_log": {
+    "session_8": {
+      "date": "2026-02-23",
+      "shipped": [
+        "DNS live (mcmforge.com → Vercel)",
+        "Auth working (steve@mcmforge.com)",
+        "All 9 dashboard pages functional",
+        "Approve/reject server actions",
+        "MCM Forge dispatcher (PR #4 ready to merge)",
+        "RLS policy on approval_queue"
+      ],
+      "handoff": "docs/handoffs/2026-02-23-warroom-session8.md"
+    },
+    "session_9_priorities": [
+      "1. Merge PR #4",
+      "2. Create agent@mcmforge.com with locked-down RLS (NOT service_role key)",
+      "3. Update dispatcher to use anon key + agent auth",
+      "4. SSH Mac Mini → clone mcmforge → env setup → pm2 start",
+      "5. End-to-end test: task → dispatcher → approval → dashboard"
+    ]
+  },
+
+  "success_metrics": {
+    "task_success_rate": ">85%",
+    "cost_per_feature": "<$2",
+    "steve_time_per_app": "<45 minutes",
+    "target_portfolio_size": "30+ apps",
+    "daily_cadence_target": "1 new business per day"
+  },
+
+  "open_questions": [
+    {
+      "id": "OQ-001",
+      "question": "Google Workspace strategy",
+      "options": ["Full suite", "Hybrid ($7/mo)", "Skip"],
+      "status": "open"
+    },
+    {
+      "id": "OQ-002",
+      "question": "Budget cap per task",
+      "options": ["$1", "$2", "$5", "dynamic"],
+      "status": "open"
+    },
+    {
+      "id": "OQ-003",
+      "question": "COO always-on session",
+      "options": ["Dedicated Claude session", "On-demand war rooms", "Automated via brain DB"],
+      "status": "open"
+    }
+  ],
+
+  "quality_gates": {
+    "git_workflow": {
+      "master_protection": "Direct pushes rejected by GitHub",
+      "required_flow": "Feature branch → PR → Steve approval → Claude merges",
+      "branch_naming": {
+        "agent_tasks": "agent/{task-slug}",
+        "feature_work": "feature/{name}",
+        "ops_work": "ops/{name}"
+      }
+    },
+    "merge_rules": [
+      "ALL CI checks must pass before merge (no exceptions)",
+      "Steve must see preview URL and confirm feature works",
+      "Vercel preview must deploy successfully",
+      "COO reviews code quality but Steve has final say"
+    ]
+  },
+
+  "context_budget": {
+    "rule": "Every Task() call MUST include model= and max_turns=",
+    "agent_types": {
+      "scouts": { "model": "claude-haiku-4-5-20251001", "max_turns": 5, "background": true },
+      "code_editing": { "model": "claude-sonnet-4-6", "max_turns": 10, "background": false },
+      "build_test": { "model": "claude-sonnet-4-6", "max_turns": 10, "background": false },
+      "visual_grading": { "model": "claude-haiku-4-5-20251001", "max_turns": 3, "background": true }
+    },
+    "critical": "Scouts that read Supabase/large files MUST use run_in_background: true. Foreground scouts inject 40-60k tokens into parent context. Orchestrators: max 4 spawns per session segment — write brain file before hitting limit."
+  },
+
+  "technical_stack": {
+    "dashboard": {
+      "framework": "Next.js 16",
+      "styling": "Tailwind CSS",
+      "hosting": "Vercel",
+      "auth": "Supabase Auth"
+    },
+    "brain_db": {
+      "platform": "Supabase",
+      "project_id": "ncwxeeqvujgyiggkviqq",
+      "extensions": ["pgvector", "uuid-ossp"],
+      "rls": true
+    },
+    "dispatcher": {
+      "runtime": "Node.js / TypeScript",
+      "host": "Mac Mini (PM2)",
+      "routing": "project_id → repo directory → git pull → claude --print"
+    },
+    "per_company_db": {
+      "pattern": "Each company gets its own Supabase project for business data",
+      "brain_vs_app": "Brain DB = orchestration only. App DB = business data only. Never mix."
+    }
+  }
+}

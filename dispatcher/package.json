@@ -1,0 +1,14 @@
+{
+  "name": "mcmforge-dispatcher",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx dispatcher.ts",
+    "dev": "tsx watch dispatcher.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.97.0",
+    "dotenv": "^16.4.7",
+    "tsx": "^4.19.0"
+  }
+}

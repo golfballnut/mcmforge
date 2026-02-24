@@ -55,6 +55,8 @@ interface ExecutionResult {
   success: boolean;
   output: string;
   summary?: string;
+  prUrl?: string;
+  prNumber?: number;
   previewUrl?: string;
   artifactPath?: string;
   error?: string;
@@ -83,6 +85,7 @@ const CONFIG = {
 // Company slug → repo directory name mapping
 const REPO_DIR_MAP: Record<string, string> = {
   dirtsync: "DirtSync",
+  mcmforge: "MCMForge",
 };
 
 // CLI binary paths (override via env if needed)
@@ -221,23 +224,33 @@ async function executeTask(task: Task) {
         completed_at: new Date().toISOString(),
         result_summary: result.summary,
         artifact_url: result.artifactPath || null,
+        pr_url: result.prUrl || null,
+        pr_number: result.prNumber || null,
+        preview_url: result.previewUrl || null,
       });
 
       // Code tasks create approval entries (pr_merge is the valid approval_type)
+      let approvalToken: string | undefined;
       if (taskType === "code") {
+        approvalToken = crypto.randomUUID();
+
         await supabase.from("approval_queue").insert({
           task_id: task.id,
           company_id: task.company_id,
           approval_type: "pr_merge",
           title: `Task Complete: ${task.title}`,
           description: result.summary || `Completed in ${durationMin} minutes`,
-          preview_url: result.previewUrl || null,
+          preview_url: result.previewUrl || result.prUrl || null,
           status: "pending",
+          approval_token: approvalToken,
+          pr_url: result.prUrl || null,
+          pr_number: result.prNumber || null,
         });
       }
 
       // Notify Steve for all completed tasks
-      await notifyCompletion(task, result, durationMin);
+      const approvalMeta = approvalToken ? { approvalToken } : undefined;
+      await notifyCompletion(task, result, durationMin, cli, approvalMeta);
     } else {
       log("error", `Task failed: ${result.error}`, { task: task.title });
       await updateTaskStatus(task.id, "blocked", {
@@ -437,11 +450,9 @@ function getCliArgs(cli: CliTool, prompt: string): string[] {
     case "claude":
       return ["--print", "--dangerously-skip-permissions", prompt];
     case "gemini":
-      // Gemini CLI uses -p for prompt
-      return ["-p", prompt];
+      return ["-m", "gemini-3.1-pro-preview", "-y", "-p", prompt];
     case "codex":
-      // Codex CLI
-      return ["--prompt", prompt];
+      return ["exec", "--dangerously-bypass-approvals-and-sandbox", prompt];
     default:
       return ["--print", prompt];
   }
@@ -495,17 +506,27 @@ function spawnCli(
         return;
       }
 
-      // Extract PR URL from output if present
-      const prMatch = output.match(/https:\/\/github\.com\/[^\s]+\/pull\/\d+/);
-      const previewUrl = prMatch ? prMatch[0] : undefined;
+      // Extract PR URL and number from output
+      const prMatch = output.match(/https:\/\/github\.com\/[^\s]+\/pull\/(\d+)/);
+      const prUrl = prMatch ? prMatch[0] : undefined;
+      const prNumber = prMatch ? parseInt(prMatch[1], 10) : undefined;
 
-      // Summary = last 500 chars
-      const summary = output.slice(-500).trim();
+      // Extract Vercel preview URL from output
+      const vercelMatch = output.match(/https:\/\/[^\s]*\.vercel\.app[^\s)"]*/);
+      const previewUrl = vercelMatch ? vercelMatch[0] : undefined;
+
+      // Clean CLI boilerplate from output
+      const cleanedOutput = cleanCliOutput(output);
+
+      // Summary = last 500 chars for DB, full cleaned output available
+      const summary = cleanedOutput.slice(-500).trim();
 
       resolve({
         success: code === 0,
         output,
         summary,
+        prUrl,
+        prNumber,
         previewUrl,
         error: code !== 0 ? `Exit code ${code}` : undefined,
       });
@@ -526,15 +547,23 @@ function spawnCli(
 // Notifications
 // ============================================
 
-async function notifyCompletion(task: Task, result: ExecutionResult, durationMin: string) {
+async function notifyCompletion(
+  task: Task,
+  result: ExecutionResult,
+  durationMin: string,
+  cli: CliTool,
+  approvalMeta?: { approvalToken: string }
+) {
   const taskType = task.task_type || "code";
+  const edgeFunctionBase = `${CONFIG.supabaseUrl}/functions/v1`;
 
   // Telegram notification
   if (CONFIG.telegramBotToken && CONFIG.telegramChatId) {
     try {
       const icon = taskType === "code" ? "🔨" : taskType === "research" ? "🔍" : taskType === "content" ? "📄" : "✅";
       let msg = `${icon} *${task.title}* completed (${durationMin}min)`;
-      if (result.previewUrl) msg += `\n[View PR](${result.previewUrl})`;
+      if (result.prUrl) msg += `\n[View PR](${result.prUrl})`;
+      if (result.previewUrl) msg += `\n[Preview](${result.previewUrl})`;
       if (result.artifactPath) msg += `\n[View Artifact](${result.artifactPath})`;
 
       await fetch(`https://api.telegram.org/bot${CONFIG.telegramBotToken}/sendMessage`, {
@@ -551,9 +580,12 @@ async function notifyCompletion(task: Task, result: ExecutionResult, durationMin
     }
   }
 
-  // Email notification for code tasks (need approval)
-  if (taskType === "code" && CONFIG.resendApiKey) {
+  // Email research/content results directly
+  if (taskType !== "code" && CONFIG.resendApiKey && result.output) {
     try {
+      const cleaned = cleanCliOutput(result.output);
+      const reportHtml = markdownToHtml(cleaned);
+
       await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -563,20 +595,185 @@ async function notifyCompletion(task: Task, result: ExecutionResult, durationMin
         body: JSON.stringify({
           from: "MCM Forge <ops@mcmforge.com>",
           to: CONFIG.steveEmail,
-          subject: `[MCM Forge] Task Complete: ${task.title}`,
+          subject: `[MCM Forge] ${task.title}`,
           html: `
-            <h2>Task Completed</h2>
-            <p><strong>${task.title}</strong></p>
-            <p>Duration: ${durationMin} minutes</p>
-            ${result.previewUrl ? `<p><a href="${result.previewUrl}">View Pull Request</a></p>` : ""}
-            <p><a href="https://mcmforge.com/approvals">Review on Dashboard</a></p>
-          `,
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e5e5e5; padding: 24px;">
+  <div style="max-width: 680px; margin: 0 auto; background: #171717; border: 1px solid #333; border-radius: 12px; overflow: hidden;">
+    <div style="background: linear-gradient(135deg, #1e3a5f, #0f172a); padding: 24px 32px;">
+      <h1 style="font-size: 18px; margin: 0 0 4px 0; color: #fff;">${task.title}</h1>
+      <p style="color: #94a3b8; margin: 0; font-size: 13px;">Researched by <strong style="color: #60a5fa;">${cli}</strong> &middot; ${durationMin} min &middot; ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</p>
+    </div>
+    <div style="padding: 24px 32px; font-size: 14px; color: #d4d4d4;">
+      ${reportHtml}
+    </div>
+    <div style="padding: 16px 32px; border-top: 1px solid #333; text-align: center;">
+      <p style="margin: 0; font-size: 12px; color: #666;">MCM Forge &middot; Overnight Research &middot; <a href="https://mcmforge.com" style="color: #60a5fa;">Dashboard</a></p>
+    </div>
+  </div>
+</body>
+</html>`,
         }),
       });
+      log("info", `Research email sent for ${task.title}`);
+    } catch (err) {
+      log("warn", `Research email failed: ${err}`);
+    }
+  }
+
+  // Email notification for code tasks (need approval)
+  if (taskType === "code" && CONFIG.resendApiKey && approvalMeta) {
+    try {
+      const approveUrl = `${edgeFunctionBase}/approve-task?token=${approvalMeta.approvalToken}&action=approve`;
+      const rejectUrl = `${edgeFunctionBase}/approve-task?token=${approvalMeta.approvalToken}&action=reject`;
+
+      const companyName = task.company_registry?.name || "Unknown";
+
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${CONFIG.resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: "MCM Forge <ops@mcmforge.com>",
+          to: CONFIG.steveEmail,
+          subject: `[MCM Forge] PR Ready: ${task.title}`,
+          html: buildApprovalEmail({
+            taskTitle: task.title,
+            companyName,
+            durationMin,
+            prUrl: result.prUrl,
+            previewUrl: result.previewUrl,
+            summary: result.summary,
+            approveUrl,
+            rejectUrl,
+          }),
+        }),
+      });
+
+      log("info", "Approval email sent to Steve");
     } catch (err) {
       log("warn", `Email notification failed: ${err}`);
     }
   }
+}
+
+// ============================================
+// Email Template
+// ============================================
+
+function buildApprovalEmail(params: {
+  taskTitle: string;
+  companyName: string;
+  durationMin: string;
+  prUrl?: string;
+  previewUrl?: string;
+  summary?: string;
+  approveUrl: string;
+  rejectUrl: string;
+}): string {
+  const { taskTitle, companyName, durationMin, prUrl, previewUrl, summary, approveUrl, rejectUrl } = params;
+
+  // Truncate summary for email
+  const shortSummary = summary && summary.length > 300 ? summary.slice(0, 300) + "..." : summary;
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e5e5e5; padding: 24px;">
+  <div style="max-width: 560px; margin: 0 auto; background: #171717; border: 1px solid #333; border-radius: 12px; padding: 32px;">
+    <h1 style="font-size: 20px; margin: 0 0 4px 0; color: #fff;">PR Ready for Review</h1>
+    <p style="color: #a3a3a3; margin: 0 0 24px 0; font-size: 14px;">${companyName} &middot; ${durationMin} min</p>
+
+    <h2 style="font-size: 16px; color: #fff; margin: 0 0 12px 0;">${taskTitle}</h2>
+
+    ${shortSummary ? `<p style="font-size: 13px; color: #a3a3a3; background: #262626; padding: 12px; border-radius: 8px; line-height: 1.5; white-space: pre-wrap;">${shortSummary}</p>` : ""}
+
+    <div style="margin: 24px 0; display: flex; gap: 12px;">
+      ${previewUrl ? `<a href="${previewUrl}" style="display: inline-block; padding: 10px 20px; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500;">View Preview</a>` : ""}
+      ${prUrl ? `<a href="${prUrl}" style="display: inline-block; padding: 10px 20px; background: #333; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500;">View PR</a>` : ""}
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #333; margin: 24px 0;" />
+
+    <div style="text-align: center;">
+      <a href="${approveUrl}" style="display: inline-block; padding: 14px 40px; background: #16a34a; color: #fff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600; margin-right: 12px;">Approve &amp; Merge</a>
+      <a href="${rejectUrl}" style="display: inline-block; padding: 14px 40px; background: #dc2626; color: #fff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600;">Reject</a>
+    </div>
+
+    <p style="text-align: center; margin-top: 24px; font-size: 12px; color: #666;">
+      <a href="https://mcmforge.com/approvals" style="color: #666;">View all approvals on dashboard</a>
+    </p>
+  </div>
+</body>
+</html>`;
+}
+
+// ============================================
+// Output Cleaning & Markdown → HTML
+// ============================================
+
+function cleanCliOutput(raw: string): string {
+  // Remove common CLI boilerplate lines
+  const noisePatterns = [
+    /^Loaded cached credentials\.?\s*$/,
+    /^Hook registry initialized.*$/,
+    /^Error executing tool \w+:.*$/,
+    /^Tool execution denied by policy\.?\s*$/,
+    /^╭.*╮\s*$/,
+    /^│.*│\s*$/,
+    /^╰.*╯\s*$/,
+    /^Thinking\.{0,3}\s*$/,
+    /^\s*$/,
+  ];
+
+  const lines = raw.split("\n");
+  // Find where the actual content starts (first markdown header or substantial line)
+  let startIdx = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith("##") || line.startsWith("# ") || line.length > 80) {
+      startIdx = i;
+      break;
+    }
+    const isNoise = noisePatterns.some((p) => p.test(line));
+    if (!isNoise && line.length > 20) {
+      startIdx = i;
+      break;
+    }
+  }
+
+  return lines.slice(startIdx).join("\n").trim();
+}
+
+function markdownToHtml(md: string): string {
+  let html = md
+    // Escape HTML entities
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    // Headers
+    .replace(/^### (.+)$/gm, '<h3 style="font-size: 14px; color: #fff; margin: 20px 0 8px 0; font-weight: 600;">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 style="font-size: 16px; color: #fff; margin: 24px 0 12px 0; border-bottom: 1px solid #333; padding-bottom: 8px;">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 style="font-size: 18px; color: #fff; margin: 24px 0 12px 0;">$1</h1>')
+    // Bold and italic
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    // Bullet points
+    .replace(/^[*\-•] (.+)$/gm, '<li style="margin: 4px 0; padding-left: 4px;">$1</li>')
+    // Numbered lists
+    .replace(/^\d+\.\s+(.+)$/gm, '<li style="margin: 4px 0; padding-left: 4px;">$1</li>')
+    // Wrap consecutive <li> in <ul>
+    .replace(/((?:<li[^>]*>.*<\/li>\n?)+)/g, '<ul style="margin: 8px 0; padding-left: 20px; list-style: disc;">$1</ul>')
+    // Line breaks for remaining lines
+    .replace(/\n\n/g, "</p><p style=\"margin: 12px 0; line-height: 1.6;\">")
+    .replace(/\n/g, "<br>");
+
+  return `<p style="margin: 12px 0; line-height: 1.6;">${html}</p>`;
 }
 
 // ============================================

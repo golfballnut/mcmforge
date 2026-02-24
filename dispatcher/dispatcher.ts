@@ -67,6 +67,8 @@ interface ExecutionResult {
 const CONFIG = {
   supabaseUrl: process.env.MCMFORGE_SUPABASE_URL!,
   supabaseKey: process.env.MCMFORGE_SUPABASE_KEY!,
+  agentEmail: process.env.AGENT_EMAIL || "agent@mcmforge.com",
+  agentPassword: process.env.AGENT_PASSWORD!,
   pollIntervalMs: parseInt(process.env.POLL_INTERVAL_MS || "300000", 10),
   repoBaseDir: process.env.REPO_BASE_DIR || "/Users/dirtsyncmini",
   resendApiKey: process.env.RESEND_API_KEY || "",
@@ -609,8 +611,23 @@ async function main() {
     log("error", "Missing MCMFORGE_SUPABASE_URL or MCMFORGE_SUPABASE_KEY");
     process.exit(1);
   }
+  if (!CONFIG.agentPassword) {
+    log("error", "Missing AGENT_PASSWORD");
+    process.exit(1);
+  }
 
   supabase = createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+
+  // Sign in as agent for RLS
+  const { error: authError } = await supabase.auth.signInWithPassword({
+    email: CONFIG.agentEmail,
+    password: CONFIG.agentPassword,
+  });
+  if (authError) {
+    log("error", `Agent auth failed: ${authError.message}`);
+    process.exit(1);
+  }
+  log("info", `Authenticated as ${CONFIG.agentEmail}`);
 
   // Verify connection
   const { data: companies, error } = await supabase

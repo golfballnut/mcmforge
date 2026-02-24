@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { approveItem, rejectItem } from "./actions";
 
 export const revalidate = 30;
 
@@ -121,6 +122,34 @@ export default async function ApprovalsPage() {
                   <span className="text-gray-500">
                     Submitted {formatDate(item.created_at)}
                   </span>
+                </div>
+
+                {/* Approve / Reject Actions */}
+                <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-800">
+                  <form action={approveItem}>
+                    <input type="hidden" name="id" value={item.id} />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                      Approve
+                    </button>
+                  </form>
+                  <form action={rejectItem} className="flex items-center gap-2">
+                    <input type="hidden" name="id" value={item.id} />
+                    <input
+                      type="text"
+                      name="notes"
+                      placeholder="Rejection reason (optional)"
+                      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 w-64"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-sm font-medium rounded-lg border border-red-500/30 hover:border-red-500 transition-colors"
+                    >
+                      Reject
+                    </button>
+                  </form>
                 </div>
               </div>
             ))}

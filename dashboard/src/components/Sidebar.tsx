@@ -35,7 +35,8 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
 
   // Close sidebar on route change
   useEffect(() => {
-    setMobileOpen(false);
+    const timeout = setTimeout(() => setMobileOpen(false), 0);
+    return () => clearTimeout(timeout);
   }, [pathname]);
 
   async function handleLogout() {

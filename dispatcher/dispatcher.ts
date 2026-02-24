@@ -55,6 +55,8 @@ interface ExecutionResult {
   success: boolean;
   output: string;
   summary?: string;
+  prUrl?: string;
+  prNumber?: number;
   previewUrl?: string;
   artifactPath?: string;
   error?: string;
@@ -221,23 +223,33 @@ async function executeTask(task: Task) {
         completed_at: new Date().toISOString(),
         result_summary: result.summary,
         artifact_url: result.artifactPath || null,
+        pr_url: result.prUrl || null,
+        pr_number: result.prNumber || null,
+        preview_url: result.previewUrl || null,
       });
 
       // Code tasks create approval entries (pr_merge is the valid approval_type)
+      let approvalToken: string | undefined;
       if (taskType === "code") {
+        approvalToken = crypto.randomUUID();
+
         await supabase.from("approval_queue").insert({
           task_id: task.id,
           company_id: task.company_id,
           approval_type: "pr_merge",
           title: `Task Complete: ${task.title}`,
           description: result.summary || `Completed in ${durationMin} minutes`,
-          preview_url: result.previewUrl || null,
+          preview_url: result.previewUrl || result.prUrl || null,
           status: "pending",
+          approval_token: approvalToken,
+          pr_url: result.prUrl || null,
+          pr_number: result.prNumber || null,
         });
       }
 
       // Notify Steve for all completed tasks
-      await notifyCompletion(task, result, durationMin);
+      const approvalMeta = approvalToken ? { approvalToken } : undefined;
+      await notifyCompletion(task, result, durationMin, approvalMeta);
     } else {
       log("error", `Task failed: ${result.error}`, { task: task.title });
       await updateTaskStatus(task.id, "blocked", {
@@ -495,9 +507,14 @@ function spawnCli(
         return;
       }
 
-      // Extract PR URL from output if present
-      const prMatch = output.match(/https:\/\/github\.com\/[^\s]+\/pull\/\d+/);
-      const previewUrl = prMatch ? prMatch[0] : undefined;
+      // Extract PR URL and number from output
+      const prMatch = output.match(/https:\/\/github\.com\/[^\s]+\/pull\/(\d+)/);
+      const prUrl = prMatch ? prMatch[0] : undefined;
+      const prNumber = prMatch ? parseInt(prMatch[1], 10) : undefined;
+
+      // Extract Vercel preview URL from output
+      const vercelMatch = output.match(/https:\/\/[^\s]*\.vercel\.app[^\s)"]*/);
+      const previewUrl = vercelMatch ? vercelMatch[0] : undefined;
 
       // Summary = last 500 chars
       const summary = output.slice(-500).trim();
@@ -506,6 +523,8 @@ function spawnCli(
         success: code === 0,
         output,
         summary,
+        prUrl,
+        prNumber,
         previewUrl,
         error: code !== 0 ? `Exit code ${code}` : undefined,
       });
@@ -526,15 +545,22 @@ function spawnCli(
 // Notifications
 // ============================================
 
-async function notifyCompletion(task: Task, result: ExecutionResult, durationMin: string) {
+async function notifyCompletion(
+  task: Task,
+  result: ExecutionResult,
+  durationMin: string,
+  approvalMeta?: { approvalToken: string }
+) {
   const taskType = task.task_type || "code";
+  const edgeFunctionBase = `${CONFIG.supabaseUrl}/functions/v1`;
 
   // Telegram notification
   if (CONFIG.telegramBotToken && CONFIG.telegramChatId) {
     try {
       const icon = taskType === "code" ? "🔨" : taskType === "research" ? "🔍" : taskType === "content" ? "📄" : "✅";
       let msg = `${icon} *${task.title}* completed (${durationMin}min)`;
-      if (result.previewUrl) msg += `\n[View PR](${result.previewUrl})`;
+      if (result.prUrl) msg += `\n[View PR](${result.prUrl})`;
+      if (result.previewUrl) msg += `\n[Preview](${result.previewUrl})`;
       if (result.artifactPath) msg += `\n[View Artifact](${result.artifactPath})`;
 
       await fetch(`https://api.telegram.org/bot${CONFIG.telegramBotToken}/sendMessage`, {
@@ -552,8 +578,13 @@ async function notifyCompletion(task: Task, result: ExecutionResult, durationMin
   }
 
   // Email notification for code tasks (need approval)
-  if (taskType === "code" && CONFIG.resendApiKey) {
+  if (taskType === "code" && CONFIG.resendApiKey && approvalMeta) {
     try {
+      const approveUrl = `${edgeFunctionBase}/approve-task?token=${approvalMeta.approvalToken}&action=approve`;
+      const rejectUrl = `${edgeFunctionBase}/approve-task?token=${approvalMeta.approvalToken}&action=reject`;
+
+      const companyName = task.company_registry?.name || "Unknown";
+
       await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -563,20 +594,77 @@ async function notifyCompletion(task: Task, result: ExecutionResult, durationMin
         body: JSON.stringify({
           from: "MCM Forge <ops@mcmforge.com>",
           to: CONFIG.steveEmail,
-          subject: `[MCM Forge] Task Complete: ${task.title}`,
-          html: `
-            <h2>Task Completed</h2>
-            <p><strong>${task.title}</strong></p>
-            <p>Duration: ${durationMin} minutes</p>
-            ${result.previewUrl ? `<p><a href="${result.previewUrl}">View Pull Request</a></p>` : ""}
-            <p><a href="https://mcmforge.com/approvals">Review on Dashboard</a></p>
-          `,
+          subject: `[MCM Forge] PR Ready: ${task.title}`,
+          html: buildApprovalEmail({
+            taskTitle: task.title,
+            companyName,
+            durationMin,
+            prUrl: result.prUrl,
+            previewUrl: result.previewUrl,
+            summary: result.summary,
+            approveUrl,
+            rejectUrl,
+          }),
         }),
       });
+
+      log("info", "Approval email sent to Steve");
     } catch (err) {
       log("warn", `Email notification failed: ${err}`);
     }
   }
+}
+
+// ============================================
+// Email Template
+// ============================================
+
+function buildApprovalEmail(params: {
+  taskTitle: string;
+  companyName: string;
+  durationMin: string;
+  prUrl?: string;
+  previewUrl?: string;
+  summary?: string;
+  approveUrl: string;
+  rejectUrl: string;
+}): string {
+  const { taskTitle, companyName, durationMin, prUrl, previewUrl, summary, approveUrl, rejectUrl } = params;
+
+  // Truncate summary for email
+  const shortSummary = summary && summary.length > 300 ? summary.slice(0, 300) + "..." : summary;
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e5e5e5; padding: 24px;">
+  <div style="max-width: 560px; margin: 0 auto; background: #171717; border: 1px solid #333; border-radius: 12px; padding: 32px;">
+    <h1 style="font-size: 20px; margin: 0 0 4px 0; color: #fff;">PR Ready for Review</h1>
+    <p style="color: #a3a3a3; margin: 0 0 24px 0; font-size: 14px;">${companyName} &middot; ${durationMin} min</p>
+
+    <h2 style="font-size: 16px; color: #fff; margin: 0 0 12px 0;">${taskTitle}</h2>
+
+    ${shortSummary ? `<p style="font-size: 13px; color: #a3a3a3; background: #262626; padding: 12px; border-radius: 8px; line-height: 1.5; white-space: pre-wrap;">${shortSummary}</p>` : ""}
+
+    <div style="margin: 24px 0; display: flex; gap: 12px;">
+      ${previewUrl ? `<a href="${previewUrl}" style="display: inline-block; padding: 10px 20px; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500;">View Preview</a>` : ""}
+      ${prUrl ? `<a href="${prUrl}" style="display: inline-block; padding: 10px 20px; background: #333; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500;">View PR</a>` : ""}
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #333; margin: 24px 0;" />
+
+    <div style="text-align: center;">
+      <a href="${approveUrl}" style="display: inline-block; padding: 14px 40px; background: #16a34a; color: #fff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600; margin-right: 12px;">Approve &amp; Merge</a>
+      <a href="${rejectUrl}" style="display: inline-block; padding: 14px 40px; background: #dc2626; color: #fff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600;">Reject</a>
+    </div>
+
+    <p style="text-align: center; margin-top: 24px; font-size: 12px; color: #666;">
+      <a href="https://mcmforge.com/approvals" style="color: #666;">View all approvals on dashboard</a>
+    </p>
+  </div>
+</body>
+</html>`;
 }
 
 // ============================================

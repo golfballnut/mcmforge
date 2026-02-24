@@ -25,8 +25,8 @@ export default async function ResearchPage() {
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-8">
-        <h1 className="text-2xl font-bold">Research</h1>
+      <div className="flex items-center gap-3 mb-6 md:mb-8">
+        <h1 className="text-xl md:text-2xl font-bold">Research</h1>
         {unreviewed.length > 0 && (
           <span className="bg-purple-500/20 text-purple-400 text-sm font-medium px-3 py-1 rounded-full border border-purple-500/30">
             {unreviewed.length} new

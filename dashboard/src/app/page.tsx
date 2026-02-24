@@ -68,16 +68,16 @@ export default async function Dashboard() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 md:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Command Center</h1>
-          <p className="text-gray-500 mt-1">MCM Forge Operations Overview</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Command Center</h1>
+          <p className="text-gray-500 mt-1 text-sm md:text-base">MCM Forge Operations Overview</p>
         </div>
         <KillSwitch status={dispatcherStatus} />
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard label="Active Companies" value={stats.activeCompanies} color="blue" />
         <StatCard label="Pending Approvals" value={stats.pendingApprovals} color={stats.pendingApprovals > 0 ? "amber" : "green"} />
         <StatCard label="Tasks In Progress" value={stats.inProgressTasks} color="purple" />
@@ -85,9 +85,9 @@ export default async function Dashboard() {
       </div>
 
       {/* Task Pipeline */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">Task Pipeline</h2>
-        <div className="grid grid-cols-5 gap-3">
+      <div className="mb-6 md:mb-8">
+        <h2 className="text-lg font-semibold mb-3 md:mb-4">Task Pipeline</h2>
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 md:gap-3">
           <PipelineStage label="Todo" count={stats.todoTasks} color="gray" />
           <PipelineStage label="In Progress" count={stats.inProgressTasks} color="blue" />
           <PipelineStage label="Review" count={0} color="amber" />
@@ -96,7 +96,7 @@ export default async function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
         {/* Pending Approvals */}
         <div>
           <h2 className="text-lg font-semibold mb-4">
@@ -165,9 +165,9 @@ function StatCard({ label, value, color }: { label: string; value: number | stri
   };
 
   return (
-    <div className={`rounded-xl border p-6 ${colors[color]}`}>
-      <p className="text-3xl font-bold">{value}</p>
-      <p className="text-sm opacity-70 mt-1">{label}</p>
+    <div className={`rounded-xl border p-4 md:p-6 ${colors[color]}`}>
+      <p className="text-2xl md:text-3xl font-bold">{value}</p>
+      <p className="text-xs md:text-sm opacity-70 mt-1">{label}</p>
     </div>
   );
 }
@@ -182,8 +182,8 @@ function PipelineStage({ label, count, color }: { label: string; count: number; 
   };
 
   return (
-    <div className={`border rounded-lg p-4 text-center ${colors[color]}`}>
-      <p className="text-2xl font-bold">{count}</p>
+    <div className={`border rounded-lg p-3 md:p-4 text-center ${colors[color]}`}>
+      <p className="text-xl md:text-2xl font-bold">{count}</p>
       <p className="text-xs mt-1">{label}</p>
     </div>
   );

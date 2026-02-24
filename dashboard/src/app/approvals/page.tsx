@@ -38,10 +38,10 @@ export default async function ApprovalsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
+    <div className="min-h-screen bg-gray-950 text-white">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <h1 className="text-2xl font-bold">Approvals</h1>
+      <div className="flex items-center gap-3 mb-6 md:mb-8">
+        <h1 className="text-xl md:text-2xl font-bold">Approvals</h1>
         {pendingItems.length > 0 && (
           <span className="flex items-center gap-1.5 bg-amber-500/20 text-amber-400 text-sm font-medium px-3 py-1 rounded-full border border-amber-500/30">
             <span className="relative flex h-2 w-2">
@@ -125,23 +125,23 @@ export default async function ApprovalsPage() {
                 </div>
 
                 {/* Approve / Reject Actions */}
-                <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-800">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4 pt-4 border-t border-gray-800">
                   <form action={approveItem}>
                     <input type="hidden" name="id" value={item.id} />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
+                      className="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
                     >
                       Approve
                     </button>
                   </form>
-                  <form action={rejectItem} className="flex items-center gap-2">
+                  <form action={rejectItem} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <input type="hidden" name="id" value={item.id} />
                     <input
                       type="text"
                       name="notes"
                       placeholder="Rejection reason (optional)"
-                      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 w-64"
+                      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 w-full sm:w-64"
                     />
                     <button
                       type="submit"

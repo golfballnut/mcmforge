@@ -49,13 +49,13 @@ export default async function MetricsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Skill Metrics</h1>
-        <p className="text-gray-500 mt-1">Agent skill execution performance and cost tracking</p>
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold">Skill Metrics</h1>
+        <p className="text-gray-500 mt-1 text-sm md:text-base">Agent skill execution performance and cost tracking</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <SummaryCard
           label="Total Executions"
           value={totalExecutions.toLocaleString()}
@@ -78,7 +78,7 @@ export default async function MetricsPage() {
         />
       </div>
 
-      {/* Recent Executions Table */}
+      {/* Recent Executions */}
       <div>
         <h2 className="text-lg font-semibold mb-4">Recent Executions</h2>
         {rows.length === 0 ? (
@@ -86,69 +86,119 @@ export default async function MetricsPage() {
             No metrics recorded yet
           </div>
         ) : (
-          <div className="border border-gray-800 rounded-xl overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-800 bg-gray-900/80">
-                  <th className="text-left px-4 py-3 text-gray-500 font-medium">Skill</th>
-                  <th className="text-left px-4 py-3 text-gray-500 font-medium">Model</th>
-                  <th className="text-right px-4 py-3 text-gray-500 font-medium">Time</th>
-                  <th className="text-right px-4 py-3 text-gray-500 font-medium">Tokens</th>
-                  <th className="text-right px-4 py-3 text-gray-500 font-medium">Cost</th>
-                  <th className="text-center px-4 py-3 text-gray-500 font-medium">Status</th>
-                  <th className="text-right px-4 py-3 text-gray-500 font-medium">When</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, i) => (
-                  <tr
-                    key={row.id}
-                    className={`border-b border-gray-800/50 ${
-                      i % 2 === 0 ? "bg-gray-900/30" : "bg-gray-900/10"
-                    } hover:bg-gray-900/60 transition-colors`}
-                  >
-                    <td className="px-4 py-3 font-medium text-white">
-                      {row.skill_name}
+          <>
+            {/* Mobile: Card layout */}
+            <div className="md:hidden space-y-3">
+              {rows.map((row) => (
+                <div
+                  key={row.id}
+                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-4"
+                >
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div>
+                      <p className="font-medium text-white text-sm">{row.skill_name}</p>
                       {row.company_registry?.name && (
-                        <span className="ml-2 text-xs text-gray-600">
-                          {row.company_registry.name}
-                        </span>
+                        <p className="text-xs text-gray-600">{row.company_registry.name}</p>
                       )}
-                    </td>
-                    <td className="px-4 py-3 text-gray-400 font-mono text-xs">
-                      {row.model_used ?? "—"}
-                    </td>
-                    <td className="px-4 py-3 text-right text-gray-300">
-                      {formatMs(row.execution_time_ms)}
-                    </td>
-                    <td className="px-4 py-3 text-right text-gray-300">
-                      {row.token_count != null ? row.token_count.toLocaleString() : "—"}
-                    </td>
-                    <td className="px-4 py-3 text-right text-gray-300">
-                      {formatCost(row.estimated_cost_cents)}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {row.success ? (
-                        <span className="px-2 py-0.5 bg-green-500/10 border border-green-500/20 text-green-400 text-xs rounded">
-                          success
-                        </span>
-                      ) : (
-                        <span
-                          className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded"
-                          title={row.error_message ?? undefined}
-                        >
-                          failed
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-right text-gray-500 text-xs whitespace-nowrap">
-                      {formatDate(row.created_at)}
-                    </td>
+                    </div>
+                    {row.success ? (
+                      <span className="px-2 py-0.5 bg-green-500/10 border border-green-500/20 text-green-400 text-xs rounded shrink-0">
+                        success
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded shrink-0">
+                        failed
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div>
+                      <p className="text-gray-600">Time</p>
+                      <p className="text-gray-300">{formatMs(row.execution_time_ms)}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Tokens</p>
+                      <p className="text-gray-300">{row.token_count != null ? row.token_count.toLocaleString() : "—"}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Cost</p>
+                      <p className="text-gray-300">{formatCost(row.estimated_cost_cents)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                    <span className="font-mono">{row.model_used ?? "—"}</span>
+                    <span>&middot;</span>
+                    <span>{formatDate(row.created_at)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: Table layout */}
+            <div className="hidden md:block border border-gray-800 rounded-xl overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-800 bg-gray-900/80">
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Skill</th>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Model</th>
+                    <th className="text-right px-4 py-3 text-gray-500 font-medium">Time</th>
+                    <th className="text-right px-4 py-3 text-gray-500 font-medium">Tokens</th>
+                    <th className="text-right px-4 py-3 text-gray-500 font-medium">Cost</th>
+                    <th className="text-center px-4 py-3 text-gray-500 font-medium">Status</th>
+                    <th className="text-right px-4 py-3 text-gray-500 font-medium">When</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {rows.map((row, i) => (
+                    <tr
+                      key={row.id}
+                      className={`border-b border-gray-800/50 ${
+                        i % 2 === 0 ? "bg-gray-900/30" : "bg-gray-900/10"
+                      } hover:bg-gray-900/60 transition-colors`}
+                    >
+                      <td className="px-4 py-3 font-medium text-white">
+                        {row.skill_name}
+                        {row.company_registry?.name && (
+                          <span className="ml-2 text-xs text-gray-600">
+                            {row.company_registry.name}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-gray-400 font-mono text-xs">
+                        {row.model_used ?? "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-300">
+                        {formatMs(row.execution_time_ms)}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-300">
+                        {row.token_count != null ? row.token_count.toLocaleString() : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-300">
+                        {formatCost(row.estimated_cost_cents)}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {row.success ? (
+                          <span className="px-2 py-0.5 bg-green-500/10 border border-green-500/20 text-green-400 text-xs rounded">
+                            success
+                          </span>
+                        ) : (
+                          <span
+                            className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded"
+                            title={row.error_message ?? undefined}
+                          >
+                            failed
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-500 text-xs whitespace-nowrap">
+                        {formatDate(row.created_at)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>
@@ -172,9 +222,9 @@ function SummaryCard({
   };
 
   return (
-    <div className={`rounded-xl border p-6 ${colors[color]}`}>
-      <p className="text-3xl font-bold">{value}</p>
-      <p className="text-sm opacity-70 mt-1">{label}</p>
+    <div className={`rounded-xl border p-4 md:p-6 ${colors[color]}`}>
+      <p className="text-2xl md:text-3xl font-bold">{value}</p>
+      <p className="text-xs md:text-sm opacity-70 mt-1">{label}</p>
     </div>
   );
 }

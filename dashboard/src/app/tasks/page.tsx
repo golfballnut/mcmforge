@@ -104,9 +104,9 @@ export default async function TasksPage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex items-start justify-between mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Task Queue</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Task Queue</h1>
             <p className="mt-1 text-sm text-gray-400">
               All agent tasks across MCM Forge companies &mdash;{" "}
               <span className="text-gray-300 font-medium">{rows.length} total</span>
@@ -134,110 +134,151 @@ export default async function TasksPage() {
           ))}
         </div>
 
-        {/* Table */}
-        <div className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden">
-          {rows.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-500">
-              <svg
-                className="w-10 h-10 mb-3 text-gray-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                />
-              </svg>
-              <p className="text-sm">No tasks in queue</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-800">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
-                      Title
-                    </th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
-                      Status
-                    </th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
-                      Priority
-                    </th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
-                      Assigned To
-                    </th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
-                      Company
-                    </th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
-                      Created
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800/60">
-                  {rows.map((task) => (
-                    <tr
-                      key={task.id}
-                      className="hover:bg-gray-800/30 transition-colors"
+        {/* Task List */}
+        {rows.length === 0 ? (
+          <div className="bg-gray-900/50 border border-gray-800 rounded-lg flex flex-col items-center justify-center py-20 text-gray-500">
+            <svg
+              className="w-10 h-10 mb-3 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            <p className="text-sm">No tasks in queue</p>
+          </div>
+        ) : (
+          <>
+            {/* Mobile: Card layout */}
+            <div className="md:hidden space-y-3">
+              {rows.map((task) => (
+                <div
+                  key={task.id}
+                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-4"
+                >
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <p className="font-medium text-gray-100 text-sm leading-tight">{task.title}</p>
+                    <StatusBadge status={task.status} />
+                  </div>
+                  {task.skill_name && (
+                    <p className="text-xs text-gray-500 mb-2">{task.skill_name}</p>
+                  )}
+                  <div className="flex items-center gap-2 flex-wrap text-xs">
+                    <PriorityBadge priority={task.priority} />
+                    <span className="text-gray-400">
+                      {task.company_registry?.name ?? "unknown"}
+                    </span>
+                    <span className="text-gray-600">&middot;</span>
+                    <span className="text-gray-500">
+                      {task.assigned_to || "unassigned"}
+                    </span>
+                  </div>
+                  {task.pr_url && (
+                    <a
+                      href={task.pr_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-blue-400 hover:text-blue-300 mt-2 inline-block"
                     >
-                      <td className="px-4 py-3 max-w-xs">
-                        <div>
-                          <p className="font-medium text-gray-100 truncate">{task.title}</p>
-                          {task.skill_name && (
-                            <p className="text-xs text-gray-500 mt-0.5 truncate">
-                              {task.skill_name}
-                            </p>
-                          )}
-                          {task.pr_url && (
-                            <a
-                              href={task.pr_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-400 hover:text-blue-300 mt-0.5 inline-block"
-                            >
-                              PR #{task.pr_number ?? "link"} &rarr;
-                            </a>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <StatusBadge status={task.status} />
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <PriorityBadge priority={task.priority} />
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {task.assigned_to ? (
-                          <span className="text-gray-300">{task.assigned_to}</span>
-                        ) : (
-                          <span className="text-gray-600 italic">unassigned</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="text-gray-300">
-                          {task.company_registry?.name ?? (
-                            <span className="text-gray-600 italic">unknown</span>
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-gray-400 text-xs">
-                        {new Date(task.created_at).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      PR #{task.pr_number ?? "link"} &rarr;
+                    </a>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+
+            {/* Desktop: Table layout */}
+            <div className="hidden md:block bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-800">
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
+                        Title
+                      </th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
+                        Status
+                      </th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
+                        Priority
+                      </th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
+                        Assigned To
+                      </th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
+                        Company
+                      </th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">
+                        Created
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-800/60">
+                    {rows.map((task) => (
+                      <tr
+                        key={task.id}
+                        className="hover:bg-gray-800/30 transition-colors"
+                      >
+                        <td className="px-4 py-3 max-w-xs">
+                          <div>
+                            <p className="font-medium text-gray-100 truncate">{task.title}</p>
+                            {task.skill_name && (
+                              <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                {task.skill_name}
+                              </p>
+                            )}
+                            {task.pr_url && (
+                              <a
+                                href={task.pr_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-400 hover:text-blue-300 mt-0.5 inline-block"
+                              >
+                                PR #{task.pr_number ?? "link"} &rarr;
+                              </a>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <StatusBadge status={task.status} />
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <PriorityBadge priority={task.priority} />
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          {task.assigned_to ? (
+                            <span className="text-gray-300">{task.assigned_to}</span>
+                          ) : (
+                            <span className="text-gray-600 italic">unassigned</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className="text-gray-300">
+                            {task.company_registry?.name ?? (
+                              <span className="text-gray-600 italic">unknown</span>
+                            )}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-gray-400 text-xs">
+                          {new Date(task.created_at).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

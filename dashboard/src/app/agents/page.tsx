@@ -30,9 +30,9 @@ export default async function AgentsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <div className="flex items-center gap-3">
-          <h1 className="text-3xl font-bold">Agent Roster</h1>
+      <div className="mb-6 md:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold">Agent Roster</h1>
           <span className="px-3 py-1 bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-full">
             {activeCount} / {agents.length} active
           </span>

@@ -54,8 +54,8 @@ export default async function CompaniesPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Companies</h1>
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold">Companies</h1>
         <p className="text-gray-500 mt-1">
           Registered companies in the MCM Forge network
         </p>
@@ -91,7 +91,7 @@ export default async function CompaniesPage() {
               <div className="space-y-2 text-sm">
                 {company.domain && (
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-600 w-28 shrink-0">Domain</span>
+                    <span className="text-gray-600 w-20 sm:w-28 shrink-0">Domain</span>
                     <a
                       href={`https://${company.domain}`}
                       target="_blank"
@@ -104,7 +104,7 @@ export default async function CompaniesPage() {
                 )}
                 {company.github_repo && (
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-600 w-28 shrink-0">GitHub</span>
+                    <span className="text-gray-600 w-20 sm:w-28 shrink-0">GitHub</span>
                     <a
                       href={`https://github.com/${company.github_repo}`}
                       target="_blank"
@@ -117,7 +117,7 @@ export default async function CompaniesPage() {
                 )}
                 {company.supabase_project_id && (
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-600 w-28 shrink-0">
+                    <span className="text-gray-600 w-20 sm:w-28 shrink-0">
                       Supabase
                     </span>
                     <span className="text-gray-400 font-mono text-xs truncate">
@@ -127,7 +127,7 @@ export default async function CompaniesPage() {
                 )}
                 {company.deploy_target && (
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-600 w-28 shrink-0">Deploy</span>
+                    <span className="text-gray-600 w-20 sm:w-28 shrink-0">Deploy</span>
                     <span className="text-purple-400 text-xs">
                       {company.deploy_target}
                     </span>

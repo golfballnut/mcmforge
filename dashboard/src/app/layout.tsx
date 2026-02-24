@@ -37,7 +37,7 @@ export default async function RootLayout({
         {user ? (
           <div className="flex h-screen">
             <Sidebar userEmail={user.email || ""} />
-            <main className="flex-1 overflow-auto p-8">{children}</main>
+            <main className="flex-1 overflow-auto pt-18 md:pt-0 p-4 md:p-8">{children}</main>
           </div>
         ) : (
           children

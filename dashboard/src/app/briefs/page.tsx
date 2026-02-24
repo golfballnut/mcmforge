@@ -100,7 +100,7 @@ export default async function BriefsPage() {
                 <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-2">
                   Metrics
                 </h4>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {Object.entries(
                     todayBrief.metrics as Record<string, string | number>
                   ).map(([key, value]) => (

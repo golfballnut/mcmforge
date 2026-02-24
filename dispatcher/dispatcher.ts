@@ -85,6 +85,7 @@ const CONFIG = {
 // Company slug → repo directory name mapping
 const REPO_DIR_MAP: Record<string, string> = {
   dirtsync: "DirtSync",
+  mcmforge: "MCMForge",
 };
 
 // CLI binary paths (override via env if needed)
@@ -249,7 +250,7 @@ async function executeTask(task: Task) {
 
       // Notify Steve for all completed tasks
       const approvalMeta = approvalToken ? { approvalToken } : undefined;
-      await notifyCompletion(task, result, durationMin, approvalMeta);
+      await notifyCompletion(task, result, durationMin, cli, approvalMeta);
     } else {
       log("error", `Task failed: ${result.error}`, { task: task.title });
       await updateTaskStatus(task.id, "blocked", {
@@ -449,11 +450,9 @@ function getCliArgs(cli: CliTool, prompt: string): string[] {
     case "claude":
       return ["--print", "--dangerously-skip-permissions", prompt];
     case "gemini":
-      // Gemini CLI uses -p for prompt
-      return ["-p", prompt];
+      return ["-m", "gemini-3.1-pro-preview", "-y", "-p", prompt];
     case "codex":
-      // Codex CLI
-      return ["--prompt", prompt];
+      return ["exec", "--dangerously-bypass-approvals-and-sandbox", prompt];
     default:
       return ["--print", prompt];
   }
@@ -516,8 +515,11 @@ function spawnCli(
       const vercelMatch = output.match(/https:\/\/[^\s]*\.vercel\.app[^\s)"]*/);
       const previewUrl = vercelMatch ? vercelMatch[0] : undefined;
 
-      // Summary = last 500 chars
-      const summary = output.slice(-500).trim();
+      // Clean CLI boilerplate from output
+      const cleanedOutput = cleanCliOutput(output);
+
+      // Summary = last 500 chars for DB, full cleaned output available
+      const summary = cleanedOutput.slice(-500).trim();
 
       resolve({
         success: code === 0,
@@ -549,6 +551,7 @@ async function notifyCompletion(
   task: Task,
   result: ExecutionResult,
   durationMin: string,
+  cli: CliTool,
   approvalMeta?: { approvalToken: string }
 ) {
   const taskType = task.task_type || "code";
@@ -574,6 +577,49 @@ async function notifyCompletion(
       });
     } catch (err) {
       log("warn", `Telegram notification failed: ${err}`);
+    }
+  }
+
+  // Email research/content results directly
+  if (taskType !== "code" && CONFIG.resendApiKey && result.output) {
+    try {
+      const cleaned = cleanCliOutput(result.output);
+      const reportHtml = markdownToHtml(cleaned);
+
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${CONFIG.resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: "MCM Forge <ops@mcmforge.com>",
+          to: CONFIG.steveEmail,
+          subject: `[MCM Forge] ${task.title}`,
+          html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e5e5e5; padding: 24px;">
+  <div style="max-width: 680px; margin: 0 auto; background: #171717; border: 1px solid #333; border-radius: 12px; overflow: hidden;">
+    <div style="background: linear-gradient(135deg, #1e3a5f, #0f172a); padding: 24px 32px;">
+      <h1 style="font-size: 18px; margin: 0 0 4px 0; color: #fff;">${task.title}</h1>
+      <p style="color: #94a3b8; margin: 0; font-size: 13px;">Researched by <strong style="color: #60a5fa;">${cli}</strong> &middot; ${durationMin} min &middot; ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</p>
+    </div>
+    <div style="padding: 24px 32px; font-size: 14px; color: #d4d4d4;">
+      ${reportHtml}
+    </div>
+    <div style="padding: 16px 32px; border-top: 1px solid #333; text-align: center;">
+      <p style="margin: 0; font-size: 12px; color: #666;">MCM Forge &middot; Overnight Research &middot; <a href="https://mcmforge.com" style="color: #60a5fa;">Dashboard</a></p>
+    </div>
+  </div>
+</body>
+</html>`,
+        }),
+      });
+      log("info", `Research email sent for ${task.title}`);
+    } catch (err) {
+      log("warn", `Research email failed: ${err}`);
     }
   }
 
@@ -665,6 +711,69 @@ function buildApprovalEmail(params: {
   </div>
 </body>
 </html>`;
+}
+
+// ============================================
+// Output Cleaning & Markdown → HTML
+// ============================================
+
+function cleanCliOutput(raw: string): string {
+  // Remove common CLI boilerplate lines
+  const noisePatterns = [
+    /^Loaded cached credentials\.?\s*$/,
+    /^Hook registry initialized.*$/,
+    /^Error executing tool \w+:.*$/,
+    /^Tool execution denied by policy\.?\s*$/,
+    /^╭.*╮\s*$/,
+    /^│.*│\s*$/,
+    /^╰.*╯\s*$/,
+    /^Thinking\.{0,3}\s*$/,
+    /^\s*$/,
+  ];
+
+  const lines = raw.split("\n");
+  // Find where the actual content starts (first markdown header or substantial line)
+  let startIdx = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith("##") || line.startsWith("# ") || line.length > 80) {
+      startIdx = i;
+      break;
+    }
+    const isNoise = noisePatterns.some((p) => p.test(line));
+    if (!isNoise && line.length > 20) {
+      startIdx = i;
+      break;
+    }
+  }
+
+  return lines.slice(startIdx).join("\n").trim();
+}
+
+function markdownToHtml(md: string): string {
+  let html = md
+    // Escape HTML entities
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    // Headers
+    .replace(/^### (.+)$/gm, '<h3 style="font-size: 14px; color: #fff; margin: 20px 0 8px 0; font-weight: 600;">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 style="font-size: 16px; color: #fff; margin: 24px 0 12px 0; border-bottom: 1px solid #333; padding-bottom: 8px;">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 style="font-size: 18px; color: #fff; margin: 24px 0 12px 0;">$1</h1>')
+    // Bold and italic
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    // Bullet points
+    .replace(/^[*\-•] (.+)$/gm, '<li style="margin: 4px 0; padding-left: 4px;">$1</li>')
+    // Numbered lists
+    .replace(/^\d+\.\s+(.+)$/gm, '<li style="margin: 4px 0; padding-left: 4px;">$1</li>')
+    // Wrap consecutive <li> in <ul>
+    .replace(/((?:<li[^>]*>.*<\/li>\n?)+)/g, '<ul style="margin: 8px 0; padding-left: 20px; list-style: disc;">$1</ul>')
+    // Line breaks for remaining lines
+    .replace(/\n\n/g, "</p><p style=\"margin: 12px 0; line-height: 1.6;\">")
+    .replace(/\n/g, "<br>");
+
+  return `<p style="margin: 12px 0; line-height: 1.6;">${html}</p>`;
 }
 
 // ============================================

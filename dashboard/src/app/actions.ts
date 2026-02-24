@@ -20,6 +20,36 @@ export async function toggleDispatcher(formData: FormData) {
   revalidatePath("/");
 }
 
+export async function createTask(formData: FormData) {
+  const supabase = await createClient();
+
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const company_id = formData.get("company_id") as string;
+  const priority = formData.get("priority") as string;
+  const task_type = formData.get("task_type") as string;
+  const cli_target = formData.get("cli_target") as string;
+
+  if (!title) return { error: "Title is required" };
+
+  const { error } = await supabase.from("task_queue").insert({
+    title,
+    description: description || null,
+    company_id: company_id || null,
+    priority: priority || "medium",
+    task_type: task_type || "code",
+    cli_target: cli_target || "claude",
+    status: "todo",
+    assigned_to: "agent-executor",
+    created_by: "steve",
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/tasks");
+  return { success: true };
+}
+
 export async function getDispatcherStatus(): Promise<string> {
   const supabase = await createClient();
   const { data } = await supabase

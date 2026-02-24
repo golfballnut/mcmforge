@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import NewTaskForm from "@/components/NewTaskForm";
 
 export const revalidate = 30;
 
@@ -74,10 +75,17 @@ type TaskRow = {
 export default async function TasksPage() {
   const supabase = await createClient();
 
-  const { data: tasks, error } = await supabase
-    .from("task_queue")
-    .select("*, company_registry(name)")
-    .order("created_at", { ascending: false });
+  const [{ data: tasks, error }, { data: companies }] = await Promise.all([
+    supabase
+      .from("task_queue")
+      .select("*, company_registry(name)")
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("company_registry")
+      .select("id, name")
+      .eq("status", "active")
+      .order("name"),
+  ]);
 
   if (error) {
     console.error("Failed to load tasks:", error.message);
@@ -96,13 +104,17 @@ export default async function TasksPage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white tracking-tight">Task Queue</h1>
-          <p className="mt-1 text-sm text-gray-400">
-            All agent tasks across MCM Forge companies &mdash;{" "}
-            <span className="text-gray-300 font-medium">{rows.length} total</span>
-          </p>
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-white tracking-tight">Task Queue</h1>
+            <p className="mt-1 text-sm text-gray-400">
+              All agent tasks across MCM Forge companies &mdash;{" "}
+              <span className="text-gray-300 font-medium">{rows.length} total</span>
+            </p>
+          </div>
         </div>
+
+        <NewTaskForm companies={(companies ?? []) as { id: string; name: string }[]} />
 
         {/* Summary stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">

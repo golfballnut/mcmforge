@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DirtSync Trail Styling v2 — Outlaw Badge Design Review</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;900&display=swap');
+
+  :root {
+    --bg-deep: #0a0c0f;
+    --bg-card: #12151a;
+    --bg-elevated: #1a1e26;
+    --border-subtle: rgba(255,255,255,0.06);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8a8d93;
+    --text-muted: #555860;
+    --gold: #D4940A;
+    --gold-glow: rgba(212,148,10,0.15);
+    --easy: #0f6b1f;
+    --moderate: #1D4ED8;
+    --hard: #333;
+    --expert: #D9342E;
+    --sat-dark: #1a2a15;
+    --sat-mid: #243520;
+    --sat-light: #2d4228;
+    --sat-clearing: #3a4a2e;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  .header {
+    padding: 48px 48px 28px;
+    border-bottom: 1px solid var(--border-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--gold-glow), transparent 70%);
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 38px;
+    background: linear-gradient(135deg, var(--text-primary) 40%, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 8px;
+    max-width: 750px;
+    line-height: 1.6;
+  }
+
+  /* ── SPEC STRIP ── */
+  .spec-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .spec-box {
+    background: var(--bg-card);
+    padding: 18px 32px;
+  }
+  .spec-box h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .spec-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .spec-swatch {
+    width: 32px;
+    height: 3px;
+    border-radius: 1.5px;
+    flex-shrink: 0;
+  }
+  .spec-swatch.dashed {
+    height: 3px;
+    background: none;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .section-title {
+    padding: 36px 48px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .section-desc {
+    padding: 0 48px 24px;
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 700px;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 2px;
+    padding: 0 2px;
+    background: var(--border-subtle);
+  }
+  .card {
+    background: var(--bg-card);
+    padding: 24px;
+    cursor: pointer;
+    transition: background 0.3s;
+    position: relative;
+  }
+  .card:hover { background: var(--bg-elevated); }
+  .card.selected { box-shadow: inset 0 0 0 2px var(--gold); }
+  .card.selected .vote-tag { opacity:1; transform:scale(1); }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .card-letter {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .card-name {
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 2px;
+  }
+  .card-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .vote-tag {
+    background: var(--gold);
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 16px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ── MAP MOCKUP ── */
+  .map-mock {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    position: relative;
+  }
+  .map-canvas {
+    width: 100%;
+    aspect-ratio: 16/10;
+    position: relative;
+    overflow: hidden;
+  }
+  .map-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 25% 35%, var(--sat-light), transparent),
+      radial-gradient(ellipse 50% 60% at 65% 55%, var(--sat-clearing), transparent),
+      radial-gradient(ellipse 45% 35% at 50% 25%, var(--sat-mid), transparent),
+      linear-gradient(150deg, var(--sat-dark), var(--sat-mid));
+  }
+  .map-bg::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+    opacity:0.5;
+    mix-blend-mode:overlay;
+  }
+
+  .map-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .map-svg .casing {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .map-svg .line {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ── BADGE ELEMENTS ── */
+  .pill {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+  }
+  .pill-inner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 10px;
+    line-height: 1;
+  }
+  .pill-dot {
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pill-text {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* ── OUTLAW HUD (waypoint display) ── */
+  .outlaw-hud {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(10,12,15,0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 8px 16px;
+  }
+  .hud-speed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+  }
+  .hud-speed-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 22px;
+    color: #fff;
+  }
+  .hud-speed-unit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .hud-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.1);
+  }
+  .hud-trail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .hud-trail-name {
+    font-weight: 600;
+    font-size: 12px;
+    color: #fff;
+  }
+  .hud-trail-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* ── MAP LEGEND ── */
+  .map-legend {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 4;
+    background: rgba(10,12,15,0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .legend-text {
+    font-size: 8px;
+    color: #999;
+  }
+  .legend-head {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1px;
+  }
+
+  /* ── VOTE SECTION ── */
+  .vote-section {
+    padding: 48px;
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+  }
+  .vote-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+  .vote-section p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .vote-chips {
+    display: inline-flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .vchip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .vchip:hover { border-color: var(--gold); color: var(--text-primary); }
+  .vchip.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+  .notes-box {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .notes-box label {
+    display: block;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .notes-box textarea {
+    width: 100%;
+    min-height: 90px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    resize: vertical;
+    outline: none;
+  }
+  .notes-box textarea:focus { border-color: var(--gold); }
+  .notes-box textarea::placeholder { color: var(--text-muted); }
+
+  @media (max-width: 1100px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .spec-strip { grid-template-columns: 1fr; }
+    .header, .section-title, .section-desc, .vote-section { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">DirtSync Design Review v2 &mdash; February 2026</div>
+  <h1>Outlaw Badge &amp; Trail Styling</h1>
+  <p>Updated spec: Both official and outlaw trails use difficulty colors. Official = solid line, Outlaw = dashed line. Thinner white casing. Darker green. Six outlaw badge designs + waypoint HUD showing "OUTLAW" status. Click to vote.</p>
+</div>
+
+<!-- Spec reference -->
+<div class="spec-strip">
+  <div class="spec-box">
+    <h3>Official Trails (Solid Line + Thin Casing)</h3>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#0f6b1f" stroke-width="3" stroke-linecap="round"/></svg>
+      Easy (#0f6b1f)
+    </div>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/></svg>
+      Moderate (#1D4ED8)
+    </div>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#333" stroke-width="3" stroke-linecap="round"/></svg>
+      Hard (#333 + brighter casing)
+    </div>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#D9342E" stroke-width="3" stroke-linecap="round"/></svg>
+      Expert (#D9342E)
+    </div>
+  </div>
+  <div class="spec-box">
+    <h3>Outlaw Trails (Dashed Line + Thin Casing)</h3>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#0f6b1f" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4"/></svg>
+      Easy Outlaw
+    </div>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4"/></svg>
+      Moderate Outlaw
+    </div>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#333" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4"/></svg>
+      Hard Outlaw
+    </div>
+    <div class="spec-row">
+      <svg width="36" height="8"><line x1="0" y1="4" x2="36" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="5" stroke-linecap="round"/><line x1="0" y1="4" x2="36" y2="4" stroke="#D9342E" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4"/></svg>
+      Expert Outlaw
+    </div>
+  </div>
+</div>
+
+<div class="section-title">Outlaw Badge Designs</div>
+<div class="section-desc">Each variation shows a different outlaw badge style. Official badges stay the same (dark pill + color dot + code). The question: how should outlaw badges look to be instantly distinguishable?</div>
+
+<div class="cards-grid" id="grid"></div>
+
+<div class="section-title" style="padding-top:24px">Waypoint HUD — "OUTLAW" Display</div>
+<div class="section-desc">When a rider is on an outlaw trail, the speed/info HUD shows their outlaw status. This is consistent across all badge designs.</div>
+
+<div style="padding:0 48px 48px; display:flex; gap:16px; flex-wrap:wrap;">
+  <!-- HUD mockup cards -->
+  <div style="background:var(--bg-card);border-radius:12px;padding:24px;flex:1;min-width:280px;position:relative;border:1px solid var(--border-subtle);">
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">ON OUTLAW TRAIL — EASY</div>
+    <div style="display:flex;align-items:center;gap:14px;background:rgba(10,12,15,0.95);border-radius:14px;padding:12px 20px;border:1px solid rgba(255,255,255,0.06);">
+      <div style="text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:#fff;">12</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-muted);">MPH</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">Barkers Creek</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:700;">OUTLAW</span>
+          <span style="width:4px;height:4px;border-radius:50%;background:var(--text-muted);"></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--easy);font-weight:600;">EASY</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--bg-card);border-radius:12px;padding:24px;flex:1;min-width:280px;border:1px solid var(--border-subtle);">
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">ON OUTLAW TRAIL — EXPERT</div>
+    <div style="display:flex;align-items:center;gap:14px;background:rgba(10,12,15,0.95);border-radius:14px;padding:12px 20px;border:1px solid rgba(255,255,255,0.06);">
+      <div style="text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:#fff;">5</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-muted);">MPH</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">Duskins Branch</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:700;">OUTLAW</span>
+          <span style="width:4px;height:4px;border-radius:50%;background:var(--text-muted);"></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--expert);font-weight:600;">EXPERT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--bg-card);border-radius:12px;padding:24px;flex:1;min-width:280px;border:1px solid var(--border-subtle);">
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">ON OFFICIAL TRAIL (comparison)</div>
+    <div style="display:flex;align-items:center;gap:14px;background:rgba(10,12,15,0.95);border-radius:14px;padding:12px 20px;border:1px solid rgba(255,255,255,0.06);">
+      <div style="text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:#fff;">22</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-muted);">MPH</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">PC 20</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--moderate);font-weight:600;">MODERATE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="vote-section">
+  <h2>Pick Your Outlaw Badge</h2>
+  <p>Click a card above or chip below. Which outlaw badge design should DirtSync use?</p>
+  <div class="vote-chips" id="voteChips"></div>
+  <div class="notes-box">
+    <label>Design Notes</label>
+    <textarea placeholder="Like the gold border from C but the skull icon from D? Mix elements here..."></textarea>
+  </div>
+</div>
+
+<script>
+const COLORS = { easy:'#0f6b1f', moderate:'#1D4ED8', hard:'#333', expert:'#D9342E' };
+const CASING_W = 4.5;
+const LINE_W = 2.8;
+const HARD_CASING = 'rgba(255,255,255,0.55)';
+const NORM_CASING = 'rgba(255,255,255,0.3)';
+
+// Trail paths (viewBox 0 0 500 320)
+const paths = {
+  easy_off:   { d:'M 15,120 Q 70,95 130,115 T 230,90 Q 260,80 300,100', diff:'easy', outlaw:false, name:'PC 20' },
+  mod_off:    { d:'M 40,65 Q 100,40 170,60 T 290,35 Q 350,28 430,55', diff:'moderate', outlaw:false, name:'PC 36' },
+  hard_off:   { d:'M 230,90 Q 260,130 300,155 T 380,180 Q 420,190 470,172', diff:'hard', outlaw:false, name:'IR 8' },
+  expert_off: { d:'M 130,115 Q 155,165 190,185 T 260,225 Q 280,235 320,228', diff:'expert', outlaw:false, name:'DA 3' },
+  easy_out:   { d:'M 60,200 Q 110,178 175,192 T 280,170 Q 330,155 400,175 T 485,160', diff:'easy', outlaw:true, name:'Barkers Creek' },
+  mod_out:    { d:'M 175,192 Q 200,230 240,248 T 320,270 Q 360,278 410,258', diff:'moderate', outlaw:true, name:'Duskins Branch' },
+};
+
+const badgePos = {
+  'PC 20': [160,88], 'PC 36': [220,34], 'IR 8': [350,168],
+  'DA 3': [210,210], 'Barkers Creek': [270,158], 'Duskins Branch': [280,258],
+};
+
+// Variations — outlaw badge designs
+const V = [
+  {
+    letter:'A', title:'Gold Ring',
+    desc:'Outlaw badge = dark pill with gold ring border + difficulty dot + "OL:" prefix. Subtle but distinct.',
+    outlawStyle: 'gold-ring',
+  },
+  {
+    letter:'B', title:'Dashed Border',
+    desc:'Outlaw badge = dashed gold border echoing the dashed trail line. Difficulty dot + trail name.',
+    outlawStyle: 'dashed-border',
+  },
+  {
+    letter:'C', title:'OUTLAW Label',
+    desc:'Two-line badge: trail name on top, "OUTLAW" tag below in gold. Unmistakable identification.',
+    outlawStyle: 'outlaw-label',
+  },
+  {
+    letter:'D', title:'Skull Mark',
+    desc:'Tiny skull/crossbones icon replaces the color dot on outlaw badges. Trail name in gold text.',
+    outlawStyle: 'skull',
+  },
+  {
+    letter:'E', title:'Gold Pill',
+    desc:'Entire pill background is dark gold instead of dark gray. Difficulty dot stays. Pops off the map.',
+    outlawStyle: 'gold-pill',
+  },
+  {
+    letter:'F', title:'Split Badge',
+    desc:'Left half = gold "OL" tag. Right half = normal dark pill with difficulty dot + name. Two-tone.',
+    outlawStyle: 'split',
+  },
+];
+
+function buildSVG() {
+  let s = '';
+  // Casings
+  for (const p of Object.values(paths)) {
+    const c = p.diff === 'hard' ? HARD_CASING : NORM_CASING;
+    s += `<path d="${p.d}" fill="none" stroke="${c}" stroke-width="${CASING_W}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  // Lines
+  for (const p of Object.values(paths)) {
+    const col = COLORS[p.diff];
+    const dash = p.outlaw ? ' stroke-dasharray="7 5"' : '';
+    s += `<path d="${p.d}" fill="none" stroke="${col}" stroke-width="${LINE_W}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`;
+  }
+  return `<svg class="map-svg" viewBox="0 0 500 320" preserveAspectRatio="xMidYMid slice">${s}</svg>`;
+}
+
+function officialBadge(name, diff, x, y) {
+  const col = COLORS[diff];
+  return `<div class="pill" style="left:${x/5}%;top:${y/3.2}%">
+    <div class="pill-inner" style="background:rgba(20,22,28,0.92);border:1px solid rgba(255,255,255,0.12);padding:3px 8px 3px 5px;border-radius:10px;">
+      <span class="pill-dot" style="width:6px;height:6px;background:${col}"></span>
+      <span class="pill-text" style="font-size:9px">${name}</span>
+    </div>
+  </div>`;
+}
+
+function outlawBadge(name, diff, x, y, style) {
+  const col = COLORS[diff];
+  const left = x/5;
+  const top = y/3.2;
+
+  switch(style) {
+    case 'gold-ring':
+      return `<div class="pill" style="left:${left}%;top:${top}%">
+        <div class="pill-inner" style="background:rgba(20,22,28,0.92);border:1.5px solid rgba(212,148,10,0.6);padding:3px 8px 3px 5px;border-radius:10px;">
+          <span class="pill-dot" style="width:6px;height:6px;background:${col}"></span>
+          <span class="pill-text" style="font-size:9px;color:#e0d0a0">OL: ${name}</span>
+        </div>
+      </div>`;
+
+    case 'dashed-border':
+      return `<div class="pill" style="left:${left}%;top:${top}%">
+        <div class="pill-inner" style="background:rgba(20,22,28,0.92);border:1.5px dashed rgba(212,148,10,0.55);padding:3px 8px 3px 5px;border-radius:10px;">
+          <span class="pill-dot" style="width:6px;height:6px;background:${col}"></span>
+          <span class="pill-text" style="font-size:9px">${name}</span>
+        </div>
+      </div>`;
+
+    case 'outlaw-label':
+      return `<div class="pill" style="left:${left}%;top:${top}%">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+          <div class="pill-inner" style="background:rgba(20,22,28,0.92);border:1px solid rgba(255,255,255,0.1);padding:3px 8px 3px 5px;border-radius:8px 8px 0 0;">
+            <span class="pill-dot" style="width:6px;height:6px;background:${col}"></span>
+            <span class="pill-text" style="font-size:9px">${name}</span>
+          </div>
+          <div style="background:rgba(212,148,10,0.2);border:1px solid rgba(212,148,10,0.35);border-top:0;padding:1px 8px;border-radius:0 0 8px 8px;width:100%;text-align:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:2px;color:#D4940A;font-weight:700;">OUTLAW</span>
+          </div>
+        </div>
+      </div>`;
+
+    case 'skull':
+      return `<div class="pill" style="left:${left}%;top:${top}%">
+        <div class="pill-inner" style="background:rgba(20,22,28,0.92);border:1px solid rgba(255,255,255,0.1);padding:3px 8px 3px 5px;border-radius:10px;">
+          <span style="font-size:10px;line-height:1;">&#9760;</span>
+          <span class="pill-text" style="font-size:9px;color:#D4940A">${name}</span>
+        </div>
+      </div>`;
+
+    case 'gold-pill':
+      return `<div class="pill" style="left:${left}%;top:${top}%">
+        <div class="pill-inner" style="background:rgba(140,100,10,0.35);border:1px solid rgba(212,148,10,0.3);padding:3px 8px 3px 5px;border-radius:10px;">
+          <span class="pill-dot" style="width:6px;height:6px;background:${col}"></span>
+          <span class="pill-text" style="font-size:9px">${name}</span>
+        </div>
+      </div>`;
+
+    case 'split':
+      return `<div class="pill" style="left:${left}%;top:${top}%">
+        <div style="display:flex;align-items:stretch;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
+          <div style="background:rgba(212,148,10,0.3);padding:3px 5px;display:flex;align-items:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;color:#D4940A;letter-spacing:1px;">OL</span>
+          </div>
+          <div style="background:rgba(20,22,28,0.92);padding:3px 7px 3px 5px;display:flex;align-items:center;gap:4px;">
+            <span class="pill-dot" style="width:6px;height:6px;background:${col}"></span>
+            <span class="pill-text" style="font-size:9px">${name}</span>
+          </div>
+        </div>
+      </div>`;
+  }
+}
+
+function renderCard(v, idx) {
+  const svg = buildSVG();
+  let badges = '';
+
+  for (const [name, [bx, by]] of Object.entries(badgePos)) {
+    const trail = Object.values(paths).find(p => p.name === name);
+    if (!trail) continue;
+    if (trail.outlaw) {
+      badges += outlawBadge(name, trail.diff, bx, by, v.outlawStyle);
+    } else {
+      badges += officialBadge(name, trail.diff, bx, by);
+    }
+  }
+
+  // Legend
+  const legend = `<div class="map-legend">
+    <div class="legend-head">Official</div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#0f6b1f" stroke-width="2"/></svg><span class="legend-text">Easy</span></div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#1D4ED8" stroke-width="2"/></svg><span class="legend-text">Moderate</span></div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#555" stroke-width="2"/></svg><span class="legend-text">Hard</span></div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#D9342E" stroke-width="2"/></svg><span class="legend-text">Expert</span></div>
+    <div style="height:3px;"></div>
+    <div class="legend-head">Outlaw</div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#0f6b1f" stroke-width="2" stroke-dasharray="3 2"/></svg><span class="legend-text">Easy</span></div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#1D4ED8" stroke-width="2" stroke-dasharray="3 2"/></svg><span class="legend-text">Moderate</span></div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#555" stroke-width="2" stroke-dasharray="3 2"/></svg><span class="legend-text">Hard</span></div>
+    <div class="legend-row"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#D9342E" stroke-width="2" stroke-dasharray="3 2"/></svg><span class="legend-text">Expert</span></div>
+  </div>`;
+
+  return `<div class="card" data-idx="${idx}" onclick="vote(${idx})">
+    <div class="card-head">
+      <div>
+        <div class="card-letter">${v.letter}</div>
+        <div class="card-name">${v.title}</div>
+        <div class="card-desc">${v.desc}</div>
+      </div>
+      <div class="vote-tag">Selected</div>
+    </div>
+    <div class="map-mock">
+      <div class="map-canvas">
+        <div class="map-bg"></div>
+        ${svg}
+        ${badges}
+        ${legend}
+      </div>
+    </div>
+  </div>`;
+}
+
+document.getElementById('grid').innerHTML = V.map((v,i) => renderCard(v,i)).join('');
+
+const chipHTML = V.map((v,i) => `<div class="vchip" data-idx="${i}" onclick="vote(${i})">${v.letter} &mdash; ${v.title}</div>`).join('');
+document.getElementById('voteChips').innerHTML = chipHTML;
+
+let sel = -1;
+function vote(i) {
+  sel = i;
+  document.querySelectorAll('.card').forEach((c,j) => c.classList.toggle('selected', j===i));
+  document.querySelectorAll('.vchip').forEach((c,j) => c.classList.toggle('active', j===i));
+}
+</script>
+
+</body>
+</html>

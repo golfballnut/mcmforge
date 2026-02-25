@@ -188,24 +188,27 @@ async function executeTask(task: Task) {
     started_at: new Date().toISOString(),
   });
 
+  // Load vault context for this company
+  const vaultContext = await loadVaultContext(task);
+
   try {
     let result: ExecutionResult;
 
     switch (taskType) {
       case "code":
-        result = await executeCodeTask(task, cli);
+        result = await executeCodeTask(task, cli, vaultContext);
         break;
       case "research":
-        result = await executeServiceTask(task, cli, "research");
+        result = await executeServiceTask(task, cli, "research", vaultContext);
         break;
       case "content":
-        result = await executeServiceTask(task, cli, "content");
+        result = await executeServiceTask(task, cli, "content", vaultContext);
         break;
       case "ops":
-        result = await executeServiceTask(task, cli, "ops");
+        result = await executeServiceTask(task, cli, "ops", vaultContext);
         break;
       case "chat":
-        result = await executeServiceTask(task, cli, "chat");
+        result = await executeServiceTask(task, cli, "chat", vaultContext);
         break;
       default:
         result = { success: false, output: "", error: `Unknown task_type: ${taskType}` };
@@ -280,10 +283,49 @@ async function executeTask(task: Task) {
 }
 
 // ============================================
+// Vault Context Loader
+// ============================================
+
+async function loadVaultContext(task: Task): Promise<string> {
+  try {
+    const companySlug = task.company_registry?.slug;
+    if (!companySlug) return "";
+
+    // Load company profile + relevant decisions + skills from vault_docs
+    const { data: vaultDocs } = await supabase
+      .from("vault_docs")
+      .select("title, category, content")
+      .or(`company_id.eq.${task.company_id},category.eq.skill`)
+      .order("category", { ascending: true });
+
+    if (!vaultDocs || vaultDocs.length === 0) return "";
+
+    const sections: string[] = ["## Vault Context (loaded automatically)"];
+
+    for (const doc of vaultDocs) {
+      // Truncate large docs to keep prompt reasonable
+      const content = doc.content?.length > 2000
+        ? doc.content.slice(0, 2000) + "\n[... truncated]"
+        : doc.content;
+      sections.push(`### [${doc.category}] ${doc.title}\n${content}`);
+    }
+
+    log("info", `Loaded ${vaultDocs.length} vault docs for context`, {
+      company: companySlug,
+    });
+
+    return sections.join("\n\n");
+  } catch (err) {
+    log("warn", `Failed to load vault context: ${err}`);
+    return "";
+  }
+}
+
+// ============================================
 // Code Task Execution (git + PR workflow)
 // ============================================
 
-async function executeCodeTask(task: Task, cli: CliTool): Promise<ExecutionResult> {
+async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = ""): Promise<ExecutionResult> {
   const company = task.company_registry;
   const companySlug = company?.slug || "unknown";
 
@@ -301,7 +343,7 @@ async function executeCodeTask(task: Task, cli: CliTool): Promise<ExecutionResul
 
   log("info", `[code] Executing in ${repoPath} with ${cli}`, { task: task.title });
 
-  const prompt = buildCodePrompt(task);
+  const prompt = buildCodePrompt(task, vaultContext);
   return spawnCli(cli, repoPath, prompt, task.id);
 }
 
@@ -312,7 +354,8 @@ async function executeCodeTask(task: Task, cli: CliTool): Promise<ExecutionResul
 async function executeServiceTask(
   task: Task,
   cli: CliTool,
-  mode: "research" | "content" | "ops" | "chat"
+  mode: "research" | "content" | "ops" | "chat",
+  vaultContext: string = ""
 ): Promise<ExecutionResult> {
   // Service tasks run in a scratch directory, not a repo
   const scratchDir = join(CONFIG.repoBaseDir, "_scratch");
@@ -332,7 +375,7 @@ async function executeServiceTask(
 
   log("info", `[${mode}] Executing with ${cli}`, { task: task.title, cwd: workDir });
 
-  const prompt = buildServicePrompt(task, mode);
+  const prompt = buildServicePrompt(task, mode, vaultContext);
   const result = await spawnCli(cli, workDir, prompt, task.id);
 
   // Store output as artifact in Supabase Storage
@@ -365,7 +408,7 @@ async function executeServiceTask(
 // Prompt Builders
 // ============================================
 
-function buildCodePrompt(task: Task): string {
+function buildCodePrompt(task: Task, vaultContext: string = ""): string {
   const parts = [
     `# Task: ${task.title}`,
     "",
@@ -384,10 +427,14 @@ function buildCodePrompt(task: Task): string {
     parts.push("", `## Skill to use: /${task.skill_name}`);
   }
 
+  if (vaultContext) {
+    parts.push("", vaultContext);
+  }
+
   return parts.join("\n");
 }
 
-function buildServicePrompt(task: Task, mode: string): string {
+function buildServicePrompt(task: Task, mode: string, vaultContext: string = ""): string {
   const modeInstructions: Record<string, string> = {
     research: [
       "## Output Format",
@@ -437,6 +484,10 @@ function buildServicePrompt(task: Task, mode: string): string {
     "",
     modeInstructions[mode] || modeInstructions.chat,
   ];
+
+  if (vaultContext) {
+    parts.push("", vaultContext);
+  }
 
   return parts.join("\n");
 }

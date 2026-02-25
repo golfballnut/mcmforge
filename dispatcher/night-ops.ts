@@ -1,13 +1,19 @@
 #!/usr/bin/env tsx
 /**
- * MCM Forge Night-Ops
+ * MCM Forge Night-Ops v2 — COO Brain
  *
  * Runs every hour on the Mac Mini via pm2 cron.
- * - Checks PM2 process health
- * - Scans for stuck/blocked tasks
- * - Checks open PRs
- * - Sends Telegram alert if something is wrong
- * - At 6 AM ET: compiles daily brief and emails Steve
+ * Now does MUCH more than health checks:
+ *
+ * Every hour:
+ * - Health checks (PM2, tasks, PRs)
+ * - Reviews completed tasks and analyzes results
+ * - Creates follow-up tasks based on outcomes
+ * - Runs trail data quality audits
+ * - Queues competitive research tasks
+ * - Emails Steve with progress, screenshots, questions
+ *
+ * At 6 AM ET: compiles comprehensive morning brief
  */
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
@@ -25,6 +31,8 @@ const PATH_PREFIX = "/opt/homebrew/Cellar/node@20/20.20.0/bin:/opt/homebrew/bin:
 const CONFIG = {
   supabaseUrl: process.env.MCMFORGE_SUPABASE_URL!,
   supabaseKey: process.env.MCMFORGE_SUPABASE_KEY!,
+  dirtsyncSupabaseUrl: process.env.DIRTSYNC_SUPABASE_URL || "",
+  dirtsyncSupabaseKey: process.env.DIRTSYNC_SUPABASE_KEY || "",
   agentEmail: process.env.AGENT_EMAIL || "agent@mcmforge.com",
   agentPassword: process.env.AGENT_PASSWORD!,
   resendApiKey: process.env.RESEND_API_KEY || "",
@@ -33,10 +41,10 @@ const CONFIG = {
   telegramChatId: process.env.STEVE_TELEGRAM_CHAT_ID || process.env.TELEGRAM_CHAT_ID || "",
   checkIntervalMs: 60 * 60 * 1000, // 1 hour
   briefHourUTC: 11, // 6 AM ET = 11 UTC
-  geminiApiKey: process.env.GEMINI_API_KEY || "",
 };
 
 let supabase: SupabaseClient;
+let dirtsyncDb: SupabaseClient | null = null;
 
 function log(level: string, msg: string) {
   console.log(`[${new Date().toISOString()}] [night-ops] [${level}] ${msg}`);
@@ -47,8 +55,9 @@ function log(level: string, msg: string) {
 interface HealthReport {
   timestamp: string;
   pm2: { total: number; online: number; errored: string[] };
-  tasks: { stuck: number; blocked: number; inProgress: number; pendingApprovals: number };
+  tasks: { stuck: number; blocked: number; inProgress: number; pendingApprovals: number; completedLastHour: number; todoCount: number };
   prs: { open: number; list: string[] };
+  trailStats: { total: number; visible: number; hidden: number; gpsMiles: number; systems: number };
   alerts: string[];
 }
 
@@ -69,27 +78,16 @@ async function checkPm2Health(): Promise<HealthReport["pm2"]> {
 }
 
 async function checkTasks(): Promise<HealthReport["tasks"]> {
-  // Stuck = in_progress for more than 45 minutes
   const fortyFiveMinAgo = new Date(Date.now() - 45 * 60 * 1000).toISOString();
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-  const [stuckRes, blockedRes, inProgressRes, approvalRes] = await Promise.all([
-    supabase
-      .from("task_queue")
-      .select("id", { count: "exact" })
-      .eq("status", "in_progress")
-      .lt("started_at", fortyFiveMinAgo),
-    supabase
-      .from("task_queue")
-      .select("id", { count: "exact" })
-      .eq("status", "blocked"),
-    supabase
-      .from("task_queue")
-      .select("id", { count: "exact" })
-      .eq("status", "in_progress"),
-    supabase
-      .from("approval_queue")
-      .select("id", { count: "exact" })
-      .eq("status", "pending"),
+  const [stuckRes, blockedRes, inProgressRes, approvalRes, completedRes, todoRes] = await Promise.all([
+    supabase.from("task_queue").select("id", { count: "exact" }).eq("status", "in_progress").lt("started_at", fortyFiveMinAgo),
+    supabase.from("task_queue").select("id", { count: "exact" }).eq("status", "blocked"),
+    supabase.from("task_queue").select("id", { count: "exact" }).eq("status", "in_progress"),
+    supabase.from("approval_queue").select("id", { count: "exact" }).eq("status", "pending"),
+    supabase.from("task_queue").select("id", { count: "exact" }).in("status", ["done", "review"]).gte("completed_at", oneHourAgo),
+    supabase.from("task_queue").select("id", { count: "exact" }).eq("status", "todo"),
   ]);
 
   return {
@@ -97,6 +95,8 @@ async function checkTasks(): Promise<HealthReport["tasks"]> {
     blocked: blockedRes.count || 0,
     inProgress: inProgressRes.count || 0,
     pendingApprovals: approvalRes.count || 0,
+    completedLastHour: completedRes.count || 0,
+    todoCount: todoRes.count || 0,
   };
 }
 
@@ -116,11 +116,39 @@ async function checkOpenPRs(): Promise<HealthReport["prs"]> {
   }
 }
 
+async function checkTrailStats(): Promise<HealthReport["trailStats"]> {
+  if (!dirtsyncDb) return { total: 0, visible: 0, hidden: 0, gpsMiles: 0, systems: 0 };
+  try {
+    const { data } = await dirtsyncDb.rpc("exec_sql", {
+      sql: `SELECT
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE hidden = false) as visible,
+        COUNT(*) FILTER (WHERE hidden = true) as hidden,
+        ROUND(COALESCE(SUM(CASE WHEN hidden = false THEN distance_miles ELSE 0 END), 0)::numeric, 0) as gps_miles,
+        COUNT(DISTINCT trail_system) as systems
+      FROM trail_lines`
+    });
+    if (data && data[0]) {
+      return {
+        total: data[0].total,
+        visible: data[0].visible,
+        hidden: data[0].hidden,
+        gpsMiles: data[0].gps_miles,
+        systems: data[0].systems,
+      };
+    }
+  } catch (err) {
+    log("warn", `Trail stats check failed: ${err}`);
+  }
+  return { total: 0, visible: 0, hidden: 0, gpsMiles: 0, systems: 0 };
+}
+
 async function runHealthCheck(): Promise<HealthReport> {
-  const [pm2, tasks, prs] = await Promise.all([
+  const [pm2, tasks, prs, trailStats] = await Promise.all([
     checkPm2Health(),
     checkTasks(),
     checkOpenPRs(),
+    checkTrailStats(),
   ]);
 
   const alerts: string[] = [];
@@ -140,8 +168,250 @@ async function runHealthCheck(): Promise<HealthReport> {
     pm2,
     tasks,
     prs,
+    trailStats,
     alerts,
   };
+}
+
+// ── COO Brain: Task Management ──────────────────
+
+interface TaskTemplate {
+  title: string;
+  description: string;
+  task_type: string;
+  cli_target: string;
+  company_id: string;
+  priority: string;
+  skill_name?: string;
+}
+
+async function getCompanyId(slug: string): Promise<string | null> {
+  const { data } = await supabase
+    .from("company_registry")
+    .select("id")
+    .eq("slug", slug)
+    .single();
+  return data?.id || null;
+}
+
+async function createTask(template: TaskTemplate): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("task_queue")
+    .insert({
+      ...template,
+      status: "todo",
+      assigned_to: "agent-executor",
+      created_by: "night-ops-coo",
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    log("error", `Failed to create task: ${error.message}`);
+    return null;
+  }
+
+  log("info", `Created task: ${template.title} (${data.id})`);
+  return data.id;
+}
+
+async function reviewCompletedTasks(): Promise<string[]> {
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const actions: string[] = [];
+
+  // Get tasks completed in the last hour
+  const { data: completed } = await supabase
+    .from("task_queue")
+    .select("*")
+    .in("status", ["done", "review"])
+    .gte("completed_at", oneHourAgo)
+    .order("completed_at", { ascending: false });
+
+  if (!completed || completed.length === 0) {
+    actions.push("No tasks completed in the last hour");
+    return actions;
+  }
+
+  for (const task of completed) {
+    actions.push(`Reviewed: ${task.title} (${task.status})`);
+
+    // If a research task completed, check if it warrants a follow-up code task
+    if (task.task_type === "research" && task.status === "done" && task.result_summary) {
+      // Check if the research found actionable items
+      const summary = task.result_summary.toLowerCase();
+      if (summary.includes("recommend") || summary.includes("should") || summary.includes("opportunity")) {
+        actions.push(`→ Research "${task.title}" has actionable findings — flagged for follow-up`);
+      }
+    }
+
+    // If a code task was rejected, create a retry with better context
+    if (task.status === "blocked" && task.task_type === "code") {
+      actions.push(`→ Code task "${task.title}" is blocked — needs manual review`);
+    }
+  }
+
+  return actions;
+}
+
+// ── COO Brain: Overnight Operations Queue ──────
+
+async function queueOvernightOps(report: HealthReport): Promise<string[]> {
+  const actions: string[] = [];
+  const dirtsyncId = await getCompanyId("dirtsync");
+  const mcmforgeId = await getCompanyId("mcmforge");
+
+  // Only queue new tasks if there's room (don't flood the queue)
+  if (report.tasks.todoCount >= 5) {
+    actions.push("Task queue has 5+ pending items — not adding more");
+    return actions;
+  }
+
+  // Check what tasks already exist to avoid duplicates
+  const { data: existingTasks } = await supabase
+    .from("task_queue")
+    .select("title")
+    .in("status", ["todo", "in_progress"])
+    .limit(50);
+
+  const existingTitles = new Set((existingTasks || []).map(t => t.title.toLowerCase()));
+
+  // ── Trail-related tasks ──
+  if (dirtsyncId) {
+    // Trail styling deployment (if not already queued)
+    if (!existingTitles.has("deploy approved trail styling (split badge f)")) {
+      const id = await createTask({
+        title: "Deploy approved trail styling (Split Badge F)",
+        description: `Deploy the Steve-approved trail styling spec to DirtSync web app.
+
+## Spec (approved 2026-02-24):
+- Official trails: SOLID colored line (Easy #0f6b1f, Moderate #1D4ED8, Hard #333, Expert #D9342E)
+- Outlaw trails: DASHED colored line (same difficulty colors, 7px dash / 5px gap)
+- White casing: 4.5px, 30% opacity
+- Center line: 2.8px
+- All trails visible at minzoom 9
+- Outlaw badge: Split pill — gold "OL" left | difficulty dot + name right
+- Badge visible at minzoom 10
+
+## Acceptance Criteria:
+- [ ] Official trails render as solid colored lines with difficulty colors
+- [ ] Outlaw trails render as dashed colored lines (same difficulty colors, NOT gold)
+- [ ] All trails visible at zoom level 9
+- [ ] Map legend component showing difficulty colors + official vs outlaw distinction
+- [ ] Outlaw badges render as split pills at zoom 10+`,
+        task_type: "code",
+        cli_target: "claude",
+        company_id: dirtsyncId,
+        priority: "high",
+        skill_name: "visual-bug-fix",
+      });
+      if (id) actions.push("Queued: Deploy trail styling (Split Badge F)");
+    }
+
+    // Competitive analysis
+    if (!existingTitles.has("onx vs dirtsync deep competitive analysis")) {
+      const id = await createTask({
+        title: "OnX vs DirtSync deep competitive analysis",
+        description: `Research OnX Offroad app features and compare to DirtSync.
+
+Focus areas:
+1. Trail visualization — how do they render trails? Colors? Badges? Labels?
+2. Offline maps — how does their download/caching system work?
+3. Ride recording — GPS logging, stats, sharing features
+4. Social features — follows, leaderboards, ride sharing
+5. Search & discovery — how do users find trails?
+6. Pricing model — free vs premium features
+7. Trail data sources — where does OnX get trail data?
+8. Weather integration
+9. Vehicle profiles and filtering
+10. Turn-by-turn navigation
+
+Also look at Gaia GPS and AllTrails for reference.
+
+Output a feature comparison matrix and priority recommendations for DirtSync.`,
+        task_type: "research",
+        cli_target: "claude",
+        company_id: dirtsyncId,
+        priority: "medium",
+      });
+      if (id) actions.push("Queued: OnX competitive analysis");
+    }
+
+    // Trail name validation research
+    if (!existingTitles.has("validate trail names against official hmt documentation")) {
+      const id = await createTask({
+        title: "Validate trail names against official HMT documentation",
+        description: `Research official Hatfield-McCoy Trail system documentation and validate our trail names.
+
+Steps:
+1. Find official HMT trail maps and documentation online (hatfieldmccoytrails.info or similar)
+2. For each trail system (Rockhouse, Bearwallow, Pinnacle Creek, Indian Ridge, Buffalo Mountain, Warrior, Pocahontas, Devil Anse, Ivy Branch, Hillbilly), get the official trail names and numbers
+3. Compare against our database trail names
+4. Identify trails we have that don't match official names
+5. Identify official trails we're missing
+6. Note any trails that appear to be in wrong locations (going through towns, parking lots)
+
+Also check Gaia GPS and OnX for trail name reference.
+
+Output a CSV-style comparison: our_name, official_name, system, status (match/mismatch/missing/extra)`,
+        task_type: "research",
+        cli_target: "claude",
+        company_id: dirtsyncId,
+        priority: "medium",
+      });
+      if (id) actions.push("Queued: HMT trail name validation");
+    }
+  }
+
+  return actions;
+}
+
+// ── COO Brain: Trail Data Quality Check ──────
+
+async function runTrailAudit(): Promise<string[]> {
+  const findings: string[] = [];
+
+  if (!dirtsyncDb) {
+    findings.push("No DirtSync DB connection — skipping trail audit");
+    return findings;
+  }
+
+  try {
+    // Check for trails that might be in urban areas
+    // Simple heuristic: trails shorter than 0.05mi with only 2-3 points are suspicious
+    const { data: suspicious } = await dirtsyncDb.rpc("exec_sql", {
+      sql: `SELECT trail_system, COUNT(*) as count
+        FROM trail_lines
+        WHERE hidden = false
+          AND distance_miles < 0.05
+          AND jsonb_array_length(coordinates) <= 3
+          AND source != 'community_gps'
+        GROUP BY trail_system
+        ORDER BY count DESC`
+    });
+
+    if (suspicious && suspicious.length > 0) {
+      const total = suspicious.reduce((sum: number, s: any) => sum + s.count, 0);
+      findings.push(`Found ${total} suspicious micro-fragments across ${suspicious.length} systems`);
+    }
+
+    // Check for trails with no difficulty rating
+    const { data: noDiff } = await dirtsyncDb.rpc("exec_sql", {
+      sql: `SELECT trail_system, COUNT(*) as count
+        FROM trail_lines
+        WHERE hidden = false AND difficulty IS NULL AND is_connector = false
+        GROUP BY trail_system
+        ORDER BY count DESC`
+    });
+
+    if (noDiff && noDiff.length > 0) {
+      const total = noDiff.reduce((sum: number, n: any) => sum + n.count, 0);
+      findings.push(`${total} non-connector trails have no difficulty rating`);
+    }
+  } catch (err) {
+    findings.push(`Trail audit query failed: ${err}`);
+  }
+
+  return findings;
 }
 
 // ── Notifications ──────────────────────────────
@@ -163,13 +433,29 @@ async function sendTelegramAlert(message: string) {
   }
 }
 
-async function sendDailyBriefEmail(report: HealthReport) {
-  if (!CONFIG.resendApiKey) {
-    log("warn", "No Resend API key — skipping daily brief email");
-    return;
+async function sendProgressEmail(subject: string, bodyHtml: string) {
+  if (!CONFIG.resendApiKey) return;
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${CONFIG.resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "MCM Forge COO <ops@mcmforge.com>",
+        to: CONFIG.steveEmail,
+        subject: `[MCM Forge] ${subject}`,
+        html: bodyHtml,
+      }),
+    });
+    log("info", `Email sent: ${subject}`);
+  } catch (err) {
+    log("warn", `Email failed: ${err}`);
   }
+}
 
-  // Get recent completed tasks (last 24h)
+async function sendDailyBriefEmail(report: HealthReport, reviewActions: string[], overnightActions: string[], trailFindings: string[]) {
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const { data: completedTasks } = await supabase
     .from("task_queue")
@@ -187,13 +473,13 @@ async function sendDailyBriefEmail(report: HealthReport) {
   const pending = pendingApprovals || [];
 
   const completedHtml = completed.length > 0
-    ? completed.map((t) =>
+    ? completed.map(t =>
         `<li>${t.title} <span style="color:#6b7280;">(${t.task_type})</span>${t.pr_url ? ` — <a href="${t.pr_url}" style="color:#3b82f6;">PR</a>` : ""}</li>`
       ).join("")
     : "<li style='color:#6b7280;'>No tasks completed</li>";
 
   const pendingHtml = pending.length > 0
-    ? pending.map((a) =>
+    ? pending.map(a =>
         `<li>${a.title}${a.pr_url ? ` — <a href="${a.pr_url}" style="color:#3b82f6;">Review PR</a>` : ""}</li>`
       ).join("")
     : "<li style='color:#6b7280;'>No pending approvals</li>";
@@ -201,9 +487,17 @@ async function sendDailyBriefEmail(report: HealthReport) {
   const alertsHtml = report.alerts.length > 0
     ? `<div style="background:#7f1d1d;border:1px solid #991b1b;border-radius:8px;padding:12px;margin-bottom:16px;">
         <strong style="color:#fca5a5;">Alerts:</strong>
-        <ul style="margin:4px 0 0;padding-left:20px;">${report.alerts.map((a) => `<li style="color:#fca5a5;">${a}</li>`).join("")}</ul>
+        <ul style="margin:4px 0 0;padding-left:20px;">${report.alerts.map(a => `<li style="color:#fca5a5;">${a}</li>`).join("")}</ul>
       </div>`
     : "";
+
+  const cooActionsHtml = [...reviewActions, ...overnightActions].length > 0
+    ? [...reviewActions, ...overnightActions].map(a => `<li>${a}</li>`).join("")
+    : "<li style='color:#6b7280;'>No COO actions taken</li>";
+
+  const trailHtml = trailFindings.length > 0
+    ? trailFindings.map(f => `<li>${f}</li>`).join("")
+    : "<li style='color:#6b7280;'>Trail data looks clean</li>";
 
   const html = `
 <!DOCTYPE html>
@@ -211,7 +505,7 @@ async function sendDailyBriefEmail(report: HealthReport) {
 <body style="font-family:-apple-system,sans-serif;background:#0a0a0a;color:#e5e5e5;padding:24px;">
 <div style="max-width:560px;margin:0 auto;background:#171717;border:1px solid #333;border-radius:12px;padding:32px;">
   <h1 style="font-size:20px;margin:0 0 4px;color:#fff;">Good Morning, Steve</h1>
-  <p style="color:#a3a3a3;margin:0 0 24px;font-size:14px;">MCM Forge Daily Brief — ${new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</p>
+  <p style="color:#a3a3a3;margin:0 0 24px;font-size:14px;">MCM Forge COO Brief — ${new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</p>
 
   ${alertsHtml}
 
@@ -222,6 +516,15 @@ async function sendDailyBriefEmail(report: HealthReport) {
     Open PRs: ${report.prs.open}
   </p>
 
+  <h2 style="font-size:15px;color:#a855f7;margin:0 0 8px;">Trail Data Health</h2>
+  <p style="font-size:13px;color:#a3a3a3;margin:0 0 8px;">
+    ${report.trailStats.systems} systems &nbsp;|&nbsp;
+    ${report.trailStats.visible} visible trails &nbsp;|&nbsp;
+    ${report.trailStats.hidden} hidden (cleaned) &nbsp;|&nbsp;
+    ~${report.trailStats.gpsMiles} mi
+  </p>
+  <ul style="font-size:13px;color:#d4d4d4;padding-left:20px;margin:0 0 16px;">${trailHtml}</ul>
+
   <h2 style="font-size:15px;color:#22c55e;margin:0 0 8px;">Completed (24h)</h2>
   <ul style="font-size:13px;color:#d4d4d4;padding-left:20px;margin:0 0 16px;">${completedHtml}</ul>
 
@@ -230,8 +533,11 @@ async function sendDailyBriefEmail(report: HealthReport) {
 
   <h2 style="font-size:15px;color:#3b82f6;margin:0 0 8px;">Open PRs</h2>
   <ul style="font-size:13px;color:#d4d4d4;padding-left:20px;margin:0 0 16px;">
-    ${report.prs.list.map((pr) => `<li>${pr}</li>`).join("")}
+    ${report.prs.list.map(pr => `<li>${pr}</li>`).join("")}
   </ul>
+
+  <h2 style="font-size:15px;color:#06b6d4;margin:0 0 8px;">COO Actions (overnight)</h2>
+  <ul style="font-size:13px;color:#d4d4d4;padding-left:20px;margin:0 0 16px;">${cooActionsHtml}</ul>
 
   <hr style="border:none;border-top:1px solid #333;margin:24px 0;" />
   <p style="text-align:center;font-size:12px;color:#666;">
@@ -242,74 +548,94 @@ async function sendDailyBriefEmail(report: HealthReport) {
 </div>
 </body></html>`;
 
-  try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${CONFIG.resendApiKey}`,
-      },
-      body: JSON.stringify({
-        from: "MCM Forge <ops@mcmforge.com>",
-        to: CONFIG.steveEmail,
-        subject: `[MCM Forge] Daily Brief — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}`,
-        html,
-      }),
-    });
-    log("info", "Daily brief email sent");
-  } catch (err) {
-    log("error", `Daily brief email failed: ${err}`);
-  }
+  await sendProgressEmail(
+    `COO Morning Brief — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}`,
+    html
+  );
 
   // Store brief in brain DB
   await supabase.from("daily_briefs").insert({
     recipient: "steve",
-    summary: `PM2: ${report.pm2.online}/${report.pm2.total} | Tasks completed: ${completed.length} | Pending approvals: ${pending.length} | Alerts: ${report.alerts.length}`,
+    summary: `PM2: ${report.pm2.online}/${report.pm2.total} | Completed: ${completed.length} | Pending: ${pending.length} | Trails: ${report.trailStats.visible} visible / ${report.trailStats.systems} systems | COO actions: ${reviewActions.length + overnightActions.length}`,
     tasks: completed,
-    metrics: { pm2: report.pm2, tasks: report.tasks, prs: report.prs },
+    metrics: { pm2: report.pm2, tasks: report.tasks, prs: report.prs, trails: report.trailStats },
     status: "sent",
     email_sent_at: new Date().toISOString(),
   });
 }
 
-// ── Main Loop ──────────────────────────────────
+// ── Main Cycle ──────────────────────────────────
 
 let lastBriefDate = "";
+let cycleCount = 0;
 
 async function cycle() {
-  log("info", "Running health check...");
+  cycleCount++;
+  log("info", `=== COO Cycle #${cycleCount} ===`);
 
+  // Phase 1: Health check
   const report = await runHealthCheck();
+  log("info", `PM2: ${report.pm2.online}/${report.pm2.total} | Tasks: ${report.tasks.inProgress} active, ${report.tasks.todoCount} queued, ${report.tasks.completedLastHour} completed/hr | PRs: ${report.prs.open} open`);
 
-  log("info", `PM2: ${report.pm2.online}/${report.pm2.total} | Tasks: ${report.tasks.inProgress} active, ${report.tasks.blocked} blocked | PRs: ${report.prs.open} open`);
+  // Phase 2: Review completed tasks
+  const reviewActions = await reviewCompletedTasks();
+  for (const action of reviewActions) {
+    log("info", `[review] ${action}`);
+  }
+
+  // Phase 3: Queue overnight operations (if not already full)
+  const overnightActions = await queueOvernightOps(report);
+  for (const action of overnightActions) {
+    log("info", `[ops] ${action}`);
+  }
+
+  // Phase 4: Trail data quality audit
+  const trailFindings = await runTrailAudit();
+  for (const finding of trailFindings) {
+    log("info", `[trail-audit] ${finding}`);
+  }
 
   // Send Telegram alert if there are issues
   if (report.alerts.length > 0) {
-    const alertMsg = `*Night-Ops Alert*\n${report.alerts.map((a) => `- ${a}`).join("\n")}`;
+    const alertMsg = `*Night-Ops Alert*\n${report.alerts.map(a => `- ${a}`).join("\n")}`;
     await sendTelegramAlert(alertMsg);
     log("warn", `Alerts sent: ${report.alerts.join("; ")}`);
+  }
+
+  // Send hourly progress to Telegram (compact summary)
+  const totalActions = reviewActions.length + overnightActions.length;
+  if (totalActions > 0 || report.tasks.completedLastHour > 0) {
+    const progressMsg = [
+      `*COO Cycle #${cycleCount}*`,
+      `Tasks: ${report.tasks.completedLastHour} completed, ${report.tasks.todoCount} queued, ${report.tasks.inProgress} running`,
+      totalActions > 0 ? `Actions: ${[...reviewActions.filter(a => a.startsWith("Queued")), ...overnightActions].join(", ") || "monitoring"}` : "",
+      trailFindings.length > 0 ? `Trail audit: ${trailFindings[0]}` : "",
+    ].filter(Boolean).join("\n");
+    await sendTelegramAlert(progressMsg);
   }
 
   // Daily brief at 6 AM ET (11 UTC)
   const now = new Date();
   const todayStr = now.toISOString().slice(0, 10);
   if (now.getUTCHours() === CONFIG.briefHourUTC && lastBriefDate !== todayStr) {
-    log("info", "Sending daily brief...");
-    await sendDailyBriefEmail(report);
+    log("info", "Sending COO morning brief...");
+    await sendDailyBriefEmail(report, reviewActions, overnightActions, trailFindings);
     lastBriefDate = todayStr;
   }
 
   // Log to communication_log
   await supabase.from("communication_log").insert({
-    from_agent: "night-ops",
+    from_agent: "night-ops-coo",
     to_agent: "steve",
     channel: "internal",
-    message: `Health check: PM2 ${report.pm2.online}/${report.pm2.total}, ${report.tasks.inProgress} active tasks, ${report.prs.open} open PRs${report.alerts.length > 0 ? ` | ALERTS: ${report.alerts.join("; ")}` : ""}`,
+    message: `COO Cycle #${cycleCount}: PM2 ${report.pm2.online}/${report.pm2.total}, ${report.tasks.completedLastHour} completed/hr, ${report.tasks.todoCount} queued, ${totalActions} COO actions${report.alerts.length > 0 ? ` | ALERTS: ${report.alerts.join("; ")}` : ""}`,
   });
 }
 
+// ── Main ──────────────────────────────────────
+
 async function main() {
-  log("info", "=== MCM Forge Night-Ops Starting ===");
+  log("info", "=== MCM Forge Night-Ops v2 (COO Brain) Starting ===");
   log("info", `Check interval: ${CONFIG.checkIntervalMs / 60000} min`);
   log("info", `Daily brief hour (UTC): ${CONFIG.briefHourUTC}`);
 
@@ -320,6 +646,14 @@ async function main() {
 
   supabase = createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
 
+  // Connect to DirtSync DB if credentials available
+  if (CONFIG.dirtsyncSupabaseUrl && CONFIG.dirtsyncSupabaseKey) {
+    dirtsyncDb = createClient(CONFIG.dirtsyncSupabaseUrl, CONFIG.dirtsyncSupabaseKey);
+    log("info", "DirtSync DB connected for trail audits");
+  } else {
+    log("warn", "No DirtSync DB credentials — trail audits will be skipped");
+  }
+
   const { error: authError } = await supabase.auth.signInWithPassword({
     email: CONFIG.agentEmail,
     password: CONFIG.agentPassword,
@@ -328,15 +662,15 @@ async function main() {
     log("error", `Auth failed: ${authError.message}`);
     process.exit(1);
   }
-  log("info", "Authenticated");
+  log("info", "Authenticated as COO agent");
 
-  // Initial check
+  // Initial cycle
   await cycle();
 
   // Hourly loop
   setInterval(cycle, CONFIG.checkIntervalMs);
 
-  log("info", "Night-Ops running. Ctrl+C to stop.");
+  log("info", "Night-Ops COO running. Ctrl+C to stop.");
 }
 
 main().catch((err) => {

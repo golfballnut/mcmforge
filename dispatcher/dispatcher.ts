@@ -276,6 +276,7 @@ async function executeTask(task: Task) {
 
       if (testStatus === "failed") {
         log("warn", `Task completed but TESTS FAILED — blocking`, { task: task.title });
+        await recordLearning(task, { ...result, error: "Tests failed after code changes" }, "test-gate");
         await updateTaskStatus(task.id, "blocked", {
           completed_at: new Date().toISOString(),
           result_summary: `Code complete but tests failed. ${result.summary}`,
@@ -370,8 +371,49 @@ async function executeTask(task: Task) {
         }
       }
 
+      // ============================================
+      // Auto-Ship Gate: CI green + visual pass + tests pass = auto-merge
+      // Only for bug fixes and styling — new features always need Steve
+      // ============================================
+      let autoShipped = false;
+      if (
+        taskType === "code" &&
+        result.prUrl &&
+        result.visualScore !== undefined &&
+        result.visualScore >= 80 &&
+        testStatus === "passed"
+      ) {
+        const titleLower = task.title.toLowerCase();
+        const isAutoShippable = titleLower.includes("fix") || titleLower.includes("bug") || titleLower.includes("style") || titleLower.includes("typo") || titleLower.includes("cleanup");
+
+        if (isAutoShippable) {
+          try {
+            const prNumber = result.prNumber || result.prUrl.match(/\/pull\/(\d+)/)?.[1];
+            const repo = task.company_registry?.github_repo;
+            if (prNumber && repo) {
+              execSync(
+                `PATH="${PATH_PREFIX}:$PATH" gh pr merge ${prNumber} --repo ${repo} --squash --delete-branch`,
+                { timeout: 30000, encoding: "utf-8" }
+              );
+              autoShipped = true;
+              log("info", `[AUTO-SHIP] Auto-merged PR #${prNumber}: ${task.title} (visual: ${result.visualScore}/100, tests: passed)`);
+              await supabase.from("communication_log").insert({
+                from_agent: "dispatcher",
+                to_agent: "steve",
+                channel: "internal",
+                message: `[AUTO-SHIP] Auto-merged: ${task.title} — Visual ${result.visualScore}/100, tests passed, PR #${prNumber}`,
+                company_id: task.company_id,
+                task_id: task.id,
+              });
+            }
+          } catch (err) {
+            log("warn", `[AUTO-SHIP] Merge failed for ${task.title}: ${err}`);
+          }
+        }
+      }
+
       // Code tasks need approval. Service tasks go straight to done.
-      const newStatus = taskType === "code" ? "review" : "done";
+      const newStatus = autoShipped ? "done" : (taskType === "code" ? "review" : "done");
 
       await updateTaskStatus(task.id, newStatus, {
         completed_at: new Date().toISOString(),
@@ -406,6 +448,7 @@ async function executeTask(task: Task) {
       await notifyCompletion(task, result, durationMin, cli, approvalMeta);
     } else {
       log("error", `Task failed: ${result.error}`, { task: task.title });
+      await recordLearning(task, result, "execution");
       await updateTaskStatus(task.id, "blocked", {
         result_summary: `Failed: ${result.error}`,
       });
@@ -511,13 +554,14 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
     };
   }
 
-  // Gather additional context for code tasks (PR awareness, project instructions, retry context)
+  // Gather additional context for code tasks (PR awareness, project instructions, retry context, learnings)
   const prContext = getOpenPRsForRepo(company?.github_repo || "");
   const claudeMdContext = getRepoClaudeMd(repoPath);
   const retryContext = await getRetryContext(task.id, task.retry_count || 0);
+  const learningsContext = await getLearningsContext(task.company_id);
 
   // Build enriched vault context with all available intelligence
-  const enrichedContext = [vaultContext, prContext, claudeMdContext, retryContext].filter(Boolean).join("\n\n");
+  const enrichedContext = [vaultContext, prContext, claudeMdContext, retryContext, learningsContext].filter(Boolean).join("\n\n");
 
   log("info", `[code] Executing in ${repoPath} with ${cli} (context: ${enrichedContext.length} chars)`, { task: task.title });
 
@@ -635,6 +679,84 @@ async function getRetryContext(taskId: string, retryCount: number): Promise<stri
     ].join("\n");
   } catch {
     return "";
+  }
+}
+
+// ============================================
+// Learning Loop — Learn from failures
+// ============================================
+
+async function getLearningsContext(companyId: string): Promise<string> {
+  try {
+    const { data: learnings } = await supabase
+      .from("agent_learnings")
+      .select("what_happened, root_cause, prevention_rule, error_type")
+      .eq("company_id", companyId)
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (!learnings || learnings.length === 0) return "";
+
+    return [
+      "## Past Failures — DO NOT REPEAT THESE MISTAKES",
+      "These are patterns from previous failed tasks. Avoid them:",
+      ...learnings.map((l, i) =>
+        `${i + 1}. ${l.what_happened}${l.root_cause ? `\n   Root cause: ${l.root_cause}` : ""}${l.prevention_rule ? `\n   Prevention: ${l.prevention_rule}` : ""}`
+      ),
+    ].join("\n");
+  } catch {
+    return "";
+  }
+}
+
+function classifyError(output: string, error?: string): { type: string; rootCause: string; prevention: string } {
+  const text = `${output} ${error || ""}`.toLowerCase();
+
+  if (text.includes("type") && (text.includes("error ts") || text.includes("typescript"))) {
+    return { type: "typescript", rootCause: "TypeScript type errors in code", prevention: "Run `npx tsc --noEmit` before committing. Check all type imports." };
+  }
+  if (text.includes("build") && text.includes("fail")) {
+    return { type: "build_failure", rootCause: "Build failed (Next.js/Vite compilation)", prevention: "Run `npm run build` locally before pushing. Fix all build errors." };
+  }
+  if (text.includes("test") && text.includes("fail")) {
+    return { type: "test_failure", rootCause: "Tests failed after code changes", prevention: "Run existing tests before AND after changes. Don't break existing tests." };
+  }
+  if (text.includes("merge conflict") || text.includes("dirty")) {
+    return { type: "git_conflict", rootCause: "Git state conflict or dirty worktree", prevention: "Always work on a clean branch from latest main/master." };
+  }
+  if (text.includes("timeout") || text.includes("killed after")) {
+    return { type: "timeout", rootCause: "Task exceeded time limit", prevention: "Break into smaller subtasks. Focus on one file/component at a time." };
+  }
+  if (text.includes("exit code") && !text.includes("exit code 0")) {
+    return { type: "cli_error", rootCause: "CLI tool exited with error", prevention: "Check tool availability and permissions before running." };
+  }
+  if (text.includes("visual") && text.includes("fail")) {
+    return { type: "visual_regression", rootCause: "Visual output didn't match expectations", prevention: "Check existing styles before modifying. Use browser devtools mental model." };
+  }
+
+  return { type: "unknown", rootCause: error || "Unknown failure", prevention: "Review the error output carefully and try a fundamentally different approach." };
+}
+
+async function recordLearning(task: Task, result: ExecutionResult, stage: string = "execution") {
+  try {
+    const errorInfo = classifyError(result.output, result.error);
+
+    await supabase.from("agent_learnings").insert({
+      task_id: task.id,
+      company_id: task.company_id,
+      outcome: "failure",
+      what_happened: `Task "${task.title}" failed: ${result.error || result.summary || "Unknown"}`.slice(0, 500),
+      root_cause: errorInfo.rootCause,
+      prevention_rule: errorInfo.prevention,
+      error_type: errorInfo.type,
+      severity: "medium",
+      stage,
+      was_applied_to_skill: false,
+    });
+
+    log("info", `[LEARNING] Recorded failure pattern: ${errorInfo.type} for ${task.title}`);
+  } catch (err) {
+    log("warn", `[LEARNING] Failed to record: ${err}`);
   }
 }
 

@@ -313,15 +313,15 @@ async function reviewCompletedTasks(): Promise<string[]> {
       actions.push(...bakeoffResults);
     }
 
-    // If a research task completed, check if it warrants a follow-up code task
+    // Research → Action: auto-create follow-up tasks from actionable findings
     if (task.task_type === "research" && task.status === "done" && task.result_summary) {
-      const summary = task.result_summary.toLowerCase();
-      if (summary.includes("recommend") || summary.includes("should") || summary.includes("opportunity")) {
-        actions.push(`→ Research "${task.title}" has actionable findings — flagged for follow-up`);
+      const followUp = await createFollowUpFromResearch(task);
+      if (followUp) {
+        actions.push(`→ Auto-created ${followUp.type} task from research: "${followUp.title}"`);
       }
     }
 
-    // If a code task was rejected, create a retry with better context
+    // If a code task was blocked, record the pattern for learning
     if (task.status === "blocked" && task.task_type === "code") {
       actions.push(`→ Code task "${task.title}" is blocked — needs manual review`);
     }
@@ -396,6 +396,81 @@ async function reviewBakeoffGroup(groupId: string): Promise<string[]> {
   }
 
   return actions;
+}
+
+// ── Research → Action Pipeline ──────────────────
+// When research finds actionable insights, auto-create follow-up tasks
+
+async function createFollowUpFromResearch(task: any): Promise<{ title: string; type: string } | null> {
+  const summary = (task.result_summary || "").toLowerCase();
+
+  // Only create follow-ups for research with concrete recommendations
+  const hasAction = summary.includes("recommend") || summary.includes("should implement") ||
+    summary.includes("opportunity") || summary.includes("action item") ||
+    summary.includes("we should") || summary.includes("quick win");
+
+  if (!hasAction) return null;
+
+  // Don't create follow-ups if we already have too many tasks
+  const { count } = await supabase
+    .from("task_queue")
+    .select("id", { count: "exact" })
+    .eq("status", "todo");
+  if ((count || 0) >= 5) return null;
+
+  // Determine follow-up type from the research content
+  let followUpType = "research"; // default: deeper research
+  let followUpCli: CliTool = "gemini";
+
+  if (summary.includes("implement") || summary.includes("build") || summary.includes("add feature") || summary.includes("create page") || summary.includes("landing page")) {
+    followUpType = "code";
+    followUpCli = "claude";
+  } else if (summary.includes("marketing") || summary.includes("seo") || summary.includes("content") || summary.includes("email campaign") || summary.includes("social")) {
+    followUpType = "content";
+    followUpCli = "gemini";
+  }
+
+  // Extract the key insight for the task title (first sentence of summary)
+  const firstSentence = (task.result_summary || "").split(/[.!?\n]/)[0].trim();
+  const actionTitle = firstSentence.length > 80
+    ? firstSentence.slice(0, 77) + "..."
+    : firstSentence;
+
+  // Check dedup against existing tasks
+  const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+  const { data: existingTasks } = await supabase
+    .from("task_queue")
+    .select("title")
+    .gte("created_at", cutoff)
+    .limit(200);
+
+  const existingTitles = (existingTasks || []).map(t => t.title);
+  if (titleMatchesExisting(actionTitle, existingTitles)) return null;
+
+  const id = await createTask({
+    title: `Action: ${actionTitle}`,
+    description: [
+      `## Follow-up from research: "${task.title}"`,
+      "",
+      "### Research Findings",
+      task.result_summary || "No summary available",
+      "",
+      "### Your Task",
+      "Implement the PRIMARY recommendation from the research above.",
+      "Focus on the highest-impact, most concrete action item.",
+      followUpType === "code" ? "Create a PR with the implementation. Include tests." : "",
+      followUpType === "content" ? "Create the content asset. Save output as a markdown artifact." : "",
+    ].filter(Boolean).join("\n"),
+    task_type: followUpType,
+    company_id: task.company_id,
+    priority: "medium",
+    cli_target: followUpCli,
+  });
+
+  if (!id) return null;
+
+  log("info", `[RESEARCH→ACTION] Created ${followUpType} task from research: ${task.title}`);
+  return { title: actionTitle, type: followUpType };
 }
 
 // ── COO Brain: Overnight Operations Queue ──────

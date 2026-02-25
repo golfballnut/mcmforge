@@ -21,6 +21,7 @@ import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { existsSync, readFileSync } from "fs";
+import { visualVerify, type VisualVerifyResult } from "./visual-verify.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -63,6 +64,12 @@ interface ExecutionResult {
   previewUrl?: string;
   artifactPath?: string;
   error?: string;
+  // Visual TDD fields (populated by visual-verify)
+  screenshotUrl?: string;
+  baselineUrl?: string;
+  diffUrl?: string;
+  visualScore?: number;
+  visualFeedback?: string;
 }
 
 // ============================================
@@ -299,6 +306,69 @@ async function executeTask(task: Task) {
       }
 
       log("info", `Task completed in ${durationMin}min (tests: ${testStatus})`, { task: task.title, type: taskType });
+
+      // ============================================
+      // Visual TDD Gate (code tasks with preview URLs)
+      // ============================================
+      if (taskType === "code" && result.previewUrl) {
+        log("info", `[VISUAL-TDD] Starting visual verification`, { task: task.title, preview: result.previewUrl });
+        try {
+          const visualResult = await visualVerify({
+            previewUrl: result.previewUrl,
+            companySlug: task.company_registry?.slug,
+            taskTitle: task.title,
+            taskDescription: task.description,
+            taskId: task.id,
+          });
+
+          result.screenshotUrl = visualResult.screenshotUrl;
+          result.baselineUrl = visualResult.baselineUrl;
+          result.diffUrl = visualResult.diffUrl;
+          result.visualScore = visualResult.score;
+          result.visualFeedback = visualResult.feedback;
+
+          log("info", `[VISUAL-TDD] Score: ${visualResult.score}/100 — ${visualResult.pass ? "PASS" : "FAIL"}`, {
+            task: task.title,
+            diffPercent: visualResult.diffPercent,
+          });
+
+          if (!visualResult.pass) {
+            const retries = task.retry_count || 0;
+            if (retries < MAX_RETRIES) {
+              log("warn", `[VISUAL-TDD] Failed — requeueing for retry (${retries + 1}/${MAX_RETRIES})`);
+              await supabase
+                .from("task_queue")
+                .update({
+                  status: "todo",
+                  started_at: null,
+                  retry_count: retries + 1,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq("id", task.id);
+              await supabase.from("communication_log").insert({
+                from_agent: "dispatcher",
+                to_agent: "visual-tdd",
+                channel: "internal",
+                message: `[VISUAL-GATE] ${task.title} failed visual check (score: ${visualResult.score}/100). Feedback: ${visualResult.feedback}. Changes: ${visualResult.changes?.join(", ") || "none"}`,
+                company_id: task.company_id,
+                task_id: task.id,
+              });
+              activeTaskCount--;
+              return;
+            }
+            log("warn", `[VISUAL-TDD] Failed but no retries left — sending to human review`);
+          }
+
+          // Prepend visual context to summary
+          const visualTag = visualResult.score >= 0
+            ? `[Visual: ${visualResult.score}/100${visualResult.pass ? " PASS" : " FAIL"}] `
+            : "[Visual: screenshot captured] ";
+          result.summary = visualTag + (result.summary || "");
+
+        } catch (err) {
+          log("warn", `[VISUAL-TDD] Error: ${err}. Continuing without visual check.`);
+        }
+      }
 
       // Code tasks need approval. Service tasks go straight to done.
       const newStatus = taskType === "code" ? "review" : "done";
@@ -953,6 +1023,11 @@ async function notifyCompletion(
             summary: result.summary,
             approveUrl,
             rejectUrl,
+            screenshotUrl: result.screenshotUrl,
+            baselineUrl: result.baselineUrl,
+            diffUrl: result.diffUrl,
+            visualScore: result.visualScore,
+            visualFeedback: result.visualFeedback,
           }),
         }),
       });
@@ -977,11 +1052,42 @@ function buildApprovalEmail(params: {
   summary?: string;
   approveUrl: string;
   rejectUrl: string;
+  screenshotUrl?: string;
+  baselineUrl?: string;
+  diffUrl?: string;
+  visualScore?: number;
+  visualFeedback?: string;
 }): string {
-  const { taskTitle, companyName, durationMin, prUrl, previewUrl, summary, approveUrl, rejectUrl } = params;
+  const { taskTitle, companyName, durationMin, prUrl, previewUrl, summary, approveUrl, rejectUrl,
+    screenshotUrl, baselineUrl, diffUrl, visualScore, visualFeedback } = params;
 
   // Truncate summary for email
   const shortSummary = summary && summary.length > 300 ? summary.slice(0, 300) + "..." : summary;
+
+  // Visual score badge
+  const visualBadge = visualScore !== undefined && visualScore >= 0
+    ? `<span style="display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${visualScore >= 80 ? "#16a34a" : visualScore >= 60 ? "#ca8a04" : "#dc2626"}; color: #fff;">Visual: ${visualScore}/100</span>`
+    : "";
+
+  // Screenshot section
+  const screenshotSection = screenshotUrl
+    ? `
+    <div style="margin: 20px 0;">
+      <p style="font-size: 13px; color: #a3a3a3; margin: 0 0 8px 0;">Preview Screenshot ${visualBadge}</p>
+      <img src="${screenshotUrl}" alt="Preview screenshot" style="width: 100%; border-radius: 8px; border: 1px solid #333;" />
+      ${visualFeedback ? `<p style="font-size: 12px; color: #a3a3a3; margin: 8px 0 0 0; font-style: italic;">${visualFeedback}</p>` : ""}
+    </div>
+    ${baselineUrl ? `
+    <div style="margin: 20px 0;">
+      <p style="font-size: 13px; color: #a3a3a3; margin: 0 0 8px 0;">Production Baseline</p>
+      <img src="${baselineUrl}" alt="Production baseline" style="width: 100%; border-radius: 8px; border: 1px solid #333;" />
+    </div>` : ""}
+    ${diffUrl ? `
+    <div style="margin: 20px 0;">
+      <p style="font-size: 13px; color: #a3a3a3; margin: 0 0 8px 0;">Pixel Diff</p>
+      <img src="${diffUrl}" alt="Pixel diff" style="width: 100%; border-radius: 8px; border: 1px solid #333;" />
+    </div>` : ""}`
+    : "";
 
   return `
 <!DOCTYPE html>
@@ -995,6 +1101,8 @@ function buildApprovalEmail(params: {
     <h2 style="font-size: 16px; color: #fff; margin: 0 0 12px 0;">${taskTitle}</h2>
 
     ${shortSummary ? `<p style="font-size: 13px; color: #a3a3a3; background: #262626; padding: 12px; border-radius: 8px; line-height: 1.5; white-space: pre-wrap;">${shortSummary}</p>` : ""}
+
+    ${screenshotSection}
 
     <div style="margin: 24px 0; display: flex; gap: 12px;">
       ${previewUrl ? `<a href="${previewUrl}" style="display: inline-block; padding: 10px 20px; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500;">View Preview</a>` : ""}

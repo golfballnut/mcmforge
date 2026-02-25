@@ -264,7 +264,29 @@ async function executeTask(task: Task) {
     const durationMin = (durationMs / 60000).toFixed(1);
 
     if (result.success) {
-      log("info", `Task completed in ${durationMin}min`, { task: task.title, type: taskType });
+      // Test gate: check if output contains test failures (code tasks only)
+      const testStatus = taskType === "code" ? analyzeTestOutput(result.output) : "no_tests";
+
+      if (testStatus === "failed") {
+        log("warn", `Task completed but TESTS FAILED — blocking`, { task: task.title });
+        await updateTaskStatus(task.id, "blocked", {
+          completed_at: new Date().toISOString(),
+          result_summary: `Code complete but tests failed. ${result.summary}`,
+          pr_url: result.prUrl || null,
+        });
+        await supabase.from("communication_log").insert({
+          from_agent: "dispatcher",
+          to_agent: "steve",
+          channel: "internal",
+          message: `[TDD-GATE] ${task.title} blocked — tests failed. PR: ${result.prUrl || "none"}`,
+          company_id: task.company_id,
+          task_id: task.id,
+        });
+        activeTaskCount--;
+        return;
+      }
+
+      log("info", `Task completed in ${durationMin}min (tests: ${testStatus})`, { task: task.title, type: taskType });
 
       // Code tasks need approval. Service tasks go straight to done.
       const newStatus = taskType === "code" ? "review" : "done";
@@ -522,13 +544,44 @@ function buildCodePrompt(task: Task, vaultContext: string = ""): string {
     "",
     task.description || "No description provided.",
     "",
-    "## Requirements",
-    "- Follow the project's CLAUDE.md instructions",
+    "## TDD Workflow (MANDATORY)",
+    "You MUST follow Test-Driven Development. This is non-negotiable:",
+    "",
+    "### Step 1: Understand",
+    "- Read the project's CLAUDE.md instructions",
+    "- Read existing tests to understand patterns (look for *.test.*, *.spec.*, tests/, __tests__/)",
+    "- Identify the test framework in use (Playwright, Vitest, Jest, etc.)",
+    "",
+    "### Step 2: Write Failing Tests FIRST",
+    "- Write test(s) that describe the desired behavior BEFORE writing implementation",
+    "- Run the tests — they MUST FAIL (red phase)",
+    "- Include the failing test output in your work log",
+    "",
+    "### Step 3: Implement",
+    "- Write the minimum code to make tests pass",
+    "- Run tests again — they MUST PASS (green phase)",
+    "- Include the passing test output in your work log",
+    "",
+    "### Step 4: Refactor & Verify",
+    "- Clean up code if needed",
+    "- Run the FULL test suite to check for regressions",
+    "- Run the build (next build, tsc, etc.) to verify no type errors",
+    "- Include full test suite results in your output",
+    "",
+    "### Step 5: PR with Evidence",
     "- Create a feature branch, NOT push to main/master",
-    "- Run tests if they exist",
     "- Commit with clear messages",
-    "- Create a PR when done",
+    "- Create a PR with test evidence in the description:",
+    "  - What tests were added/modified",
+    "  - Test failure output (before)",
+    "  - Test success output (after)",
+    "  - Full suite pass confirmation",
     "- Report the PR URL in your final output",
+    "",
+    "### CRITICAL: If no test framework exists",
+    "- Set one up (Vitest for unit tests, Playwright for E2E)",
+    "- Write at least 3 tests covering the core behavior",
+    "- This is not optional — code without tests will be rejected",
   ];
 
   if (task.skill_name) {
@@ -870,6 +923,42 @@ function buildApprovalEmail(params: {
   </div>
 </body>
 </html>`;
+}
+
+// ============================================
+// Test Output Analysis
+// ============================================
+
+function analyzeTestOutput(output: string): "passed" | "failed" | "no_tests" {
+  const lower = output.toLowerCase();
+
+  // Look for test failure indicators
+  const failurePatterns = [
+    /(\d+) failed/i,
+    /FAIL\s/,
+    /tests?\s+failed/i,
+    /test suite failed/i,
+    /assertion error/i,
+    /expected .+ but received/i,
+    /✗.*test/i,
+    /error: test/i,
+  ];
+
+  const passPatterns = [
+    /(\d+) passed/i,
+    /tests?\s+passed/i,
+    /test suite passed/i,
+    /all tests passed/i,
+    /✓.*test/i,
+    /PASS\s/,
+  ];
+
+  const hasFailures = failurePatterns.some(p => p.test(output));
+  const hasPasses = passPatterns.some(p => p.test(output));
+
+  if (hasFailures) return "failed";
+  if (hasPasses) return "passed";
+  return "no_tests";
 }
 
 // ============================================

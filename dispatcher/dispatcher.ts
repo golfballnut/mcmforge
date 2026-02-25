@@ -20,7 +20,7 @@ import { spawn, execSync } from "child_process";
 import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -286,6 +286,18 @@ async function executeTask(task: Task) {
         return;
       }
 
+      if (testStatus === "no_tests") {
+        log("warn", `Task completed with NO TEST EVIDENCE — allowing but flagging`, { task: task.title });
+        await supabase.from("communication_log").insert({
+          from_agent: "dispatcher",
+          to_agent: "steve",
+          channel: "internal",
+          message: `[TDD-WARN] ${task.title} completed with no test evidence. PR: ${result.prUrl || "none"}. TDD was mandatory but no test output detected.`,
+          company_id: task.company_id,
+          task_id: task.id,
+        });
+      }
+
       log("info", `Task completed in ${durationMin}min (tests: ${testStatus})`, { task: task.title, type: taskType });
 
       // Code tasks need approval. Service tasks go straight to done.
@@ -381,8 +393,8 @@ async function loadVaultContext(task: Task): Promise<string> {
     const sections: string[] = ["## Vault Context (loaded automatically)"];
 
     for (const doc of vaultDocs) {
-      // Truncate large docs to keep prompt reasonable
-      const content = doc.content?.length > 2000
+      if (!doc.content) continue; // Skip empty vault docs (not yet synced)
+      const content = doc.content.length > 2000
         ? doc.content.slice(0, 2000) + "\n[... truncated]"
         : doc.content;
       sections.push(`### [${doc.category}] ${doc.title}\n${content}`);
@@ -429,9 +441,17 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
     };
   }
 
-  log("info", `[code] Executing in ${repoPath} with ${cli}`, { task: task.title });
+  // Gather additional context for code tasks (PR awareness, project instructions, retry context)
+  const prContext = getOpenPRsForRepo(company?.github_repo || "");
+  const claudeMdContext = getRepoClaudeMd(repoPath);
+  const retryContext = await getRetryContext(task.id, task.retry_count || 0);
 
-  const prompt = buildCodePrompt(task, vaultContext);
+  // Build enriched vault context with all available intelligence
+  const enrichedContext = [vaultContext, prContext, claudeMdContext, retryContext].filter(Boolean).join("\n\n");
+
+  log("info", `[code] Executing in ${repoPath} with ${cli} (context: ${enrichedContext.length} chars)`, { task: task.title });
+
+  const prompt = buildCodePrompt(task, enrichedContext);
   return spawnCli(cli, repoPath, prompt, task.id);
 }
 
@@ -474,6 +494,77 @@ async function ensureCleanGitState(repoPath: string, _githubRepo?: string): Prom
     } catch (resetErr) {
       return { success: false, output: "", error: `${resetErr}` };
     }
+  }
+}
+
+// ============================================
+// Context Gathering (PR awareness, CLAUDE.md, retry)
+// ============================================
+
+const PATH_PREFIX = "/opt/homebrew/Cellar/node@20/20.20.0/bin:/opt/homebrew/bin:/usr/local/bin";
+
+function getOpenPRsForRepo(githubRepo: string): string {
+  if (!githubRepo) return "";
+  try {
+    const raw = execSync(
+      `export PATH=${PATH_PREFIX}:$PATH && gh pr list --repo ${githubRepo} --state open --json number,title,headRefName --limit 20 2>/dev/null`,
+      { encoding: "utf-8", timeout: 15000, shell: "/bin/bash" }
+    );
+    const prs = JSON.parse(raw);
+    if (prs.length === 0) return "";
+    const lines = prs.map((pr: any) => `- #${pr.number}: ${pr.title} (branch: ${pr.headRefName})`);
+    return [
+      "## Open PRs (DO NOT duplicate these — check if your task is already covered)",
+      "If an existing PR already implements what you need, do NOT create a new one.",
+      "Instead, note the existing PR number in your output.",
+      ...lines,
+    ].join("\n");
+  } catch {
+    return "";
+  }
+}
+
+function getRepoClaudeMd(repoPath: string): string {
+  try {
+    // Check for CLAUDE.md in repo root and web/ subdirectory
+    for (const subpath of ["CLAUDE.md", "web/CLAUDE.md", ".claude/settings.json"]) {
+      const fullPath = join(repoPath, subpath);
+      if (existsSync(fullPath) && subpath.endsWith(".md")) {
+        const content = readFileSync(fullPath, "utf-8");
+        const truncated = content.length > 3000 ? content.slice(0, 3000) + "\n[... truncated]" : content;
+        return `## Project Instructions (${subpath})\nFollow these instructions precisely:\n${truncated}`;
+      }
+    }
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+async function getRetryContext(taskId: string, retryCount: number): Promise<string> {
+  if (retryCount === 0) return "";
+  try {
+    const { data: logs } = await supabase
+      .from("communication_log")
+      .select("message")
+      .eq("task_id", taskId)
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (!logs || logs.length === 0) {
+      return `## Retry Context (attempt ${retryCount + 1}/${MAX_RETRIES + 1})\nThis task failed on a previous attempt. Try a different approach.`;
+    }
+
+    const messages = logs.map(l => `- ${l.message}`).join("\n");
+    return [
+      `## Retry Context (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`,
+      "This task has been attempted before and failed. Here's what happened:",
+      messages,
+      "",
+      "IMPORTANT: Do NOT repeat the same approach. Analyze why it failed and try differently.",
+    ].join("\n");
+  } catch {
+    return "";
   }
 }
 
@@ -930,8 +1021,6 @@ function buildApprovalEmail(params: {
 // ============================================
 
 function analyzeTestOutput(output: string): "passed" | "failed" | "no_tests" {
-  const lower = output.toLowerCase();
-
   // Look for test failure indicators
   const failurePatterns = [
     /(\d+) failed/i,
@@ -942,6 +1031,8 @@ function analyzeTestOutput(output: string): "passed" | "failed" | "no_tests" {
     /expected .+ but received/i,
     /✗.*test/i,
     /error: test/i,
+    /ERR_MODULE_NOT_FOUND.*vitest/i, // Vitest not installed
+    /Cannot find module.*vitest/i,
   ];
 
   const passPatterns = [
@@ -953,10 +1044,19 @@ function analyzeTestOutput(output: string): "passed" | "failed" | "no_tests" {
     /PASS\s/,
   ];
 
+  // Build failure check
+  const buildFailPatterns = [
+    /Type error:/i,
+    /Build error/i,
+    /next build.*failed/i,
+    /tsc.*error/i,
+  ];
+
   const hasFailures = failurePatterns.some(p => p.test(output));
   const hasPasses = passPatterns.some(p => p.test(output));
+  const hasBuildFailures = buildFailPatterns.some(p => p.test(output));
 
-  if (hasFailures) return "failed";
+  if (hasFailures || hasBuildFailures) return "failed";
   if (hasPasses) return "passed";
   return "no_tests";
 }

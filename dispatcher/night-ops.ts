@@ -218,8 +218,8 @@ const CLI_ROUTING: Record<string, CliTool> = {
   chat: "claude",       // Claude = best conversational
 };
 
-// High-priority tasks get bake-off across these CLIs
-const BAKEOFF_CLIS: CliTool[] = ["claude", "gemini", "codex"];
+// Bake-off ONLY for research tasks (Claude always wins code — Session 15 data)
+const BAKEOFF_CLIS: CliTool[] = ["claude", "gemini"];
 
 function getSmartCli(taskType: string): CliTool {
   return CLI_ROUTING[taskType] || "claude";
@@ -411,6 +411,59 @@ async function reviewBakeoffGroup(groupId: string): Promise<string[]> {
 //   ops      → codex    (Codex 5.3, fast execution)
 //   chat     → claude   (best conversational)
 
+// ── Normalized Dedup ──────────────────────────────
+// Prevents the spam loop by comparing task INTENT, not exact titles
+
+function normalizeTaskTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/\s*\((claude|gemini|codex)\)\s*/gi, "") // Strip CLI suffixes
+    .replace(/^(implement|deploy|fix|build|create|add|update|set up|setup):\s*/i, "") // Strip action prefixes
+    .replace(/[^a-z0-9\s]/g, "") // Strip special chars
+    .split(/\s+/)
+    .filter(w => w.length > 2) // Skip tiny words
+    .sort()
+    .join(" ")
+    .trim();
+}
+
+function titleMatchesExisting(baseTitle: string, existingTitles: string[]): boolean {
+  const normalized = normalizeTaskTitle(baseTitle);
+  if (!normalized) return false;
+
+  for (const existing of existingTitles) {
+    // Exact normalized match
+    if (normalizeTaskTitle(existing) === normalized) return true;
+
+    // Fuzzy match: >60% word overlap
+    const baseWords = new Set(normalized.split(" "));
+    const existWords = new Set(normalizeTaskTitle(existing).split(" "));
+    if (baseWords.size === 0 || existWords.size === 0) continue;
+    const overlap = [...baseWords].filter(w => existWords.has(w)).length;
+    const similarity = overlap / Math.max(baseWords.size, existWords.size);
+    if (similarity > 0.6) return true;
+  }
+  return false;
+}
+
+// Check if open PRs already cover a feature
+function hasOpenPRForFeature(githubRepo: string, keywords: string[]): boolean {
+  if (!githubRepo || keywords.length === 0) return false;
+  try {
+    const raw = execSync(
+      `export PATH=${PATH_PREFIX}:$PATH && gh pr list --repo ${githubRepo} --state open --json title --limit 30 2>/dev/null`,
+      { encoding: "utf-8", timeout: 15000 }
+    );
+    const prs = JSON.parse(raw);
+    const prTitles = prs.map((p: any) => p.title.toLowerCase());
+    return keywords.some(kw =>
+      prTitles.some((t: string) => t.includes(kw.toLowerCase()))
+    );
+  } catch {
+    return false;
+  }
+}
+
 async function queueOvernightOps(report: HealthReport): Promise<string[]> {
   const actions: string[] = [];
 
@@ -420,8 +473,7 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
     return actions;
   }
 
-  // Check what tasks already exist to avoid duplicates
-  // Look at ALL statuses from the last 48 hours (extended from 24h for safety)
+  // Check what tasks already exist to avoid duplicates (48h window, ALL statuses)
   const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
   const { data: existingTasks } = await supabase
     .from("task_queue")
@@ -429,27 +481,61 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
     .gte("created_at", cutoff)
     .limit(200);
 
-  const existingTitles = new Set((existingTasks || []).map(t => t.title.toLowerCase()));
+  const existingTitleList = (existingTasks || []).map(t => t.title);
 
-  function titleExists(baseTitle: string): boolean {
-    const lower = baseTitle.toLowerCase();
-    if (existingTitles.has(lower)) return true;
-    for (const cli of BAKEOFF_CLIS) {
-      const suffixed = `${lower} (${cli.charAt(0).toUpperCase() + cli.slice(1)})`.toLowerCase();
-      if (existingTitles.has(suffixed)) return true;
-    }
-    return false;
-  }
+  // Check what research was completed in last 24h (prevent repeat research)
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { data: recentCompleted } = await supabase
+    .from("task_queue")
+    .select("title, task_type")
+    .eq("status", "done")
+    .gte("completed_at", twentyFourHoursAgo)
+    .limit(100);
+
+  const recentResearchTitles = (recentCompleted || [])
+    .filter(t => t.task_type === "research")
+    .map(t => t.title);
 
   // Load pending vault decisions — check for approved specs that need implementation
   const taskTemplates = await getTaskTemplatesFromVault();
 
+  // Get active companies for PR checks
+  const { data: companies } = await supabase
+    .from("company_registry")
+    .select("id, slug, github_repo")
+    .eq("status", "active")
+    .not("github_repo", "is", null);
+  const companyRepoMap = new Map((companies || []).map(c => [c.id, c.github_repo]));
+
   for (const template of taskTemplates) {
-    if (titleExists(template.title)) continue;
+    // Normalized dedup — catches title variants
+    if (titleMatchesExisting(template.title, existingTitleList)) {
+      log("debug", `Dedup: skipping "${template.title}" (normalized match)`);
+      continue;
+    }
+
+    // Research frequency cap — skip if same research done in last 24h
+    if (template.task_type === "research" && titleMatchesExisting(template.title, recentResearchTitles)) {
+      log("debug", `Research cap: skipping "${template.title}" (completed in last 24h)`);
+      continue;
+    }
+
+    // PR-aware check — skip if open PRs already cover this feature
+    const githubRepo = companyRepoMap.get(template.company_id) || "";
+    if (template.task_type === "code" && githubRepo) {
+      const keywords = template.title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      if (hasOpenPRForFeature(githubRepo, keywords.slice(0, 3))) {
+        log("info", `PR-aware skip: "${template.title}" (open PR already covers this)`);
+        actions.push(`Skipped: ${template.title} (open PR exists)`);
+        continue;
+      }
+    }
+
     if (report.tasks.todoCount + actions.length >= 5) break; // don't over-queue
 
-    if (template.priority === "high" && template.task_type === "code") {
-      // High-priority code → bake-off
+    // Code tasks always go to Claude (no more bake-offs — Claude always wins)
+    // Research bake-offs only for high-priority research
+    if (template.priority === "high" && template.task_type === "research") {
       const created = await createBakeoffTasks({
         title: template.title,
         description: template.description,
@@ -459,11 +545,11 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
         skill_name: template.skill_name,
       });
       if (created.length > 0) {
-        actions.push(`Bake-off: ${template.title} → ${created.map(c => c.split(":")[0]).join(", ")}`);
+        actions.push(`Research bake-off: ${template.title} → ${created.map(c => c.split(":")[0]).join(", ")}`);
       }
     } else {
-      // Standard → smart route
-      const cli = getSmartCli(template.task_type);
+      // All code → Claude, research → Gemini, else → smart route
+      const cli = template.task_type === "code" ? "claude" as CliTool : getSmartCli(template.task_type);
       const id = await createTask({
         ...template,
         cli_target: cli,
@@ -540,6 +626,74 @@ async function getTaskTemplatesFromVault(): Promise<Array<TaskTemplate & { compa
         priority: "medium",
       });
     }
+  }
+
+  // ── Ideation & Shipping Tasks ──────────────────
+  // Agents should bring US ideas, not just execute orders
+
+  if (dirtsyncId) {
+    // Weekly feature proposals (check if already done this week)
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week
+    const weekStartStr = weekStart.toISOString();
+
+    const { count: proposalsThisWeek } = await supabase
+      .from("task_queue")
+      .select("id", { count: "exact", head: true })
+      .ilike("title", "%feature proposal%")
+      .gte("created_at", weekStartStr);
+
+    if (!proposalsThisWeek || proposalsThisWeek < 3) {
+      templates.push({
+        title: "Feature proposal: identify top DirtSync improvement",
+        description: [
+          "Research competitors (OnX Off-Road, Gaia GPS, AllTrails) and identify ONE high-impact feature we should build next.",
+          "",
+          "Your proposal must include:",
+          "1. What specific user problem it solves",
+          "2. How competitors handle it (with specifics)",
+          "3. Concrete implementation approach (which files, which APIs)",
+          "4. Effort estimate (Small/Medium/Large)",
+          "5. Why THIS feature over alternatives",
+          "",
+          "Focus on features that differentiate DirtSync from OnX.",
+          "Check vault/competitors/onx.md for competitive context.",
+          "Check vault/companies/dirtsync.md for current capabilities.",
+          "",
+          "Output a structured proposal using the Feature Proposal skill format.",
+        ].join("\n"),
+        task_type: "research",
+        cli_target: "gemini",
+        company_id: dirtsyncId,
+        priority: "medium",
+        skill_name: "feature-proposal",
+      });
+    }
+
+    // Daily: Review open PRs and recommend best to merge
+    templates.push({
+      title: "PR triage: review open PRs and recommend merge/close",
+      description: [
+        "Review all open PRs on golfballnut/DirtSync.",
+        "For each PR, assess:",
+        "1. Does CI pass?",
+        "2. Does it match an approved spec in the vault?",
+        "3. Is it a duplicate of another PR?",
+        "4. Is the code quality acceptable?",
+        "",
+        "Output:",
+        "- MERGE: list PRs ready to merge (CI green, matches spec)",
+        "- CLOSE: list duplicate/stale PRs to close (with reason)",
+        "- FIX: list PRs that need small fixes before merge",
+        "",
+        "Run: gh pr list --repo golfballnut/DirtSync --state open",
+        "For each promising PR: gh pr checks {number} --repo golfballnut/DirtSync",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "claude",
+      company_id: dirtsyncId,
+      priority: "high",
+    });
   }
 
   return templates;

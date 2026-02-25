@@ -178,6 +178,52 @@ interface TaskTemplate {
   company_id: string;
   priority: string;
   skill_name?: string;
+  bakeoff_group?: string;
+}
+
+// ── CLI Routing Strategy ──────────────────────
+// Smart routing: best CLI for each task type
+// Bake-off: high-priority tasks get sent to multiple CLIs for comparison
+
+type CliTool = "claude" | "gemini" | "codex";
+
+const CLI_ROUTING: Record<string, CliTool> = {
+  code: "claude",       // Claude = strongest coder
+  research: "gemini",   // Gemini 3.1 Pro = strong web research
+  content: "gemini",    // Gemini = good at long-form writing
+  ops: "codex",         // Codex 5.3 = fast execution
+  chat: "claude",       // Claude = best conversational
+};
+
+// High-priority tasks get bake-off across these CLIs
+const BAKEOFF_CLIS: CliTool[] = ["claude", "gemini", "codex"];
+
+function getSmartCli(taskType: string): CliTool {
+  return CLI_ROUTING[taskType] || "claude";
+}
+
+async function createBakeoffTasks(
+  baseTemplate: Omit<TaskTemplate, "cli_target" | "bakeoff_group">,
+  clis: CliTool[] = BAKEOFF_CLIS
+): Promise<string[]> {
+  const groupId = crypto.randomUUID();
+  const created: string[] = [];
+
+  for (const cli of clis) {
+    const id = await createTask({
+      ...baseTemplate,
+      cli_target: cli,
+      bakeoff_group: groupId,
+      title: `${baseTemplate.title} (${cli.charAt(0).toUpperCase() + cli.slice(1)})`,
+    });
+    if (id) created.push(`${cli}:${id}`);
+  }
+
+  if (created.length > 0) {
+    log("info", `Bake-off created: ${baseTemplate.title} → ${created.map(c => c.split(":")[0]).join(", ")} [group ${groupId.slice(0, 8)}]`);
+  }
+
+  return created;
 }
 
 async function getCompanyId(slug: string): Promise<string | null> {
@@ -190,14 +236,18 @@ async function getCompanyId(slug: string): Promise<string | null> {
 }
 
 async function createTask(template: TaskTemplate): Promise<string | null> {
+  const insert: Record<string, unknown> = {
+    ...template,
+    status: "todo",
+    assigned_to: "agent-executor",
+    created_by: "night-ops-coo",
+  };
+  // Only include bakeoff_group if set (avoid null override)
+  if (!template.bakeoff_group) delete insert.bakeoff_group;
+
   const { data, error } = await supabase
     .from("task_queue")
-    .insert({
-      ...template,
-      status: "todo",
-      assigned_to: "agent-executor",
-      created_by: "night-ops-coo",
-    })
+    .insert(insert)
     .select("id")
     .single();
 
@@ -227,12 +277,21 @@ async function reviewCompletedTasks(): Promise<string[]> {
     return actions;
   }
 
+  // Track bake-off groups we've already reviewed this cycle
+  const reviewedBakeoffs = new Set<string>();
+
   for (const task of completed) {
     actions.push(`Reviewed: ${task.title} (${task.status})`);
 
+    // ── Bake-off comparison ──
+    if (task.bakeoff_group && !reviewedBakeoffs.has(task.bakeoff_group)) {
+      reviewedBakeoffs.add(task.bakeoff_group);
+      const bakeoffResults = await reviewBakeoffGroup(task.bakeoff_group);
+      actions.push(...bakeoffResults);
+    }
+
     // If a research task completed, check if it warrants a follow-up code task
     if (task.task_type === "research" && task.status === "done" && task.result_summary) {
-      // Check if the research found actionable items
       const summary = task.result_summary.toLowerCase();
       if (summary.includes("recommend") || summary.includes("should") || summary.includes("opportunity")) {
         actions.push(`→ Research "${task.title}" has actionable findings — flagged for follow-up`);
@@ -248,7 +307,86 @@ async function reviewCompletedTasks(): Promise<string[]> {
   return actions;
 }
 
+// ── Bake-off Result Comparison ──────────────────
+// When all CLIs in a bake-off group finish, compare and score results
+
+async function reviewBakeoffGroup(groupId: string): Promise<string[]> {
+  const actions: string[] = [];
+
+  const { data: groupTasks } = await supabase
+    .from("task_queue")
+    .select("id, title, status, cli_target, started_at, completed_at, result_summary, pr_url")
+    .eq("bakeoff_group", groupId)
+    .order("completed_at", { ascending: true });
+
+  if (!groupTasks || groupTasks.length === 0) return actions;
+
+  const total = groupTasks.length;
+  const finished = groupTasks.filter(t => ["done", "review", "blocked", "rejected"].includes(t.status));
+  const successful = groupTasks.filter(t => ["done", "review"].includes(t.status));
+  const failed = groupTasks.filter(t => ["blocked", "rejected"].includes(t.status));
+  const pending = groupTasks.filter(t => ["todo", "in_progress"].includes(t.status));
+
+  if (pending.length > 0) {
+    actions.push(`⚔️ Bake-off [${groupId.slice(0, 8)}]: ${finished.length}/${total} finished, ${pending.length} still running`);
+    return actions;
+  }
+
+  // All finished — compare results
+  actions.push(`⚔️ Bake-off complete [${groupId.slice(0, 8)}]: ${successful.length}/${total} succeeded`);
+
+  // Score by: success, speed, whether it produced a PR
+  const scored = successful.map(t => {
+    const durationMs = t.completed_at && t.started_at
+      ? new Date(t.completed_at).getTime() - new Date(t.started_at).getTime()
+      : Infinity;
+    const hasPr = !!t.pr_url;
+    const summaryLen = t.result_summary?.length || 0;
+    return {
+      cli: t.cli_target,
+      title: t.title,
+      durationMin: (durationMs / 60000).toFixed(1),
+      hasPr,
+      summaryLen,
+      score: (hasPr ? 3 : 0) + (summaryLen > 100 ? 2 : 0) + (durationMs < 300000 ? 1 : 0), // PR + substance + speed
+    };
+  }).sort((a, b) => b.score - a.score);
+
+  for (const s of scored) {
+    actions.push(`  ${s.cli}: ${s.durationMin}min, score=${s.score}${s.hasPr ? " ✓PR" : ""}${s.summaryLen > 100 ? " ✓detailed" : ""}`);
+  }
+
+  if (scored.length > 0) {
+    actions.push(`  → Winner: ${scored[0].cli}`);
+
+    // Record the winner for future routing optimization
+    await supabase.from("communication_log").insert({
+      from_agent: "night-ops-coo",
+      to_agent: "steve",
+      channel: "internal",
+      message: `Bake-off result [${groupId.slice(0, 8)}]: Winner=${scored[0].cli} (score ${scored[0].score}). ${scored.map(s => `${s.cli}=${s.score}`).join(", ")}. Failed: ${failed.map(t => t.cli_target).join(", ") || "none"}`,
+    });
+  }
+
+  if (failed.length > 0) {
+    actions.push(`  ✗ Failed: ${failed.map(t => `${t.cli_target} (${t.status})`).join(", ")}`);
+  }
+
+  return actions;
+}
+
 // ── COO Brain: Overnight Operations Queue ──────
+//
+// Strategy:
+//   HIGH priority → bake-off (same task to Claude + Gemini + Codex, compare results)
+//   MEDIUM/LOW    → smart routing (best CLI for the task type)
+//
+// Smart routing defaults:
+//   code     → claude   (strongest coder)
+//   research → gemini   (Gemini 3.1 Pro, strong web analysis)
+//   content  → gemini   (good long-form)
+//   ops      → codex    (Codex 5.3, fast execution)
+//   chat     → claude   (best conversational)
 
 async function queueOvernightOps(report: HealthReport): Promise<string[]> {
   const actions: string[] = [];
@@ -256,27 +394,40 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
   const mcmforgeId = await getCompanyId("mcmforge");
 
   // Only queue new tasks if there's room (don't flood the queue)
-  if (report.tasks.todoCount >= 5) {
-    actions.push("Task queue has 5+ pending items — not adding more");
+  if (report.tasks.todoCount >= 8) {
+    actions.push("Task queue has 8+ pending items — not adding more");
     return actions;
   }
 
   // Check what tasks already exist to avoid duplicates
+  // Look at ALL statuses from the last 24 hours — not just todo/in_progress
+  // This prevents the runaway loop where completed tasks get re-created every cycle
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const { data: existingTasks } = await supabase
     .from("task_queue")
-    .select("title")
-    .in("status", ["todo", "in_progress"])
-    .limit(50);
+    .select("title, status")
+    .gte("created_at", twentyFourHoursAgo)
+    .limit(100);
 
   const existingTitles = new Set((existingTasks || []).map(t => t.title.toLowerCase()));
 
+  // Helper: check if any variant of a title exists (base or CLI-suffixed)
+  function titleExists(baseTitle: string): boolean {
+    const lower = baseTitle.toLowerCase();
+    if (existingTitles.has(lower)) return true;
+    // Check for bake-off variants: "title (Claude)", "title (Gemini)", "title (Codex)"
+    for (const cli of BAKEOFF_CLIS) {
+      const suffixed = `${lower} (${cli.charAt(0).toUpperCase() + cli.slice(1)})`.toLowerCase();
+      if (existingTitles.has(suffixed)) return true;
+    }
+    return false;
+  }
+
   // ── Trail-related tasks ──
   if (dirtsyncId) {
-    // Trail styling deployment (if not already queued)
-    if (!existingTitles.has("deploy approved trail styling (split badge f)")) {
-      const id = await createTask({
-        title: "Deploy approved trail styling (Split Badge F)",
-        description: `Deploy the Steve-approved trail styling spec to DirtSync web app.
+    // HIGH PRIORITY → bake-off: trail styling across all 3 CLIs
+    if (!titleExists("deploy approved trail styling (split badge f)")) {
+      const desc = `Deploy the Steve-approved trail styling spec to DirtSync web app.
 
 ## Spec (approved 2026-02-24):
 - Official trails: SOLID colored line (Easy #0f6b1f, Moderate #1D4ED8, Hard #333, Expert #D9342E)
@@ -292,18 +443,24 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
 - [ ] Outlaw trails render as dashed colored lines (same difficulty colors, NOT gold)
 - [ ] All trails visible at zoom level 9
 - [ ] Map legend component showing difficulty colors + official vs outlaw distinction
-- [ ] Outlaw badges render as split pills at zoom 10+`,
+- [ ] Outlaw badges render as split pills at zoom 10+`;
+
+      const created = await createBakeoffTasks({
+        title: "Deploy approved trail styling (Split Badge F)",
+        description: desc,
         task_type: "code",
-        cli_target: "claude",
         company_id: dirtsyncId,
         priority: "high",
         skill_name: "visual-bug-fix",
       });
-      if (id) actions.push("Queued: Deploy trail styling (Split Badge F)");
+      if (created.length > 0) {
+        actions.push(`Bake-off: Trail styling → ${created.map(c => c.split(":")[0]).join(", ")}`);
+      }
     }
 
-    // Competitive analysis
-    if (!existingTitles.has("onx vs dirtsync deep competitive analysis")) {
+    // MEDIUM PRIORITY → smart route: research goes to Gemini
+    if (!titleExists("onx vs dirtsync deep competitive analysis")) {
+      const cli = getSmartCli("research");
       const id = await createTask({
         title: "OnX vs DirtSync deep competitive analysis",
         description: `Research OnX Offroad app features and compare to DirtSync.
@@ -324,15 +481,16 @@ Also look at Gaia GPS and AllTrails for reference.
 
 Output a feature comparison matrix and priority recommendations for DirtSync.`,
         task_type: "research",
-        cli_target: "claude",
+        cli_target: cli,
         company_id: dirtsyncId,
         priority: "medium",
       });
-      if (id) actions.push("Queued: OnX competitive analysis");
+      if (id) actions.push(`Routed: OnX competitive analysis → ${cli}`);
     }
 
-    // Trail name validation research
-    if (!existingTitles.has("validate trail names against official hmt documentation")) {
+    // MEDIUM PRIORITY → smart route: research goes to Gemini
+    if (!titleExists("validate trail names against official hmt documentation")) {
+      const cli = getSmartCli("research");
       const id = await createTask({
         title: "Validate trail names against official HMT documentation",
         description: `Research official Hatfield-McCoy Trail system documentation and validate our trail names.
@@ -349,11 +507,11 @@ Also check Gaia GPS and OnX for trail name reference.
 
 Output a CSV-style comparison: our_name, official_name, system, status (match/mismatch/missing/extra)`,
         task_type: "research",
-        cli_target: "claude",
+        cli_target: cli,
         company_id: dirtsyncId,
         priority: "medium",
       });
-      if (id) actions.push("Queued: HMT trail name validation");
+      if (id) actions.push(`Routed: HMT trail name validation → ${cli}`);
     }
   }
 

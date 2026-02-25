@@ -68,7 +68,7 @@ export interface VisualVerifyResult {
 const SCREENSHOT_DIR = join(__dirname, "screenshots");
 const DIFF_THRESHOLD = 0.1; // pixelmatch color sensitivity
 const VISION_PASS_SCORE = 60;
-const VISION_MODEL = process.env.VISUAL_TDD_MODEL || "claude-sonnet-4-5-20241022";
+const VISION_MODEL = process.env.VISUAL_TDD_MODEL || "claude-sonnet-4-6-20250514";
 
 // Production URL mapping — where to screenshot for baseline comparison
 const PRODUCTION_URLS: Record<string, string> = {

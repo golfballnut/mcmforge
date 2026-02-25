@@ -1,19 +1,18 @@
 #!/usr/bin/env tsx
 /**
- * MCM Forge Night-Ops v2 — COO Brain
+ * MCM Forge Night-Ops v3 — COO Brain
  *
- * Runs every hour on the Mac Mini via pm2 cron.
- * Now does MUCH more than health checks:
+ * Runs every hour on the Mac Mini via PM2.
  *
  * Every hour:
- * - Health checks (PM2, tasks, PRs)
- * - Reviews completed tasks and analyzes results
- * - Creates follow-up tasks based on outcomes
- * - Runs trail data quality audits
- * - Queues competitive research tasks
- * - Emails Steve with progress, screenshots, questions
+ * - Health checks (PM2, tasks, PRs across all companies)
+ * - Reviews completed tasks + bake-off scoring
+ * - Dynamic task generation from vault decisions + data quality findings
+ * - Trail data quality audits (live queries, not hardcoded)
+ * - Stale approval escalation (4h reminder, 24h auto-reject)
+ * - Emails Steve with progress
  *
- * At 6 AM ET: compiles comprehensive morning brief
+ * At 6 AM ET: comprehensive morning brief
  */
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
@@ -102,15 +101,32 @@ async function checkTasks(): Promise<HealthReport["tasks"]> {
 
 async function checkOpenPRs(): Promise<HealthReport["prs"]> {
   try {
-    const raw = execSync(
-      `export PATH=${PATH_PREFIX}:$PATH && gh pr list --repo golfballnut/DirtSync --state open --json number,title --limit 10 2>/dev/null`,
-      { encoding: "utf-8", timeout: 15000 }
-    );
-    const prs = JSON.parse(raw);
-    return {
-      open: prs.length,
-      list: prs.map((pr: any) => `#${pr.number}: ${pr.title}`),
-    };
+    // Query all companies with github repos from the registry
+    const { data: companies } = await supabase
+      .from("company_registry")
+      .select("slug, github_repo")
+      .eq("status", "active")
+      .not("github_repo", "is", null);
+
+    const allPrs: string[] = [];
+
+    for (const company of (companies || [])) {
+      if (!company.github_repo) continue;
+      try {
+        const raw = execSync(
+          `export PATH=${PATH_PREFIX}:$PATH && gh pr list --repo ${company.github_repo} --state open --json number,title --limit 10 2>/dev/null`,
+          { encoding: "utf-8", timeout: 15000 }
+        );
+        const prs = JSON.parse(raw);
+        for (const pr of prs) {
+          allPrs.push(`[${company.slug}] #${pr.number}: ${pr.title}`);
+        }
+      } catch {
+        allPrs.push(`[${company.slug}] pr-check-failed`);
+      }
+    }
+
+    return { open: allPrs.length, list: allPrs.slice(0, 15) };
   } catch {
     return { open: 0, list: ["pr-check-failed"] };
   }
@@ -119,18 +135,25 @@ async function checkOpenPRs(): Promise<HealthReport["prs"]> {
 async function checkTrailStats(): Promise<HealthReport["trailStats"]> {
   if (!dirtsyncDb) return { total: 0, visible: 0, hidden: 0, gpsMiles: 0, systems: 0 };
   try {
-    const [totalRes, visibleRes, hiddenRes] = await Promise.all([
+    const [totalRes, visibleRes, hiddenRes, milesRes, systemsRes] = await Promise.all([
       dirtsyncDb.from("trail_lines").select("id", { count: "exact", head: true }),
       dirtsyncDb.from("trail_lines").select("id", { count: "exact", head: true }).eq("hidden", false),
       dirtsyncDb.from("trail_lines").select("id", { count: "exact", head: true }).eq("hidden", true),
+      dirtsyncDb.from("trail_lines").select("distance_miles").eq("hidden", false).not("distance_miles", "is", null),
+      dirtsyncDb.from("trail_lines").select("system_name").eq("hidden", false).not("system_name", "is", null),
     ]);
+
+    // Calculate actual miles from DB
+    const totalMiles = (milesRes.data || []).reduce((sum: number, t: any) => sum + (t.distance_miles || 0), 0);
+    // Count unique systems
+    const uniqueSystems = new Set((systemsRes.data || []).map((t: any) => t.system_name)).size;
 
     return {
       total: totalRes.count || 0,
       visible: visibleRes.count || 0,
       hidden: hiddenRes.count || 0,
-      gpsMiles: 5720, // Updated by data operations, hardcoded for now
-      systems: 19,
+      gpsMiles: Math.round(totalMiles),
+      systems: uniqueSystems,
     };
   } catch (err) {
     log("warn", `Trail stats check failed: ${err}`);
@@ -390,32 +413,27 @@ async function reviewBakeoffGroup(groupId: string): Promise<string[]> {
 
 async function queueOvernightOps(report: HealthReport): Promise<string[]> {
   const actions: string[] = [];
-  const dirtsyncId = await getCompanyId("dirtsync");
-  const mcmforgeId = await getCompanyId("mcmforge");
 
   // Only queue new tasks if there's room (don't flood the queue)
-  if (report.tasks.todoCount >= 8) {
-    actions.push("Task queue has 8+ pending items — not adding more");
+  if (report.tasks.todoCount >= 5) {
+    actions.push(`Task queue has ${report.tasks.todoCount} pending — not adding more`);
     return actions;
   }
 
   // Check what tasks already exist to avoid duplicates
-  // Look at ALL statuses from the last 24 hours — not just todo/in_progress
-  // This prevents the runaway loop where completed tasks get re-created every cycle
-  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  // Look at ALL statuses from the last 48 hours (extended from 24h for safety)
+  const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
   const { data: existingTasks } = await supabase
     .from("task_queue")
     .select("title, status")
-    .gte("created_at", twentyFourHoursAgo)
-    .limit(100);
+    .gte("created_at", cutoff)
+    .limit(200);
 
   const existingTitles = new Set((existingTasks || []).map(t => t.title.toLowerCase()));
 
-  // Helper: check if any variant of a title exists (base or CLI-suffixed)
   function titleExists(baseTitle: string): boolean {
     const lower = baseTitle.toLowerCase();
     if (existingTitles.has(lower)) return true;
-    // Check for bake-off variants: "title (Claude)", "title (Gemini)", "title (Codex)"
     for (const cli of BAKEOFF_CLIS) {
       const suffixed = `${lower} (${cli.charAt(0).toUpperCase() + cli.slice(1)})`.toLowerCase();
       if (existingTitles.has(suffixed)) return true;
@@ -423,99 +441,108 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
     return false;
   }
 
-  // ── Trail-related tasks ──
-  if (dirtsyncId) {
-    // HIGH PRIORITY → bake-off: trail styling across all 3 CLIs
-    if (!titleExists("deploy approved trail styling (split badge f)")) {
-      const desc = `Deploy the Steve-approved trail styling spec to DirtSync web app.
+  // Load pending vault decisions — check for approved specs that need implementation
+  const taskTemplates = await getTaskTemplatesFromVault();
 
-## Spec (approved 2026-02-24):
-- Official trails: SOLID colored line (Easy #0f6b1f, Moderate #1D4ED8, Hard #333, Expert #D9342E)
-- Outlaw trails: DASHED colored line (same difficulty colors, 7px dash / 5px gap)
-- White casing: 4.5px, 30% opacity
-- Center line: 2.8px
-- All trails visible at minzoom 9
-- Outlaw badge: Split pill — gold "OL" left | difficulty dot + name right
-- Badge visible at minzoom 10
+  for (const template of taskTemplates) {
+    if (titleExists(template.title)) continue;
+    if (report.tasks.todoCount + actions.length >= 5) break; // don't over-queue
 
-## Acceptance Criteria:
-- [ ] Official trails render as solid colored lines with difficulty colors
-- [ ] Outlaw trails render as dashed colored lines (same difficulty colors, NOT gold)
-- [ ] All trails visible at zoom level 9
-- [ ] Map legend component showing difficulty colors + official vs outlaw distinction
-- [ ] Outlaw badges render as split pills at zoom 10+`;
-
+    if (template.priority === "high" && template.task_type === "code") {
+      // High-priority code → bake-off
       const created = await createBakeoffTasks({
-        title: "Deploy approved trail styling (Split Badge F)",
-        description: desc,
-        task_type: "code",
-        company_id: dirtsyncId,
-        priority: "high",
-        skill_name: "visual-bug-fix",
+        title: template.title,
+        description: template.description,
+        task_type: template.task_type,
+        company_id: template.company_id,
+        priority: template.priority,
+        skill_name: template.skill_name,
       });
       if (created.length > 0) {
-        actions.push(`Bake-off: Trail styling → ${created.map(c => c.split(":")[0]).join(", ")}`);
+        actions.push(`Bake-off: ${template.title} → ${created.map(c => c.split(":")[0]).join(", ")}`);
       }
-    }
-
-    // MEDIUM PRIORITY → smart route: research goes to Gemini
-    if (!titleExists("onx vs dirtsync deep competitive analysis")) {
-      const cli = getSmartCli("research");
+    } else {
+      // Standard → smart route
+      const cli = getSmartCli(template.task_type);
       const id = await createTask({
-        title: "OnX vs DirtSync deep competitive analysis",
-        description: `Research OnX Offroad app features and compare to DirtSync.
-
-Focus areas:
-1. Trail visualization — how do they render trails? Colors? Badges? Labels?
-2. Offline maps — how does their download/caching system work?
-3. Ride recording — GPS logging, stats, sharing features
-4. Social features — follows, leaderboards, ride sharing
-5. Search & discovery — how do users find trails?
-6. Pricing model — free vs premium features
-7. Trail data sources — where does OnX get trail data?
-8. Weather integration
-9. Vehicle profiles and filtering
-10. Turn-by-turn navigation
-
-Also look at Gaia GPS and AllTrails for reference.
-
-Output a feature comparison matrix and priority recommendations for DirtSync.`,
-        task_type: "research",
+        ...template,
         cli_target: cli,
-        company_id: dirtsyncId,
-        priority: "medium",
       });
-      if (id) actions.push(`Routed: OnX competitive analysis → ${cli}`);
-    }
-
-    // MEDIUM PRIORITY → smart route: research goes to Gemini
-    if (!titleExists("validate trail names against official hmt documentation")) {
-      const cli = getSmartCli("research");
-      const id = await createTask({
-        title: "Validate trail names against official HMT documentation",
-        description: `Research official Hatfield-McCoy Trail system documentation and validate our trail names.
-
-Steps:
-1. Find official HMT trail maps and documentation online (hatfieldmccoytrails.info or similar)
-2. For each trail system (Rockhouse, Bearwallow, Pinnacle Creek, Indian Ridge, Buffalo Mountain, Warrior, Pocahontas, Devil Anse, Ivy Branch, Hillbilly), get the official trail names and numbers
-3. Compare against our database trail names
-4. Identify trails we have that don't match official names
-5. Identify official trails we're missing
-6. Note any trails that appear to be in wrong locations (going through towns, parking lots)
-
-Also check Gaia GPS and OnX for trail name reference.
-
-Output a CSV-style comparison: our_name, official_name, system, status (match/mismatch/missing/extra)`,
-        task_type: "research",
-        cli_target: cli,
-        company_id: dirtsyncId,
-        priority: "medium",
-      });
-      if (id) actions.push(`Routed: HMT trail name validation → ${cli}`);
+      if (id) actions.push(`Routed: ${template.title} → ${cli}`);
     }
   }
 
+  if (actions.length === 0) {
+    actions.push("No new tasks needed — queue is up to date");
+  }
+
   return actions;
+}
+
+// Load task templates dynamically from vault decisions and trail audit findings
+async function getTaskTemplatesFromVault(): Promise<Array<TaskTemplate & { company_id: string }>> {
+  const templates: Array<TaskTemplate & { company_id: string }> = [];
+
+  // Get active companies
+  const { data: companies } = await supabase
+    .from("company_registry")
+    .select("id, slug, name")
+    .eq("status", "active");
+
+  if (!companies) return templates;
+
+  const companyMap = new Map(companies.map(c => [c.slug, c.id]));
+  const dirtsyncId = companyMap.get("dirtsync");
+
+  // Check vault for approved decisions that need implementation
+  const { data: decisions } = await supabase
+    .from("vault_docs")
+    .select("title, content, company_id")
+    .eq("category", "decision")
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  if (decisions) {
+    for (const doc of decisions) {
+      // Look for decision docs that mention "approved" and have acceptance criteria
+      const content = doc.content?.toLowerCase() || "";
+      if (content.includes("approved") && content.includes("acceptance criteria") && doc.company_id) {
+        templates.push({
+          title: `Implement: ${doc.title}`,
+          description: doc.content?.slice(0, 3000) || doc.title,
+          task_type: "code",
+          cli_target: "claude",
+          company_id: doc.company_id,
+          priority: "high",
+          skill_name: "plan-then-code",
+        });
+      }
+    }
+  }
+
+  // Trail-data driven tasks (only if DirtSync exists and has issues)
+  if (dirtsyncId && dirtsyncDb) {
+    // Check if trail difficulty classification is needed
+    const { count: noDiffCount } = await dirtsyncDb
+      .from("trail_lines")
+      .select("id", { count: "exact", head: true })
+      .eq("hidden", false)
+      .is("difficulty", null)
+      .eq("is_connector", false);
+
+    if (noDiffCount && noDiffCount > 100) {
+      templates.push({
+        title: "Classify trail difficulty ratings from GPS data",
+        description: `${noDiffCount} trails need difficulty classification. Analyze trail geometry (elevation gain, distance, steepness) to assign difficulty ratings (easy/moderate/hard/expert). Use the trail_lines table distance_miles and geometry to estimate difficulty.`,
+        task_type: "code",
+        cli_target: "claude",
+        company_id: dirtsyncId,
+        priority: "medium",
+      });
+    }
+  }
+
+  return templates;
 }
 
 // ── COO Brain: Trail Data Quality Check ──────
@@ -567,6 +594,51 @@ async function runTrailAudit(): Promise<string[]> {
   }
 
   return findings;
+}
+
+// ── Stale Approval Escalation ──────────────────
+
+async function escalateStaleApprovals() {
+  try {
+    const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    // Get pending approvals
+    const { data: stale } = await supabase
+      .from("approval_queue")
+      .select("id, title, task_id, created_at, pr_url")
+      .eq("status", "pending")
+      .lt("created_at", fourHoursAgo);
+
+    if (!stale || stale.length === 0) return;
+
+    for (const approval of stale) {
+      const age = Date.now() - new Date(approval.created_at).getTime();
+      const ageHours = Math.round(age / 3600000);
+
+      if (approval.created_at < twentyFourHoursAgo) {
+        // 24h+ → auto-reject
+        await supabase
+          .from("approval_queue")
+          .update({ status: "rejected", decided_by: "coo-auto", decided_at: new Date().toISOString(), decision_notes: "Auto-rejected: no response after 24 hours" })
+          .eq("id", approval.id);
+
+        await supabase
+          .from("task_queue")
+          .update({ status: "rejected", result_summary: "PR auto-rejected — no approval after 24h", updated_at: new Date().toISOString() })
+          .eq("id", approval.task_id);
+
+        log("warn", `Auto-rejected stale approval (${ageHours}h): ${approval.title}`);
+        await sendTelegramAlert(`Auto-rejected: *${approval.title}* (no response after ${ageHours}h)`);
+      } else {
+        // 4-24h → reminder
+        await sendTelegramAlert(`Reminder: *${approval.title}* waiting for approval (${ageHours}h)\n${approval.pr_url || "No PR link"}`);
+        log("info", `[escalation] Sent reminder for ${approval.title} (${ageHours}h stale)`);
+      }
+    }
+  } catch (err) {
+    log("warn", `Approval escalation failed: ${err}`);
+  }
 }
 
 // ── Notifications ──────────────────────────────
@@ -749,6 +821,9 @@ async function cycle() {
   for (const finding of trailFindings) {
     log("info", `[trail-audit] ${finding}`);
   }
+
+  // Phase 4.5: Escalate stale approvals
+  await escalateStaleApprovals();
 
   // Send Telegram alert if there are issues
   if (report.alerts.length > 0) {

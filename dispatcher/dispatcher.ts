@@ -1,24 +1,26 @@
 #!/usr/bin/env tsx
 /**
- * MCM Forge Dispatcher v2
+ * MCM Forge Dispatcher v3
  *
- * Multi-company, multi-task-type orchestrator that:
- * - Checks kill switch (system_config) before every poll
- * - Polls task_queue for available tasks
+ * Multi-company, multi-task-type orchestrator:
+ * - Concurrent execution (up to 3 tasks simultaneously)
+ * - Retry logic with exponential backoff (2 retries)
+ * - Git state cleanup before code tasks
+ * - Stuck task recovery (auto-requeue after 45min)
+ * - Kill switch (system_config) check before every poll
  * - Routes by task_type: code, research, content, ops, chat
  * - Routes by cli: claude, gemini, codex
- * - Code tasks → git branch + PR workflow
+ * - Code tasks → git cleanup + branch + PR workflow
  * - Service tasks → execute + store artifact + notify
- * - Reports results back to brain DB
  * - Enforces cost caps ($2 default, $5 ceiling)
  */
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { spawn } from "child_process";
+import { spawn, execSync } from "child_process";
 import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { existsSync, readFileSync } from "fs";
+import { existsSync } from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,6 +46,7 @@ interface Task {
   cost_cap?: number;
   status: string;
   created_at: string;
+  retry_count?: number;
   company_registry?: {
     name: string;
     slug: string;
@@ -96,7 +99,9 @@ const CLI_PATHS: Record<CliTool, string> = {
 };
 
 let supabase: SupabaseClient;
-let isProcessing = false;
+let activeTaskCount = 0;
+const MAX_CONCURRENT_TASKS = 3;
+const MAX_RETRIES = 2; // up to 2 retries (3 total attempts)
 
 // ============================================
 // Logging
@@ -132,8 +137,8 @@ async function isDispatcherPaused(): Promise<boolean> {
 // ============================================
 
 async function pollForTask() {
-  if (isProcessing) {
-    log("debug", "Already processing a task, skipping poll");
+  if (activeTaskCount >= MAX_CONCURRENT_TASKS) {
+    log("debug", `At capacity (${activeTaskCount}/${MAX_CONCURRENT_TASKS}), skipping poll`);
     return;
   }
 
@@ -145,31 +150,72 @@ async function pollForTask() {
   }
 
   try {
-    const { data: task, error } = await supabase
+    // Recover stuck tasks (in_progress > 45 min with no active process)
+    await recoverStuckTasks();
+
+    // Pick up multiple tasks if we have capacity
+    const slotsAvailable = MAX_CONCURRENT_TASKS - activeTaskCount;
+    const { data: tasks, error } = await supabase
       .from("task_queue")
       .select("*, company_registry(name, slug, github_repo)")
       .eq("status", "todo")
       .eq("assigned_to", "agent-executor")
-      .order("priority", { ascending: true }) // critical=1, high=2, medium=3, low=4
+      .order("priority", { ascending: true })
       .order("created_at", { ascending: true })
-      .limit(1)
-      .single();
+      .limit(slotsAvailable);
 
-    if (error || !task) {
+    if (error || !tasks || tasks.length === 0) {
       log("debug", "No tasks available");
       return;
     }
 
-    log("info", `Found task: ${task.title}`, {
-      id: task.id,
-      type: task.task_type || "code",
-      cli: task.cli_target || "claude",
-      company: task.company_registry?.name,
-    });
+    for (const task of tasks) {
+      log("info", `Found task: ${task.title}`, {
+        id: task.id,
+        type: task.task_type || "code",
+        cli: task.cli_target || "claude",
+        company: task.company_registry?.name,
+      });
 
-    await executeTask(task as Task);
+      // Fire and forget — don't await, let tasks run concurrently
+      executeTask(task as Task).catch(err => {
+        log("error", `Unhandled task error: ${err}`, { task: task.title });
+      });
+    }
   } catch (err) {
     log("error", `Poll error: ${err}`);
+  }
+}
+
+async function recoverStuckTasks() {
+  try {
+    const fortyFiveMinAgo = new Date(Date.now() - 45 * 60 * 1000).toISOString();
+    const { data: stuck } = await supabase
+      .from("task_queue")
+      .select("id, title, retry_count")
+      .eq("status", "in_progress")
+      .lt("started_at", fortyFiveMinAgo);
+
+    if (!stuck || stuck.length === 0) return;
+
+    for (const task of stuck) {
+      const retries = task.retry_count || 0;
+      if (retries < MAX_RETRIES) {
+        await supabase
+          .from("task_queue")
+          .update({ status: "todo", started_at: null, retry_count: retries + 1, updated_at: new Date().toISOString() })
+          .eq("id", task.id);
+        log("warn", `Recovered stuck task for retry (${retries + 1}/${MAX_RETRIES}): ${task.title}`);
+      } else {
+        await supabase
+          .from("task_queue")
+          .update({ status: "blocked", result_summary: `Stuck after ${MAX_RETRIES} retries — needs manual review`, updated_at: new Date().toISOString() })
+          .eq("id", task.id);
+        log("error", `Task permanently blocked after ${MAX_RETRIES} retries: ${task.title}`);
+      }
+    }
+  } catch (err) {
+    log("warn", `Stuck task recovery failed: ${err}`);
   }
 }
 
@@ -178,7 +224,7 @@ async function pollForTask() {
 // ============================================
 
 async function executeTask(task: Task) {
-  isProcessing = true;
+  activeTaskCount++;
   const startTime = Date.now();
   const taskType: TaskType = task.task_type || "code";
   const cli: CliTool = task.cli_target || "claude";
@@ -274,12 +320,22 @@ async function executeTask(task: Task) {
     });
   } catch (err) {
     log("error", `Execution error: ${err}`);
-    await updateTaskStatus(task.id, "blocked", {
-      result_summary: `Dispatcher error: ${err}`,
-    });
+    // Retry logic: if we have retries left, put back in todo
+    const retries = (task as any).retry_count || 0;
+    if (retries < MAX_RETRIES) {
+      await supabase
+        .from("task_queue")
+        .update({ status: "todo", started_at: null, retry_count: retries + 1, updated_at: new Date().toISOString() })
+        .eq("id", task.id);
+      log("warn", `Task queued for retry (${retries + 1}/${MAX_RETRIES}): ${task.title}`);
+    } else {
+      await updateTaskStatus(task.id, "blocked", {
+        result_summary: `Dispatcher error after ${MAX_RETRIES} retries: ${err}`,
+      });
+    }
   }
 
-  isProcessing = false;
+  activeTaskCount--;
 }
 
 // ============================================
@@ -341,10 +397,62 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
     };
   }
 
+  // Clean git state before code task — prevents "dirty worktree" failures
+  const gitCleanResult = await ensureCleanGitState(repoPath, company?.github_repo);
+  if (!gitCleanResult.success) {
+    return {
+      success: false,
+      output: gitCleanResult.output,
+      error: `Git cleanup failed: ${gitCleanResult.error}`,
+    };
+  }
+
   log("info", `[code] Executing in ${repoPath} with ${cli}`, { task: task.title });
 
   const prompt = buildCodePrompt(task, vaultContext);
   return spawnCli(cli, repoPath, prompt, task.id);
+}
+
+async function ensureCleanGitState(repoPath: string, _githubRepo?: string): Promise<{ success: boolean; output: string; error?: string }> {
+  try {
+    // Get current branch and default branch
+    const currentBranch = execSync("git rev-parse --abbrev-ref HEAD", { cwd: repoPath, encoding: "utf-8" }).trim();
+    const defaultBranch = execSync("git remote show origin 2>/dev/null | grep 'HEAD branch' | awk '{print $NF}'", { cwd: repoPath, encoding: "utf-8", shell: "/bin/bash" }).trim() || "main";
+
+    // Check if worktree is dirty
+    const status = execSync("git status --porcelain", { cwd: repoPath, encoding: "utf-8" }).trim();
+
+    if (status || currentBranch !== defaultBranch) {
+      log("info", `[git-cleanup] Cleaning repo at ${repoPath} (branch: ${currentBranch}, dirty: ${status.length > 0})`);
+
+      // Stash any changes (including untracked)
+      if (status) {
+        execSync("git stash --include-untracked", { cwd: repoPath, encoding: "utf-8" });
+      }
+
+      // Switch to default branch
+      if (currentBranch !== defaultBranch) {
+        execSync(`git checkout ${defaultBranch}`, { cwd: repoPath, encoding: "utf-8" });
+      }
+
+      // Pull latest
+      execSync(`git pull origin ${defaultBranch}`, { cwd: repoPath, encoding: "utf-8", timeout: 30000 });
+
+      log("info", `[git-cleanup] Repo clean on ${defaultBranch}`);
+    }
+
+    return { success: true, output: "Git state clean" };
+  } catch (err) {
+    log("error", `[git-cleanup] Failed: ${err}`);
+    // Last resort: hard reset
+    try {
+      const defaultBranch = execSync("git remote show origin 2>/dev/null | grep 'HEAD branch' | awk '{print $NF}'", { cwd: repoPath, encoding: "utf-8", shell: "/bin/bash" }).trim() || "main";
+      execSync(`git checkout ${defaultBranch} && git reset --hard origin/${defaultBranch}`, { cwd: repoPath, encoding: "utf-8", shell: "/bin/bash" });
+      return { success: true, output: "Hard reset to clean state" };
+    } catch (resetErr) {
+      return { success: false, output: "", error: `${resetErr}` };
+    }
+  }
 }
 
 // ============================================
@@ -847,9 +955,11 @@ async function updateTaskStatus(
 // ============================================
 
 async function main() {
-  log("info", "=== MCM Forge Dispatcher v2 Starting ===");
+  log("info", "=== MCM Forge Dispatcher v3 Starting ===");
   log("info", `Poll interval: ${CONFIG.pollIntervalMs / 1000}s`);
   log("info", `Repo base: ${CONFIG.repoBaseDir}`);
+  log("info", `Max concurrent tasks: ${MAX_CONCURRENT_TASKS}`);
+  log("info", `Max retries: ${MAX_RETRIES}`);
   log("info", `Max duration: ${CONFIG.maxDurationMinutes}min per task`);
   log("info", `Cost caps: $${CONFIG.defaultCostCap} default / $${CONFIG.maxCostCap} max`);
   log("info", `CLIs: claude=${CLI_PATHS.claude}, gemini=${CLI_PATHS.gemini}, codex=${CLI_PATHS.codex}`);
@@ -910,7 +1020,7 @@ async function main() {
   // Start polling loop
   setInterval(pollForTask, CONFIG.pollIntervalMs);
 
-  log("info", "Dispatcher v2 running. Ctrl+C to stop.");
+  log("info", "Dispatcher v3 running. Ctrl+C to stop.");
 }
 
 main().catch((err) => {

@@ -46,9 +46,27 @@ if [ "$DISP_MEM" -gt 500 ] 2>/dev/null; then
   pm2 restart mcmforge-dispatcher
 fi
 
-# 3. Pull latest code (git pull on MCMForge repo)
-cd /Users/dirtsyncmini/MCMForge 2>/dev/null && git pull --quiet origin main 2>/dev/null
-echo "[$TIMESTAMP] MCMForge repo updated"
+# 3. Ensure MCMForge is on main branch + pull latest code
+cd /Users/dirtsyncmini/MCMForge 2>/dev/null
+MCMFORGE_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$MCMFORGE_BRANCH" != "main" ]; then
+  echo "[$TIMESTAMP] ALERT: MCMForge on branch '$MCMFORGE_BRANCH', switching to 'main'"
+  git stash --include-untracked 2>/dev/null
+  git checkout main 2>/dev/null
+fi
+
+BEFORE_HASH=$(git rev-parse HEAD 2>/dev/null)
+git pull --quiet origin main 2>/dev/null
+AFTER_HASH=$(git rev-parse HEAD 2>/dev/null)
+
+if [ "$BEFORE_HASH" != "$AFTER_HASH" ]; then
+  echo "[$TIMESTAMP] MCMForge code updated ($BEFORE_HASH -> $AFTER_HASH). Reinstalling deps and restarting..."
+  cd /Users/dirtsyncmini/MCMForge/dispatcher && npm install --silent 2>/dev/null
+  pm2 restart mcmforge-dispatcher mcmforge-night-ops 2>/dev/null
+  echo "[$TIMESTAMP] Dispatcher + night-ops restarted with new code"
+else
+  echo "[$TIMESTAMP] MCMForge repo up-to-date (no restart needed)"
+fi
 
 # 4. Ensure DirtSync repo is on default branch (prevent agent branch drift)
 DIRTSYNC_DIR="/Users/dirtsyncmini/DirtSync"

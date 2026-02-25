@@ -148,6 +148,27 @@ async function main() {
     (existingDocs || []).map(d => [d.title.toLowerCase(), d])
   );
 
+  // Fuzzy title match: "DirtSync" should match "DirtSync -- Trail Navigation App"
+  function findExistingDoc(relPath: string, title: string): any {
+    // 1. Match by file_path (most reliable)
+    if (existingByPath.has(relPath)) return existingByPath.get(relPath);
+
+    // 2. Exact title match
+    const lower = title.toLowerCase();
+    if (existingByTitle.has(lower)) return existingByTitle.get(lower);
+
+    // 3. Fuzzy: existing title starts with our title, or vice versa
+    for (const [existTitle, doc] of existingByTitle) {
+      if (existTitle.startsWith(lower) || lower.startsWith(existTitle)) return doc;
+      // Also check first significant word
+      const titleWord = lower.split(/[\s—-]+/)[0];
+      const existWord = existTitle.split(/[\s—-]+/)[0];
+      if (titleWord.length > 3 && titleWord === existWord) return doc;
+    }
+
+    return null;
+  }
+
   // Scan vault directory
   const vaultFiles = walkDir(VAULT_DIR);
   console.log(`Found ${vaultFiles.length} vault files`);
@@ -164,8 +185,8 @@ async function main() {
     const companySlug = getCompanySlug(relPath, content);
     const companyId = companySlug ? companyMap.get(companySlug) || null : null;
 
-    // Try to match existing doc by file_path first, then by title
-    const existing = existingByPath.get(relPath) || existingByTitle.get(title.toLowerCase());
+    // Try to match existing doc by file_path, title, or fuzzy match
+    const existing = findExistingDoc(relPath, title);
 
     if (existing) {
       // Update existing doc
@@ -198,6 +219,8 @@ async function main() {
           content,
           company_id: companyId,
           file_path: relPath,
+          updated_by: "vault-sync",
+          status: "active",
         });
 
       if (error) {

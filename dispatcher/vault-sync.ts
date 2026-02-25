@@ -83,6 +83,18 @@ function extractTitle(content: string, filename: string): string {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
+// Generate a URL-safe slug from title
+function generateSlug(title: string, relPath: string): string {
+  // Use filename for a stable slug
+  const name = basename(relPath, ".md");
+  return name
+    .toLowerCase()
+    .replace(/^\d{4}-\d{2}-\d{2}-/, "") // Strip date prefix
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with dashes
+    .replace(/^-|-$/g, "") // Trim leading/trailing dashes
+    .slice(0, 80); // Max length
+}
+
 // Walk directory recursively for .md files
 function walkDir(dir: string): string[] {
   const files: string[] = [];
@@ -176,10 +188,12 @@ async function main() {
       }
     } else {
       // Create new doc
+      const slug = generateSlug(title, relPath);
       const { error } = await supabase
         .from("vault_docs")
         .insert({
           title,
+          slug,
           category,
           content,
           company_id: companyId,

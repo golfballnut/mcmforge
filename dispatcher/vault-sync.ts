@@ -114,6 +114,40 @@ function walkDir(dir: string): string[] {
   return files;
 }
 
+// Extract tags from document content for smart context routing
+function extractTags(content: string, category: string): string[] {
+  const tags: string[] = [category]; // Always include the category
+  const lower = content.toLowerCase();
+
+  // Topic detection
+  const topicMap: Record<string, string[]> = {
+    code: ["implement", "build", "function", "component", "api", "endpoint", "typescript", "react", "next.js"],
+    map: ["map", "mapbox", "trail", "gps", "coordinates", "geojson", "layer"],
+    trails: ["trail", "hiking", "difficulty", "outlaw", "official", "ohv", "atv"],
+    ecommerce: ["shopify", "product", "pricing", "cart", "checkout", "store"],
+    email: ["email", "newsletter", "campaign", "subscriber", "mailchimp", "resend"],
+    seo: ["seo", "keyword", "ranking", "organic", "search engine", "google"],
+    marketing: ["marketing", "campaign", "audience", "conversion", "ads", "social media"],
+    competitor: ["competitor", "competitive", "rival", "alternative", "versus"],
+    research: ["research", "analysis", "findings", "report", "study"],
+    design: ["design", "ui", "ux", "layout", "styling", "css", "badge", "color"],
+    testing: ["test", "vitest", "jest", "assertion", "coverage", "tdd"],
+    deployment: ["deploy", "vercel", "production", "staging", "ci/cd"],
+    database: ["database", "supabase", "postgres", "query", "migration", "table"],
+    golf: ["golf", "golf ball", "recycled", "mesh bag", "driving range"],
+    navigation: ["navigation", "route", "directions", "valhalla", "turn-by-turn"],
+  };
+
+  for (const [tag, keywords] of Object.entries(topicMap)) {
+    if (keywords.some(kw => lower.includes(kw))) {
+      tags.push(tag);
+    }
+  }
+
+  // Deduplicate
+  return [...new Set(tags)];
+}
+
 async function main() {
   console.log("=== Vault Sync Starting ===");
 
@@ -190,11 +224,13 @@ async function main() {
 
     if (existing) {
       // Update existing doc
+      const tags = extractTags(content, category);
       const { error } = await supabase
         .from("vault_docs")
         .update({
           content,
           file_path: relPath,
+          tags,
           updated_at: new Date().toISOString(),
           ...(companyId && !existing.company_id ? { company_id: companyId } : {}),
         })
@@ -204,12 +240,13 @@ async function main() {
         console.error(`  ERROR updating ${relPath}: ${error.message}`);
         errors++;
       } else {
-        console.log(`  UPDATED: [${category}] ${title} (${relPath})`);
+        console.log(`  UPDATED: [${category}] ${title} (${relPath}) — ${tags.length} tags`);
         updated++;
       }
     } else {
       // Create new doc
       const slug = generateSlug(title, relPath);
+      const tags = extractTags(content, category);
       const { error } = await supabase
         .from("vault_docs")
         .insert({
@@ -217,6 +254,7 @@ async function main() {
           slug,
           category,
           content,
+          tags,
           company_id: companyId,
           file_path: relPath,
           updated_by: "vault-sync",
@@ -227,7 +265,7 @@ async function main() {
         console.error(`  ERROR creating ${relPath}: ${error.message}`);
         errors++;
       } else {
-        console.log(`  CREATED: [${category}] ${title} (${relPath})`);
+        console.log(`  CREATED: [${category}] ${title} (${relPath}) — ${tags.length} tags`);
         created++;
       }
     }

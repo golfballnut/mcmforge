@@ -31,7 +31,7 @@ dotenv.config({ path: join(__dirname, ".env") });
 // Types
 // ============================================
 
-type TaskType = "code" | "research" | "content" | "ops" | "chat";
+type TaskType = "code" | "research" | "content" | "ops" | "chat" | "proposal";
 type CliTool = "claude" | "gemini" | "codex";
 
 interface Task {
@@ -48,6 +48,8 @@ interface Task {
   status: string;
   created_at: string;
   retry_count?: number;
+  parent_task_id?: string;
+  proposal_data?: Record<string, unknown>;
   company_registry?: {
     name: string;
     slug: string;
@@ -227,12 +229,33 @@ async function recoverStuckTasks() {
 }
 
 // ============================================
+// War Room Posts
+// ============================================
+
+async function postToWarRoom(task: Task, outcome: string, summary: string) {
+  try {
+    await supabase.from("communication_log").insert({
+      from_agent: task.cli_target || "system",
+      to_agent: "all",
+      channel: "war_room",
+      message: `[${outcome}] ${task.title}\n${summary}`,
+      summary: `${task.cli_target} ${outcome}: ${task.title.slice(0, 80)}`,
+      company_id: task.company_id,
+      task_id: task.id,
+    });
+  } catch (err) {
+    log("warn", `War room post failed: ${err}`);
+  }
+}
+
+// ============================================
 // Task Router
 // ============================================
 
 async function executeTask(task: Task) {
   activeTaskCount++;
   const startTime = Date.now();
+  const executionStartTime = Date.now();
   const taskType: TaskType = task.task_type || "code";
   const cli: CliTool = task.cli_target || "claude";
 
@@ -243,25 +266,30 @@ async function executeTask(task: Task) {
 
   // Load vault context for this company
   const vaultContext = await loadVaultContext(task);
+  const warRoomContext = await getWarRoomContext(task);
+  const agentStats = await getAgentStats(cli, task.company_id);
 
   try {
     let result: ExecutionResult;
 
     switch (taskType) {
       case "code":
-        result = await executeCodeTask(task, cli, vaultContext);
+        result = await executeCodeTask(task, cli, vaultContext, warRoomContext, agentStats);
         break;
       case "research":
-        result = await executeServiceTask(task, cli, "research", vaultContext);
+        result = await executeServiceTask(task, cli, "research", vaultContext, warRoomContext, agentStats);
         break;
       case "content":
-        result = await executeServiceTask(task, cli, "content", vaultContext);
+        result = await executeServiceTask(task, cli, "content", vaultContext, warRoomContext, agentStats);
         break;
       case "ops":
-        result = await executeServiceTask(task, cli, "ops", vaultContext);
+        result = await executeServiceTask(task, cli, "ops", vaultContext, warRoomContext, agentStats);
         break;
       case "chat":
-        result = await executeServiceTask(task, cli, "chat", vaultContext);
+        result = await executeServiceTask(task, cli, "chat", vaultContext, warRoomContext, agentStats);
+        break;
+      case "proposal":
+        result = await executeProposalTask(task, vaultContext, warRoomContext, agentStats);
         break;
       default:
         result = { success: false, output: "", error: `Unknown task_type: ${taskType}` };
@@ -412,6 +440,16 @@ async function executeTask(task: Task) {
         }
       }
 
+      // Record skill metrics and agent roster update
+      await recordSkillMetrics(task, result, Date.now() - executionStartTime);
+      await updateAgentRoster(task, result.success);
+      await recordSuccessLearning(task, result);
+
+      // Auto-vault intelligence findings from research tasks
+      if (taskType === "research") {
+        await autoVaultIntelligence(task, result);
+      }
+
       // Code tasks need approval. Service tasks go straight to done.
       const newStatus = autoShipped ? "done" : (taskType === "code" ? "review" : "done");
 
@@ -446,12 +484,26 @@ async function executeTask(task: Task) {
       // Notify Steve for all completed tasks
       const approvalMeta = approvalToken ? { approvalToken } : undefined;
       await notifyCompletion(task, result, durationMin, cli, approvalMeta);
+
+      // War room posts
+      await postToWarRoom(task, "SUCCESS", result.summary || "Task completed");
+      if (taskType === "research" && result.summary) {
+        await postToWarRoom(task, "FINDING", result.summary.slice(0, 300));
+      }
     } else {
       log("error", `Task failed: ${result.error}`, { task: task.title });
       await recordLearning(task, result, "execution");
+
+      // Record skill metrics and agent roster update for failures too
+      await recordSkillMetrics(task, result, Date.now() - executionStartTime);
+      await updateAgentRoster(task, result.success);
+
       await updateTaskStatus(task.id, "blocked", {
         result_summary: `Failed: ${result.error}`,
       });
+
+      // War room post for failure
+      await postToWarRoom(task, "FAILED", result.error || result.summary || "Unknown error");
     }
 
     // Log to communication_log (uses 'message' column, 'channel' for type)
@@ -489,32 +541,65 @@ async function executeTask(task: Task) {
 // Vault Context Loader
 // ============================================
 
+// Context routing: different task types need different vault docs
+const CONTEXT_ROUTES: Record<string, string[]> = {
+  code:     ["company", "skill", "decision"],
+  research: ["company", "competitor", "intelligence"],
+  proposal: ["company", "competitor", "intelligence", "skill"],
+  content:  ["company", "intelligence"],
+  ops:      ["company"],
+  chat:     ["company"],
+};
+
 async function loadVaultContext(task: Task): Promise<string> {
   try {
     const companySlug = task.company_registry?.slug;
     if (!companySlug) return "";
 
-    // Load company profile + relevant decisions + skills from vault_docs
+    const taskType = task.task_type || "research";
+    const allowedCategories = CONTEXT_ROUTES[taskType] || CONTEXT_ROUTES.research;
+
+    // Load company-specific docs filtered by task-appropriate categories + skills always
     const { data: vaultDocs } = await supabase
       .from("vault_docs")
-      .select("title, category, content")
+      .select("title, category, content, tags")
       .or(`company_id.eq.${task.company_id},category.eq.skill`)
-      .order("category", { ascending: true });
+      .order("updated_at", { ascending: false });
 
     if (!vaultDocs || vaultDocs.length === 0) return "";
 
-    const sections: string[] = ["## Vault Context (loaded automatically)"];
+    // Filter by allowed categories for this task type
+    const filtered = vaultDocs.filter(doc => {
+      if (!doc.content) return false;
+      return allowedCategories.includes(doc.category) || doc.category === "skill";
+    });
 
-    for (const doc of vaultDocs) {
-      if (!doc.content) continue; // Skip empty vault docs (not yet synced)
+    // Score and rank by relevance: tag overlap with task keywords
+    const taskKeywords = extractKeywords(task.title + " " + (task.description || ""));
+    const scored = filtered.map(doc => {
+      const docKeywords = (doc.tags || []).concat(extractKeywords(doc.title));
+      const overlap = taskKeywords.filter(k => docKeywords.includes(k)).length;
+      return { doc, score: overlap };
+    }).sort((a, b) => b.score - a.score);
+
+    // Cap total context at 8000 chars
+    const sections: string[] = ["## Vault Context (loaded automatically)"];
+    let totalChars = 0;
+    const MAX_CONTEXT_CHARS = 8000;
+
+    for (const { doc } of scored) {
       const content = doc.content.length > 2000
         ? doc.content.slice(0, 2000) + "\n[... truncated]"
         : doc.content;
-      sections.push(`### [${doc.category}] ${doc.title}\n${content}`);
+      const section = `### [${doc.category}] ${doc.title}\n${content}`;
+      if (totalChars + section.length > MAX_CONTEXT_CHARS) break;
+      sections.push(section);
+      totalChars += section.length;
     }
 
-    log("info", `Loaded ${vaultDocs.length} vault docs for context`, {
+    log("info", `Smart context: loaded ${sections.length - 1}/${filtered.length} vault docs (${taskType} route)`, {
       company: companySlug,
+      categories: allowedCategories.join(","),
     });
 
     return sections.join("\n\n");
@@ -524,11 +609,94 @@ async function loadVaultContext(task: Task): Promise<string> {
   }
 }
 
+function extractKeywords(text: string): string[] {
+  return text.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(w => w.length > 3)
+    .filter(w => !["the", "and", "for", "with", "from", "this", "that", "have", "will", "task", "should"].includes(w));
+}
+
+// ============================================
+// War Room Context
+// ============================================
+
+async function getWarRoomContext(task: Task): Promise<string> {
+  try {
+    const { data: recentPosts } = await supabase
+      .from("communication_log")
+      .select("from_agent, message, created_at")
+      .eq("channel", "war_room")
+      .eq("company_id", task.company_id)
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (!recentPosts || recentPosts.length === 0) return "";
+
+    const items = recentPosts.map(p => {
+      const time = new Date(p.created_at).toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+      return `- [${time}] ${p.from_agent}: ${p.message?.slice(0, 200)}`;
+    });
+    return `## Team Activity (last 5 updates)\n${items.join("\n")}`;
+  } catch {
+    return "";
+  }
+}
+
+// ============================================
+// Agent Stats
+// ============================================
+
+async function getAgentStats(cliTarget: string, companyId: string): Promise<string> {
+  try {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: metrics } = await supabase
+      .from("skill_metrics")
+      .select("success, execution_time_ms, skill_name")
+      .eq("cli_target", cliTarget)
+      .gte("created_at", sevenDaysAgo);
+
+    if (!metrics || metrics.length === 0) return "";
+
+    const total = metrics.length;
+    const successes = metrics.filter(m => m.success).length;
+    const successRate = Math.round((successes / total) * 100);
+    const avgTime = Math.round(metrics.reduce((s, m) => s + (m.execution_time_ms || 0), 0) / total / 1000);
+
+    // Find strengths/weaknesses by skill
+    const bySkill: Record<string, { total: number; success: number }> = {};
+    for (const m of metrics) {
+      const skill = m.skill_name || "general";
+      if (!bySkill[skill]) bySkill[skill] = { total: 0, success: 0 };
+      bySkill[skill].total++;
+      if (m.success) bySkill[skill].success++;
+    }
+
+    const skillRates = Object.entries(bySkill)
+      .map(([skill, data]) => ({ skill, rate: Math.round((data.success / data.total) * 100), total: data.total }))
+      .filter(s => s.total >= 2)
+      .sort((a, b) => b.rate - a.rate);
+
+    const strengths = skillRates.filter(s => s.rate >= 70).map(s => `${s.skill} (${s.rate}%)`).join(", ");
+    const weaknesses = skillRates.filter(s => s.rate < 50).map(s => `${s.skill} (${s.rate}%)`).join(", ");
+
+    return [
+      "## Your Performance Stats (last 7 days)",
+      `- Tasks: ${total} completed, ${successRate}% success rate`,
+      `- Average execution time: ${avgTime}s`,
+      strengths ? `- Strengths: ${strengths}` : "",
+      weaknesses ? `- Weaknesses: ${weaknesses}` : "",
+    ].filter(Boolean).join("\n");
+  } catch {
+    return "";
+  }
+}
+
 // ============================================
 // Code Task Execution (git + PR workflow)
 // ============================================
 
-async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = ""): Promise<ExecutionResult> {
+async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = "", warRoomContext: string = "", agentStats: string = ""): Promise<ExecutionResult> {
   const company = task.company_registry;
   const companySlug = company?.slug || "unknown";
 
@@ -561,7 +729,7 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
   const learningsContext = await getLearningsContext(task.company_id);
 
   // Build enriched vault context with all available intelligence
-  const enrichedContext = [vaultContext, prContext, claudeMdContext, retryContext, learningsContext].filter(Boolean).join("\n\n");
+  const enrichedContext = [vaultContext, prContext, claudeMdContext, retryContext, learningsContext, warRoomContext, agentStats].filter(Boolean).join("\n\n");
 
   log("info", `[code] Executing in ${repoPath} with ${cli} (context: ${enrichedContext.length} chars)`, { task: task.title });
 
@@ -768,7 +936,9 @@ async function executeServiceTask(
   task: Task,
   cli: CliTool,
   mode: "research" | "content" | "ops" | "chat",
-  vaultContext: string = ""
+  vaultContext: string = "",
+  warRoomContext: string = "",
+  agentStats: string = ""
 ): Promise<ExecutionResult> {
   // Service tasks run in a scratch directory, not a repo
   const scratchDir = join(CONFIG.repoBaseDir, "_scratch");
@@ -788,7 +958,8 @@ async function executeServiceTask(
 
   log("info", `[${mode}] Executing with ${cli}`, { task: task.title, cwd: workDir });
 
-  const prompt = buildServicePrompt(task, mode, vaultContext);
+  const enrichedVaultContext = [vaultContext, warRoomContext, agentStats].filter(Boolean).join("\n\n");
+  const prompt = buildServicePrompt(task, mode, enrichedVaultContext);
   const result = await spawnCli(cli, workDir, prompt, task.id);
 
   // Store output as artifact in Supabase Storage
@@ -811,6 +982,212 @@ async function executeServiceTask(
       }
     } catch (err) {
       log("warn", `Failed to store artifact: ${err}`);
+    }
+  }
+
+  return result;
+}
+
+// ============================================
+// Skill Metrics Recording
+// ============================================
+
+async function recordSkillMetrics(task: Task, result: ExecutionResult, executionTimeMs: number) {
+  try {
+    const tokenCount = estimateTokens(result.output || "");
+    const costCents = estimateCost(task.cli_target, tokenCount);
+
+    await supabase.from("skill_metrics").insert({
+      skill_name: task.skill_name || task.task_type,
+      company_id: task.company_id,
+      task_id: task.id,
+      cli_target: task.cli_target,
+      model_used: task.cli_target === "claude" ? "sonnet-4" : task.cli_target === "gemini" ? "gemini-pro" : "unknown",
+      execution_time_ms: executionTimeMs,
+      token_count: tokenCount,
+      estimated_cost_cents: costCents,
+      success: result.success,
+      error_message: result.error?.slice(0, 500) || null,
+      code_quality_score: null, // filled by visual verify if available
+      test_pass_rate: null, // filled by test analysis if available
+    });
+  } catch (err) {
+    log("warn", `Skill metrics recording failed: ${err}`);
+  }
+}
+
+function estimateTokens(text: string): number {
+  // Rough estimate: 1 token ≈ 4 characters
+  return Math.ceil(text.length / 4);
+}
+
+function estimateCost(cli: string, tokens: number): number {
+  // Rough cost estimates in cents per 1M tokens (blended input/output)
+  const rates: Record<string, number> = {
+    claude: 900,   // ~$9/M blended (sonnet)
+    gemini: 312,   // ~$3.12/M blended
+    codex: 500,    // estimate
+  };
+  const rate = rates[cli] || 500;
+  return Math.round((tokens / 1_000_000) * rate * 100) / 100;
+}
+
+// ============================================
+// Agent Roster Update
+// ============================================
+
+async function updateAgentRoster(task: Task, success: boolean) {
+  try {
+    await supabase.rpc("update_agent_stats", {
+      agent_name: task.cli_target,
+      was_success: success,
+    });
+  } catch (err) {
+    log("warn", `Agent roster update failed: ${err}`);
+  }
+}
+
+// ============================================
+// Success Learning
+// ============================================
+
+async function recordSuccessLearning(task: Task, result: ExecutionResult) {
+  try {
+    await supabase.from("agent_learnings").insert({
+      task_id: task.id,
+      company_id: task.company_id,
+      outcome: "success",
+      what_happened: `Task "${task.title}" succeeded: ${result.summary || "Completed"}`.slice(0, 500),
+      root_cause: null,
+      prevention_rule: null,
+      error_type: null,
+      severity: "info",
+      stage: "completion",
+      skill_name: task.skill_name || task.task_type,
+      was_applied_to_skill: false,
+    });
+  } catch (err) {
+    log("warn", `Success learning recording failed: ${err}`);
+  }
+}
+
+// ============================================
+// Auto-Vault Intelligence Findings
+// ============================================
+
+async function autoVaultIntelligence(task: Task, result: ExecutionResult) {
+  try {
+    const titleLower = task.title.toLowerCase();
+    const isIntel = ["intelligence", "scan", "competitor", "market", "pricing", "seo"].some(k => titleLower.includes(k));
+    if (!isIntel || !result.success || !result.output) return;
+
+    const slug = task.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 80);
+    const today = new Date().toISOString().split("T")[0];
+
+    await supabase.from("vault_docs").upsert({
+      title: task.title,
+      slug: `intel-${today}-${slug}`,
+      category: "intelligence",
+      content: result.output.slice(0, 5000),
+      company_id: task.company_id,
+      file_path: `intelligence/${today}-${slug}.md`,
+      updated_by: task.cli_target || "dispatcher",
+      status: "active",
+    }, { onConflict: "slug" });
+
+    log("info", `[AUTO-VAULT] Saved intelligence finding: ${task.title}`);
+  } catch (err) {
+    log("warn", `Auto-vault failed: ${err}`);
+  }
+}
+
+// ============================================
+// Proposal Task Execution
+// ============================================
+
+async function executeProposalTask(task: Task, vaultContext: string, warRoomContext: string, agentStats: string): Promise<ExecutionResult> {
+  const prompt = [
+    `# Proposal Task: ${task.title}`,
+    "",
+    task.description || "",
+    "",
+    "## Instructions",
+    "Write a structured feature/strategy proposal using this format:",
+    "1. **Problem**: What problem does this solve? Include data/evidence.",
+    "2. **Solution**: What specifically should be built/done?",
+    "3. **Success Criteria**: How do we know it worked? Measurable outcomes.",
+    "4. **Effort Estimate**: Small (1-2 tasks), Medium (3-5 tasks), Large (6+ tasks)",
+    "5. **Priority**: Critical / High / Medium / Low — with justification",
+    "6. **Risks**: What could go wrong?",
+    "",
+    "Be specific and actionable. Include competitor references if relevant.",
+    "",
+    vaultContext,
+    warRoomContext,
+    agentStats,
+  ].filter(Boolean).join("\n");
+
+  const cli: CliTool = task.cli_target || "claude";
+  const company = task.company_registry;
+  const companySlug = company?.slug;
+  let workDir = join(CONFIG.repoBaseDir, "_scratch");
+
+  if (companySlug) {
+    const repoDirName = REPO_DIR_MAP[companySlug] || companySlug;
+    const repoPath = join(CONFIG.repoBaseDir, repoDirName);
+    if (existsSync(repoPath)) {
+      workDir = repoPath;
+    }
+  }
+
+  const result = await spawnCli(cli, workDir, prompt, task.id);
+
+  if (result.success && result.output) {
+    // Store proposal data as JSON
+    const proposalData = {
+      raw_output: result.output.slice(0, 5000),
+      created_by: task.cli_target,
+      created_at: new Date().toISOString(),
+    };
+
+    await supabase.from("task_queue").update({
+      proposal_data: proposalData,
+    }).eq("id", task.id);
+
+    // Create approval queue entry
+    await supabase.from("approval_queue").insert({
+      task_id: task.id,
+      company_id: task.company_id,
+      approval_type: "proposal",
+      title: `Proposal: ${task.title}`,
+      description: result.output.slice(0, 3000),
+      status: "pending",
+    });
+
+    // Email Steve with proposal
+    if (CONFIG.resendApiKey) {
+      const htmlBody = `
+        <h2>New Agent Proposal</h2>
+        <p><strong>From:</strong> ${task.cli_target} | <strong>Company:</strong> ${task.company_registry?.slug || "unknown"}</p>
+        <hr/>
+        ${markdownToHtml(result.output.slice(0, 3000))}
+        <hr/>
+        <p><em>Reply to approve or reject this proposal.</em></p>
+      `;
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${CONFIG.resendApiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: "MCM Forge <ops@mcmforge.com>",
+            to: CONFIG.steveEmail,
+            subject: `[Proposal] ${task.title.slice(0, 60)}`,
+            html: htmlBody,
+          }),
+        });
+      } catch (err) {
+        log("warn", `Proposal email failed: ${err}`);
+      }
     }
   }
 

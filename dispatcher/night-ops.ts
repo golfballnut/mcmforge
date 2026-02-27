@@ -327,6 +327,49 @@ async function reviewCompletedTasks(): Promise<string[]> {
     }
   }
 
+  // Review completed bakeoff groups
+  const { data: completedBakeoffs } = await supabase
+    .from("task_queue")
+    .select("id, title, bakeoff_group, cli_target, result_summary, status")
+    .not("bakeoff_group", "is", null)
+    .in("status", ["done", "review"])
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  if (completedBakeoffs && completedBakeoffs.length > 0) {
+    const groups: Record<string, typeof completedBakeoffs> = {};
+    for (const task of completedBakeoffs) {
+      if (!task.bakeoff_group) continue;
+      if (!groups[task.bakeoff_group]) groups[task.bakeoff_group] = [];
+      groups[task.bakeoff_group].push(task);
+    }
+
+    for (const [groupId, tasks] of Object.entries(groups)) {
+      if (tasks.length < 2) continue; // Need both entries
+      if (reviewedBakeoffs.has(groupId)) continue; // Already reviewed this cycle
+      const allDone = tasks.every(t => t.status === "done" || t.status === "review");
+      if (!allDone) continue;
+
+      // Simple comparison: both done, pick winner by summary length as proxy
+      const winner = tasks.reduce((a, b) =>
+        (a.result_summary || "").length > (b.result_summary || "").length ? a : b
+      );
+
+      // Post to war room
+      await supabase.from("communication_log").insert({
+        from_agent: "night-ops",
+        to_agent: "all",
+        channel: "war_room",
+        message: `[CODE-OFF RESULT] "${tasks[0].title}"\nWinner: ${winner.cli_target}\n${tasks.map(t => `${t.cli_target}: ${(t.result_summary || "No summary").slice(0, 100)}`).join("\n")}`,
+        summary: `Code-off winner: ${winner.cli_target} on "${tasks[0].title?.slice(0, 50)}"`,
+        company_id: null,
+        task_id: winner.id,
+      });
+
+      actions.push(`Code-off result: ${winner.cli_target} won "${tasks[0].title?.slice(0, 60)}"`);
+    }
+  }
+
   return actions;
 }
 
@@ -411,6 +454,9 @@ async function createFollowUpFromResearch(task: any): Promise<{ title: string; t
 
   if (!hasAction) return null;
 
+  // Extract the key insight for the task title (first sentence of summary)
+  const firstSentence = (task.result_summary || "").split(/[.!?\n]/)[0].trim();
+
   // Don't create follow-ups if we already have too many tasks
   const { count } = await supabase
     .from("task_queue")
@@ -430,8 +476,37 @@ async function createFollowUpFromResearch(task: any): Promise<{ title: string; t
     followUpCli = "gemini";
   }
 
-  // Extract the key insight for the task title (first sentence of summary)
-  const firstSentence = (task.result_summary || "").split(/[.!?\n]/)[0].trim();
+  // Upgrade to proposal if research contains strategic recommendations
+  if (summary.includes("recommend") || summary.includes("strategy") || summary.includes("plan") || summary.includes("proposal")) {
+    if (followUpType === "research") { // only upgrade if not already code
+      followUpType = "proposal";
+      followUpCli = "claude";
+    }
+  }
+
+  // Save to research_findings table
+  try {
+    await supabase.from("research_findings").insert({
+      topic: task.title,
+      finding: (task.result_summary || "").slice(0, 2000),
+      recommendation: firstSentence,
+      urgency: summary.includes("urgent") || summary.includes("critical") ? "high" : "medium",
+      proposed_action: followUpType,
+      status: "new",
+      company_id: task.company_id,
+      task_id: task.id,
+    });
+  } catch (err) {
+    log("warn", `Failed to save research finding: ${err}`);
+  }
+
+  // Urgent intel alert
+  if (summary.includes("critical") || summary.includes("urgent") || summary.includes("breaking")) {
+    const alertMsg = `URGENT INTEL: ${task.title}\n${firstSentence}`;
+    await sendTelegramAlert(alertMsg);
+    log("info", `[URGENT] Sent Telegram alert for: ${task.title}`);
+  }
+
   const actionTitle = firstSentence.length > 80
     ? firstSentence.slice(0, 77) + "..."
     : firstSentence;
@@ -460,6 +535,7 @@ async function createFollowUpFromResearch(task: any): Promise<{ title: string; t
       "Focus on the highest-impact, most concrete action item.",
       followUpType === "code" ? "Create a PR with the implementation. Include tests." : "",
       followUpType === "content" ? "Create the content asset. Save output as a markdown artifact." : "",
+      followUpType === "proposal" ? "Create a structured proposal with cost/benefit analysis and implementation plan." : "",
     ].filter(Boolean).join("\n"),
     task_type: followUpType,
     company_id: task.company_id,
@@ -582,6 +658,35 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
     .not("github_repo", "is", null);
   const companyRepoMap = new Map((companies || []).map(c => [c.id, c.github_repo]));
 
+  // Company rotation: ensure every active company gets attention
+  const { data: companyMetrics } = await supabase
+    .from("company_task_metrics")
+    .select("*");
+
+  const neglectedCompanies = (companyMetrics || [])
+    .filter(c => {
+      if (!c.last_task_at) return true; // never had a task
+      const hoursSinceTask = (Date.now() - new Date(c.last_task_at).getTime()) / (1000 * 60 * 60);
+      return hoursSinceTask > 48;
+    })
+    .map(c => c.slug);
+
+  if (neglectedCompanies.length > 0) {
+    log("info", `[ROTATION] Neglected companies (>48h no tasks): ${neglectedCompanies.join(", ")}`);
+    // Prioritize templates from neglected companies
+    taskTemplates.sort((a, b) => {
+      const aNeglected = neglectedCompanies.some(slug => {
+        const match = companyMetrics?.find(c => c.slug === slug);
+        return match && a.company_id === match.id;
+      }) ? 1 : 0;
+      const bNeglected = neglectedCompanies.some(slug => {
+        const match = companyMetrics?.find(c => c.slug === slug);
+        return match && b.company_id === match.id;
+      }) ? 1 : 0;
+      return bNeglected - aNeglected;
+    });
+  }
+
   for (const template of taskTemplates) {
     // Normalized dedup — catches title variants
     if (titleMatchesExisting(template.title, existingTitleList)) {
@@ -630,6 +735,28 @@ async function queueOvernightOps(report: HealthReport): Promise<string[]> {
         cli_target: cli,
       });
       if (id) actions.push(`Routed: ${template.title} → ${cli}`);
+    }
+  }
+
+  // Weekly code-off: same task, both agents (code tasks only, max 1 per week)
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: recentBakeoffs } = await supabase
+    .from("task_queue")
+    .select("id")
+    .not("bakeoff_group", "is", null)
+    .gte("created_at", oneWeekAgo);
+
+  if ((!recentBakeoffs || recentBakeoffs.length === 0) && actions.length > 0) {
+    // Find a suitable code task for a code-off
+    const codeTemplate = taskTemplates.find(t => t.task_type === "code" && t.priority !== "low");
+    if (codeTemplate) {
+      const bakeoffGroup = crypto.randomUUID();
+      const claudeId = await createTask({ ...codeTemplate, cli_target: "claude", bakeoff_group: bakeoffGroup });
+      const geminiId = await createTask({ ...codeTemplate, cli_target: "gemini", bakeoff_group: bakeoffGroup });
+      if (claudeId && geminiId) {
+        actions.push(`Code-off created: "${codeTemplate.title}" (Claude vs Gemini)`);
+        log("info", `[CODE-OFF] Created bakeoff: ${codeTemplate.title}`);
+      }
     }
   }
 
@@ -769,6 +896,184 @@ async function getTaskTemplatesFromVault(): Promise<Array<TaskTemplate & { compa
       company_id: dirtsyncId,
       priority: "high",
     });
+  }
+
+  // ========== Revenue Business Templates ==========
+
+  // Hot Golf Brands (priority: first after DirtSync)
+  const hotGolfId = await getCompanyId("hotgolfbrands");
+  if (hotGolfId) {
+    templates.push({
+      title: "Research: Hot Golf Brands competitor pricing analysis",
+      description: [
+        "## Competitor Pricing Research",
+        "Analyze competitor pricing for bulk mesh golf ball bags (48-count and 100-count).",
+        "Check: Amazon, eBay, Walmart, direct competitors.",
+        "Report: price ranges, shipping costs, bundle deals, customer reviews.",
+        "Recommend: optimal pricing strategy for HGB launch.",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: hotGolfId,
+      priority: "medium",
+    });
+
+    templates.push({
+      title: "Research: Hot Golf Brands Google Shopping setup strategy",
+      description: [
+        "## Google Shopping Strategy",
+        "Research requirements for Google Shopping integration with Shopify.",
+        "Cover: Merchant Center setup, product feed optimization, bidding strategy.",
+        "Recommend: budget allocation and expected ROAS for golf ball category.",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: hotGolfId,
+      priority: "medium",
+    });
+
+    templates.push({
+      title: "Research: Hot Golf Brands launch marketing plan",
+      description: [
+        "## Launch Marketing Plan",
+        "Create a launch marketing plan for hotgolfbrands.com.",
+        "Include: social media strategy, email marketing, influencer outreach.",
+        "Focus: budget-conscious golf audience, bulk buyers, golf course managers.",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: hotGolfId,
+      priority: "low",
+    });
+  }
+
+  // Golf Ball Nut
+  const gbnId = await getCompanyId("golfballnut");
+  if (gbnId) {
+    templates.push({
+      title: "Research: Golf Ball Nut email re-engagement strategy",
+      description: [
+        "## Email Re-engagement Strategy",
+        "GBN has a 300K+ email list. Design a re-engagement campaign:",
+        "1. Segment analysis: active vs dormant subscribers",
+        "2. Win-back email sequence (3-5 emails)",
+        "3. Subject line strategies for golf audience",
+        "4. Cross-sell opportunities with Hot Golf Brands",
+        "5. Expected re-engagement rates and revenue projections",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: gbnId,
+      priority: "medium",
+    });
+
+    templates.push({
+      title: "Research: Golf Ball Nut SEO audit and opportunities",
+      description: [
+        "## SEO Audit",
+        "Comprehensive SEO audit for golfballnut.com:",
+        "- Current organic traffic and keyword rankings",
+        "- Technical SEO issues (page speed, mobile, structured data)",
+        "- Content gaps vs competitors (lostgolfballs.com, etc.)",
+        "- Local SEO opportunities",
+        "- Recommend top 5 quick-win actions",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: gbnId,
+      priority: "medium",
+    });
+  }
+
+  // Links Choice
+  const lcId = await getCompanyId("linkschoice");
+  if (lcId) {
+    templates.push({
+      title: "Research: Links Choice B2B outreach strategy",
+      description: [
+        "## B2B Sales Strategy",
+        "Links Choice processes 20M+ golf balls/year at their plant.",
+        "Research B2B outreach strategy for golf course partnerships:",
+        "- Target: golf courses, driving ranges, resellers",
+        "- Value prop: bulk pricing, quality grades, custom sorting",
+        "- Outreach channels: email, LinkedIn, trade shows",
+        "- Recommend: initial outreach template and target list criteria",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: lcId,
+      priority: "low",
+    });
+
+    templates.push({
+      title: "Research: Links Choice market and capacity analysis",
+      description: [
+        "## Market Analysis",
+        "Analyze the recycled golf ball market:",
+        "- Market size and growth trends",
+        "- Key competitors and their capacity",
+        "- Links Choice competitive advantages (20M/year plant)",
+        "- Pricing trends by grade (AAAA, AAA, AA)",
+        "- Recommend: capacity utilization strategy",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: lcId,
+      priority: "low",
+    });
+  }
+
+  // ========== Intelligence Scanning Templates ==========
+
+  // Daily AI/tech scanning (Gemini)
+  const mcmforgeId = await getCompanyId("mcmforge");
+  if (mcmforgeId) {
+    templates.push({
+      title: "Intelligence: Daily AI model and tool updates scan",
+      description: [
+        "## Daily AI Intelligence Scan",
+        "Check for new releases and updates in AI/ML tools:",
+        "- New model releases (OpenAI, Anthropic, Google, Meta)",
+        "- Tool updates (Cursor, Copilot, Claude Code, Windsurf)",
+        "- New frameworks or libraries gaining traction",
+        "- Pricing changes or new tiers",
+        "Report: summarize top 3-5 findings with links and relevance to MCM Forge.",
+      ].join("\n"),
+      task_type: "research",
+      cli_target: "gemini",
+      company_id: mcmforgeId,
+      priority: "low",
+    });
+  }
+
+  // Weekly competitor monitoring per business (rotate)
+  const dayOfWeek = new Date().getDay(); // 0=Sun, 1=Mon, etc.
+  const competitorTargets = [
+    { slug: "dirtsync", competitors: "OnX Hunt, AllTrails, Gaia GPS", day: 1 },
+    { slug: "golfballnut", competitors: "lostgolfballs.com, 2ndswing.com, Amazon golf ball sellers", day: 3 },
+    { slug: "hotgolfbrands", competitors: "Amazon bulk golf balls, Walmart golf balls, eBay bulk sellers", day: 5 },
+  ];
+
+  for (const target of competitorTargets) {
+    if (dayOfWeek === target.day) {
+      const compId = await getCompanyId(target.slug);
+      if (compId) {
+        templates.push({
+          title: `Intelligence: ${target.slug} weekly competitor scan`,
+          description: [
+            `## Weekly Competitor Monitoring — ${target.slug}`,
+            `Competitors to monitor: ${target.competitors}`,
+            "Check for: new features, pricing changes, marketing campaigns, customer reviews.",
+            "Rate each finding: Critical / High / Medium / Low urgency.",
+            "Recommend: specific actions we should take in response.",
+          ].join("\n"),
+          task_type: "research",
+          cli_target: "gemini",
+          company_id: compId,
+          priority: "medium",
+        });
+      }
+    }
   }
 
   return templates;
@@ -955,6 +1260,115 @@ async function sendDailyBriefEmail(report: HealthReport, reviewActions: string[]
     ? trailFindings.map(f => `<li>${f}</li>`).join("")
     : "<li style='color:#6b7280;'>Trail data looks clean</li>";
 
+  // Agent leaderboard (7-day)
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: leaderboardData } = await supabase
+    .from("skill_metrics")
+    .select("cli_target, success, execution_time_ms, estimated_cost_cents")
+    .gte("created_at", sevenDaysAgo);
+
+  let leaderboardHtml = "";
+  if (leaderboardData && leaderboardData.length > 0) {
+    const byAgent: Record<string, { total: number; success: number; totalTime: number; totalCost: number }> = {};
+    for (const m of leaderboardData) {
+      const agent = m.cli_target || "unknown";
+      if (!byAgent[agent]) byAgent[agent] = { total: 0, success: 0, totalTime: 0, totalCost: 0 };
+      byAgent[agent].total++;
+      if (m.success) byAgent[agent].success++;
+      byAgent[agent].totalTime += m.execution_time_ms || 0;
+      byAgent[agent].totalCost += Number(m.estimated_cost_cents || 0);
+    }
+
+    const rows = Object.entries(byAgent)
+      .sort((a, b) => b[1].total - a[1].total)
+      .map(([agent, stats]) => {
+        const rate = Math.round((stats.success / stats.total) * 100);
+        const avgTime = Math.round(stats.totalTime / stats.total / 1000);
+        const cost = (stats.totalCost / 100).toFixed(2);
+        return `<tr><td><strong>${agent}</strong></td><td>${stats.total}</td><td>${rate}%</td><td>${avgTime}s</td><td>$${cost}</td></tr>`;
+      }).join("");
+
+    leaderboardHtml = `
+      <h3 style="font-size:14px;color:#f59e0b;margin:16px 0 8px;">Agent Leaderboard (7-day)</h3>
+      <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;font-size:12px;color:#d4d4d4;border-color:#444;">
+        <tr style="background:#262626;"><th>Agent</th><th>Tasks</th><th>Success</th><th>Avg Time</th><th>Cost</th></tr>
+        ${rows}
+      </table>
+    `;
+  }
+
+  // Compute usage (24h)
+  const { data: computeData } = await supabase
+    .from("skill_metrics")
+    .select("cli_target, token_count, estimated_cost_cents, success, company_id")
+    .gte("created_at", oneDayAgo);
+
+  let computeHtml = "";
+  if (computeData && computeData.length > 0) {
+    const totalTokens = computeData.reduce((s, m) => s + (m.token_count || 0), 0);
+    const totalCost = computeData.reduce((s, m) => s + Number(m.estimated_cost_cents || 0), 0) / 100;
+    const successCount = computeData.filter(m => m.success).length;
+    const wastePercent = Math.round(((computeData.length - successCount) / computeData.length) * 100);
+
+    // By agent
+    const byAgentCost: Record<string, number> = {};
+    for (const m of computeData) {
+      const agent = m.cli_target || "unknown";
+      byAgentCost[agent] = (byAgentCost[agent] || 0) + Number(m.estimated_cost_cents || 0);
+    }
+    const agentBreakdown = Object.entries(byAgentCost)
+      .map(([a, c]) => `${a} $${(c / 100).toFixed(2)}`).join(" | ");
+
+    computeHtml = `
+      <h3 style="font-size:14px;color:#10b981;margin:16px 0 8px;">Compute Usage (24h)</h3>
+      <ul style="font-size:12px;color:#d4d4d4;padding-left:20px;margin:0 0 8px;">
+        <li>Total tokens: ~${(totalTokens / 1000).toFixed(0)}K (est. $${totalCost.toFixed(2)})</li>
+        <li>By agent: ${agentBreakdown}</li>
+        <li>Productive: ${100 - wastePercent}% | Wasted (failures): ${wastePercent}%</li>
+      </ul>
+    `;
+  }
+
+  // War Room highlights (24h)
+  const { data: warRoomPosts } = await supabase
+    .from("communication_log")
+    .select("from_agent, message, created_at")
+    .eq("channel", "war_room")
+    .gte("created_at", oneDayAgo)
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  let warRoomHtml = "";
+  if (warRoomPosts && warRoomPosts.length > 0) {
+    const items = warRoomPosts.map(p => {
+      const time = new Date(p.created_at).toLocaleString("en-US", { timeZone: "America/New_York", hour: "numeric", minute: "2-digit" });
+      return `<li><strong>${p.from_agent}</strong> [${time}]: ${(p.message || "").slice(0, 150)}</li>`;
+    }).join("");
+    warRoomHtml = `<h3 style="font-size:14px;color:#8b5cf6;margin:16px 0 8px;">War Room (24h)</h3><ul style="font-size:12px;color:#d4d4d4;padding-left:20px;margin:0 0 8px;">${items}</ul>`;
+  }
+
+  // Per-company task breakdown
+  const { data: companyBreakdown } = await supabase
+    .from("company_task_metrics")
+    .select("*");
+
+  let companyHtml = "";
+  if (companyBreakdown && companyBreakdown.length > 0) {
+    const companyRows = companyBreakdown
+      .sort((a: any, b: any) => (b.last_7d || 0) - (a.last_7d || 0))
+      .map((c: any) => {
+        const lastTask = c.last_task_at ? new Date(c.last_task_at).toLocaleDateString() : "Never";
+        return `<tr><td><strong>${c.name}</strong></td><td>${c.total_tasks || 0}</td><td>${c.completed || 0}</td><td>${c.last_7d || 0}</td><td>${lastTask}</td></tr>`;
+      }).join("");
+    companyHtml = `
+      <h3 style="font-size:14px;color:#ec4899;margin:16px 0 8px;">Company Coverage</h3>
+      <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;font-size:12px;color:#d4d4d4;border-color:#444;">
+        <tr style="background:#262626;"><th>Company</th><th>Total</th><th>Done</th><th>Last 7d</th><th>Last Task</th></tr>
+        ${companyRows}
+      </table>
+    `;
+  }
+
   const html = `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"></head>
@@ -995,6 +1409,11 @@ async function sendDailyBriefEmail(report: HealthReport, reviewActions: string[]
   <h2 style="font-size:15px;color:#06b6d4;margin:0 0 8px;">COO Actions (overnight)</h2>
   <ul style="font-size:13px;color:#d4d4d4;padding-left:20px;margin:0 0 16px;">${cooActionsHtml}</ul>
 
+  ${leaderboardHtml}
+  ${computeHtml}
+  ${warRoomHtml}
+  ${companyHtml}
+
   <hr style="border:none;border-top:1px solid #333;margin:24px 0;" />
   <p style="text-align:center;font-size:12px;color:#666;">
     <a href="https://mcmforge.com" style="color:#666;">mcmforge.com</a> &nbsp;|&nbsp;
@@ -1018,6 +1437,74 @@ async function sendDailyBriefEmail(report: HealthReport, reviewActions: string[]
     status: "sent",
     email_sent_at: new Date().toISOString(),
   });
+}
+
+// ── Learning → Skill Updates ──────────────────────
+
+async function applyLearningsToSkills() {
+  try {
+    // Find unapplied failure patterns (3+ occurrences of same error_type)
+    const { data: learnings } = await supabase
+      .from("agent_learnings")
+      .select("id, error_type, prevention_rule, skill_name, company_id")
+      .eq("was_applied_to_skill", false)
+      .eq("outcome", "failure");
+
+    if (!learnings || learnings.length === 0) return;
+
+    // Group by error_type
+    const byType: Record<string, typeof learnings> = {};
+    for (const l of learnings) {
+      const key = l.error_type || "unknown";
+      if (!byType[key]) byType[key] = [];
+      byType[key].push(l);
+    }
+
+    for (const [errorType, items] of Object.entries(byType)) {
+      if (items.length < 3) continue; // Need 3+ occurrences to act
+
+      // Create a content task to update the relevant skill
+      const preventionRules = items
+        .map(i => i.prevention_rule)
+        .filter(Boolean)
+        .slice(0, 5)
+        .join("\n- ");
+
+      const skillName = items[0].skill_name || "general";
+
+      await createTask({
+        title: `Update skill: address recurring ${errorType} failures`,
+        description: [
+          `## Skill Update: ${errorType} pattern`,
+          `This error pattern has occurred ${items.length} times.`,
+          "",
+          "### Prevention rules to incorporate:",
+          `- ${preventionRules}`,
+          "",
+          "### Task:",
+          `Update the "${skillName}" skill document to include these prevention rules.`,
+          "Add specific instructions to avoid this error pattern in future tasks.",
+        ].join("\n"),
+        task_type: "content",
+        cli_target: "claude",
+        company_id: items[0].company_id || (await getCompanyId("mcmforge")) || "",
+        priority: "low",
+      });
+
+      // Mark learnings as applied
+      const ids = items.map(i => i.id).filter(Boolean);
+      if (ids.length > 0) {
+        await supabase
+          .from("agent_learnings")
+          .update({ was_applied_to_skill: true, applied_at: new Date().toISOString() })
+          .in("id", ids);
+      }
+
+      log("info", `[LEARNING→SKILL] Created skill update for ${errorType} (${items.length} occurrences)`);
+    }
+  } catch (err) {
+    log("warn", `applyLearningsToSkills failed: ${err}`);
+  }
 }
 
 // ── Main Cycle ──────────────────────────────────
@@ -1053,6 +1540,9 @@ async function cycle() {
 
   // Phase 4.5: Escalate stale approvals
   await escalateStaleApprovals();
+
+  // Phase 5: Apply learnings to skills
+  await applyLearningsToSkills();
 
   // Send Telegram alert if there are issues
   if (report.alerts.length > 0) {

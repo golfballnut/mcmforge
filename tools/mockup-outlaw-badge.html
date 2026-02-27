@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #fff; }
+
+  .container { width: 1280px; padding: 40px; }
+
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+  .subtitle { font-size: 15px; color: #9CA3AF; margin-bottom: 32px; }
+  .tag { display: inline-block; background: #DC2626; color: #fff; font-size: 11px; font-weight: 700;
+         padding: 3px 10px; border-radius: 4px; margin-right: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tag.fix { background: #16A34A; }
+
+  .comparison { display: flex; gap: 24px; margin-bottom: 40px; }
+  .panel { flex: 1; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+  .panel-header { padding: 12px 16px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .panel-header.before { background: #7F1D1D; color: #FCA5A5; }
+  .panel-header.after { background: #14532D; color: #86EFAC; }
+
+  /* Simulated map area */
+  .map-sim { background: #2D4A2D; height: 340px; position: relative; overflow: hidden; padding: 20px; }
+  .map-sim::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(34,80,34,0.8) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 60%, rgba(44,70,34,0.6) 0%, transparent 50%);
+  }
+
+  /* Trail lines */
+  .trail { position: absolute; height: 3px; border-radius: 2px; }
+  .trail.official { background: #1D4ED8; }
+  .trail.official.easy { background: #0f6b1f; }
+  .trail.official.hard { background: #333; box-shadow: 0 0 4px rgba(255,255,255,0.3); }
+  .trail.official.expert { background: #D9342E; }
+
+  .trail.outlaw {
+    background: repeating-linear-gradient(90deg, #888 0px, #888 8px, transparent 8px, transparent 14px);
+    height: 2.5px;
+  }
+  .trail.outlaw.colored {
+    height: 2.8px;
+  }
+  .trail.outlaw.colored.moderate {
+    background: repeating-linear-gradient(90deg, #1D4ED8 0px, #1D4ED8 8px, transparent 8px, transparent 14px);
+  }
+  .trail.outlaw.colored.easy {
+    background: repeating-linear-gradient(90deg, #0f6b1f 0px, #0f6b1f 8px, transparent 8px, transparent 14px);
+  }
+  .trail.outlaw.colored.hard {
+    background: repeating-linear-gradient(90deg, #333 0px, #333 8px, transparent 8px, transparent 14px);
+  }
+  .trail.outlaw.colored.expert {
+    background: repeating-linear-gradient(90deg, #D9342E 0px, #D9342E 8px, transparent 8px, transparent 14px);
+  }
+
+  /* White casing behind trails */
+  .casing { position: absolute; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.3); }
+
+  /* Old plain badge */
+  .badge-old {
+    position: absolute; display: flex; align-items: center; gap: 4px;
+    background: rgba(30,30,30,0.9); border-radius: 8px; padding: 3px 8px;
+    border: 1px solid rgba(255,255,255,0.15); font-size: 9px; font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-old .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* New split pill badge */
+  .badge-new {
+    position: absolute; display: flex; align-items: center;
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 9px; font-weight: 600; white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .badge-new .ol-side {
+    background: #EAB308; color: #000; padding: 3px 6px; font-weight: 700;
+  }
+  .badge-new .name-side {
+    background: rgba(30,30,30,0.9); color: #fff; padding: 3px 8px 3px 6px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .badge-new .name-side .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Callout annotations */
+  .callout {
+    position: absolute; background: rgba(0,0,0,0.85); color: #FCA5A5;
+    padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 500;
+    border: 1px solid #DC2626; white-space: nowrap;
+  }
+  .callout.good { color: #86EFAC; border-color: #16A34A; }
+
+  /* Legend */
+  .legend {
+    position: absolute; bottom: 12px; left: 12px;
+    background: rgba(30,30,30,0.9); border-radius: 8px; padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.15); font-size: 10px;
+    backdrop-filter: blur(8px);
+  }
+  .legend-title { font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; font-size: 9px; margin-bottom: 6px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; color: #E5E7EB; }
+  .legend-item .swatch { width: 10px; height: 10px; border-radius: 50%; }
+  .legend-item .line { width: 20px; height: 3px; border-radius: 2px; }
+  .legend-item .line.dashed {
+    background: repeating-linear-gradient(90deg, #fff 0px, #fff 4px, transparent 4px, transparent 7px);
+    height: 2px;
+  }
+
+  /* Spec table */
+  .spec { margin-top: 32px; }
+  .spec h2 { font-size: 18px; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; background: #1F2937; color: #9CA3AF; font-weight: 600;
+       text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; border-bottom: 1px solid #374151; }
+  td { padding: 10px 12px; border-bottom: 1px solid #1F2937; color: #D1D5DB; }
+  tr:hover td { background: rgba(255,255,255,0.03); }
+  .color-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+
+  .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #333; color: #6B7280; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div>
+    <span class="tag">Gap Found</span>
+    <span class="tag fix">Fix Proposed</span>
+  </div>
+  <h1 style="margin-top:12px;">Outlaw Trails Have No Visual Identity</h1>
+  <div class="subtitle">Identified by MCM Forge Night-Ops &bull; DirtSync Map &bull; Hatfield-McCoy Trail System</div>
+
+  <div class="comparison">
+    <!-- BEFORE PANEL -->
+    <div class="panel">
+      <div class="panel-header before">BEFORE &mdash; Current Production</div>
+      <div class="map-sim">
+        <!-- Official trails with difficulty colors -->
+        <div class="casing" style="top:60px; left:40px; width:220px; transform:rotate(-8deg);"></div>
+        <div class="trail official" style="top:61px; left:40px; width:220px; transform:rotate(-8deg);"></div>
+        <div class="badge-old" style="top:48px; left:120px;">
+          <div class="dot" style="background:#1D4ED8;"></div> RO 22
+        </div>
+
+        <div class="casing" style="top:120px; left:60px; width:180px; transform:rotate(12deg);"></div>
+        <div class="trail official easy" style="top:121px; left:60px; width:180px; transform:rotate(12deg);"></div>
+        <div class="badge-old" style="top:108px; left:110px;">
+          <div class="dot" style="background:#0f6b1f;"></div> Rockhouse
+        </div>
+
+        <div class="casing" style="top:180px; left:30px; width:250px; transform:rotate(-3deg);"></div>
+        <div class="trail official expert" style="top:181px; left:30px; width:250px; transform:rotate(-3deg);"></div>
+        <div class="badge-old" style="top:168px; left:100px;">
+          <div class="dot" style="background:#D9342E;"></div> Braveheart
+        </div>
+
+        <!-- Outlaw trails — PLAIN, NO IDENTITY -->
+        <div class="trail outlaw" style="top:230px; left:80px; width:200px; transform:rotate(6deg);"></div>
+        <div class="trail outlaw" style="top:260px; left:120px; width:160px; transform:rotate(-10deg);"></div>
+        <div class="trail outlaw" style="top:290px; left:50px; width:190px; transform:rotate(3deg);"></div>
+
+        <!-- Callouts -->
+        <div class="callout" style="top:230px; right:30px;">No name</div>
+        <div class="callout" style="top:260px; right:30px;">No difficulty</div>
+        <div class="callout" style="top:290px; right:30px;">No identity &darr;</div>
+
+        <!-- Question mark area -->
+        <div style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
+                    font-size:48px; color:rgba(255,255,255,0.2); font-weight:700;">???</div>
+      </div>
+    </div>
+
+    <!-- AFTER PANEL -->
+    <div class="panel">
+      <div class="panel-header after">AFTER &mdash; Proposed Fix</div>
+      <div class="map-sim">
+        <!-- Official trails (same) -->
+        <div class="casing" style="top:60px; left:40px; width:220px; transform:rotate(-8deg);"></div>
+        <div class="trail official" style="top:61px; left:40px; width:220px; transform:rotate(-8deg);"></div>
+        <div class="badge-old" style="top:48px; left:120px;">
+          <div class="dot" style="background:#1D4ED8;"></div> RO 22
+        </div>
+
+        <div class="casing" style="top:120px; left:60px; width:180px; transform:rotate(12deg);"></div>
+        <div class="trail official easy" style="top:121px; left:60px; width:180px; transform:rotate(12deg);"></div>
+        <div class="badge-old" style="top:108px; left:110px;">
+          <div class="dot" style="background:#0f6b1f;"></div> Rockhouse
+        </div>
+
+        <div class="casing" style="top:180px; left:30px; width:250px; transform:rotate(-3deg);"></div>
+        <div class="trail official expert" style="top:181px; left:30px; width:250px; transform:rotate(-3deg);"></div>
+        <div class="badge-old" style="top:168px; left:100px;">
+          <div class="dot" style="background:#D9342E;"></div> Braveheart
+        </div>
+
+        <!-- Outlaw trails — WITH COLORED DASHES + SPLIT BADGES -->
+        <div class="casing" style="top:228px; left:80px; width:200px; transform:rotate(6deg); background:rgba(255,255,255,0.25);"></div>
+        <div class="trail outlaw colored moderate" style="top:229px; left:80px; width:200px; transform:rotate(6deg);"></div>
+        <div class="badge-new" style="top:215px; left:140px;">
+          <div class="ol-side">OL</div>
+          <div class="name-side"><div class="dot" style="background:#1D4ED8;"></div> PC 39</div>
+        </div>
+
+        <div class="casing" style="top:258px; left:120px; width:160px; transform:rotate(-10deg); background:rgba(255,255,255,0.25);"></div>
+        <div class="trail outlaw colored easy" style="top:259px; left:120px; width:160px; transform:rotate(-10deg);"></div>
+        <div class="badge-new" style="top:245px; left:160px;">
+          <div class="ol-side">OL</div>
+          <div class="name-side"><div class="dot" style="background:#0f6b1f;"></div> PC 20</div>
+        </div>
+
+        <div class="casing" style="top:288px; left:50px; width:190px; transform:rotate(3deg); background:rgba(255,255,255,0.25);"></div>
+        <div class="trail outlaw colored expert" style="top:289px; left:50px; width:190px; transform:rotate(3deg);"></div>
+        <div class="badge-new" style="top:275px; left:100px;">
+          <div class="ol-side">OL</div>
+          <div class="name-side"><div class="dot" style="background:#D9342E;"></div> PC 30</div>
+        </div>
+
+        <!-- Callouts -->
+        <div class="callout good" style="top:215px; right:20px;">Gold "OL" badge &check;</div>
+        <div class="callout good" style="top:247px; right:20px;">Difficulty dot &check;</div>
+        <div class="callout good" style="top:279px; right:20px;">Trail name &check;</div>
+
+        <!-- Legend -->
+        <div class="legend">
+          <div class="legend-title">Trail Legend</div>
+          <div class="legend-item"><div class="line" style="background:#0f6b1f;"></div> Easy</div>
+          <div class="legend-item"><div class="line" style="background:#1D4ED8;"></div> Moderate</div>
+          <div class="legend-item"><div class="line" style="background:#333;"></div> Hard</div>
+          <div class="legend-item"><div class="line" style="background:#D9342E;"></div> Expert</div>
+          <div style="border-top:1px solid rgba(255,255,255,0.1); margin:6px 0;"></div>
+          <div class="legend-item"><div class="line" style="background:#fff;"></div> Official</div>
+          <div class="legend-item"><div class="line dashed"></div> Outlaw</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC TABLE -->
+  <div class="spec">
+    <h2>Implementation Spec</h2>
+    <table>
+      <tr>
+        <th>Element</th>
+        <th>Before</th>
+        <th>After</th>
+      </tr>
+      <tr>
+        <td>Outlaw trail lines</td>
+        <td>Gray dashed (#888)</td>
+        <td>Difficulty-colored dashed<br>
+          <span class="color-swatch" style="background:#0f6b1f;"></span>Easy
+          <span class="color-swatch" style="background:#1D4ED8;"></span>Moderate
+          <span class="color-swatch" style="background:#333;"></span>Hard
+          <span class="color-swatch" style="background:#D9342E;"></span>Expert
+        </td>
+      </tr>
+      <tr>
+        <td>Outlaw badge</td>
+        <td>None &mdash; anonymous dashed lines</td>
+        <td>Split pill: Gold "OL" left | difficulty dot + name right</td>
+      </tr>
+      <tr>
+        <td>Badge visibility</td>
+        <td>N/A</td>
+        <td>minzoom 10, toggles with outlaw layer</td>
+      </tr>
+      <tr>
+        <td>Casing</td>
+        <td>Black (#000), 4px, 0.7 opacity</td>
+        <td>White (#fff), 4.5px, 0.3 opacity (matches official trails)</td>
+      </tr>
+      <tr>
+        <td>Tests required</td>
+        <td>0 tests</td>
+        <td>21+ unit tests (canvas render, difficulty parsing, layer config)</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    MCM Forge &bull; Automated Gap Detection &bull; Reply APPROVE to create task &bull; Reply DENY to skip
+  </div>
+
+</div>
+</body>
+</html>

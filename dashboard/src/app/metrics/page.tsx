@@ -13,13 +13,13 @@ async function getMetrics() {
 }
 
 function formatMs(ms: number | null): string {
-  if (ms == null) return "—";
+  if (ms == null) return "\u2014";
   if (ms < 1000) return `${ms}ms`;
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
 function formatCost(cents: number | null): string {
-  if (cents == null) return "—";
+  if (cents == null) return "\u2014";
   return `$${(cents / 100).toFixed(4)}`;
 }
 
@@ -50,8 +50,8 @@ export default async function MetricsPage() {
   return (
     <div>
       <div className="mb-6 md:mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-stone-100">Skill Metrics</h1>
-        <p className="text-stone-500 mt-1 text-sm md:text-base">Agent skill execution performance and cost tracking</p>
+        <h1 className="text-2xl md:text-3xl font-medium text-[#202124]">Skill Metrics</h1>
+        <p className="text-[#5f6368] mt-1 text-sm md:text-base">Agent skill execution performance and cost tracking</p>
       </div>
 
       {/* Summary Cards */}
@@ -59,30 +59,30 @@ export default async function MetricsPage() {
         <SummaryCard
           label="Total Executions"
           value={totalExecutions.toLocaleString()}
-          color="orange"
+          color="#1a73e8"
         />
         <SummaryCard
           label="Success Rate"
           value={`${successRate}%`}
-          color={Number(successRate) >= 80 ? "green" : "amber"}
+          color={Number(successRate) >= 80 ? "#34a853" : "#fbbc04"}
         />
         <SummaryCard
           label="Avg Execution Time"
           value={formatMs(avgExecutionMs)}
-          color="yellow"
+          color="#a142f4"
         />
         <SummaryCard
           label="Total Cost"
           value={`$${(totalCostCents / 100).toFixed(2)}`}
-          color="amber"
+          color="#fa7b17"
         />
       </div>
 
       {/* Recent Executions */}
       <div>
-        <h2 className="text-lg font-semibold mb-4 text-stone-200">Recent Executions</h2>
+        <h2 className="text-lg font-medium mb-4 text-[#202124]">Recent Executions</h2>
         {rows.length === 0 ? (
-          <div className="text-stone-600 text-sm p-12 border border-stone-800 rounded-xl text-center">
+          <div className="text-[#5f6368] text-sm p-12 border border-[#dadce0] bg-white rounded-xl text-center">
             No metrics recorded yet
           </div>
         ) : (
@@ -92,41 +92,41 @@ export default async function MetricsPage() {
               {rows.map((row) => (
                 <div
                   key={row.id}
-                  className="bg-stone-900/50 border border-stone-800 rounded-lg p-4"
+                  className="bg-white border border-[#dadce0] rounded-lg p-4"
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
-                      <p className="font-medium text-white text-sm">{row.skill_name}</p>
+                      <p className="font-medium text-[#202124] text-sm">{row.skill_name}</p>
                       {row.company_registry?.name && (
-                        <p className="text-xs text-stone-600">{row.company_registry.name}</p>
+                        <p className="text-xs text-[#5f6368]">{row.company_registry.name}</p>
                       )}
                     </div>
                     {row.success ? (
-                      <span className="px-2 py-0.5 bg-green-500/10 border border-green-500/20 text-green-400 text-xs rounded shrink-0">
+                      <span className="px-2 py-0.5 bg-green-50 border border-green-200 text-green-700 text-xs rounded shrink-0">
                         success
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded shrink-0">
+                      <span className="px-2 py-0.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded shrink-0">
                         failed
                       </span>
                     )}
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
                     <div>
-                      <p className="text-stone-600">Time</p>
-                      <p className="text-stone-300">{formatMs(row.execution_time_ms)}</p>
+                      <p className="text-[#5f6368]">Time</p>
+                      <p className="text-[#202124]">{formatMs(row.execution_time_ms)}</p>
                     </div>
                     <div>
-                      <p className="text-stone-600">Tokens</p>
-                      <p className="text-stone-300">{row.token_count != null ? row.token_count.toLocaleString() : "—"}</p>
+                      <p className="text-[#5f6368]">Tokens</p>
+                      <p className="text-[#202124]">{row.token_count != null ? row.token_count.toLocaleString() : "\u2014"}</p>
                     </div>
                     <div>
-                      <p className="text-stone-600">Cost</p>
-                      <p className="text-stone-300">{formatCost(row.estimated_cost_cents)}</p>
+                      <p className="text-[#5f6368]">Cost</p>
+                      <p className="text-[#202124]">{formatCost(row.estimated_cost_cents)}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-stone-500">
-                    <span className="font-mono">{row.model_used ?? "—"}</span>
+                  <div className="flex items-center gap-2 mt-2 text-xs text-[#5f6368]">
+                    <span className="font-mono">{row.model_used ?? "\u2014"}</span>
                     <span>&middot;</span>
                     <span>{formatDate(row.created_at)}</span>
                   </div>
@@ -135,62 +135,62 @@ export default async function MetricsPage() {
             </div>
 
             {/* Desktop: Table layout */}
-            <div className="hidden md:block border border-stone-800 rounded-xl overflow-hidden">
+            <div className="hidden md:block border border-[#dadce0] bg-white rounded-xl overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-stone-800 bg-stone-900/80">
-                    <th className="text-left px-4 py-3 text-stone-500 font-medium">Skill</th>
-                    <th className="text-left px-4 py-3 text-stone-500 font-medium">Model</th>
-                    <th className="text-right px-4 py-3 text-stone-500 font-medium">Time</th>
-                    <th className="text-right px-4 py-3 text-stone-500 font-medium">Tokens</th>
-                    <th className="text-right px-4 py-3 text-stone-500 font-medium">Cost</th>
-                    <th className="text-center px-4 py-3 text-stone-500 font-medium">Status</th>
-                    <th className="text-right px-4 py-3 text-stone-500 font-medium">When</th>
+                  <tr className="border-b border-[#dadce0] bg-[#f8f9fa]">
+                    <th className="text-left px-4 py-3 text-[#5f6368] font-medium">Skill</th>
+                    <th className="text-left px-4 py-3 text-[#5f6368] font-medium">Model</th>
+                    <th className="text-right px-4 py-3 text-[#5f6368] font-medium">Time</th>
+                    <th className="text-right px-4 py-3 text-[#5f6368] font-medium">Tokens</th>
+                    <th className="text-right px-4 py-3 text-[#5f6368] font-medium">Cost</th>
+                    <th className="text-center px-4 py-3 text-[#5f6368] font-medium">Status</th>
+                    <th className="text-right px-4 py-3 text-[#5f6368] font-medium">When</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((row, i) => (
                     <tr
                       key={row.id}
-                      className={`border-b border-stone-800/50 ${
-                        i % 2 === 0 ? "bg-stone-900/30" : "bg-stone-900/10"
-                      } hover:bg-stone-900/60 transition-colors`}
+                      className={`border-b border-[#dadce0] ${
+                        i % 2 === 0 ? "bg-white" : "bg-[#f8f9fa]"
+                      } hover:bg-[#f1f3f4] transition-colors`}
                     >
-                      <td className="px-4 py-3 font-medium text-white">
+                      <td className="px-4 py-3 font-medium text-[#202124]">
                         {row.skill_name}
                         {row.company_registry?.name && (
-                          <span className="ml-2 text-xs text-stone-600">
+                          <span className="ml-2 text-xs text-[#5f6368]">
                             {row.company_registry.name}
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-stone-400 font-mono text-xs">
-                        {row.model_used ?? "—"}
+                      <td className="px-4 py-3 text-[#5f6368] font-mono text-xs">
+                        {row.model_used ?? "\u2014"}
                       </td>
-                      <td className="px-4 py-3 text-right text-stone-300">
+                      <td className="px-4 py-3 text-right text-[#202124]">
                         {formatMs(row.execution_time_ms)}
                       </td>
-                      <td className="px-4 py-3 text-right text-stone-300">
-                        {row.token_count != null ? row.token_count.toLocaleString() : "—"}
+                      <td className="px-4 py-3 text-right text-[#202124]">
+                        {row.token_count != null ? row.token_count.toLocaleString() : "\u2014"}
                       </td>
-                      <td className="px-4 py-3 text-right text-stone-300">
+                      <td className="px-4 py-3 text-right text-[#202124]">
                         {formatCost(row.estimated_cost_cents)}
                       </td>
                       <td className="px-4 py-3 text-center">
                         {row.success ? (
-                          <span className="px-2 py-0.5 bg-green-500/10 border border-green-500/20 text-green-400 text-xs rounded">
+                          <span className="px-2 py-0.5 bg-green-50 border border-green-200 text-green-700 text-xs rounded">
                             success
                           </span>
                         ) : (
                           <span
-                            className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded"
+                            className="px-2 py-0.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded"
                             title={row.error_message ?? undefined}
                           >
                             failed
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-right text-stone-500 text-xs whitespace-nowrap">
+                      <td className="px-4 py-3 text-right text-[#5f6368] text-xs whitespace-nowrap">
                         {formatDate(row.created_at)}
                       </td>
                     </tr>
@@ -214,17 +214,10 @@ function SummaryCard({
   value: string;
   color: string;
 }) {
-  const colors: Record<string, string> = {
-    orange: "bg-orange-500/10 border-orange-500/20 text-orange-400",
-    green: "bg-green-500/10 border-green-500/20 text-green-400",
-    amber: "bg-amber-500/10 border-amber-500/20 text-amber-400",
-    yellow: "bg-yellow-500/10 border-yellow-500/20 text-yellow-400",
-  };
-
   return (
-    <div className={`rounded-xl border p-4 md:p-6 ${colors[color]}`}>
-      <p className="text-2xl md:text-3xl font-bold">{value}</p>
-      <p className="text-xs md:text-sm opacity-70 mt-1">{label}</p>
+    <div className="rounded-xl border border-[#dadce0] bg-white p-4 md:p-6">
+      <p className="text-2xl md:text-3xl font-semibold" style={{ color }}>{value}</p>
+      <p className="text-xs md:text-sm text-[#5f6368] mt-1">{label}</p>
     </div>
   );
 }

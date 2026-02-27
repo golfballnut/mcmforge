@@ -32,16 +32,16 @@ export default async function AgentsPage() {
     <div>
       <div className="mb-6 md:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <h1 className="text-2xl md:text-3xl font-bold text-stone-100">Agent Roster</h1>
-          <span className="px-3 py-1 bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-full">
+          <h1 className="text-2xl md:text-3xl font-medium text-[#202124]">Agent Roster</h1>
+          <span className="px-3 py-1 bg-green-50 border border-green-200 text-green-700 text-sm rounded-full">
             {activeCount} / {agents.length} active
           </span>
         </div>
-        <p className="text-stone-500 mt-1">All registered AI agents and their current status</p>
+        <p className="text-[#5f6368] mt-1">All registered AI agents and their current status</p>
       </div>
 
       {agents.length === 0 ? (
-        <div className="text-stone-600 text-sm p-12 border border-stone-800 rounded-xl text-center">
+        <div className="text-[#5f6368] text-sm p-12 border border-[#dadce0] bg-white rounded-xl text-center">
           No agents registered
         </div>
       ) : (
@@ -64,19 +64,19 @@ function AgentCard({ agent }: { agent: Record<string, unknown> }) {
 
   const statusConfig: Record<string, { dot: string; label: string; border: string }> = {
     active: {
-      dot: "bg-green-400",
+      dot: "bg-[#34a853]",
       label: "Active",
-      border: "border-green-500/20",
+      border: "border-green-200",
     },
     idle: {
       dot: "bg-amber-400",
       label: "Idle",
-      border: "border-amber-500/20",
+      border: "border-amber-200",
     },
     offline: {
-      dot: "bg-red-400",
+      dot: "bg-[#ea4335]",
       label: "Offline",
-      border: "border-red-500/20",
+      border: "border-red-200",
     },
   };
 
@@ -84,57 +84,57 @@ function AgentCard({ agent }: { agent: Record<string, unknown> }) {
 
   return (
     <div
-      className={`bg-stone-900/50 border rounded-xl p-5 flex flex-col gap-4 ${statusStyle.border}`}
+      className={`bg-white border rounded-xl p-5 flex flex-col gap-4 ${statusStyle.border}`}
     >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-base font-bold leading-tight text-stone-100">{agent.name as string}</p>
-          <span className="inline-block mt-1 px-2 py-0.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs rounded">
+          <p className="text-base font-medium leading-tight text-[#202124]">{agent.name as string}</p>
+          <span className="inline-block mt-1 px-2 py-0.5 bg-[#e8f0fe] border border-[#d3e3fd] text-[#1a73e8] text-xs rounded">
             {agent.agent_type as string}
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className={`w-2 h-2 rounded-full ${statusStyle.dot} animate-pulse`} />
-          <span className="text-xs text-stone-400">{statusStyle.label}</span>
+          <span className="text-xs text-[#5f6368]">{statusStyle.label}</span>
         </div>
       </div>
 
       {/* Meta */}
-      <div className="space-y-1.5 text-xs text-stone-400">
+      <div className="space-y-1.5 text-xs text-[#5f6368]">
         <div className="flex justify-between">
-          <span className="text-stone-600">CLI</span>
-          <span className="font-mono">{agent.cli_target as string}</span>
+          <span className="text-[#5f6368]">CLI</span>
+          <span className="font-mono text-[#202124]">{agent.cli_target as string}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-stone-600">Machine</span>
-          <span>{agent.machine as string}</span>
+          <span className="text-[#5f6368]">Machine</span>
+          <span className="text-[#202124]">{agent.machine as string}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-stone-600">Last heartbeat</span>
-          <span>{formatRelativeTime(lastHeartbeat)}</span>
+          <span className="text-[#5f6368]">Last heartbeat</span>
+          <span className="text-[#202124]">{formatRelativeTime(lastHeartbeat)}</span>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-stone-800">
+      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[#dadce0]">
         <div className="text-center">
-          <p className="text-lg font-bold text-white">{tasksCompleted ?? 0}</p>
-          <p className="text-xs text-stone-600">Tasks done</p>
+          <p className="text-lg font-semibold text-[#202124]">{tasksCompleted ?? 0}</p>
+          <p className="text-xs text-[#5f6368]">Tasks done</p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold text-white">
-            {successRate != null ? `${Number(successRate).toFixed(1)}%` : "—"}
+          <p className="text-lg font-semibold text-[#202124]">
+            {successRate != null ? `${Number(successRate).toFixed(1)}%` : "\u2014"}
           </p>
-          <p className="text-xs text-stone-600">Success rate</p>
+          <p className="text-xs text-[#5f6368]">Success rate</p>
         </div>
       </div>
 
       {/* Working indicator */}
       {currentTaskId && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
-          <span className="text-xs text-orange-400">Working on task...</span>
+        <div className="flex items-center gap-2 px-3 py-2 bg-[#e8f0fe] border border-[#d3e3fd] rounded-lg">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] animate-pulse" />
+          <span className="text-xs text-[#1a73e8]">Working on task...</span>
         </div>
       )}
     </div>

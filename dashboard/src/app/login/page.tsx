@@ -33,56 +33,61 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-950 flex items-center justify-center">
+    <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">
-            <span className="text-orange-500">MCM</span> Forge
-          </h1>
-          <p className="text-stone-500 text-sm mt-2">Command Center</p>
-        </div>
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm text-stone-400 mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-stone-900 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-orange-500 transition-colors"
-              placeholder="steve@mcmforge.com"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-stone-400 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-stone-900 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-orange-500 transition-colors"
-              placeholder="Enter password"
-              required
-            />
-          </div>
-
-          {error && (
-            <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-              {error}
+        <div className="bg-white border border-[#dadce0] rounded-2xl p-8 shadow-sm">
+          <div className="text-center mb-8">
+            <div className="w-12 h-12 bg-[#1a73e8] rounded-xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-white text-xl font-bold">M</span>
             </div>
-          )}
+            <h1 className="text-2xl font-normal text-[#202124]">
+              Sign in
+            </h1>
+            <p className="text-[#5f6368] text-sm mt-2">to MCM Forge Command Center</p>
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-orange-600 hover:bg-orange-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
-          >
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
-        </form>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm text-[#5f6368] mb-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 bg-white border border-[#dadce0] rounded-lg text-[#202124] focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8] transition-colors"
+                placeholder="steve@mcmforge.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-[#5f6368] mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-white border border-[#dadce0] rounded-lg text-[#202124] focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8] transition-colors"
+                placeholder="Enter password"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="text-red-700 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-[#1a73e8] hover:bg-[#1765cc] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

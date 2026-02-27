@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { createClient } from "@/lib/supabase/server";
 import Sidebar from "@/components/Sidebar";
+import TopBarWrapper from "@/components/TopBarWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +20,16 @@ export const metadata: Metadata = {
   description: "AI Agent Factory & Multi-Company Operations Platform",
 };
 
+async function getDispatcherStatus() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("system_config")
+    .select("value")
+    .eq("key", "dispatcher_status")
+    .single();
+  return data?.value || "unknown";
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -29,16 +40,21 @@ export default async function RootLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  const dispatcherStatus = user ? await getDispatcherStatus() : "unknown";
+
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-950 text-stone-100`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f8f9fa] text-[#202124]`}
       >
         {user ? (
-          <div className="flex h-screen">
-            <Sidebar userEmail={user.email || ""} />
-            <main className="flex-1 overflow-auto pt-18 md:pt-0 p-4 md:p-8">{children}</main>
-          </div>
+          <TopBarWrapper
+            userEmail={user.email || ""}
+            dispatcherStatus={dispatcherStatus}
+            sidebar={<Sidebar />}
+          >
+            {children}
+          </TopBarWrapper>
         ) : (
           children
         )}

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@google/genai": "^1.43.0",
     "@supabase/supabase-js": "^2.97.0",
     "dotenv": "^16.4.7",
     "pixelmatch": "^6.0.0",

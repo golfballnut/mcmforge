@@ -22,6 +22,8 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { existsSync, readFileSync } from "fs";
 import { visualVerify, type VisualVerifyResult } from "./visual-verify.js";
+import { executeSpecTask } from "./spec-pipeline.js";
+import { runVerificationLoop, canTaskClose } from "./verification-loop.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,7 +33,7 @@ dotenv.config({ path: join(__dirname, ".env") });
 // Types
 // ============================================
 
-type TaskType = "code" | "research" | "content" | "ops" | "chat" | "proposal";
+type TaskType = "code" | "research" | "content" | "ops" | "chat" | "proposal" | "spec";
 type CliTool = "claude" | "gemini" | "codex";
 
 interface Task {
@@ -49,6 +51,7 @@ interface Task {
   created_at: string;
   retry_count?: number;
   parent_task_id?: string;
+  spec_sheet_id?: string;
   proposal_data?: Record<string, unknown>;
   company_registry?: {
     name: string;
@@ -291,6 +294,17 @@ async function executeTask(task: Task) {
       case "proposal":
         result = await executeProposalTask(task, vaultContext, warRoomContext, agentStats);
         break;
+      case "spec":
+        {
+          const specResult = await executeSpecTask({ task, supabase, vaultContext });
+          result = {
+            success: specResult.success,
+            output: specResult.output,
+            summary: specResult.summary,
+            error: specResult.error,
+          };
+        }
+        break;
       default:
         result = { success: false, output: "", error: `Unknown task_type: ${taskType}` };
     }
@@ -337,9 +351,64 @@ async function executeTask(task: Task) {
       log("info", `Task completed in ${durationMin}min (tests: ${testStatus})`, { task: task.title, type: taskType });
 
       // ============================================
-      // Visual TDD Gate (code tasks with preview URLs)
+      // Spec-Driven Verification Loop (if task has spec_sheet_id)
       // ============================================
-      if (taskType === "code" && result.previewUrl) {
+      if (taskType === "code" && task.spec_sheet_id && result.previewUrl) {
+        log("info", `[SPEC-VERIFY] Starting spec verification loop`, { task: task.title, specSheet: task.spec_sheet_id });
+        try {
+          const loopResult = await runVerificationLoop({
+            specSheetId: task.spec_sheet_id,
+            previewUrl: result.previewUrl,
+            companySlug: task.company_registry?.slug,
+            supabase,
+            bypassVercelAuth: undefined,
+          });
+
+          result.visualScore = loopResult.compositeScore;
+          result.visualFeedback = loopResult.feedback;
+
+          log("info", `[SPEC-VERIFY] Score: ${loopResult.compositeScore}/100 (visual: ${loopResult.visualScore}, functional: ${loopResult.functionalScore}), iteration ${loopResult.iteration}/${loopResult.maxIterations}`, { task: task.title });
+
+          if (!loopResult.canClose) {
+            if (loopResult.escalate) {
+              log("warn", `[SPEC-VERIFY] Max iterations reached — escalating to Steve`);
+              await supabase.from("communication_log").insert({
+                from_agent: "dispatcher",
+                to_agent: "steve",
+                channel: "war_room",
+                message: `[SPEC-ESCALATE] ${task.title} could not reach 100% after ${loopResult.maxIterations} iterations. Last score: ${loopResult.compositeScore}/100. Failed: ${loopResult.failedCriteria.join("; ")}`,
+                company_id: task.company_id,
+                task_id: task.id,
+              });
+            } else {
+              // Requeue with specific feedback for builder retry
+              log("warn", `[SPEC-VERIFY] Score ${loopResult.compositeScore}/100 — requeueing with feedback`);
+              const retryDescription = `${task.description}\n\n--- VERIFICATION FEEDBACK (iteration ${loopResult.iteration}) ---\n${loopResult.feedback}\n\nFailed criteria:\n${loopResult.failedCriteria.map(c => `- ${c}`).join("\n")}`;
+              await supabase
+                .from("task_queue")
+                .update({
+                  status: "todo",
+                  started_at: null,
+                  description: retryDescription,
+                  retry_count: (task.retry_count || 0) + 1,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq("id", task.id);
+              activeTaskCount--;
+              return;
+            }
+          }
+
+          const specTag = `[Spec: ${loopResult.compositeScore}/100 V:${loopResult.visualScore} F:${loopResult.functionalScore}] `;
+          result.summary = specTag + (result.summary || "");
+        } catch (err) {
+          log("warn", `[SPEC-VERIFY] Error: ${err}. Continuing without spec check.`);
+        }
+      }
+      // ============================================
+      // Visual TDD Gate (code tasks with preview URLs, no spec sheet)
+      // ============================================
+      else if (taskType === "code" && result.previewUrl) {
         log("info", `[VISUAL-TDD] Starting visual verification`, { task: task.title, preview: result.previewUrl });
         try {
           const visualResult = await visualVerify({
@@ -549,6 +618,7 @@ const CONTEXT_ROUTES: Record<string, string[]> = {
   content:  ["company", "intelligence"],
   ops:      ["company"],
   chat:     ["company"],
+  spec:     ["company", "decision", "skill"],
 };
 
 async function loadVaultContext(task: Task): Promise<string> {
@@ -1740,6 +1810,28 @@ async function updateTaskStatus(
   status: string,
   extra?: Record<string, unknown>
 ) {
+  // Cannot-close guard: spec-driven tasks must score 100 before closing
+  if (status === "done" || status === "review") {
+    const { data: task } = await supabase
+      .from("task_queue")
+      .select("spec_sheet_id")
+      .eq("id", taskId)
+      .single();
+
+    if (task?.spec_sheet_id) {
+      const closeCheck = await canTaskClose({ specSheetId: task.spec_sheet_id, supabase });
+      if (!closeCheck.allowed) {
+        log("warn", `[CANNOT-CLOSE] Task ${taskId} blocked: ${closeCheck.reason}`);
+        // Keep in_progress instead of closing
+        await supabase
+          .from("task_queue")
+          .update({ updated_at: new Date().toISOString(), result_summary: `Cannot close: ${closeCheck.reason}`, ...extra })
+          .eq("id", taskId);
+        return;
+      }
+    }
+  }
+
   await supabase
     .from("task_queue")
     .update({ status, updated_at: new Date().toISOString(), ...extra })

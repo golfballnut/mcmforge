@@ -28,7 +28,7 @@ Deno.serve(async (req: Request) => {
   // Look up approval by token
   const { data: approval, error: lookupError } = await supabase
     .from("approval_queue")
-    .select("*, task_queue(title, company_id, pr_url, pr_number, company_registry(name, github_repo))")
+    .select("*, metadata, task_queue(title, company_id, pr_url, pr_number, company_registry(name, github_repo))")
     .eq("approval_token", token)
     .single();
 
@@ -45,6 +45,86 @@ Deno.serve(async (req: Request) => {
   }
 
   if (action === "approve") {
+    // Handle spec_approval differently
+    if (approval.approval_type === "spec_approval") {
+      const specSheetId = approval.metadata?.specSheetId;
+
+      if (specSheetId) {
+        // Mark spec as approved
+        await supabase
+          .from("spec_sheets")
+          .update({
+            approval_status: "approved",
+            approved_by: "steve",
+            approved_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", specSheetId);
+
+        // Load spec to create builder task
+        const { data: spec } = await supabase
+          .from("spec_sheets")
+          .select("*, task_queue!spec_sheets_task_id_fkey(title, description, company_id)")
+          .eq("id", specSheetId)
+          .single();
+
+        if (spec?.task_queue) {
+          const reqStr = (spec.requirements || [])
+            .map((r: { priority: string; description: string }) => `- [${r.priority}] ${r.description}`)
+            .join("\n");
+          const criteriaStr = (spec.acceptance_criteria || [])
+            .map((c: { type: string; description: string }) => `- [${c.type}] ${c.description}`)
+            .join("\n");
+          const designStr = Object.keys(spec.design_tokens || {}).length > 0
+            ? `\n\nDesign Tokens:\n${JSON.stringify(spec.design_tokens, null, 2)}`
+            : "";
+
+          const builderDesc = `SPEC-DRIVEN TASK — implement ALL requirements exactly.\n\nMockup: ${spec.mockup_url}\n\nRequirements:\n${reqStr}\n\nAcceptance Criteria:\n${criteriaStr}${designStr}\n\nThe task CANNOT close until score = 100%.`;
+
+          const { data: builderTask } = await supabase
+            .from("task_queue")
+            .insert({
+              title: `[BUILD] ${spec.title}`,
+              description: builderDesc,
+              task_type: "code",
+              cli_target: "claude",
+              company_id: spec.company_id || spec.task_queue.company_id,
+              priority: "high",
+              status: "todo",
+              spec_sheet_id: specSheetId,
+              parent_task_id: spec.task_id,
+              created_by: "spec-pipeline",
+            })
+            .select("id")
+            .single();
+
+          if (builderTask) {
+            await supabase
+              .from("spec_sheets")
+              .update({ builder_task_id: builderTask.id })
+              .eq("id", specSheetId);
+          }
+        }
+      }
+
+      // Update approval status
+      await supabase
+        .from("approval_queue")
+        .update({
+          status: "approved",
+          decided_by: "steve",
+          decided_at: new Date().toISOString(),
+          decision_notes: "Spec approved — builder task created",
+        })
+        .eq("id", approval.id);
+
+      return htmlResponse(
+        "Spec Approved!",
+        `<p>${approval.title}</p><p>Builder task created. Agent will start coding to spec.</p><p><a href="https://mcmforge.com/approvals">View Dashboard</a></p>`,
+        200
+      );
+    }
+
     // Try to merge the PR via GitHub API
     const githubToken = Deno.env.get("GITHUB_TOKEN");
     const task = approval.task_queue;

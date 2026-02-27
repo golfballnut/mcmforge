@@ -50,6 +50,15 @@ interface VisionJudgment {
   changes: string[];
 }
 
+export interface MockupVerifyResult {
+  pass: boolean;
+  score: number;
+  feedback: string;
+  screenshotUrl?: string;
+  diffPercent?: number;
+  changes?: string[];
+}
+
 export interface VisualVerifyResult {
   pass: boolean;
   score: number;
@@ -381,6 +390,150 @@ async function uploadScreenshot(
     return data.publicUrl;
   } catch {
     return undefined;
+  }
+}
+
+// ============================================
+// Mockup Compliance: Verify Against Approved Mockup
+// ============================================
+
+const MOCKUP_PASS_SCORE = 95;
+
+export async function verifyAgainstMockup(params: {
+  previewUrl: string;
+  mockupBuffer: Buffer;
+  taskTitle: string;
+  companySlug?: string;
+  bypassVercelAuth?: string;
+}): Promise<MockupVerifyResult> {
+  const { previewUrl, mockupBuffer, taskTitle, companySlug, bypassVercelAuth } = params;
+
+  // Ensure screenshot dir exists
+  if (!existsSync(SCREENSHOT_DIR)) {
+    mkdirSync(SCREENSHOT_DIR, { recursive: true });
+  }
+
+  // 1. Wait for preview
+  const isReady = await waitForPreview(previewUrl, 120000, bypassVercelAuth);
+  if (!isReady) {
+    return {
+      pass: false,
+      score: 0,
+      feedback: `Preview not ready after 2min: ${previewUrl}`,
+    };
+  }
+
+  // 2. Screenshot the preview
+  let screenshotBuffer: Buffer;
+  try {
+    screenshotBuffer = await takeScreenshot(previewUrl, { bypassVercelAuth, waitMs: 5000 });
+  } catch (err) {
+    return {
+      pass: false,
+      score: 0,
+      feedback: `Screenshot failed: ${err}`,
+    };
+  }
+
+  // 3. Pixel diff against mockup
+  let diffResult: PixelDiffResult | undefined;
+  try {
+    diffResult = pixelDiff(screenshotBuffer, mockupBuffer);
+  } catch {
+    // Diff failed — continue with vision-only
+  }
+
+  // 4. Claude Vision: stricter mockup compliance prompt
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    const score = diffResult
+      ? Math.max(0, Math.round(100 - diffResult.diffPercent * 2))
+      : 50;
+    return {
+      pass: score >= MOCKUP_PASS_SCORE,
+      score,
+      feedback: "No ANTHROPIC_API_KEY — pixel diff only",
+      diffPercent: diffResult?.diffPercent,
+    };
+  }
+
+  const anthropic = new Anthropic({ apiKey });
+
+  const content: Anthropic.ContentBlockParam[] = [
+    {
+      type: "text",
+      text: `You are a pixel-perfect QA engineer. Compare the APPROVED MOCKUP to the IMPLEMENTATION screenshot.
+
+Task: ${taskTitle}
+${diffResult ? `Pixel diff: ${diffResult.diffPercent.toFixed(1)}% pixels different` : ""}
+
+Check EVERY element in the mockup. The implementation must match the mockup exactly:
+- Layout and positioning
+- Colors (exact hex values)
+- Typography (fonts, sizes, weights)
+- Spacing and padding
+- Button styles, input styles
+- Icons and imagery
+- Content/text (should match or be realistic)
+
+Score 0-100 (much stricter than normal visual review):
+- 95-100: Implementation matches mockup exactly or nearly exactly
+- 80-94: Mostly matches but has minor differences
+- 50-79: Noticeable deviations from mockup
+- 0-49: Does not match mockup
+
+Respond ONLY with JSON:
+{"pass": true, "score": 95, "feedback": "summary", "changes": ["difference 1", "difference 2"]}`,
+    },
+    { type: "text", text: "APPROVED MOCKUP:" },
+    {
+      type: "image",
+      source: { type: "base64", media_type: "image/png", data: mockupBuffer.toString("base64") },
+    },
+    { type: "text", text: "IMPLEMENTATION:" },
+    {
+      type: "image",
+      source: { type: "base64", media_type: "image/png", data: screenshotBuffer.toString("base64") },
+    },
+  ];
+
+  try {
+    const response = await anthropic.messages.create({
+      model: VISION_MODEL,
+      max_tokens: 500,
+      messages: [{ role: "user", content }],
+    });
+
+    const text = response.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const result = JSON.parse(jsonMatch[0]);
+      return {
+        pass: result.pass ?? result.score >= MOCKUP_PASS_SCORE,
+        score: result.score ?? 0,
+        feedback: result.feedback ?? "No feedback",
+        diffPercent: diffResult?.diffPercent,
+        changes: result.changes ?? [],
+      };
+    }
+
+    return {
+      pass: false,
+      score: 50,
+      feedback: `Vision response unparseable: ${text.slice(0, 200)}`,
+      diffPercent: diffResult?.diffPercent,
+    };
+  } catch (err) {
+    return {
+      pass: false,
+      score: 0,
+      feedback: `Vision API error: ${err}`,
+      diffPercent: diffResult?.diffPercent,
+    };
   }
 }
 

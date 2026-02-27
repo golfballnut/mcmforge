@@ -50,6 +50,54 @@ export async function createTask(formData: FormData) {
   return { success: true };
 }
 
+export async function updateTask(
+  taskId: string,
+  updates: Record<string, unknown>
+) {
+  const supabase = await createClient();
+
+  const allowed = [
+    "title",
+    "description",
+    "status",
+    "priority",
+    "assigned_to",
+    "cli_target",
+    "task_type",
+    "company_id",
+    "board",
+    "cost_cap",
+  ];
+  const filtered: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  for (const key of allowed) {
+    if (key in updates) filtered[key] = updates[key];
+  }
+
+  const { error } = await supabase
+    .from("task_queue")
+    .update(filtered)
+    .eq("id", taskId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/tasks");
+  return { success: true };
+}
+
+export async function deleteTask(taskId: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("task_queue")
+    .delete()
+    .eq("id", taskId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/tasks");
+  return { success: true };
+}
+
 export async function getDispatcherStatus(): Promise<string> {
   const supabase = await createClient();
   const { data } = await supabase

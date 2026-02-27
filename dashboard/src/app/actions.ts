@@ -32,6 +32,14 @@ export async function createTask(formData: FormData) {
 
   if (!title) return { error: "Title is required" };
 
+  // Collect attachment URLs passed from the client
+  const attachmentUrls: string[] = [];
+  for (const [key, val] of formData.entries()) {
+    if (key === "attachment_url" && typeof val === "string" && val) {
+      attachmentUrls.push(val);
+    }
+  }
+
   const { error } = await supabase.from("task_queue").insert({
     title,
     description: description || null,
@@ -42,12 +50,34 @@ export async function createTask(formData: FormData) {
     status: "todo",
     assigned_to: "agent-executor",
     created_by: "steve",
+    attachment_urls: attachmentUrls.length > 0 ? attachmentUrls : [],
   });
 
   if (error) return { error: error.message };
 
   revalidatePath("/tasks");
   return { success: true };
+}
+
+export async function uploadAttachment(formData: FormData) {
+  const supabase = await createClient();
+  const file = formData.get("file") as File;
+  if (!file) return { error: "No file provided" };
+
+  const ext = file.name.split(".").pop() || "bin";
+  const path = `task-attachments/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from("artifacts")
+    .upload(path, file, { contentType: file.type, upsert: false });
+
+  if (error) return { error: error.message };
+
+  const { data: urlData } = supabase.storage
+    .from("artifacts")
+    .getPublicUrl(path);
+
+  return { success: true, url: urlData.publicUrl, name: file.name };
 }
 
 export async function updateTask(
@@ -67,6 +97,7 @@ export async function updateTask(
     "company_id",
     "board",
     "cost_cap",
+    "attachment_urls",
   ];
   const filtered: Record<string, unknown> = { updated_at: new Date().toISOString() };
   for (const key of allowed) {

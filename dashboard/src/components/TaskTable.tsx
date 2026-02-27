@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useTransition, useCallback } from "react";
-import { updateTask, deleteTask } from "@/app/actions";
+import { updateTask, deleteTask, uploadAttachment } from "@/app/actions";
 
 /* ── Types ────────────────────────────────────────────────────── */
 
@@ -28,6 +28,7 @@ type TaskRow = {
   completed_at: string | null;
   result_summary: string | null;
   artifact_url: string | null;
+  attachment_urls: string[] | null;
   cost_cap: number | null;
   retry_count: number | null;
   company_registry: { name: string } | null;
@@ -75,6 +76,24 @@ const PRIORITY_STYLES: Record<string, string> = {
   high: "bg-amber-50 text-amber-700 border-amber-200",
   critical: "bg-red-50 text-red-700 border-red-200",
 };
+
+/* ── Helper: filename from URL ────────────────────────────────── */
+
+function fileNameFromUrl(url: string) {
+  try {
+    const parts = url.split("/");
+    const last = parts[parts.length - 1];
+    // Strip query params and decode
+    return decodeURIComponent(last.split("?")[0]);
+  } catch {
+    return "attachment";
+  }
+}
+
+function isImageUrl(url: string) {
+  const lower = url.toLowerCase();
+  return /\.(png|jpg|jpeg|gif|webp|svg)/.test(lower);
+}
 
 /* ── Inline Dropdown ──────────────────────────────────────────── */
 
@@ -146,7 +165,8 @@ function InlineSelect({
   );
 }
 
-/* ── Inline Text Select (for assigned_to / unassigned) ──────── */
+/* ── Agent Select ─────────────────────────────────────────────── */
+/* agent-executor is the dispatcher pickup value — always shown first */
 
 function AgentSelect({
   value,
@@ -185,7 +205,18 @@ function AgentSelect({
         </svg>
       </button>
       {open && (
-        <div className="absolute z-50 mt-1 left-0 bg-white border border-[#dadce0] rounded-lg shadow-lg py-1 min-w-[160px]">
+        <div className="absolute z-50 mt-1 left-0 bg-white border border-[#dadce0] rounded-lg shadow-lg py-1 min-w-[200px]">
+          {/* Primary pickup target */}
+          <button
+            onClick={() => { onSave("agent-executor"); setOpen(false); }}
+            className={`w-full text-left px-3 py-2 text-xs hover:bg-[#e8f0fe] transition-colors flex items-center justify-between ${
+              value === "agent-executor" ? "font-semibold bg-[#e8f0fe]" : ""
+            }`}
+          >
+            <span className="text-[#202124]">agent-executor</span>
+            <span className="text-[10px] text-[#1a73e8] bg-[#e8f0fe] px-1.5 py-0.5 rounded">auto-pickup</span>
+          </button>
+          <div className="border-t border-[#dadce0] my-1" />
           <button
             onClick={() => { onSave(null); setOpen(false); }}
             className={`w-full text-left px-3 py-1.5 text-xs hover:bg-[#f1f3f4] transition-colors ${
@@ -234,20 +265,44 @@ function TaskDrawer({
     description: task.description ?? "",
     status: task.status,
     priority: task.priority,
-    assigned_to: task.assigned_to ?? "",
+    assigned_to: task.assigned_to ?? "agent-executor",
     cli_target: task.cli_target ?? "claude",
     task_type: task.task_type ?? "code",
     company_id: task.company_id ?? "",
     board: task.board ?? "agent",
   });
+  const [attachments, setAttachments] = useState<string[]>(task.attachment_urls ?? []);
+  const [uploading, setUploading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    for (const file of Array.from(files)) {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await uploadAttachment(fd);
+      if (res.url) {
+        setAttachments((prev) => [...prev, res.url!]);
+      }
+    }
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
+  function removeAttachment(idx: number) {
+    setAttachments((prev) => prev.filter((_, i) => i !== idx));
+  }
 
   function handleSave() {
     startTransition(() => {
       onSave(task.id, {
         ...form,
         assigned_to: form.assigned_to || null,
+        attachment_urls: attachments,
       });
       onClose();
     });
@@ -304,6 +359,65 @@ function TaskDrawer({
             />
           </div>
 
+          {/* Attachments */}
+          <div>
+            <label className="block text-xs font-medium text-[#5f6368] uppercase tracking-wider mb-2">Attachments</label>
+            {attachments.length > 0 && (
+              <div className="space-y-2 mb-3">
+                {attachments.map((url, i) => (
+                  <div key={i} className="group relative">
+                    {isImageUrl(url) ? (
+                      <div className="relative rounded-lg overflow-hidden border border-[#dadce0]">
+                        <img
+                          src={url}
+                          alt={`Attachment ${i + 1}`}
+                          className="w-full max-h-48 object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeAttachment(i)}
+                          className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-1 shadow-sm"
+                        >
+                          <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-xs text-[#202124] bg-[#f1f3f4] rounded-lg px-3 py-2 border border-[#dadce0]">
+                        <svg className="w-4 h-4 text-[#5f6368] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                        </svg>
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="truncate hover:text-[#1a73e8] hover:underline">
+                          {fileNameFromUrl(url)}
+                        </a>
+                        <button type="button" onClick={() => removeAttachment(i)} className="ml-auto text-[#5f6368] hover:text-red-600">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            <label className="inline-flex items-center gap-2 px-3 py-2 border border-dashed border-[#dadce0] rounded-lg text-sm text-[#5f6368] hover:bg-[#f1f3f4] hover:border-[#1a73e8] cursor-pointer transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+              </svg>
+              {uploading ? "Uploading..." : "Attach files or images"}
+              <input
+                ref={fileRef}
+                type="file"
+                multiple
+                className="hidden"
+                onChange={handleFileUpload}
+                accept="image/*,.pdf,.doc,.docx,.xlsx,.csv,.txt"
+              />
+            </label>
+          </div>
+
           {/* 2-col grid */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -323,14 +437,17 @@ function TaskDrawer({
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#5f6368] uppercase tracking-wider mb-1">Assigned To</label>
+              <label className="block text-xs font-medium text-[#5f6368] uppercase tracking-wider mb-1">
+                Assigned To
+              </label>
               <select value={form.assigned_to} onChange={(e) => setForm({ ...form, assigned_to: e.target.value })} className={selectCls}>
-                <option value="">Unassigned</option>
+                <option value="agent-executor">agent-executor (auto-pickup)</option>
+                <option value="">Unassigned (paused)</option>
                 {agents.map((a) => (
                   <option key={a.name} value={a.name}>{a.name} ({a.agent_type})</option>
                 ))}
-                <option value="agent-executor">agent-executor</option>
               </select>
+              <p className="text-[10px] text-[#80868b] mt-1">Dispatcher only picks up &quot;agent-executor&quot; tasks</p>
             </div>
             <div>
               <label className="block text-xs font-medium text-[#5f6368] uppercase tracking-wider mb-1">CLI Target</label>
@@ -367,7 +484,7 @@ function TaskDrawer({
             </div>
             <div className="flex justify-between">
               <span>Created by</span>
-              <span>{task.created_by ?? "—"}</span>
+              <span>{task.created_by ?? "\u2014"}</span>
             </div>
             <div className="flex justify-between">
               <span>Created</span>
@@ -431,7 +548,7 @@ function TaskDrawer({
             </button>
             <button
               onClick={handleSave}
-              disabled={isPending}
+              disabled={isPending || uploading}
               className="px-5 py-1.5 bg-[#1a73e8] hover:bg-[#1765cc] disabled:bg-[#d3e3fd] text-white text-sm font-medium rounded-lg transition-colors"
             >
               {isPending ? "Saving..." : "Save Changes"}
@@ -451,14 +568,12 @@ export default function TaskTable({ tasks: initialTasks, companies, agents }: Pr
   const [saving, setSaving] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
 
-  // Sync with server re-renders
   useEffect(() => {
     setTasks(initialTasks);
   }, [initialTasks]);
 
   const handleInlineUpdate = useCallback(
     async (taskId: string, field: string, value: unknown) => {
-      // Optimistic update
       setTasks((prev) =>
         prev.map((t) => (t.id === taskId ? { ...t, [field]: value } : t))
       );
@@ -535,10 +650,7 @@ export default function TaskTable({ tasks: initialTasks, companies, agents }: Pr
           {/* Mobile: Cards */}
           <div className="md:hidden space-y-3">
             {filtered.map((task) => (
-              <div
-                key={task.id}
-                className="bg-white border border-[#dadce0] rounded-lg p-4"
-              >
+              <div key={task.id} className="bg-white border border-[#dadce0] rounded-lg p-4">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <button
                     onClick={() => setDrawerTask(task)}
@@ -568,6 +680,14 @@ export default function TaskTable({ tasks: initialTasks, companies, agents }: Pr
                     agents={agents}
                     onSave={(v) => handleInlineUpdate(task.id, "assigned_to", v)}
                   />
+                  {(task.attachment_urls?.length ?? 0) > 0 && (
+                    <span className="text-[#1a73e8]" title={`${task.attachment_urls!.length} attachment(s)`}>
+                      <svg className="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                      {task.attachment_urls!.length}
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -602,14 +722,24 @@ export default function TaskTable({ tasks: initialTasks, companies, agents }: Pr
                           >
                             {task.title}
                           </button>
-                          {task.skill_name && (
-                            <p className="text-xs text-[#5f6368] mt-0.5 truncate">{task.skill_name}</p>
-                          )}
-                          {task.pr_url && (
-                            <a href={task.pr_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1a73e8] hover:underline mt-0.5 inline-block">
-                              PR #{task.pr_number ?? "link"} &rarr;
-                            </a>
-                          )}
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {task.skill_name && (
+                              <span className="text-xs text-[#5f6368] truncate">{task.skill_name}</span>
+                            )}
+                            {task.pr_url && (
+                              <a href={task.pr_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1a73e8] hover:underline">
+                                PR #{task.pr_number ?? "link"} &rarr;
+                              </a>
+                            )}
+                            {(task.attachment_urls?.length ?? 0) > 0 && (
+                              <span className="inline-flex items-center gap-0.5 text-xs text-[#1a73e8]" title={`${task.attachment_urls!.length} attachment(s)`}>
+                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                </svg>
+                                {task.attachment_urls!.length}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">

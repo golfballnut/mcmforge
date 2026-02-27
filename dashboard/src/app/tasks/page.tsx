@@ -269,7 +269,13 @@ export default async function TasksPage() {
                             month: "short",
                             day: "numeric",
                             year: "numeric",
-                          })}
+                          })}{" "}
+                          <span className="text-[#80868b]">
+                            {new Date(task.created_at).toLocaleTimeString("en-US", {
+                              hour: "numeric",
+                              minute: "2-digit",
+                            })}
+                          </span>
                         </td>
                       </tr>
                     ))}

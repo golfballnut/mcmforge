@@ -25,6 +25,9 @@ interface TelegramMessage {
   caption?: string;
   message_id?: number;
   photo?: Array<{ file_id: string; width: number; height: number }>;
+  document?: { file_id: string; file_name?: string; mime_type?: string; file_size?: number };
+  video?: { file_id: string; file_name?: string; mime_type?: string };
+  voice?: { file_id: string; duration: number; mime_type?: string };
 }
 
 interface TelegramCallbackQuery {
@@ -139,14 +142,15 @@ async function answerCallback(token: string, callbackId: string) {
   });
 }
 
-async function uploadScreenshot(
-  photos: Array<{ file_id: string }>,
-  botToken: string
+async function uploadTelegramFile(
+  fileId: string,
+  botToken: string,
+  fileName?: string,
+  contentType?: string
 ): Promise<string | null> {
-  const photo = photos[photos.length - 1];
   try {
     const fileRes = await fetch(
-      `https://api.telegram.org/bot${botToken}/getFile?file_id=${photo.file_id}`
+      `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`
     );
     const fileData = await fileRes.json();
     const filePath = fileData.result?.file_path;
@@ -157,21 +161,40 @@ async function uploadScreenshot(
     );
     const fileBytes = await downloadRes.arrayBuffer();
 
+    // Determine file extension and content type from Telegram file path or provided values
+    const ext = fileName?.split(".").pop() || filePath.split(".").pop() || "bin";
+    const storageName = fileName
+      ? `telegram-${Date.now()}-${fileName}`
+      : `telegram-${Date.now()}.${ext}`;
+    const mime = contentType || guessMime(ext);
+
     const supabase = getSupabase();
-    const fileName = `telegram-${Date.now()}.jpg`;
     const { error } = await supabase.storage
       .from("artifacts")
-      .upload(fileName, fileBytes, { contentType: "image/jpeg", upsert: true });
+      .upload(storageName, fileBytes, { contentType: mime, upsert: true });
 
     if (error) return null;
 
     const { data: urlData } = supabase.storage
       .from("artifacts")
-      .getPublicUrl(fileName);
+      .getPublicUrl(storageName);
     return urlData.publicUrl;
   } catch {
     return null;
   }
+}
+
+function guessMime(ext: string): string {
+  const map: Record<string, string> = {
+    jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", gif: "image/gif", webp: "image/webp",
+    pdf: "application/pdf", doc: "application/msword",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xls: "application/vnd.ms-excel",
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    csv: "text/csv", txt: "text/plain", json: "application/json",
+    mp4: "video/mp4", mov: "video/quicktime", ogg: "audio/ogg", mp3: "audio/mpeg",
+  };
+  return map[ext.toLowerCase()] || "application/octet-stream";
 }
 
 // ── Smart Detection ────────────────────────────────────
@@ -282,15 +305,21 @@ function buildKeyboard(
   return kb;
 }
 
-function buildDraftMessage(title: string): string {
-  return [
+function buildDraftMessage(title: string, attachmentCount = 0): string {
+  const lines = [
     `\ud83d\udccb <b>New Task</b>`,
     ``,
     `"${title}"`,
+  ];
+  if (attachmentCount > 0) {
+    lines.push(`\ud83d\udcce ${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
+  }
+  lines.push(
     ``,
     `Tap to configure, then Submit:`,
     `\ud83d\udccd Company \u2022 \u26a1 Priority \u2022 \ud83d\udd27 Type \u2022 \ud83e\udd16 CLI`,
-  ].join("\n");
+  );
+  return lines.join("\n");
 }
 
 // ── Message Handler ────────────────────────────────────
@@ -306,16 +335,27 @@ async function handleMessage(message: TelegramMessage) {
 
   const text = message.text || message.caption || "";
   const lines = text.trim().split("\n");
-  const title = lines[0]?.trim();
+  let title = lines[0]?.trim();
   const description = lines.slice(1).join("\n").trim();
 
+  // If no text but has attachment, use filename or default title
   if (!title) {
-    await sendTelegram(
-      botToken,
-      chatId,
-      "Send a task and I'll help you route it.\n\nPower-user: <code>[dirtsync] #code #high #claude fix the zoom</code>"
-    );
-    return;
+    if (message.document?.file_name) {
+      title = `Review: ${message.document.file_name}`;
+    } else if (message.photo) {
+      title = "Photo attachment";
+    } else if (message.video) {
+      title = "Video attachment";
+    } else if (message.voice) {
+      title = "Voice memo";
+    } else {
+      await sendTelegram(
+        botToken,
+        chatId,
+        "Send a task and I'll help you route it.\n\nPower-user: <code>[dirtsync] #code #high #claude fix the zoom</code>"
+      );
+      return;
+    }
   }
 
   // Parse explicit tags
@@ -342,15 +382,42 @@ async function handleMessage(message: TelegramMessage) {
     .replace(/#\w+/g, "")
     .trim();
 
-  // Handle screenshot
-  let screenshotUrl: string | null = null;
+  // Handle attachments (photos, documents, video, voice)
+  const attachmentUrls: string[] = [];
+
   if (message.photo && message.photo.length > 0) {
-    screenshotUrl = await uploadScreenshot(message.photo, botToken);
+    const bestPhoto = message.photo[message.photo.length - 1];
+    const url = await uploadTelegramFile(bestPhoto.file_id, botToken, undefined, "image/jpeg");
+    if (url) attachmentUrls.push(`Screenshot: ${url}`);
+  }
+
+  if (message.document) {
+    const url = await uploadTelegramFile(
+      message.document.file_id, botToken,
+      message.document.file_name, message.document.mime_type
+    );
+    if (url) attachmentUrls.push(`File: ${url} (${message.document.file_name || "document"})`);
+  }
+
+  if (message.video) {
+    const url = await uploadTelegramFile(
+      message.video.file_id, botToken,
+      message.video.file_name, message.video.mime_type
+    );
+    if (url) attachmentUrls.push(`Video: ${url}`);
+  }
+
+  if (message.voice) {
+    const url = await uploadTelegramFile(
+      message.voice.file_id, botToken,
+      undefined, message.voice.mime_type || "audio/ogg"
+    );
+    if (url) attachmentUrls.push(`Voice memo: ${url}`);
   }
 
   const fullDescription = [
     description,
-    screenshotUrl ? `\nScreenshot: ${screenshotUrl}` : "",
+    ...attachmentUrls,
   ]
     .filter(Boolean)
     .join("\n");
@@ -403,12 +470,11 @@ async function handleMessage(message: TelegramMessage) {
     return;
   }
 
-  // Interactive mode: cancel old drafts, create new one
-
-  // Cancel any existing drafts for this chat
+  // Interactive mode: soft-cancel old drafts (mark done, don't delete)
+  // This keeps each inline keyboard's draft valid until explicitly submitted or cancelled
   await supabase
     .from("task_queue")
-    .delete()
+    .update({ status: "rejected", updated_at: new Date().toISOString() })
     .eq("status", "draft")
     .like("created_by", `telegram-${chatId}%`);
 
@@ -450,8 +516,8 @@ async function handleMessage(message: TelegramMessage) {
     return;
   }
 
-  const draftId = draft.id.slice(0, 8);
-  const msgText = buildDraftMessage(cleanTitle);
+  const draftId = draft.id; // Full UUID — LIKE doesn't work on uuid columns
+  const msgText = buildDraftMessage(cleanTitle, attachmentUrls.length);
   const keyboard = buildKeyboard(
     draftId,
     companySlug,
@@ -597,20 +663,19 @@ async function handleCallback(callback: TelegramCallbackQuery) {
   // ── Submit ──
   if (parts[0] === "ok") {
     const draftId = parts[1];
-    const { data: drafts } = await supabase
+    const { data: draft } = await supabase
       .from("task_queue")
-      .select("id, title, company_id, priority, task_type, cli_target")
-      .eq("status", "draft")
-      .like("id", `${draftId}%`)
-      .limit(1);
+      .select("id, title, company_id, priority, task_type, cli_target, status")
+      .eq("id", draftId)
+      .in("status", ["draft", "rejected"])
+      .maybeSingle();
 
-    const draft = drafts?.[0];
     if (!draft) {
       await editTelegramMessage(
         botToken,
         chatId,
         messageId,
-        "\u26a0\ufe0f Draft expired or already submitted."
+        "\u26a0\ufe0f This task form has expired. Send a new message to create a task."
       );
       return;
     }
@@ -649,8 +714,8 @@ async function handleCallback(callback: TelegramCallbackQuery) {
     await supabase
       .from("task_queue")
       .delete()
-      .eq("status", "draft")
-      .like("id", `${draftId}%`);
+      .eq("id", draftId)
+      .in("status", ["draft", "rejected"]);
 
     await editTelegramMessage(
       botToken,
@@ -665,22 +730,29 @@ async function handleCallback(callback: TelegramCallbackQuery) {
   if (parts.length < 3) return;
   const [field, value, draftId] = parts;
 
-  const { data: drafts } = await supabase
+  const { data: draft } = await supabase
     .from("task_queue")
-    .select("id, title, priority, task_type, cli_target, company_id")
-    .eq("status", "draft")
-    .like("id", `${draftId}%`)
-    .limit(1);
+    .select("id, title, priority, task_type, cli_target, company_id, status")
+    .eq("id", draftId)
+    .in("status", ["draft", "rejected"])
+    .maybeSingle();
 
-  const draft = drafts?.[0];
   if (!draft) {
     await editTelegramMessage(
       botToken,
       chatId,
       messageId,
-      "\u26a0\ufe0f Draft expired. Send your task again."
+      "\u26a0\ufe0f This task form has expired. Send a new message to create a task."
     );
     return;
+  }
+
+  // Revive soft-cancelled draft if user interacts with it
+  if (draft.status === "rejected") {
+    await supabase
+      .from("task_queue")
+      .update({ status: "draft" })
+      .eq("id", draft.id);
   }
 
   // Apply the update

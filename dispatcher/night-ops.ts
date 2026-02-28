@@ -20,6 +20,8 @@ import { execSync } from "child_process";
 import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { SessionManager } from "./session-manager.js";
+import { PERSONAS } from "./agent-personas.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,9 +46,47 @@ const CONFIG = {
 
 let supabase: SupabaseClient;
 let dirtsyncDb: SupabaseClient | null = null;
+let sessionManager: SessionManager | null = null;
 
 function log(level: string, msg: string) {
   console.log(`[${new Date().toISOString()}] [night-ops] [${level}] ${msg}`);
+}
+
+// ============================================
+// COO Session (v6) — Intelligent analysis via persistent session
+// ============================================
+
+const SCRATCH_DIR = "/Users/dirtsyncmini/_scratch";
+
+/**
+ * Send an analysis prompt to the COO session.
+ * Returns the analysis text, or empty string on failure.
+ */
+async function cooAnalyze(prompt: string): Promise<string> {
+  if (!sessionManager) return "";
+  try {
+    const cooPersona = PERSONAS.coo;
+    const session = await sessionManager.getOrCreateSession(cooPersona, null);
+    if (!session) return "";
+    const result = await sessionManager.sendToSession(session, prompt, SCRATCH_DIR, { timeoutMs: 5 * 60 * 1000 });
+    return result.success ? result.output : "";
+  } catch (err) {
+    log("warn", `COO analyze failed: ${err}`);
+    return "";
+  }
+}
+
+async function isSessionModeEnabled(): Promise<boolean> {
+  try {
+    const { data } = await supabase
+      .from("system_config")
+      .select("value")
+      .eq("key", "session_mode")
+      .single();
+    return data?.value === "enabled";
+  } catch {
+    return false;
+  }
 }
 
 // ── Health Checks ──────────────────────────────
@@ -1544,6 +1584,20 @@ async function cycle() {
   // Phase 5: Apply learnings to skills
   await applyLearningsToSkills();
 
+  // Phase 6: Session cleanup (v6)
+  if (sessionManager) {
+    try {
+      const cleaned = await sessionManager.cleanupExpiredSessions();
+      if (cleaned > 0) log("info", `[sessions] Cleaned ${cleaned} expired sessions`);
+      const health = await sessionManager.getSessionHealth();
+      if (health.active > 0 || health.errors24h > 0) {
+        log("info", `[sessions] Active: ${health.active}, Expired(24h): ${health.expired24h}, Errors(24h): ${health.errors24h}`);
+      }
+    } catch (err) {
+      log("warn", `[sessions] Health check failed: ${err}`);
+    }
+  }
+
   // Send Telegram alert if there are issues
   if (report.alerts.length > 0) {
     const alertMsg = `*Night-Ops Alert*\n${report.alerts.map(a => `- ${a}`).join("\n")}`;
@@ -1584,7 +1638,7 @@ async function cycle() {
 // ── Main ──────────────────────────────────────
 
 async function main() {
-  log("info", "=== MCM Forge Night-Ops v2 (COO Brain) Starting ===");
+  log("info", "=== MCM Forge Night-Ops v6 (COO Brain) Starting ===");
   log("info", `Check interval: ${CONFIG.checkIntervalMs / 60000} min`);
   log("info", `Daily brief hour (UTC): ${CONFIG.briefHourUTC}`);
 
@@ -1612,6 +1666,10 @@ async function main() {
     process.exit(1);
   }
   log("info", "Authenticated as COO agent");
+
+  // Initialize session manager for v6
+  sessionManager = new SessionManager(supabase);
+  log("info", "Session manager initialized (v6)");
 
   // Initial cycle
   await cycle();

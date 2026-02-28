@@ -24,6 +24,9 @@ import { existsSync, readFileSync } from "fs";
 import { visualVerify, type VisualVerifyResult } from "./visual-verify.js";
 import { executeSpecTask } from "./spec-pipeline.js";
 import { runVerificationLoop, canTaskClose } from "./verification-loop.js";
+import { SessionManager } from "./session-manager.js";
+import { resolvePersona } from "./agent-personas.js";
+import { executeCodeTaskMultiTurn, executeServiceTaskWithSession } from "./multi-turn-executor.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -111,6 +114,7 @@ const CLI_PATHS: Record<CliTool, string> = {
 };
 
 let supabase: SupabaseClient;
+let sessionManager: SessionManager | null = null;
 let activeTaskCount = 0;
 const MAX_CONCURRENT_TASKS = 3;
 const MAX_RETRIES = 2; // up to 2 retries (3 total attempts)
@@ -141,6 +145,19 @@ async function isDispatcherPaused(): Promise<boolean> {
     return data.value === "paused";
   } catch {
     return false; // On error, keep running (fail-open for polling, fail-safe for actions)
+  }
+}
+
+async function isSessionModeEnabled(): Promise<boolean> {
+  try {
+    const { data } = await supabase
+      .from("system_config")
+      .select("value")
+      .eq("key", "session_mode")
+      .single();
+    return data?.value === "enabled";
+  } catch {
+    return false; // Default to one-shot mode
   }
 }
 
@@ -804,6 +821,34 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
   log("info", `[code] Executing in ${repoPath} with ${cli} (context: ${enrichedContext.length} chars)`, { task: task.title });
 
   const prompt = buildCodePrompt(task, enrichedContext);
+
+  // v6: Session-based multi-turn execution for Claude tasks
+  if (cli === "claude" && sessionManager) {
+    const sessionEnabled = await isSessionModeEnabled();
+    if (sessionEnabled) {
+      try {
+        log("info", `[v6-session] Using multi-turn session for code task`, { task: task.title });
+        const multiResult = await executeCodeTaskMultiTurn(
+          sessionManager, task as any, prompt, repoPath,
+          CONFIG.maxDurationMinutes * 60 * 1000,
+        );
+        log("info", `[v6-session] Completed in ${multiResult.iterations} turn(s)`, { task: task.title, success: multiResult.success });
+        return {
+          success: multiResult.success,
+          output: multiResult.output,
+          summary: multiResult.summary,
+          prUrl: multiResult.prUrl,
+          prNumber: multiResult.prNumber,
+          previewUrl: multiResult.previewUrl,
+          error: multiResult.error,
+        };
+      } catch (err) {
+        log("warn", `[v6-session] Session execution failed, falling back to one-shot CLI: ${err}`, { task: task.title });
+        // Fall through to spawnCli below
+      }
+    }
+  }
+
   return spawnCli(cli, repoPath, prompt, task.id);
 }
 
@@ -1030,7 +1075,34 @@ async function executeServiceTask(
 
   const enrichedVaultContext = [vaultContext, warRoomContext, agentStats].filter(Boolean).join("\n\n");
   const prompt = buildServicePrompt(task, mode, enrichedVaultContext);
-  const result = await spawnCli(cli, workDir, prompt, task.id);
+
+  // v6: Session-based execution for Claude service tasks
+  let result: ExecutionResult;
+  if (cli === "claude" && sessionManager) {
+    const sessionEnabled = await isSessionModeEnabled();
+    if (sessionEnabled) {
+      try {
+        log("info", `[v6-session] Using session for ${mode} task`, { task: task.title });
+        const svcResult = await executeServiceTaskWithSession(
+          sessionManager, task as any, prompt, workDir,
+          CONFIG.maxDurationMinutes * 60 * 1000,
+        );
+        result = {
+          success: svcResult.success,
+          output: svcResult.output,
+          summary: svcResult.summary,
+          error: svcResult.error,
+        };
+      } catch (err) {
+        log("warn", `[v6-session] Service session failed, falling back to CLI: ${err}`, { task: task.title });
+        result = await spawnCli(cli, workDir, prompt, task.id);
+      }
+    } else {
+      result = await spawnCli(cli, workDir, prompt, task.id);
+    }
+  } else {
+    result = await spawnCli(cli, workDir, prompt, task.id);
+  }
 
   // Store output as artifact in Supabase Storage
   if (result.success && result.output.length > 0) {
@@ -1843,7 +1915,7 @@ async function updateTaskStatus(
 // ============================================
 
 async function main() {
-  log("info", "=== MCM Forge Dispatcher v3 Starting ===");
+  log("info", "=== MCM Forge Dispatcher v6 Starting ===");
   log("info", `Poll interval: ${CONFIG.pollIntervalMs / 1000}s`);
   log("info", `Repo base: ${CONFIG.repoBaseDir}`);
   log("info", `Max concurrent tasks: ${MAX_CONCURRENT_TASKS}`);
@@ -1874,6 +1946,10 @@ async function main() {
     process.exit(1);
   }
   log("info", `Authenticated as ${CONFIG.agentEmail}`);
+
+  // Initialize session manager for v6
+  sessionManager = new SessionManager(supabase);
+  log("info", "Session manager initialized (v6)");
 
   // Verify connection
   const { data: companies, error } = await supabase
@@ -1908,7 +1984,7 @@ async function main() {
   // Start polling loop
   setInterval(pollForTask, CONFIG.pollIntervalMs);
 
-  log("info", "Dispatcher v3 running. Ctrl+C to stop.");
+  log("info", "Dispatcher v6 running (session mode available). Ctrl+C to stop.");
 }
 
 main().catch((err) => {

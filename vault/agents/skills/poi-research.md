@@ -66,15 +66,25 @@ Use these coordinates if CENTER_LAT/CENTER_LON are not provided. Nearby towns im
 
 ## POI Types to Search (Priority Order)
 
-Search in this order. If running long on time, ensure types 1-3 are complete before moving on.
+Search in this order. If running long on time, ensure types 1-4 are complete before moving on.
 
 1. **Gas stations / fuel stops** — most critical for riders; include fuel type if known
 2. **Restaurants / food** — fast food, sit-down, convenience stores with food
-3. **Lodging** — hotels, motels, cabins, campgrounds, RV parks
-4. **Gear shops / ATV dealers / rental shops** — parts, rentals, service
-5. **Trailheads / parking areas / staging areas** — official and well-known unofficial
-6. **Emergency services** — hospitals, urgent care, police stations
-7. **Scenic overlooks / landmarks / attractions** — notable stops near the trails
+3. **Lodging — hotels & motels** — chain and independent hotels/motels
+4. **Lodging — cabins & vacation rentals** — Airbnb, VRBO, standalone cabin rentals, bed & breakfasts. Search Airbnb/VRBO sites directly (exact addresses hidden until booking — use approximate location)
+5. **Lodging — campgrounds & RV parks** — tent sites, RV hookups, primitive camping
+6. **Gear shops / ATV dealers / rental shops** — parts, rentals, service
+7. **Trailheads / parking areas / staging areas** — official and well-known unofficial
+8. **Emergency services** — hospitals, urgent care, police stations
+9. **Grocery / convenience stores** — beyond gas station snacks; Dollar General, Family Dollar, etc.
+10. **Liquor / beer stores** — package stores, beer distributors
+11. **Tow / recovery services** — flatbed tow, roadside assistance, ATV recovery
+12. **Auto parts stores** — O'Reilly, AutoZone, NAPA for quick fixes
+13. **Laundromats** — for multi-day trips with muddy gear
+14. **Car washes / pressure wash** — truck and trailer cleanup
+15. **Pharmacies** — CVS, Walgreens, independent pharmacies
+16. **Banks / ATMs** — some rural spots are cash-only
+17. **Scenic overlooks / landmarks / attractions** — notable stops near the trails
 
 ## Data Columns
 
@@ -122,10 +132,20 @@ For each POI type, run multiple web searches to maximize coverage:
 - `"food near {trail_system_name} WV"`
 - `"convenience stores {town1} {state}"`
 
-**Lodging:**
+**Lodging — hotels & motels:**
 - `"{town1} {state} hotels motels"`
+- `"hotels near {trail_system_name} {state}"`
+
+**Lodging — cabins & vacation rentals:**
+- `"Airbnb near {trail_system_name} {state}"` and `"VRBO near {trail_system_name} {state}"`
+- `"cabin rentals near {town1} {state}"`
+- `"bed and breakfast near {town1} {state}"`
+- `"vacation rentals {trail_system_name} ATV"`
+- Note: Airbnb/VRBO hide exact addresses. Use the listing's general area for coordinates. Mark "Airbnb" or "VRBO" as Source.
+
+**Lodging — campgrounds & RV parks:**
 - `"campgrounds RV parks near {trail_system_name}"`
-- `"cabins near {trail_system_name} WV"`
+- `"camping near {town1} {state}"`
 
 **Gear / ATV:**
 - `"ATV dealer rental near {town1} {state}"`
@@ -134,6 +154,30 @@ For each POI type, run multiple web searches to maximize coverage:
 **Emergency services:**
 - `"hospital urgent care near {town1} {state}"`
 - `"police station {town1} {state}"`
+
+**Grocery / convenience:**
+- `"grocery store {town1} {state}"` and `"Dollar General {town1} {state}"`
+
+**Liquor / beer:**
+- `"liquor store {town1} {state}"` and `"beer distributor near {town1} {state}"`
+
+**Tow / recovery:**
+- `"tow service {town1} {state}"` and `"ATV recovery near {trail_system_name}"`
+
+**Auto parts:**
+- `"auto parts store {town1} {state}"` (O'Reilly, AutoZone, NAPA)
+
+**Laundromats:**
+- `"laundromat {town1} {state}"`
+
+**Car wash:**
+- `"car wash {town1} {state}"` and `"pressure wash near {trail_system_name}"`
+
+**Pharmacies:**
+- `"pharmacy {town1} {state}"`
+
+**Banks / ATMs:**
+- `"ATM {town1} {state}"` and `"bank near {town1} {state}"`
 
 **Scenic / attractions:**
 - `"things to do near {trail_system_name} WV"`
@@ -190,7 +234,7 @@ $HOME/.local/bin/uvx workspace-mcp --single-user --cli modify_sheet_values \
 
 After all data rows, append a summary row:
 ```
-["---","TOTALS","Gas: X | Food: Y | Lodging: Z | Gear: A | Emergency: B | Scenic: C","---","---","---","---","---","---","---","---","---","---","---","---"]
+["---","TOTALS","Gas: X | Food: Y | Hotels: Z | Cabins/Rentals: A | Campgrounds: B | Gear: C | Emergency: D | Grocery: E | Liquor: F | Tow: G | Auto Parts: H | Laundry: I | Car Wash: J | Pharmacy: K | Bank/ATM: L | Scenic: M","---","---","---","---","---","---","---","---","---","---","---","---"]
 ```
 
 ### Step 8: Verification
@@ -211,7 +255,7 @@ Your text output to the dispatcher should include:
 
 ## Results
 - **POIs found:** {total}
-- **By type:** Gas ({n}), Food ({n}), Lodging ({n}), Gear ({n}), Emergency ({n}), Scenic ({n})
+- **By type:** Gas ({n}), Food ({n}), Hotels ({n}), Cabins/Rentals ({n}), Campgrounds ({n}), Gear ({n}), Emergency ({n}), Grocery ({n}), Liquor ({n}), Tow ({n}), Auto Parts ({n}), Laundry ({n}), Car Wash ({n}), Pharmacy ({n}), Bank/ATM ({n}), Scenic ({n})
 - **Sheet tab:** "{TRAIL_SYSTEM_NAME} — POIs"
 - **Spreadsheet ID:** {GOOGLE_SHEET_ID}
 
@@ -226,8 +270,8 @@ Your text output to the dispatcher should include:
 
 ## Time Budget
 
-- **Cap total research at 20 minutes** per trail system
-- **Priority order:** Gas > Food > Lodging > Gear > Emergency > Scenic
+- **Cap total research at 25 minutes** per trail system
+- **Priority order:** Gas > Food > Lodging (all 3 types) > Gear > Emergency > Grocery > everything else
 - If running long, output partial results and note which POI types were not fully researched
 - Partial data is better than a timeout with no data
 

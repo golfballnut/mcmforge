@@ -265,20 +265,42 @@ $HOME/.local/bin/uvx workspace-mcp --single-user --cli modify_sheet_values \\
 ## POI Types to Search (in priority order)
 1. **Gas stations / fuel stops** — most critical for riders
 2. **Restaurants / food** — fast food, sit-down, convenience stores
-3. **Lodging** — hotels, motels, cabins, campgrounds, RV parks
-4. **Gear shops / ATV dealers / rental shops**
-5. **Trailheads / parking areas / staging areas**
-6. **Emergency services** — hospitals, urgent care, police
-7. **Scenic overlooks / landmarks / attractions**
+3. **Lodging — hotels & motels** — chain and independent
+4. **Lodging — cabins & vacation rentals** — Airbnb, VRBO, standalone cabin rentals, bed & breakfasts (Airbnb/VRBO hide exact addresses — use approximate location, mark source)
+5. **Lodging — campgrounds & RV parks** — tent sites, RV hookups, primitive camping
+6. **Gear shops / ATV dealers / rental shops**
+7. **Trailheads / parking areas / staging areas**
+8. **Emergency services** — hospitals, urgent care, police
+9. **Grocery / convenience stores** — Dollar General, Family Dollar, etc.
+10. **Liquor / beer stores** — package stores, beer distributors
+11. **Tow / recovery services** — flatbed tow, roadside assistance, ATV recovery
+12. **Auto parts stores** — O'Reilly, AutoZone, NAPA
+13. **Laundromats** — for multi-day trips with muddy gear
+14. **Car washes / pressure wash** — truck and trailer cleanup
+15. **Pharmacies** — CVS, Walgreens, independent
+16. **Banks / ATMs** — some rural spots are cash-only
+17. **Scenic overlooks / landmarks / attractions**
 
 ## Research Approach
 For each POI type, search using these patterns (substitute the actual nearby town names):
 - "gas stations near ${system.nearbyTowns[0] || system.name} ${system.state}"
 - "restaurants near ${system.nearbyTowns[0] || system.name} ${system.state}"
-- "${system.nearbyTowns[0] || system.name} ${system.state} hotels motels campgrounds"
+- "${system.nearbyTowns[0] || system.name} ${system.state} hotels motels"
+- "Airbnb near ${system.name} ${system.state}" and "VRBO near ${system.name} ${system.state}"
+- "cabin rentals near ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "bed and breakfast near ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "campgrounds RV parks near ${system.name}"
 - "ATV dealer rental near ${system.nearbyTowns[0] || system.name} ${system.state}"
 - "${system.name} trail ATV gear shop"
 - "hospital urgent care near ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "grocery store ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "liquor store ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "tow service ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "auto parts store ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "laundromat ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "car wash ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "pharmacy ${system.nearbyTowns[0] || system.name} ${system.state}"
+- "ATM bank ${system.nearbyTowns[0] || system.name} ${system.state}"
 
 For each POI found, collect:
 - Exact business name and address
@@ -307,7 +329,7 @@ After all data rows, append a summary row with total counts by type.
 Pick 3 random POIs and search each by name + address to confirm they exist and coordinates are accurate (within 1 mile of stated address).
 
 ## Time Budget
-Cap total research at 20 minutes. Prioritize: Gas > Food > Lodging > everything else. Partial data is better than a timeout.
+Cap total research at 25 minutes. Prioritize: Gas > Food > Lodging (all 3 types) > Gear > Emergency > Grocery > everything else. Partial data is better than a timeout.
 
 ## Output
 Report your findings as text:

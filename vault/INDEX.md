@@ -92,6 +92,7 @@ Reusable skill definitions that any agent (Claude, Gemini, Codex) can execute. E
 | [[agents/skills/code-review.md]] | Review PR quality before merge. Check for security, performance, style. |
 | [[agents/skills/plan-then-code.md]] | Plan implementation first (architecture, files, tests), then execute. |
 | [[agents/skills/codebase-aware.md]] | Load architecture context (file map, patterns, conventions) before coding. |
+| [[agents/skills/poi-research.md]] | Research POIs near a trail system, output to Google Sheet. Gas, food, lodging, gear, emergency. |
 
 ### Skill Dependency Graph
 
@@ -100,6 +101,7 @@ codebase-aware ──(used by)──> plan-then-code ──(used by)──> code
                                                               |
 visual-bug-fix (standalone)                                   v
 competitive-scan (standalone)                          PR merge decision
+poi-research (standalone, DirtSync-specific)
 ```
 
 ---

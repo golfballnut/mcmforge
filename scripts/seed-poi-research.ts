@@ -340,6 +340,23 @@ async function main() {
 
   const mcmforgeDb = createClient(MCMFORGE_URL, MCMFORGE_KEY);
 
+  // Authenticate (RLS requires an authenticated user)
+  const agentEmail = process.env.AGENT_EMAIL || "agent@mcmforge.com";
+  const agentPassword = process.env.AGENT_PASSWORD;
+  if (!agentPassword) {
+    log("error", "Missing AGENT_PASSWORD in .env");
+    process.exit(1);
+  }
+  const { error: authError } = await mcmforgeDb.auth.signInWithPassword({
+    email: agentEmail,
+    password: agentPassword,
+  });
+  if (authError) {
+    log("error", `Auth failed: ${authError.message}`);
+    process.exit(1);
+  }
+  log("info", `Authenticated as ${agentEmail}`);
+
   // Get DirtSync company ID
   const { data: dirtsyncCompany } = await mcmforgeDb
     .from("company_registry")

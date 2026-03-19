@@ -686,8 +686,14 @@ async function pollForTask() {
     // Recover stuck tasks (in_progress > 45 min with no active process)
     await recoverStuckTasks();
 
-    // Pick up multiple tasks if we have capacity
-    const slotsAvailable = MAX_CONCURRENT_TASKS - activeTaskCount;
+    // Pick up multiple tasks if we have capacity (check both task slots and session slots)
+    const taskSlots = MAX_CONCURRENT_TASKS - activeTaskCount;
+    const sessionSlots = sessionManager ? sessionManager.getAvailableSlots() : taskSlots;
+    const slotsAvailable = Math.min(taskSlots, sessionSlots);
+    if (slotsAvailable <= 0) {
+      log("info", `[dispatch] No session slots available, skipping cycle`);
+      return;
+    }
     const { data: tasks, error } = await supabase
       .from("task_queue")
       .select("*, company_registry(name, slug, github_repo)")
@@ -1427,6 +1433,7 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
           CLI_CONFIG.claude.timeoutMinutes * 60 * 1000,
         );
         log("info", `[v6-session] Completed in ${multiResult.iterations} turn(s)`, { task: task.title, success: multiResult.success });
+        // TODO: Add "No session available" fallback here (same pattern as executeServiceTask)
         return {
           success: multiResult.success,
           output: multiResult.output,
@@ -1681,12 +1688,17 @@ async function executeServiceTask(
           sessionManager, task as any, prompt, workDir,
           CLI_CONFIG.claude.timeoutMinutes * 60 * 1000,
         );
-        result = {
-          success: svcResult.success,
-          output: svcResult.output,
-          summary: svcResult.summary,
-          error: svcResult.error,
-        };
+        if (!svcResult.success && svcResult.error === "No session available") {
+          log("warn", `[${mode}] Session unavailable, falling back to one-shot CLI`, { task: task.title });
+          result = await spawnCli(cli, workDir, prompt, task.id);
+        } else {
+          result = {
+            success: svcResult.success,
+            output: svcResult.output,
+            summary: svcResult.summary,
+            error: svcResult.error,
+          };
+        }
       } catch (err) {
         log("warn", `[v6-session] Service session failed, falling back to CLI: ${err}`, { task: task.title });
         result = await spawnCli(cli, workDir, prompt, task.id);
@@ -2816,6 +2828,7 @@ async function main() {
 
   // Initialize session manager for v6
   sessionManager = new SessionManager(supabase);
+  await sessionManager.init();
   log("info", "Session manager initialized (v6)");
 
   // Seed skill versions for autoresearch tracking

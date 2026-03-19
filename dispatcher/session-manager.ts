@@ -57,9 +57,25 @@ function log(level: string, msg: string, meta?: Record<string, unknown>) {
 export class SessionManager {
   private supabase: SupabaseClient;
   private activeLocks: Set<string> = new Set(); // session keys currently in use
+  private activeSessionCount: number = 0;       // tracks DB active sessions in memory
 
   constructor(supabase: SupabaseClient) {
     this.supabase = supabase;
+  }
+
+  /** Initialize active session count from DB. Call once after construction. */
+  async init(): Promise<void> {
+    const { count } = await this.supabase
+      .from("agent_sessions")
+      .select("id", { count: "exact" })
+      .eq("status", "active");
+    this.activeSessionCount = count || 0;
+    log("info", `Initialized session count: ${this.activeSessionCount}/${MAX_ACTIVE_SESSIONS}`);
+  }
+
+  /** Returns available session slots (synchronous — uses in-memory counter). */
+  getAvailableSlots(): number {
+    return MAX_ACTIVE_SESSIONS - this.activeSessionCount;
   }
 
   /**
@@ -172,6 +188,7 @@ export class SessionManager {
       .from("agent_sessions")
       .update({ status: "expired", error_message: reason })
       .eq("id", session.dbId);
+    this.activeSessionCount = Math.max(0, this.activeSessionCount - 1);
   }
 
   /**
@@ -189,6 +206,7 @@ export class SessionManager {
     const count = data?.length || 0;
     if (count > 0) {
       log("info", `Cleaned up ${count} expired sessions`);
+      this.activeSessionCount = Math.max(0, this.activeSessionCount - count);
     }
     return count;
   }
@@ -273,6 +291,7 @@ export class SessionManager {
 
     const key = sessionKey(persona.name, companyId);
     log("info", `Created new session ${key}`, { dbId: data.id });
+    this.activeSessionCount++;
 
     return this.rowToSession(data);
   }

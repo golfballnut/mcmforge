@@ -231,7 +231,7 @@ function buildPoiTaskDescription(
   sheetId: string,
   radius: number
 ): string {
-  const tabName = `${system.name} — POIs`;
+  const tabName = `${system.name} - POIs`;
   const towns = system.nearbyTowns.join(", ");
 
   return `
@@ -408,7 +408,7 @@ async function main() {
     log("error", "--skip-sheet requires --sheet-id");
     process.exit(1);
   } else {
-    sheetId = createSpreadsheet("DirtSync POI Research — All Systems");
+    sheetId = createSpreadsheet("DirtSync POI Research - All Systems");
     log("info", `Created spreadsheet: ${sheetId}`);
 
     // Move to POI Data folder
@@ -417,7 +417,7 @@ async function main() {
     // Note: Google Sheets API creates tabs when you write to them
     // Write headers to each tab
     for (const system of systems) {
-      const tabName = `${system.name} — POIs`;
+      const tabName = `${system.name} - POIs`;
       try {
         writeSheetHeader(sheetId, tabName);
         log("info", `  Header written: ${tabName}`);
@@ -432,7 +432,7 @@ async function main() {
     .from("task_queue")
     .select("title, status")
     .ilike("title", "POI Research:%")
-    .in("status", ["todo", "in_progress", "review"]);
+    .in("status", ["todo", "in_progress", "review", "done"]);
 
   const existingTitles = new Set((existingTasks || []).map((t) => t.title));
 

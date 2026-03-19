@@ -22,6 +22,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { SessionManager } from "./session-manager.js";
 import { PERSONAS } from "./agent-personas.js";
+import { checkEscalationReplies } from "./email-handler.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,6 +41,9 @@ const CONFIG = {
   steveEmail: process.env.STEVE_EMAIL || "steve@linkschoice.com",
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || "",
   telegramChatId: process.env.STEVE_TELEGRAM_CHAT_ID || process.env.TELEGRAM_CHAT_ID || "",
+  googleClientId: process.env.GOOGLE_OAUTH_CLIENT_ID || "",
+  googleClientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET || "",
+  googleRefreshToken: process.env.GOOGLE_REFRESH_TOKEN || "",
   checkIntervalMs: 60 * 60 * 1000, // 1 hour
   briefHourUTC: 11, // 6 AM ET = 11 UTC
 };
@@ -242,6 +246,7 @@ interface TaskTemplate {
   priority: string;
   skill_name?: string;
   bakeoff_group?: string;
+  cost_cap?: number;
 }
 
 // ── CLI Routing Strategy ──────────────────────
@@ -601,6 +606,59 @@ async function createFollowUpFromResearch(task: any): Promise<{ title: string; t
 //   content  → gemini   (good long-form)
 //   ops      → codex    (Codex 5.3, fast execution)
 //   chat     → claude   (best conversational)
+
+// ── Cron Parser (minimal, hand-rolled) ──────────────────
+// 5-field format: minute hour day-of-month month day-of-week (UTC)
+// Supports: specific values, wildcards (*), comma-separated lists (1,3,5)
+
+function parseCronField(field: string, min: number, max: number): number[] {
+  if (field === "*") {
+    const values: number[] = [];
+    for (let i = min; i <= max; i++) values.push(i);
+    return values;
+  }
+  return field.split(",").map(v => {
+    const n = parseInt(v, 10);
+    if (isNaN(n) || n < min || n > max) {
+      throw new Error(`Invalid cron value: ${v} (range ${min}-${max})`);
+    }
+    return n;
+  });
+}
+
+function getNextCronTime(cronExpr: string, after: Date = new Date()): Date {
+  const parts = cronExpr.trim().split(/\s+/);
+  if (parts.length !== 5) throw new Error(`Invalid cron expression: ${cronExpr}`);
+
+  const minutes = parseCronField(parts[0], 0, 59);
+  const hours = parseCronField(parts[1], 0, 23);
+  const daysOfMonth = parseCronField(parts[2], 1, 31);
+  const months = parseCronField(parts[3], 1, 12);
+  const daysOfWeek = parseCronField(parts[4], 0, 6);
+
+  // Start one minute after reference time
+  const candidate = new Date(after);
+  candidate.setUTCSeconds(0, 0);
+  candidate.setUTCMinutes(candidate.getUTCMinutes() + 1);
+
+  // Search up to 400 days to avoid infinite loop
+  const limit = new Date(after.getTime() + 400 * 24 * 60 * 60 * 1000);
+
+  while (candidate < limit) {
+    if (
+      months.includes(candidate.getUTCMonth() + 1) &&
+      daysOfMonth.includes(candidate.getUTCDate()) &&
+      daysOfWeek.includes(candidate.getUTCDay()) &&
+      hours.includes(candidate.getUTCHours()) &&
+      minutes.includes(candidate.getUTCMinutes())
+    ) {
+      return candidate;
+    }
+    candidate.setUTCMinutes(candidate.getUTCMinutes() + 1);
+  }
+
+  throw new Error(`No cron match within 400 days for: ${cronExpr}`);
+}
 
 // ── Normalized Dedup ──────────────────────────────
 // Prevents the spam loop by comparing task INTENT, not exact titles
@@ -1170,6 +1228,134 @@ async function runTrailAudit(): Promise<string[]> {
   return findings;
 }
 
+// ── Skill Scheduler ──────────────────────────────
+
+interface SkillSchedule {
+  id: string;
+  skill_name: string;
+  company_id: string;
+  cli_target: string;
+  cron_expression: string;
+  task_type: string;
+  priority: string;
+  cost_cap: number;
+  task_description_template: string | null;
+  last_run_at: string | null;
+  next_run_at: string | null;
+}
+
+async function runSkillScheduler(): Promise<string[]> {
+  const actions: string[] = [];
+
+  try {
+    // 1. Query all enabled schedules that are due
+    const now = new Date().toISOString();
+    const { data: dueSchedules, error } = await supabase
+      .from("skill_schedule")
+      .select("*")
+      .eq("enabled", true)
+      .lte("next_run_at", now);
+
+    if (error) {
+      log("warn", `[scheduler] Query failed: ${error.message}`);
+      return actions;
+    }
+
+    if (!dueSchedules || dueSchedules.length === 0) {
+      return actions;
+    }
+
+    log("info", `[scheduler] ${dueSchedules.length} skill(s) due to run`);
+
+    for (const schedule of dueSchedules as SkillSchedule[]) {
+      try {
+        // 2a. Dedup: skip if same skill+company already queued or running
+        const { count: existingCount } = await supabase
+          .from("task_queue")
+          .select("id", { count: "exact", head: true })
+          .eq("skill_name", schedule.skill_name)
+          .eq("company_id", schedule.company_id)
+          .in("status", ["todo", "in_progress"]);
+
+        if (existingCount && existingCount > 0) {
+          log("info", `[scheduler] Skipping ${schedule.skill_name} — already queued/running`);
+          actions.push(`Skipped: ${schedule.skill_name} (already in queue)`);
+
+          // Still advance next_run_at so we don't re-trigger every cycle
+          const nextRun = getNextCronTime(schedule.cron_expression);
+          await supabase
+            .from("skill_schedule")
+            .update({ next_run_at: nextRun.toISOString() })
+            .eq("id", schedule.id);
+          continue;
+        }
+
+        // 2b. Resolve company name for template substitution
+        const { data: company } = await supabase
+          .from("company_registry")
+          .select("name, slug")
+          .eq("id", schedule.company_id)
+          .single();
+
+        const companyName = company?.name || "Unknown";
+        const dateStr = new Date().toISOString().slice(0, 10);
+
+        // 2c. Build description from template
+        let description = schedule.task_description_template
+          || `Run ${schedule.skill_name} skill for ${companyName}`;
+        description = description
+          .replace(/\{company_name\}/g, companyName)
+          .replace(/\{date\}/g, dateStr)
+          .replace(/\{skill_name\}/g, schedule.skill_name);
+
+        // 2d. Create task via existing createTask()
+        const taskId = await createTask({
+          title: `[Scheduled] ${schedule.skill_name} — ${companyName}`,
+          description,
+          task_type: schedule.task_type,
+          cli_target: schedule.cli_target,
+          company_id: schedule.company_id,
+          priority: schedule.priority,
+          skill_name: schedule.skill_name,
+          cost_cap: schedule.cost_cap,
+        });
+
+        if (taskId) {
+          // 2e. Advance schedule: last_run_at + next_run_at
+          const nextRun = getNextCronTime(schedule.cron_expression);
+          await supabase
+            .from("skill_schedule")
+            .update({
+              last_run_at: new Date().toISOString(),
+              next_run_at: nextRun.toISOString(),
+            })
+            .eq("id", schedule.id);
+
+          actions.push(`Scheduled: ${schedule.skill_name} → ${schedule.cli_target} (next: ${nextRun.toISOString().slice(0, 16)})`);
+          log("info", `[scheduler] Created task ${taskId} for ${schedule.skill_name}, next run: ${nextRun.toISOString()}`);
+        }
+      } catch (schedErr) {
+        log("warn", `[scheduler] Failed to process ${schedule.skill_name}: ${schedErr}`);
+        actions.push(`Error: ${schedule.skill_name} — ${schedErr}`);
+      }
+    }
+
+    // 3. War room log
+    if (actions.length > 0) {
+      await supabase.from("communication_log").insert({
+        from_agent: "night-ops-coo",
+        to_agent: "steve",
+        channel: "war_room",
+        message: `Skill Scheduler: ${actions.join("; ")}`,
+      });
+    }
+  } catch (err) {
+    log("warn", `[scheduler] Scheduler failed: ${err}`);
+  }
+
+  return actions;
+}
+
 // ── Stale Approval Escalation ──────────────────
 
 async function escalateStaleApprovals() {
@@ -1560,6 +1746,25 @@ async function cycle() {
   const report = await runHealthCheck();
   log("info", `PM2: ${report.pm2.online}/${report.pm2.total} | Tasks: ${report.tasks.inProgress} active, ${report.tasks.todoCount} queued, ${report.tasks.completedLastHour} completed/hr | PRs: ${report.prs.open} open`);
 
+  // Phase 1.5: Skill scheduler (create tasks for due schedules)
+  const schedulerActions = await runSkillScheduler();
+  for (const action of schedulerActions) {
+    log("info", `[scheduler] ${action}`);
+  }
+
+  // Phase 1.7: Check email replies for escalation responses
+  const emailActions = await checkEscalationReplies({
+    supabase,
+    googleClientId: CONFIG.googleClientId,
+    googleClientSecret: CONFIG.googleClientSecret,
+    googleRefreshToken: CONFIG.googleRefreshToken,
+    log,
+    sendTelegramAlert,
+  });
+  for (const action of emailActions) {
+    log("info", `[email] ${action}`);
+  }
+
   // Phase 2: Review completed tasks
   const reviewActions = await reviewCompletedTasks();
   for (const action of reviewActions) {
@@ -1606,12 +1811,14 @@ async function cycle() {
   }
 
   // Send hourly progress to Telegram (compact summary)
-  const totalActions = reviewActions.length + overnightActions.length;
+  const totalActions = reviewActions.length + overnightActions.length + schedulerActions.length + emailActions.length;
   if (totalActions > 0 || report.tasks.completedLastHour > 0) {
     const progressMsg = [
       `*COO Cycle #${cycleCount}*`,
       `Tasks: ${report.tasks.completedLastHour} completed, ${report.tasks.todoCount} queued, ${report.tasks.inProgress} running`,
       totalActions > 0 ? `Actions: ${[...reviewActions.filter(a => a.startsWith("Queued")), ...overnightActions].join(", ") || "monitoring"}` : "",
+      schedulerActions.length > 0 ? `Scheduler: ${schedulerActions.join(", ")}` : "",
+      emailActions.length > 0 ? `Email: ${emailActions.join(", ")}` : "",
       trailFindings.length > 0 ? `Trail audit: ${trailFindings[0]}` : "",
     ].filter(Boolean).join("\n");
     await sendTelegramAlert(progressMsg);

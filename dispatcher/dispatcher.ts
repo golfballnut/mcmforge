@@ -15,6 +15,7 @@
  * - Enforces cost caps ($2 default, $5 ceiling)
  */
 
+import crypto from "node:crypto";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { spawn, execSync } from "child_process";
 import * as dotenv from "dotenv";
@@ -27,6 +28,7 @@ import { runVerificationLoop, canTaskClose } from "./verification-loop.js";
 import { SessionManager } from "./session-manager.js";
 import { resolvePersona } from "./agent-personas.js";
 import { executeCodeTaskMultiTurn, executeServiceTaskWithSession } from "./multi-turn-executor.js";
+import { planReviewLoop, type PlanReviewResult } from "./plan-review.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -56,6 +58,11 @@ interface Task {
   parent_task_id?: string;
   spec_sheet_id?: string;
   proposal_data?: Record<string, unknown>;
+  review_tier?: "low" | "medium" | "high";
+  plan_text?: string;
+  plan_score?: number;
+  plan_feedback?: string;
+  plan_iterations?: number;
   company_registry?: {
     name: string;
     slug: string;
@@ -98,6 +105,9 @@ const CONFIG = {
   maxCostCap: parseFloat(process.env.MAX_COST_CAP || "5"),
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || "",
   telegramChatId: process.env.TELEGRAM_CHAT_ID || "",
+  googleClientId: process.env.GOOGLE_OAUTH_CLIENT_ID || "",
+  googleClientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET || "",
+  googleRefreshToken: process.env.GOOGLE_REFRESH_TOKEN || "",
 };
 
 // Company slug → repo directory name mapping
@@ -119,6 +129,43 @@ let activeTaskCount = 0;
 const MAX_CONCURRENT_TASKS = 3;
 const MAX_RETRIES = 2; // up to 2 retries (3 total attempts)
 
+// Orchestrator: valid skill names for classification validation
+const VALID_SKILLS = new Set([
+  "poi-research", "competitive-scan", "code-review", "visual-bug-fix",
+  "plan-then-code", "tdd-workflow", "shipping-checklist", "codebase-aware",
+  "feature-proposal", "daily-ops", "plan-reviewer",
+]);
+const ORCHESTRATOR_TIMEOUT_MS = 30_000; // 30 seconds max for Gemini classification
+
+const FALLBACK_ORCHESTRATOR_PROMPT = `You are a task classifier. Given a task title and description, return JSON: {"skill_name": "skill-name-or-null", "cli_target": "claude|gemini|codex", "task_type": "code|research|content|ops|chat|proposal", "needs_approval": true/false, "review_tier": "low|medium|high", "reasoning": "why"}. Skills: poi-research (POI near trails), competitive-scan (competitor analysis), code-review (PR review), visual-bug-fix (CSS/UI from screenshot), plan-then-code (complex features 3+ files), tdd-workflow (simple code fixes), shipping-checklist (deploy/merge), feature-proposal (propose features), daily-ops (health/monitoring). Use claude for code, gemini for research, codex for quick fixes. review_tier: low=research/content/ops/chat, medium=code tasks, high=migrations/deploys/infrastructure. Return ONLY JSON.`;
+
+// Per-CLI configuration: timeouts, models, and exit code classification
+const CLI_CONFIG: Record<CliTool, {
+  timeoutMinutes: number;
+  modelName: string;
+  retryableExitCodes: Set<number>;
+  fatalExitCodes: Set<number>;
+}> = {
+  claude: {
+    timeoutMinutes: 30,
+    modelName: "sonnet-4",
+    retryableExitCodes: new Set([1]),
+    fatalExitCodes: new Set([]),
+  },
+  gemini: {
+    timeoutMinutes: 10,
+    modelName: "gemini-2.5-flash",
+    retryableExitCodes: new Set([1, 53]),  // 53=turn-limit, worth retrying
+    fatalExitCodes: new Set([41]),          // 41=auth error, won't self-heal
+  },
+  codex: {
+    timeoutMinutes: 15,
+    modelName: "gpt-5.3-codex",  // Mini is on Codex v0.99.0; update to gpt-5.4 after upgrade
+    retryableExitCodes: new Set([1]),
+    fatalExitCodes: new Set([]),
+  },
+};
+
 // ============================================
 // Logging
 // ============================================
@@ -127,6 +174,268 @@ function log(level: string, msg: string, meta?: Record<string, unknown>) {
   const ts = new Date().toISOString();
   const metaStr = meta ? ` ${JSON.stringify(meta)}` : "";
   console.log(`[${ts}] [${level}] ${msg}${metaStr}`);
+}
+
+// ============================================
+// Google Calendar Integration
+// ============================================
+
+let googleAccessToken: string | null = null;
+let googleTokenExpiresAt = 0;
+
+async function getGoogleAccessToken(): Promise<string | null> {
+  if (!CONFIG.googleClientId || !CONFIG.googleRefreshToken) return null;
+
+  // Return cached token if still valid (with 60s buffer)
+  if (googleAccessToken && Date.now() < googleTokenExpiresAt - 60000) {
+    return googleAccessToken;
+  }
+
+  try {
+    const res = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: CONFIG.googleClientId,
+        client_secret: CONFIG.googleClientSecret,
+        refresh_token: CONFIG.googleRefreshToken,
+        grant_type: "refresh_token",
+      }),
+    });
+    const data = await res.json() as Record<string, unknown>;
+    if (data.access_token) {
+      googleAccessToken = data.access_token as string;
+      googleTokenExpiresAt = Date.now() + ((data.expires_in as number) || 3600) * 1000;
+      return googleAccessToken;
+    }
+    log("warn", `Google OAuth refresh failed: ${JSON.stringify(data)}`);
+    return null;
+  } catch (err) {
+    log("warn", `Google OAuth token exchange failed: ${err}`);
+    return null;
+  }
+}
+
+async function createTaskCalendarEvent(task: Task): Promise<void> {
+  try {
+    const token = await getGoogleAccessToken();
+    if (!token) return;
+
+    const { data: company } = await supabase
+      .from("company_registry")
+      .select("google_calendar_id")
+      .eq("id", task.company_id)
+      .single();
+
+    const calendarId = company?.google_calendar_id;
+    if (!calendarId) return;
+
+    const cli: CliTool = task.cli_target || "claude";
+    const estimatedMinutes = CLI_CONFIG[cli].timeoutMinutes;
+    const now = new Date();
+    const end = new Date(now.getTime() + estimatedMinutes * 60 * 1000);
+
+    const event = {
+      summary: `[${cli}] ${task.title}`,
+      description: [
+        `Skill: ${task.skill_name || "none"}`,
+        `CLI: ${cli} (${CLI_CONFIG[cli].modelName})`,
+        `Company: ${task.company_registry?.name || "unknown"}`,
+        `Priority: ${task.priority}`,
+        `Task ID: ${task.id}`,
+        "",
+        task.description?.slice(0, 500) || "",
+      ].join("\n"),
+      start: { dateTime: now.toISOString() },
+      end: { dateTime: end.toISOString() },
+      colorId: "9",
+    };
+
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event),
+      }
+    );
+
+    if (res.ok) {
+      const created = await res.json() as Record<string, unknown>;
+      await supabase
+        .from("task_queue")
+        .update({
+          calendar_event_id: created.id as string,
+          calendar_html_link: created.htmlLink as string,
+        })
+        .eq("id", task.id);
+      log("info", `Calendar event created for ${task.title}`);
+    } else {
+      log("warn", `Calendar event creation failed: ${res.status} ${await res.text()}`);
+    }
+  } catch (err) {
+    log("warn", `Calendar event creation error: ${err}`);
+  }
+}
+
+async function updateTaskCalendarEvent(
+  task: Task,
+  result: ExecutionResult,
+  durationMin: string
+): Promise<void> {
+  try {
+    const token = await getGoogleAccessToken();
+    if (!token) return;
+
+    const { data: taskRow } = await supabase
+      .from("task_queue")
+      .select("calendar_event_id")
+      .eq("id", task.id)
+      .single();
+
+    const eventId = taskRow?.calendar_event_id;
+    if (!eventId) return;
+
+    const { data: company } = await supabase
+      .from("company_registry")
+      .select("google_calendar_id")
+      .eq("id", task.company_id)
+      .single();
+
+    const calendarId = company?.google_calendar_id;
+    if (!calendarId) return;
+
+    const cli: CliTool = task.cli_target || "claude";
+    const status = result.success ? "Completed ✓" : "Blocked ✗";
+
+    const links: string[] = [];
+    if (result.prUrl) links.push(`PR: ${result.prUrl}`);
+    if (result.previewUrl) links.push(`Preview: ${result.previewUrl}`);
+    if (result.artifactPath) links.push(`Artifact: ${result.artifactPath}`);
+
+    const description = [
+      `Status: ${status}`,
+      `Duration: ${durationMin} min`,
+      `Agent: ${cli} / ${CLI_CONFIG[cli].modelName}`,
+      `Skill: ${task.skill_name || "none"}`,
+      `Task ID: ${task.id}`,
+      "",
+      ...(links.length ? ["Links:", ...links, ""] : []),
+      "Result:",
+      (result.summary || result.error || "No summary")?.slice(0, 500),
+    ].join("\n");
+
+    const now = new Date();
+    const patch: Record<string, unknown> = {
+      description,
+      end: { dateTime: now.toISOString() },
+    };
+
+    if (!result.success) {
+      patch.colorId = "11"; // tomato (red) for blocked
+    } else {
+      patch.colorId = "10"; // basil (green) for success
+    }
+
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(patch),
+      }
+    );
+
+    if (!res.ok) {
+      log("warn", `Calendar event update failed: ${res.status}`);
+    }
+  } catch (err) {
+    log("warn", `Calendar event update error: ${err}`);
+  }
+}
+
+async function sendEscalationEmail(task: Task, reason: string): Promise<void> {
+  if (!CONFIG.resendApiKey) return;
+
+  try {
+    const cli: CliTool = task.cli_target || "claude";
+    const company = task.company_registry?.name || "Unknown";
+
+    let suggestedAction = "Review the error and resubmit the task.";
+    if (reason.includes("auth")) {
+      suggestedAction = `Check ${cli} authentication credentials on Mini.`;
+    } else if (reason.includes("timeout")) {
+      suggestedAction = "Consider splitting the task into smaller pieces or increasing timeout.";
+    } else if (task.skill_name && reason.includes("skill")) {
+      suggestedAction = `Review and update the '${task.skill_name}' skill in vault.`;
+    }
+
+    const { data: taskRow } = await supabase
+      .from("task_queue")
+      .select("calendar_html_link")
+      .eq("id", task.id)
+      .single();
+
+    const calendarLink = taskRow?.calendar_html_link || null;
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e5e5e5; padding: 24px;">
+  <div style="max-width: 560px; margin: 0 auto; background: #171717; border: 1px solid #333; border-radius: 12px; overflow: hidden;">
+    <div style="background: linear-gradient(135deg, #5f1e1e, #2a0f0f); padding: 24px 32px;">
+      <h1 style="font-size: 18px; margin: 0 0 4px 0; color: #fca5a5;">Agent Needs Help</h1>
+      <p style="color: #94a3b8; margin: 0; font-size: 13px;">${company} &middot; ${cli} &middot; ${task.priority} priority</p>
+    </div>
+    <div style="padding: 24px 32px; font-size: 14px; color: #d4d4d4;">
+      <h2 style="font-size: 16px; color: #fff; margin: 0 0 12px 0;">${task.title}</h2>
+      <div style="background: #1c1c1c; border: 1px solid #444; border-radius: 8px; padding: 16px; margin: 12px 0;">
+        <p style="margin: 0 0 8px 0; color: #fca5a5;"><strong>What failed:</strong></p>
+        <p style="margin: 0; font-size: 13px; color: #a3a3a3;">${reason.slice(0, 500)}</p>
+      </div>
+      <table style="width: 100%; font-size: 13px; margin: 16px 0;">
+        <tr><td style="color: #737373; padding: 4px 0;">Skill</td><td style="color: #d4d4d4;">${task.skill_name || "none"}</td></tr>
+        <tr><td style="color: #737373; padding: 4px 0;">CLI</td><td style="color: #d4d4d4;">${cli} (${CLI_CONFIG[cli].modelName})</td></tr>
+        <tr><td style="color: #737373; padding: 4px 0;">Retries</td><td style="color: #d4d4d4;">${task.retry_count || 0} / ${MAX_RETRIES}</td></tr>
+        <tr><td style="color: #737373; padding: 4px 0;">Task ID</td><td style="color: #d4d4d4; font-family: monospace; font-size: 11px;">${task.id}</td></tr>
+      </table>
+      <div style="background: #1a2332; border: 1px solid #1e3a5f; border-radius: 8px; padding: 12px 16px; margin: 12px 0;">
+        <p style="margin: 0; color: #60a5fa; font-size: 13px;"><strong>Suggested action:</strong> ${suggestedAction}</p>
+      </div>
+      ${calendarLink ? `<p style="margin: 16px 0 0 0;"><a href="${calendarLink}" style="color: #60a5fa; text-decoration: none;">View on Calendar →</a></p>` : ""}
+    </div>
+    <div style="padding: 16px 32px; border-top: 1px solid #333; text-align: center;">
+      <p style="margin: 0; font-size: 12px; color: #666;">MCM Forge &middot; Agent Escalation &middot; <a href="https://mcmforge.com" style="color: #60a5fa;">Dashboard</a></p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${CONFIG.resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "MCM Forge <ops@mcmforge.com>",
+        reply_to: ["dirtsyncapp@gmail.com"],
+        to: CONFIG.steveEmail,
+        subject: `[MCM Forge] Agent needs help: ${task.title}`,
+        html,
+      }),
+    });
+    log("info", `Escalation email sent for ${task.title}`);
+  } catch (err) {
+    log("warn", `Escalation email failed: ${err}`);
+  }
 }
 
 // ============================================
@@ -159,6 +468,201 @@ async function isSessionModeEnabled(): Promise<boolean> {
   } catch {
     return false; // Default to one-shot mode
   }
+}
+
+async function isOrchestratorEnabled(): Promise<boolean> {
+  try {
+    const { data } = await supabase
+      .from("system_config")
+      .select("value")
+      .eq("key", "orchestrator_mode")
+      .single();
+    return data?.value === "enabled";
+  } catch {
+    return false; // Default to disabled
+  }
+}
+
+// ============================================
+// Orchestrator (Auto-Classification via Gemini)
+// ============================================
+
+interface OrchestratorResult {
+  skill_name: string | null;
+  cli_target: string;
+  task_type: string;
+  needs_approval: boolean;
+  review_tier?: string;
+  reasoning: string;
+}
+
+async function orchestrateTask(task: Task): Promise<{ needsApproval: boolean }> {
+  // Skip if already classified
+  if (task.skill_name) return { needsApproval: false };
+
+  // Check feature flag
+  const enabled = await isOrchestratorEnabled();
+  if (!enabled) return { needsApproval: false };
+
+  try {
+    // Load orchestrator prompt from vault_docs
+    const { data: orchestratorDoc } = await supabase
+      .from("vault_docs")
+      .select("content")
+      .eq("category", "skill")
+      .eq("slug", "orchestrator")
+      .single();
+
+    const systemPrompt = orchestratorDoc?.content || FALLBACK_ORCHESTRATOR_PROMPT;
+
+    const classificationPrompt = [
+      systemPrompt,
+      "",
+      "## Task to Classify",
+      `Title: ${task.title}`,
+      `Description: ${task.description || "No description"}`,
+      `Current task_type: ${task.task_type}`,
+      `Current cli_target: ${task.cli_target}`,
+      `Company: ${task.company_registry?.slug || "unknown"} (${task.company_registry?.name || "unknown"})`,
+      "",
+      "Return ONLY the JSON classification object.",
+    ].join("\n");
+
+    // Call Gemini for classification (30s timeout)
+    const result = await spawnGeminiClassifier(classificationPrompt, task.id);
+
+    if (!result) {
+      log("info", `[orchestrator] Gemini returned no result for task ${task.id}, skipping classification`);
+      return { needsApproval: false };
+    }
+
+    // Validate and build update payload
+    const updates: Record<string, unknown> = {};
+
+    if (result.skill_name && VALID_SKILLS.has(result.skill_name)) {
+      updates.skill_name = result.skill_name;
+      task.skill_name = result.skill_name;
+    }
+
+    if (result.cli_target && ["claude", "gemini", "codex"].includes(result.cli_target)) {
+      updates.cli_target = result.cli_target;
+      task.cli_target = result.cli_target as CliTool;
+    }
+
+    if (result.task_type && ["code", "research", "content", "ops", "chat", "proposal", "spec"].includes(result.task_type)) {
+      updates.task_type = result.task_type;
+      task.task_type = result.task_type as TaskType;
+    }
+
+    // Review tier classification
+    const tier = result.review_tier;
+    if (tier && ["low", "medium", "high"].includes(tier)) {
+      updates.review_tier = tier;
+      task.review_tier = tier as "low" | "medium" | "high";
+    }
+
+    let needsApproval = false;
+    if (result.needs_approval === true) {
+      updates.status = "review";
+      task.status = "review";
+      needsApproval = true;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      updates.updated_at = new Date().toISOString();
+      await supabase.from("task_queue").update(updates).eq("id", task.id);
+    }
+
+    log("info", `[orchestrator] Classified task ${task.id}`, {
+      skill: result.skill_name,
+      cli: result.cli_target,
+      type: result.task_type,
+      tier: task.review_tier || "low",
+      approval: needsApproval,
+      reasoning: result.reasoning?.slice(0, 120),
+    });
+
+    // War room post
+    const approvalTag = needsApproval ? " -> NEEDS APPROVAL" : "";
+    const tierTag = task.review_tier && task.review_tier !== "low" ? ` tier:${task.review_tier}` : "";
+    await supabase.from("communication_log").insert({
+      from_agent: "orchestrator",
+      to_agent: "all",
+      channel: "war_room",
+      message: `[CLASSIFY] ${task.title} -> skill:${result.skill_name || "none"} cli:${result.cli_target} type:${result.task_type}${tierTag}${approvalTag}. ${result.reasoning || ""}`,
+      company_id: task.company_id,
+      task_id: task.id,
+    });
+
+    return { needsApproval };
+  } catch (err) {
+    log("warn", `[orchestrator] Classification failed (non-blocking): ${err}`, { task: task.id });
+    return { needsApproval: false };
+  }
+}
+
+function spawnGeminiClassifier(prompt: string, taskId: string): Promise<OrchestratorResult | null> {
+  return new Promise((resolve) => {
+    const binary = CLI_PATHS.gemini;
+    const args = getCliArgs("gemini", prompt);
+    let output = "";
+    let killed = false;
+
+    const proc = spawn(binary, args, {
+      cwd: CONFIG.repoBaseDir,
+      env: { ...process.env },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+
+    const timer = setTimeout(() => {
+      killed = true;
+      proc.kill("SIGTERM");
+      log("warn", `[orchestrator] Gemini classification timed out (${ORCHESTRATOR_TIMEOUT_MS}ms)`, { taskId });
+    }, ORCHESTRATOR_TIMEOUT_MS);
+
+    proc.stdout?.on("data", (data: Buffer) => { output += data.toString(); });
+    proc.stderr?.on("data", (data: Buffer) => { output += data.toString(); });
+
+    proc.on("close", (code) => {
+      clearTimeout(timer);
+      if (killed || code !== 0) {
+        resolve(null);
+        return;
+      }
+
+      try {
+        // Gemini --output-format json may wrap output. Try parsing as JSON first.
+        let parsed: string = output;
+        try {
+          const jsonWrapper = JSON.parse(output);
+          parsed = typeof jsonWrapper === "string"
+            ? jsonWrapper
+            : jsonWrapper.response || jsonWrapper.output || JSON.stringify(jsonWrapper);
+        } catch {
+          // Raw text output — try to extract JSON directly
+        }
+
+        // Extract JSON object from response (handles markdown fences, preamble)
+        const jsonMatch = parsed.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          log("debug", `[orchestrator] No JSON object found in Gemini output`);
+          resolve(null);
+          return;
+        }
+
+        const result = JSON.parse(jsonMatch[0]) as OrchestratorResult;
+        resolve(result);
+      } catch {
+        log("debug", `[orchestrator] Failed to parse Gemini output as JSON`);
+        resolve(null);
+      }
+    });
+
+    proc.on("error", () => {
+      clearTimeout(timer);
+      resolve(null);
+    });
+  });
 }
 
 // ============================================
@@ -276,12 +780,74 @@ async function executeTask(task: Task) {
   activeTaskCount++;
   const startTime = Date.now();
   const executionStartTime = Date.now();
-  const taskType: TaskType = task.task_type || "code";
-  const cli: CliTool = task.cli_target || "claude";
+
+  log("info", `[dispatch] Picked up task ${task.id}`, {
+    title: task.title,
+    originalType: task.task_type,
+    originalCli: task.cli_target,
+    company: task.company_registry?.slug || "unknown",
+  });
 
   // Claim the task
   await updateTaskStatus(task.id, "in_progress", {
     started_at: new Date().toISOString(),
+  });
+
+  // Create calendar event for task start
+  await createTaskCalendarEvent(task);
+
+  // Auto-classify via orchestrator (Gemini) — updates task fields in-place
+  const { needsApproval } = await orchestrateTask(task);
+  if (needsApproval) {
+    log("info", `[orchestrator] Task ${task.id} needs approval, parking as review`);
+    activeTaskCount--;
+    return;
+  }
+
+  // Read task fields AFTER orchestrator may have updated them
+  const taskType: TaskType = task.task_type || "code";
+  const cli: CliTool = task.cli_target || "claude";
+
+  // --- PLAN REVIEW LOOP ---
+  const reviewTier = task.review_tier || "low";
+  if (reviewTier !== "low") {
+    const companySlug = task.company_registry?.slug || "unknown";
+    const repoDirName = REPO_DIR_MAP[companySlug] || companySlug;
+    const planWorkDir = join(CONFIG.repoBaseDir, repoDirName);
+    const planVaultCtx = await loadVaultContext(task);
+
+    const planResult = await planReviewLoop(task, cli, planWorkDir, planVaultCtx, {
+      supabase,
+      spawnCli,
+      telegramBotToken: CONFIG.telegramBotToken,
+      telegramChatId: CONFIG.telegramChatId,
+      log,
+    });
+
+    if (!planResult.approved) {
+      // High-tier task escalated to Steve, parked as "review"
+      log("info", `[plan-review] Task ${task.id} escalated (score: ${planResult.score})`);
+      activeTaskCount--;
+      return;
+    }
+
+    // Inject approved plan into task description for executing agent
+    if (planResult.plan) {
+      task.description = `--- APPROVED PLAN (score: ${planResult.score}/10, ${planResult.iterations} iterations) ---\n${planResult.plan}\n--- END PLAN ---\n\n${task.description}`;
+    }
+
+    // Persist plan fields onto task object for metrics
+    task.plan_score = planResult.score ?? undefined;
+    task.plan_iterations = planResult.iterations;
+  }
+  // --- END PLAN REVIEW LOOP ---
+
+  log("info", `[dispatch] Executing task ${task.id} via ${cli}`, {
+    title: task.title,
+    type: taskType,
+    skill: task.skill_name || "none",
+    company: task.company_registry?.slug || "unknown",
+    timeoutMin: CLI_CONFIG[cli].timeoutMinutes,
   });
 
   // Load vault context for this company
@@ -576,20 +1142,48 @@ async function executeTask(task: Task) {
       if (taskType === "research" && result.summary) {
         await postToWarRoom(task, "FINDING", result.summary.slice(0, 300));
       }
-    } else {
-      log("error", `Task failed: ${result.error}`, { task: task.title });
-      await recordLearning(task, result, "execution");
 
-      // Record skill metrics and agent roster update for failures too
+      // Update calendar event with success result
+      await updateTaskCalendarEvent(task, result, durationMin);
+    } else {
+      log("error", `Task failed: ${result.error}`, { task: task.title, cli });
+
+      // Extract exit code for CLI-specific retry decisions
+      const exitCodeMatch = result.error?.match(/Exit code (\d+)/);
+      const exitCode = exitCodeMatch ? parseInt(exitCodeMatch[1], 10) : null;
+      const isFatalCode = exitCode !== null && CLI_CONFIG[cli].fatalExitCodes.has(exitCode);
+
+      await recordLearning(task, result, "execution");
       await recordSkillMetrics(task, result, Date.now() - executionStartTime);
       await updateAgentRoster(task, result.success);
 
-      await updateTaskStatus(task.id, "blocked", {
-        result_summary: `Failed: ${result.error}`,
-      });
-
-      // War room post for failure
-      await postToWarRoom(task, "FAILED", result.error || result.summary || "Unknown error");
+      if (isFatalCode) {
+        // Fatal exit code — do NOT retry, block immediately
+        log("warn", `[retry] Fatal exit code ${exitCode} for ${cli} — blocking immediately`, { task: task.title });
+        await updateTaskStatus(task.id, "blocked", {
+          result_summary: `Fatal ${cli} error (code ${exitCode}): ${result.error}`,
+        });
+        await postToWarRoom(task, "FAILED", result.error || "Fatal CLI error");
+        await updateTaskCalendarEvent(task, result, durationMin);
+        await sendEscalationEmail(task, result.error || "Fatal CLI error");
+      } else {
+        // Retryable failure — check retry budget
+        const retries = task.retry_count || 0;
+        if (retries < MAX_RETRIES) {
+          log("info", `[retry] Requeueing ${cli} task (${retries + 1}/${MAX_RETRIES})`, { task: task.title });
+          await supabase.from("task_queue")
+            .update({ status: "todo", started_at: null, retry_count: retries + 1, updated_at: new Date().toISOString() })
+            .eq("id", task.id);
+          await postToWarRoom(task, "RETRY", `${cli} failed (code ${exitCode ?? "?"}), retry ${retries + 1}/${MAX_RETRIES}`);
+        } else {
+          await updateTaskStatus(task.id, "blocked", {
+            result_summary: `Failed after ${MAX_RETRIES + 1} attempts: ${result.error}`,
+          });
+          await postToWarRoom(task, "FAILED", result.error || result.summary || "Unknown error");
+          await updateTaskCalendarEvent(task, result, durationMin);
+          await sendEscalationEmail(task, result.error || result.summary || "Max retries exhausted");
+        }
+      }
     }
 
     // Log to communication_log (uses 'message' column, 'channel' for type)
@@ -830,7 +1424,7 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
         log("info", `[v6-session] Using multi-turn session for code task`, { task: task.title });
         const multiResult = await executeCodeTaskMultiTurn(
           sessionManager, task as any, prompt, repoPath,
-          CONFIG.maxDurationMinutes * 60 * 1000,
+          CLI_CONFIG.claude.timeoutMinutes * 60 * 1000,
         );
         log("info", `[v6-session] Completed in ${multiResult.iterations} turn(s)`, { task: task.title, success: multiResult.success });
         return {
@@ -1085,7 +1679,7 @@ async function executeServiceTask(
         log("info", `[v6-session] Using session for ${mode} task`, { task: task.title });
         const svcResult = await executeServiceTaskWithSession(
           sessionManager, task as any, prompt, workDir,
-          CONFIG.maxDurationMinutes * 60 * 1000,
+          CLI_CONFIG.claude.timeoutMinutes * 60 * 1000,
         );
         result = {
           success: svcResult.success,
@@ -1131,6 +1725,202 @@ async function executeServiceTask(
 }
 
 // ============================================
+// Skill Version Tracking
+// ============================================
+
+/**
+ * Resolve (or create) a skill_versions row for the given skill.
+ * Returns { version, id } or null if the task has no skill or vault_docs lookup fails.
+ */
+async function resolveSkillVersion(
+  skillName: string
+): Promise<{ version: number; id: string } | null> {
+  try {
+    // Load skill content from vault_docs (slug matches skill filename)
+    const { data: doc } = await supabase
+      .from("vault_docs")
+      .select("content")
+      .eq("category", "skill")
+      .eq("slug", skillName)
+      .single();
+
+    if (!doc?.content) return null;
+
+    // Hash the content
+    const promptHash = crypto
+      .createHash("sha256")
+      .update(doc.content)
+      .digest("hex");
+
+    // Look up existing version by (skill_name, prompt_hash)
+    const { data: existing } = await supabase
+      .from("skill_versions")
+      .select("id, version")
+      .eq("skill_name", skillName)
+      .eq("prompt_hash", promptHash)
+      .single();
+
+    if (existing) {
+      return { version: existing.version, id: existing.id };
+    }
+
+    // New hash — create new version
+    const { data: maxRow } = await supabase
+      .from("skill_versions")
+      .select("version")
+      .eq("skill_name", skillName)
+      .order("version", { ascending: false })
+      .limit(1)
+      .single();
+
+    const newVersion = (maxRow?.version || 0) + 1;
+
+    // Deactivate previous versions
+    await supabase
+      .from("skill_versions")
+      .update({ is_active: false })
+      .eq("skill_name", skillName);
+
+    // Insert new version
+    const { data: inserted, error } = await supabase
+      .from("skill_versions")
+      .insert({
+        skill_name: skillName,
+        version: newVersion,
+        prompt_hash: promptHash,
+        changelog: newVersion === 1
+          ? "Initial version (auto-seeded)"
+          : "Prompt content changed (auto-detected)",
+        is_active: true,
+      })
+      .select("id, version")
+      .single();
+
+    if (error) {
+      // Handle concurrent insert race (unique constraint violation)
+      if (error.code === "23505") {
+        const { data: retry } = await supabase
+          .from("skill_versions")
+          .select("id, version")
+          .eq("skill_name", skillName)
+          .eq("prompt_hash", promptHash)
+          .single();
+        if (retry) return { version: retry.version, id: retry.id };
+      }
+      log("warn", `Failed to create skill version: ${error.message}`);
+      return null;
+    }
+
+    log("info", `[skill-version] Created v${newVersion} for ${skillName} (hash: ${promptHash.slice(0, 12)}...)`);
+    return inserted ? { version: inserted.version, id: inserted.id } : null;
+  } catch (err) {
+    log("warn", `Skill version resolution failed: ${err}`);
+    return null;
+  }
+}
+
+/**
+ * Update rolling averages on the skill_versions row after a metric is recorded.
+ * Uses incremental formula: new_avg = ((old_avg * (n-1)) + new_value) / n
+ */
+async function updateSkillVersionStats(
+  skillName: string,
+  version: number,
+  executionTimeMs: number,
+  costCents: number,
+  success: boolean
+) {
+  try {
+    const { data: sv } = await supabase
+      .from("skill_versions")
+      .select("total_runs, avg_execution_ms, avg_cost_cents, success_rate")
+      .eq("skill_name", skillName)
+      .eq("version", version)
+      .single();
+
+    if (!sv) return;
+
+    const n = (sv.total_runs || 0) + 1;
+    const oldRuns = sv.total_runs || 0;
+
+    const newAvgMs = oldRuns === 0
+      ? executionTimeMs
+      : ((Number(sv.avg_execution_ms || 0) * oldRuns) + executionTimeMs) / n;
+
+    const newAvgCost = oldRuns === 0
+      ? costCents
+      : ((Number(sv.avg_cost_cents || 0) * oldRuns) + costCents) / n;
+
+    const successVal = success ? 1.0 : 0.0;
+    const newSuccessRate = oldRuns === 0
+      ? successVal
+      : ((Number(sv.success_rate || 0) * oldRuns) + successVal) / n;
+
+    await supabase
+      .from("skill_versions")
+      .update({
+        total_runs: n,
+        avg_execution_ms: Math.round(newAvgMs * 100) / 100,
+        avg_cost_cents: Math.round(newAvgCost * 100) / 100,
+        success_rate: Math.round(newSuccessRate * 10000) / 10000, // 4 decimal places for 0.0-1.0
+      })
+      .eq("skill_name", skillName)
+      .eq("version", version);
+  } catch (err) {
+    log("warn", `Skill version stats update failed: ${err}`);
+  }
+}
+
+/**
+ * Seed skill_versions for all vault skills that don't yet have a version record.
+ * Runs once on dispatcher startup — idempotent.
+ */
+async function ensureSkillVersions() {
+  try {
+    const { data: skills } = await supabase
+      .from("vault_docs")
+      .select("slug, content")
+      .eq("category", "skill");
+
+    if (!skills || skills.length === 0) return;
+
+    let seeded = 0;
+    for (const skill of skills) {
+      if (!skill.content || !skill.slug) continue;
+
+      const promptHash = crypto
+        .createHash("sha256")
+        .update(skill.content)
+        .digest("hex");
+
+      // Check if any version exists for this skill
+      const { data: existing } = await supabase
+        .from("skill_versions")
+        .select("id")
+        .eq("skill_name", skill.slug)
+        .limit(1);
+
+      if (existing && existing.length > 0) continue;
+
+      await supabase.from("skill_versions").insert({
+        skill_name: skill.slug,
+        version: 1,
+        prompt_hash: promptHash,
+        changelog: "Initial version (auto-seeded on startup)",
+        is_active: true,
+      });
+      seeded++;
+    }
+
+    if (seeded > 0) {
+      log("info", `[skill-version] Seeded ${seeded} initial skill versions`);
+    }
+  } catch (err) {
+    log("warn", `Skill version seeding failed: ${err}`);
+  }
+}
+
+// ============================================
 // Skill Metrics Recording
 // ============================================
 
@@ -1138,21 +1928,42 @@ async function recordSkillMetrics(task: Task, result: ExecutionResult, execution
   try {
     const tokenCount = estimateTokens(result.output || "");
     const costCents = estimateCost(task.cli_target, tokenCount);
+    const skillName = task.skill_name || task.task_type;
+
+    // Resolve skill version (returns null for non-skill tasks)
+    const skillVersion = task.skill_name
+      ? await resolveSkillVersion(task.skill_name)
+      : null;
 
     await supabase.from("skill_metrics").insert({
-      skill_name: task.skill_name || task.task_type,
+      skill_name: skillName,
       company_id: task.company_id,
       task_id: task.id,
       cli_target: task.cli_target,
-      model_used: task.cli_target === "claude" ? "sonnet-4" : task.cli_target === "gemini" ? "gemini-pro" : "unknown",
+      model_used: CLI_CONFIG[task.cli_target]?.modelName || "unknown",
       execution_time_ms: executionTimeMs,
       token_count: tokenCount,
       estimated_cost_cents: costCents,
       success: result.success,
       error_message: result.error?.slice(0, 500) || null,
-      code_quality_score: null, // filled by visual verify if available
-      test_pass_rate: null, // filled by test analysis if available
+      code_quality_score: null,
+      test_pass_rate: null,
+      skill_version: skillVersion?.version || null,
+      quality_score: result.visualScore || null,
+      plan_review_score: task.plan_score || null,
+      plan_iterations: task.plan_iterations || null,
     });
+
+    // Update rolling averages on the skill_versions row
+    if (skillVersion) {
+      await updateSkillVersionStats(
+        task.skill_name!,
+        skillVersion.version,
+        executionTimeMs,
+        costCents,
+        result.success
+      );
+    }
   } catch (err) {
     log("warn", `Skill metrics recording failed: ${err}`);
   }
@@ -1459,14 +2270,25 @@ function buildServicePrompt(task: Task, mode: string, vaultContext: string = "")
 // CLI Spawner (Claude, Gemini, Codex)
 // ============================================
 
-function getCliArgs(cli: CliTool, prompt: string): string[] {
+function getCliArgs(cli: CliTool, prompt: string, workDir?: string): string[] {
   switch (cli) {
     case "claude":
       return ["--print", "--dangerously-skip-permissions", prompt];
     case "gemini":
-      return ["-m", "gemini-3.1-pro-preview", "-y", "-p", prompt];
+      return [
+        "-p", prompt,
+        "--output-format", "json",
+        "-m", CLI_CONFIG.gemini.modelName,
+        "--yolo",
+      ];
     case "codex":
-      return ["exec", "--dangerously-bypass-approvals-and-sandbox", prompt];
+      return [
+        "exec",
+        prompt,
+        "--full-auto",
+        "--json",
+        ...(workDir ? ["-C", workDir] : []),
+      ];
     default:
       return ["--print", prompt];
   }
@@ -1479,25 +2301,38 @@ function spawnCli(
   taskId: string
 ): Promise<ExecutionResult> {
   return new Promise((resolve) => {
-    const timeout = CONFIG.maxDurationMinutes * 60 * 1000;
+    const cliConfig = CLI_CONFIG[cli];
+    const timeout = cliConfig.timeoutMinutes * 60 * 1000;
     let output = "";
     let killed = false;
 
     const binary = CLI_PATHS[cli];
-    const args = getCliArgs(cli, prompt);
+    const args = getCliArgs(cli, prompt, workDir);
 
-    log("debug", `Spawning ${binary}`, { cwd: workDir, taskId });
+    log("info", `[spawn] Starting ${cli}`, {
+      binary,
+      cwd: workDir,
+      taskId,
+      timeoutMin: cliConfig.timeoutMinutes,
+      model: cliConfig.modelName,
+    });
+
+    // Only pass CLAUDE_TASK_ID for Claude; clean env for others
+    const env: Record<string, string | undefined> = { ...process.env };
+    if (cli === "claude") {
+      env.CLAUDE_TASK_ID = taskId;
+    }
 
     const proc = spawn(binary, args, {
       cwd: workDir,
-      env: { ...process.env, CLAUDE_TASK_ID: taskId },
+      env,
       stdio: ["ignore", "pipe", "pipe"],
     });
 
     const timer = setTimeout(() => {
       killed = true;
       proc.kill("SIGTERM");
-      log("warn", `Task ${taskId} killed after ${CONFIG.maxDurationMinutes}min`);
+      log("warn", `[spawn] ${cli} task ${taskId} killed after ${cliConfig.timeoutMinutes}min timeout`);
     }, timeout);
 
     proc.stdout?.on("data", (data: Buffer) => {
@@ -1515,34 +2350,66 @@ function spawnCli(
         resolve({
           success: false,
           output,
-          error: `Killed after ${CONFIG.maxDurationMinutes} minutes (timeout)`,
+          error: `[${cli}] Killed after ${cliConfig.timeoutMinutes} minutes (timeout)`,
         });
         return;
       }
 
+      // Parse JSON output for Gemini and Codex
+      let parsedOutput = output;
+      if ((cli === "gemini" || cli === "codex") && code === 0) {
+        try {
+          const jsonData = JSON.parse(output);
+          parsedOutput = typeof jsonData === "string"
+            ? jsonData
+            : jsonData.response || jsonData.output || jsonData.message || JSON.stringify(jsonData, null, 2);
+        } catch {
+          // Not valid JSON — use raw output (this is fine)
+          log("debug", `[spawn] ${cli} output not valid JSON, using raw text`);
+        }
+      }
+
+      // CLI-specific exit code interpretation
+      let errorMessage: string | undefined;
+      const isSuccess = code === 0;
+
+      if (code !== null && code !== 0) {
+        if (cliConfig.fatalExitCodes.has(code)) {
+          errorMessage = `[${cli}] Fatal exit code ${code} (non-retryable)`;
+          if (cli === "gemini" && code === 41) {
+            errorMessage += " — Gemini auth error. Check GEMINI_API_KEY or run 'gemini auth login'.";
+          }
+        } else {
+          errorMessage = `[${cli}] Exit code ${code}`;
+          if (cli === "gemini" && code === 53) {
+            errorMessage += " — turn limit reached. Consider shorter prompt.";
+          }
+        }
+      }
+
       // Extract PR URL and number from output
-      const prMatch = output.match(/https:\/\/github\.com\/[^\s]+\/pull\/(\d+)/);
+      const prMatch = parsedOutput.match(/https:\/\/github\.com\/[^\s]+\/pull\/(\d+)/);
       const prUrl = prMatch ? prMatch[0] : undefined;
       const prNumber = prMatch ? parseInt(prMatch[1], 10) : undefined;
 
       // Extract Vercel preview URL from output
-      const vercelMatch = output.match(/https:\/\/[^\s]*\.vercel\.app[^\s)"]*/);
+      const vercelMatch = parsedOutput.match(/https:\/\/[^\s]*\.vercel\.app[^\s)"]*/);
       const previewUrl = vercelMatch ? vercelMatch[0] : undefined;
 
       // Clean CLI boilerplate from output
-      const cleanedOutput = cleanCliOutput(output);
+      const cleanedOutput = cleanCliOutput(parsedOutput);
 
       // Summary = last 500 chars for DB, full cleaned output available
       const summary = cleanedOutput.slice(-500).trim();
 
       resolve({
-        success: code === 0,
-        output,
+        success: isSuccess,
+        output: parsedOutput,
         summary,
         prUrl,
         prNumber,
         previewUrl,
-        error: code !== 0 ? `Exit code ${code}` : undefined,
+        error: errorMessage,
       });
     });
 
@@ -1551,7 +2418,7 @@ function spawnCli(
       resolve({
         success: false,
         output,
-        error: `Spawn error: ${err.message}`,
+        error: `[${cli}] Spawn error: ${err.message}. Is '${binary}' installed and in PATH?`,
       });
     });
   });
@@ -1920,7 +2787,7 @@ async function main() {
   log("info", `Repo base: ${CONFIG.repoBaseDir}`);
   log("info", `Max concurrent tasks: ${MAX_CONCURRENT_TASKS}`);
   log("info", `Max retries: ${MAX_RETRIES}`);
-  log("info", `Max duration: ${CONFIG.maxDurationMinutes}min per task`);
+  log("info", `Per-CLI timeouts: claude=${CLI_CONFIG.claude.timeoutMinutes}min, gemini=${CLI_CONFIG.gemini.timeoutMinutes}min, codex=${CLI_CONFIG.codex.timeoutMinutes}min`);
   log("info", `Cost caps: $${CONFIG.defaultCostCap} default / $${CONFIG.maxCostCap} max`);
   log("info", `CLIs: claude=${CLI_PATHS.claude}, gemini=${CLI_PATHS.gemini}, codex=${CLI_PATHS.codex}`);
 
@@ -1950,6 +2817,9 @@ async function main() {
   // Initialize session manager for v6
   sessionManager = new SessionManager(supabase);
   log("info", "Session manager initialized (v6)");
+
+  // Seed skill versions for autoresearch tracking
+  await ensureSkillVersions();
 
   // Verify connection
   const { data: companies, error } = await supabase

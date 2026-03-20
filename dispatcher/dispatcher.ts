@@ -133,7 +133,7 @@ const MAX_RETRIES = 2; // up to 2 retries (3 total attempts)
 const VALID_SKILLS = new Set([
   "poi-research", "competitive-scan", "code-review", "visual-bug-fix",
   "plan-then-code", "tdd-workflow", "shipping-checklist", "codebase-aware",
-  "feature-proposal", "daily-ops", "plan-reviewer", "ai-daily-intel",
+  "feature-proposal", "daily-ops", "plan-reviewer", "ai-daily-intel", "social-intel",
 ]);
 const ORCHESTRATOR_TIMEOUT_MS = 30_000; // 30 seconds max for Gemini classification
 

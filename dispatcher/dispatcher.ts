@@ -690,12 +690,17 @@ async function pollForTask() {
     // Recover stuck tasks (in_progress > 45 min with no active process)
     await recoverStuckTasks();
 
-    // Pick up multiple tasks if we have capacity (check both task slots and session slots)
+    // Pick up multiple tasks if we have capacity
     const taskSlots = MAX_CONCURRENT_TASKS - activeTaskCount;
-    const sessionSlots = sessionManager ? sessionManager.getAvailableSlots() : taskSlots;
+    // Only check session slots when session_mode is enabled; in one-shot mode, task slots are the only gate
+    const sessionModeOn = await isSessionModeEnabled();
+    if (sessionManager && sessionModeOn) {
+      await sessionManager.resyncCount();
+    }
+    const sessionSlots = (sessionManager && sessionModeOn) ? sessionManager.getAvailableSlots() : taskSlots;
     const slotsAvailable = Math.min(taskSlots, sessionSlots);
     if (slotsAvailable <= 0) {
-      log("info", `[dispatch] No session slots available, skipping cycle`);
+      log("info", `[dispatch] No slots available (tasks=${taskSlots}, sessions=${sessionSlots}), skipping cycle`);
       return;
     }
     const { data: tasks, error } = await supabase

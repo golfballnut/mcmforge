@@ -78,6 +78,19 @@ export class SessionManager {
     return MAX_ACTIVE_SESSIONS - this.activeSessionCount;
   }
 
+  /** Re-sync in-memory counter from DB to prevent drift. Call periodically. */
+  async resyncCount(): Promise<void> {
+    const { count } = await this.supabase
+      .from("agent_sessions")
+      .select("id", { count: "exact" })
+      .eq("status", "active");
+    const dbCount = count || 0;
+    if (dbCount !== this.activeSessionCount) {
+      log("warn", `Session count drift detected: memory=${this.activeSessionCount}, db=${dbCount}. Resyncing.`);
+      this.activeSessionCount = dbCount;
+    }
+  }
+
   /**
    * Get an existing active session or create a new one.
    * Returns null if we're at capacity and can't free a slot.

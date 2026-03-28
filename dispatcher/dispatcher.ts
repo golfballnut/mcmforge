@@ -2407,7 +2407,7 @@ function buildCodePrompt(task: Task, vaultContext: string = "", agentIdentity?: 
     "- Set one up (Vitest for unit tests, Playwright for E2E)",
     "- Write at least 3 tests covering the core behavior",
     "- This is not optional — code without tests will be rejected",
-  ];
+  );
 
   if (task.skill_name) {
     parts.push("", `## Skill to use: /${task.skill_name}`);

@@ -39,6 +39,7 @@ import { executeCodeTaskMultiTurn, executeServiceTaskWithSession } from "./multi
 import { planReviewLoop, type PlanReviewResult } from "./plan-review.js";
 import { advanceAssemblyLine } from "./assembly-line.js";
 import { runCalendarBridge } from "./calendar-bridge.js";
+import { applyProgressiveDisclosure, extractKeywords, CONTEXT_ROUTES } from "./vault-context.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -1420,16 +1421,7 @@ async function executeTask(task: Task) {
 // Vault Context Loader
 // ============================================
 
-// Context routing: different task types need different vault docs
-const CONTEXT_ROUTES: Record<string, string[]> = {
-  code:     ["company", "skill", "decision"],
-  research: ["company", "competitor", "intelligence"],
-  proposal: ["company", "competitor", "intelligence", "skill"],
-  content:  ["company", "intelligence"],
-  ops:      ["company"],
-  chat:     ["company"],
-  spec:     ["company", "decision", "skill"],
-};
+// CONTEXT_ROUTES, extractKeywords, and applyProgressiveDisclosure are imported from vault-context.ts
 
 async function loadVaultContext(task: Task): Promise<string> {
   try {
@@ -1439,37 +1431,45 @@ async function loadVaultContext(task: Task): Promise<string> {
     const taskType = task.task_type || "research";
     const allowedCategories = CONTEXT_ROUTES[taskType] || CONTEXT_ROUTES.research;
 
-    // Load company-specific docs filtered by task-appropriate categories + skills always
+    // Load company-specific docs + skills, now including file_role and parent_slug
     const { data: vaultDocs } = await supabase
       .from("vault_docs")
-      .select("title, category, content, tags")
+      .select("title, category, content, tags, file_role, parent_slug")
       .or(`company_id.eq.${task.company_id},category.eq.skill`)
       .order("updated_at", { ascending: false });
 
     if (!vaultDocs || vaultDocs.length === 0) return "";
 
-    // Filter by allowed categories for this task type
+    // Filter by allowed categories
     const filtered = vaultDocs.filter(doc => {
       if (!doc.content) return false;
       return allowedCategories.includes(doc.category) || doc.category === "skill";
     });
 
-    // Score and rank by relevance: tag overlap with task keywords
+    // Apply progressive disclosure: only load what's needed for this task
+    const disclosed = applyProgressiveDisclosure(
+      filtered,
+      task.skill_name,
+      task.retry_count ?? 0,
+    );
+
+    // Score and rank by relevance
     const taskKeywords = extractKeywords(task.title + " " + (task.description || ""));
-    const scored = filtered.map(doc => {
+    const scored = disclosed.map(doc => {
       const docKeywords = (doc.tags || []).concat(extractKeywords(doc.title));
       const overlap = taskKeywords.filter(k => docKeywords.includes(k)).length;
       return { doc, score: overlap };
     }).sort((a, b) => b.score - a.score);
 
-    // Cap total context at 8000 chars
+    // Cap total context at 8000 chars; core docs get a smaller per-doc cap (500)
     const sections: string[] = ["## Vault Context (loaded automatically)"];
     let totalChars = 0;
     const MAX_CONTEXT_CHARS = 8000;
 
     for (const { doc } of scored) {
-      const content = doc.content.length > 2000
-        ? doc.content.slice(0, 2000) + "\n[... truncated]"
+      const perDocCap = (doc.file_role === 'core') ? 500 : 2000;
+      const content = doc.content.length > perDocCap
+        ? doc.content.slice(0, perDocCap) + "\n[... truncated]"
         : doc.content;
       const section = `### [${doc.category}] ${doc.title}\n${content}`;
       if (totalChars + section.length > MAX_CONTEXT_CHARS) break;
@@ -1477,9 +1477,11 @@ async function loadVaultContext(task: Task): Promise<string> {
       totalChars += section.length;
     }
 
-    log("info", `Smart context: loaded ${sections.length - 1}/${filtered.length} vault docs (${taskType} route)`, {
+    const packageCount = disclosed.filter(d => d.file_role && d.file_role !== 'full').length;
+    log("info", `Smart context: loaded ${sections.length - 1}/${filtered.length} vault docs (${taskType} route, ${packageCount} progressive)`, {
       company: companySlug,
       categories: allowedCategories.join(","),
+      skill_name: task.skill_name || "none",
     });
 
     return sections.join("\n\n");
@@ -1487,14 +1489,6 @@ async function loadVaultContext(task: Task): Promise<string> {
     log("warn", `Failed to load vault context: ${err}`);
     return "";
   }
-}
-
-function extractKeywords(text: string): string[] {
-  return text.toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .split(/\s+/)
-    .filter(w => w.length > 3)
-    .filter(w => !["the", "and", "for", "with", "from", "this", "that", "have", "will", "task", "should"].includes(w));
 }
 
 // ============================================

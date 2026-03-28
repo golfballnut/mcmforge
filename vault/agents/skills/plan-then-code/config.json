@@ -1,0 +1,7 @@
+{
+  "model": "claude",
+  "timeout_ms": 300000,
+  "review_tier": "high",
+  "max_context_chars": 8000,
+  "description": "Plan-first coding workflow for complex multi-file tasks"
+}

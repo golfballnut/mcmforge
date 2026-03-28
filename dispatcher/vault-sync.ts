@@ -16,6 +16,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { readdirSync, readFileSync, statSync } from "fs";
 import { join, basename, relative } from "path";
+import { isSkillPackage, buildSkillPackageRows } from './skill-package-loader.js'
 import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -95,23 +96,32 @@ function generateSlug(title: string, relPath: string): string {
     .slice(0, 80); // Max length
 }
 
-// Walk directory recursively for .md files
-function walkDir(dir: string): string[] {
-  const files: string[] = [];
+// Walk directory recursively for .md files and skill package dirs
+// Returns: { type: 'file', path: string } | { type: 'package', path: string }
+type WalkResult = { type: 'file'; path: string } | { type: 'package'; path: string }
+
+function walkDir(dir: string): WalkResult[] {
+  const results: WalkResult[] = [];
   try {
     for (const entry of readdirSync(dir)) {
       const full = join(dir, entry);
       const stat = statSync(full);
       if (stat.isDirectory()) {
-        files.push(...walkDir(full));
+        // Check if this directory is a skill package BEFORE recursing
+        if (isSkillPackage(full)) {
+          results.push({ type: 'package', path: full });
+          // Do NOT recurse — package components are handled by buildSkillPackageRows
+        } else {
+          results.push(...walkDir(full));
+        }
       } else if (entry.endsWith(".md") && entry !== "INDEX.md") {
-        files.push(full);
+        results.push({ type: 'file', path: full });
       }
     }
   } catch {
     // Skip unreadable directories
   }
-  return files;
+  return results;
 }
 
 // Extract tags from document content for smart context routing
@@ -204,69 +214,121 @@ async function main() {
   }
 
   // Scan vault directory
-  const vaultFiles = walkDir(VAULT_DIR);
-  console.log(`Found ${vaultFiles.length} vault files`);
+  const vaultResults = walkDir(VAULT_DIR);
+  console.log(`Found ${vaultResults.filter(r => r.type === 'file').length} flat files, ${vaultResults.filter(r => r.type === 'package').length} skill packages`);
 
   let updated = 0;
   let created = 0;
   let errors = 0;
 
-  for (const filePath of vaultFiles) {
-    const relPath = relative(VAULT_DIR, filePath);
-    const content = readFileSync(filePath, "utf-8");
-    const title = extractTitle(content, filePath);
-    const category = getCategory(relPath);
-    const companySlug = getCompanySlug(relPath, content);
-    const companyId = companySlug ? companyMap.get(companySlug) || null : null;
+  for (const result of vaultResults) {
+    if (result.type === 'package') {
+      // Handle skill package — multiple rows per package
+      const relBase = relative(VAULT_DIR, join(result.path, '..'));
+      const rows = buildSkillPackageRows(result.path, relBase, null);
 
-    // Try to match existing doc by file_path, title, or fuzzy match
-    const existing = findExistingDoc(relPath, title);
-
-    if (existing) {
-      // Update existing doc
-      const tags = extractTags(content, category);
-      const { error } = await supabase
-        .from("vault_docs")
-        .update({
-          content,
-          file_path: relPath,
-          tags,
-          updated_at: new Date().toISOString(),
-          ...(companyId && !existing.company_id ? { company_id: companyId } : {}),
-        })
-        .eq("id", existing.id);
-
-      if (error) {
-        console.error(`  ERROR updating ${relPath}: ${error.message}`);
-        errors++;
-      } else {
-        console.log(`  UPDATED: [${category}] ${title} (${relPath}) — ${tags.length} tags`);
-        updated++;
+      for (const row of rows) {
+        const existing = findExistingDoc(row.file_path, row.title);
+        if (existing) {
+          const { error } = await supabase
+            .from('vault_docs')
+            .update({
+              content: row.content,
+              file_path: row.file_path,
+              tags: row.tags,
+              file_role: row.file_role,
+              parent_slug: row.parent_slug,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', existing.id);
+          if (error) {
+            console.error(`  ERROR updating package row ${row.file_path}: ${error.message}`);
+            errors++;
+          } else {
+            console.log(`  UPDATED: [skill:${row.file_role}] ${row.title}`);
+            updated++;
+          }
+        } else {
+          const { error } = await supabase
+            .from('vault_docs')
+            .insert({
+              title: row.title,
+              slug: row.slug,
+              category: row.category,
+              content: row.content,
+              tags: row.tags,
+              company_id: row.company_id,
+              file_path: row.file_path,
+              file_role: row.file_role,
+              parent_slug: row.parent_slug,
+              updated_by: 'vault-sync',
+              status: 'active',
+            });
+          if (error) {
+            console.error(`  ERROR creating package row ${row.file_path}: ${error.message}`);
+            errors++;
+          } else {
+            console.log(`  CREATED: [skill:${row.file_role}] ${row.title}`);
+            created++;
+          }
+        }
       }
     } else {
-      // Create new doc
-      const slug = generateSlug(title, relPath);
-      const tags = extractTags(content, category);
-      const { error } = await supabase
-        .from("vault_docs")
-        .insert({
-          title,
-          slug,
-          category,
-          content,
-          tags,
-          company_id: companyId,
-          file_path: relPath,
-          updated_by: "vault-sync",
-          status: "active",
-        });
+      // Handle flat file — same logic as before
+      const filePath = result.path;
+      const relPath = relative(VAULT_DIR, filePath);
+      const content = readFileSync(filePath, "utf-8");
+      const title = extractTitle(content, filePath);
+      const category = getCategory(relPath);
+      const companySlug = getCompanySlug(relPath, content);
+      const companyId = companySlug ? companyMap.get(companySlug) || null : null;
 
-      if (error) {
-        console.error(`  ERROR creating ${relPath}: ${error.message}`);
-        errors++;
+      const existing = findExistingDoc(relPath, title);
+
+      if (existing) {
+        const tags = extractTags(content, category);
+        const { error } = await supabase
+          .from("vault_docs")
+          .update({
+            content,
+            file_path: relPath,
+            tags,
+            updated_at: new Date().toISOString(),
+            ...(companyId && !existing.company_id ? { company_id: companyId } : {}),
+          })
+          .eq("id", existing.id);
+
+        if (error) {
+          console.error(`  ERROR updating ${relPath}: ${error.message}`);
+          errors++;
+        } else {
+          console.log(`  UPDATED: [${category}] ${title} (${relPath}) — ${tags.length} tags`);
+          updated++;
+        }
       } else {
-        console.log(`  CREATED: [${category}] ${title} (${relPath}) — ${tags.length} tags`);
-        created++;
+        const slug = generateSlug(title, relPath);
+        const tags = extractTags(content, category);
+        const { error } = await supabase
+          .from("vault_docs")
+          .insert({
+            title,
+            slug,
+            category,
+            content,
+            tags,
+            company_id: companyId,
+            file_path: relPath,
+            updated_by: "vault-sync",
+            status: "active",
+          });
+
+        if (error) {
+          console.error(`  ERROR creating ${relPath}: ${error.message}`);
+          errors++;
+        } else {
+          console.log(`  CREATED: [${category}] ${title} (${relPath}) — ${tags.length} tags`);
+          created++;
+        }
       }
     }
   }

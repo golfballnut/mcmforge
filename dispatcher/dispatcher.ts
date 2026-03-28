@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 /**
- * MCM Forge Dispatcher v3
+ * MCM Forge Dispatcher v8 (Forge Edition)
  *
- * Multi-company, multi-task-type orchestrator:
+ * Multi-company, multi-task-type orchestrator with agent teams:
  * - Concurrent execution (up to 3 tasks simultaneously)
  * - Retry logic with exponential backoff (2 retries)
  * - Git state cleanup before code tasks
@@ -13,6 +13,14 @@
  * - Code tasks → git cleanup + branch + PR workflow
  * - Service tasks → execute + store artifact + notify
  * - Enforces cost caps ($2 default, $5 ceiling)
+ *
+ * v8 (Forge Edition) additions:
+ * - Forge Agent Resolution: persistent agent identities from forge_agents table
+ * - Per-agent budget enforcement with auto-pause
+ * - Agent heartbeat logging (start/end, cost, tokens, summary)
+ * - Assembly Line advancement (multi-step workflow pipelines)
+ * - Calendar Bridge integration (hourly sync of Google Calendar → task_queue)
+ * - Agent identity injection into prompts
  */
 
 import crypto from "node:crypto";
@@ -29,6 +37,8 @@ import { SessionManager } from "./session-manager.js";
 import { resolvePersona } from "./agent-personas.js";
 import { executeCodeTaskMultiTurn, executeServiceTaskWithSession } from "./multi-turn-executor.js";
 import { planReviewLoop, type PlanReviewResult } from "./plan-review.js";
+import { advanceAssemblyLine } from "./assembly-line.js";
+import { runCalendarBridge } from "./calendar-bridge.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -126,8 +136,107 @@ const CLI_PATHS: Record<CliTool, string> = {
 let supabase: SupabaseClient;
 let sessionManager: SessionManager | null = null;
 let activeTaskCount = 0;
+let pollCount = 0; // Calendar Bridge runs every 12th poll (hourly at 5-min intervals)
 const MAX_CONCURRENT_TASKS = 3;
 const MAX_RETRIES = 2; // up to 2 retries (3 total attempts)
+
+// ============================================
+// Forge Agent Types (v8)
+// ============================================
+
+interface ForgeAgent {
+  id: string;
+  name: string;
+  role: string;
+  title: string;
+  model: string;
+  adapter: string;
+  skills: string[];
+  identity_prompt: string;
+  budget_monthly_cents: number;
+  spent_monthly_cents: number;
+  status: string;
+  tasks_completed: number;
+  tasks_failed: number;
+}
+
+async function resolveForgeAgent(task: Task): Promise<ForgeAgent | null> {
+  if (!task.assigned_agent_id) return null;
+
+  const { data, error } = await supabase
+    .from("forge_agents")
+    .select("*")
+    .eq("id", task.assigned_agent_id)
+    .single();
+
+  if (error || !data) {
+    log("debug", `No forge_agent found for id ${task.assigned_agent_id}`);
+    return null;
+  }
+
+  return data as ForgeAgent;
+}
+
+async function checkAgentBudget(agent: ForgeAgent): Promise<boolean> {
+  if (agent.spent_monthly_cents >= agent.budget_monthly_cents) {
+    log("WARN", `Agent ${agent.name} budget exceeded: ${agent.spent_monthly_cents}/${agent.budget_monthly_cents} cents`);
+    await supabase
+      .from("forge_agents")
+      .update({ status: "budget_exceeded" })
+      .eq("id", agent.id);
+    return false;
+  }
+  return true;
+}
+
+async function recordHeartbeatStart(
+  agentId: string,
+  orderId: string,
+  assemblyRunId: string | null,
+  stepNumber: number | null
+): Promise<string> {
+  const { data } = await supabase
+    .from("agent_heartbeats")
+    .insert({
+      agent_id: agentId,
+      order_id: orderId,
+      assembly_run_id: assemblyRunId,
+      step_number: stepNumber,
+      status: "running",
+    })
+    .select("id")
+    .single();
+
+  return data?.id || "";
+}
+
+async function completeHeartbeat(
+  heartbeatId: string,
+  agentId: string,
+  status: "succeeded" | "failed",
+  costCents: number,
+  summary: string
+) {
+  if (!heartbeatId) return;
+
+  await supabase
+    .from("agent_heartbeats")
+    .update({
+      ended_at: new Date().toISOString(),
+      status,
+      cost_cents: costCents,
+      output_summary: summary?.slice(0, 2000) || "",
+    })
+    .eq("id", heartbeatId);
+
+  // Increment agent spend
+  if (costCents > 0) {
+    await supabase.rpc("increment_agent_spend", {
+      p_agent_id: agentId,
+      p_amount: costCents,
+    });
+  }
+}
 
 // Orchestrator: valid skill names for classification validation
 const VALID_SKILLS = new Set([
@@ -808,6 +917,46 @@ async function executeTask(task: Task) {
     started_at: new Date().toISOString(),
   });
 
+  // ============================================
+  // Forge Agent Resolution (v8)
+  // ============================================
+  const forgeAgent = await resolveForgeAgent(task);
+  let heartbeatId = "";
+
+  if (forgeAgent) {
+    // Budget check
+    if (!(await checkAgentBudget(forgeAgent))) {
+      log("WARN", `Skipping task ${task.id} — agent ${forgeAgent.name} over budget`);
+      await updateTaskStatus(task.id, "blocked", {
+        result_summary: `Agent ${forgeAgent.name} budget exceeded (${forgeAgent.spent_monthly_cents}/${forgeAgent.budget_monthly_cents} cents)`,
+      });
+      activeTaskCount--;
+      return;
+    }
+
+    // Override CLI target from agent config
+    task.cli_target = forgeAgent.adapter as CliTool;
+
+    // Record heartbeat start
+    heartbeatId = await recordHeartbeatStart(
+      forgeAgent.id,
+      task.id,
+      (task as any).assembly_run_id || null,
+      (task as any).step_number || null
+    );
+
+    // Mark agent as working on this order
+    await supabase.from("forge_agents").update({ current_order_id: task.id }).eq("id", forgeAgent.id);
+
+    log("info", `[forge-v8] Agent ${forgeAgent.name} (${forgeAgent.title}) executing task`, {
+      agent: forgeAgent.name,
+      model: forgeAgent.model,
+      adapter: forgeAgent.adapter,
+      budget: `${forgeAgent.spent_monthly_cents}/${forgeAgent.budget_monthly_cents}`,
+    });
+  }
+  // ============================================
+
   // Create calendar event for task start
   await createTaskCalendarEvent(task);
 
@@ -1112,6 +1261,22 @@ async function executeTask(task: Task) {
       await updateAgentRoster(task, result.success);
       await recordSuccessLearning(task, result);
 
+      // Forge v8: Complete heartbeat and advance assembly line
+      if (forgeAgent) {
+        const estimatedCostCents = Math.round((task.cost_cap || 2) * 100);
+        await completeHeartbeat(heartbeatId, forgeAgent.id, "succeeded", estimatedCostCents, result.summary || "");
+        await supabase.from("forge_agents").update({
+          current_order_id: null,
+          tasks_completed: forgeAgent.tasks_completed + 1,
+        }).eq("id", forgeAgent.id);
+      }
+      // Advance assembly line if this task is part of one
+      try {
+        await advanceAssemblyLine(supabase, task.id, true);
+      } catch (err) {
+        log("warn", `Assembly line advancement failed: ${err}`);
+      }
+
       // Auto-vault intelligence findings from research tasks
       if (taskType === "research") {
         await autoVaultIntelligence(task, result);
@@ -1171,6 +1336,20 @@ async function executeTask(task: Task) {
       await recordLearning(task, result, "execution");
       await recordSkillMetrics(task, result, Date.now() - executionStartTime);
       await updateAgentRoster(task, result.success);
+
+      // Forge v8: Complete heartbeat on failure and advance assembly line
+      if (forgeAgent) {
+        await completeHeartbeat(heartbeatId, forgeAgent.id, "failed", 0, result.error || "");
+        await supabase.from("forge_agents").update({
+          current_order_id: null,
+          tasks_failed: forgeAgent.tasks_failed + 1,
+        }).eq("id", forgeAgent.id);
+      }
+      try {
+        await advanceAssemblyLine(supabase, task.id, false);
+      } catch (err) {
+        log("warn", `Assembly line advancement (failure path) failed: ${err}`);
+      }
 
       if (isFatalCode) {
         // Fatal exit code — do NOT retry, block immediately
@@ -1429,7 +1608,12 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
 
   log("info", `[code] Executing in ${repoPath} with ${cli} (context: ${enrichedContext.length} chars)`, { task: task.title });
 
-  const prompt = buildCodePrompt(task, enrichedContext);
+  // Forge v8: build agent identity string if we have a forge agent
+  const agentIdentity = forgeAgent
+    ? `You are ${forgeAgent.name}, ${forgeAgent.title} at ${task.company_registry?.name || "the company"}.\n${forgeAgent.identity_prompt}`
+    : undefined;
+
+  const prompt = buildCodePrompt(task, enrichedContext, agentIdentity);
 
   // v6: Session-based multi-turn execution for Claude tasks
   if (cli === "claude" && sessionManager) {
@@ -2172,8 +2356,15 @@ async function executeProposalTask(task: Task, vaultContext: string, warRoomCont
 // Prompt Builders
 // ============================================
 
-function buildCodePrompt(task: Task, vaultContext: string = ""): string {
-  const parts = [
+function buildCodePrompt(task: Task, vaultContext: string = "", agentIdentity?: string): string {
+  const parts = [];
+
+  // Forge v8: inject agent identity if available
+  if (agentIdentity) {
+    parts.push("## Your Identity", agentIdentity, "");
+  }
+
+  parts.push(
     `# Task: ${task.title}`,
     "",
     task.description || "No description provided.",
@@ -2229,7 +2420,7 @@ function buildCodePrompt(task: Task, vaultContext: string = ""): string {
   return parts.join("\n");
 }
 
-function buildServicePrompt(task: Task, mode: string, vaultContext: string = ""): string {
+function buildServicePrompt(task: Task, mode: string, vaultContext: string = "", agentIdentity?: string): string {
   const modeInstructions: Record<string, string> = {
     research: [
       "## Output Format",
@@ -2803,7 +2994,7 @@ async function updateTaskStatus(
 // ============================================
 
 async function main() {
-  log("info", "=== MCM Forge Dispatcher v6 Starting ===");
+  log("info", "=== MCM Forge Dispatcher v8 (Forge Edition) Starting ===");
   log("info", `Poll interval: ${CONFIG.pollIntervalMs / 1000}s`);
   log("info", `Repo base: ${CONFIG.repoBaseDir}`);
   log("info", `Max concurrent tasks: ${MAX_CONCURRENT_TASKS}`);
@@ -2873,10 +3064,33 @@ async function main() {
   // Initial poll
   await pollForTask();
 
-  // Start polling loop
-  setInterval(pollForTask, CONFIG.pollIntervalMs);
+  // Start polling loop with Calendar Bridge integration (v8)
+  setInterval(async () => {
+    await pollForTask();
 
-  log("info", "Dispatcher v6 running (session mode available). Ctrl+C to stop.");
+    // Calendar Bridge: sync every 12th poll cycle (~1 hour at 5-min intervals)
+    pollCount++;
+    if (pollCount % 12 === 0) {
+      try {
+        const bridgeResult = await runCalendarBridge();
+        if (bridgeResult.created > 0) {
+          log("info", `[calendar-bridge] Created ${bridgeResult.created} orders from calendar`, bridgeResult);
+        }
+      } catch (err) {
+        log("warn", `[calendar-bridge] Sync failed: ${err}`);
+      }
+    }
+  }, CONFIG.pollIntervalMs);
+
+  // Run Calendar Bridge once on startup
+  try {
+    const initialBridge = await runCalendarBridge();
+    log("info", `[calendar-bridge] Initial sync: ${initialBridge.created} created, ${initialBridge.skipped} skipped`);
+  } catch (err) {
+    log("warn", `[calendar-bridge] Initial sync failed (non-fatal): ${err}`);
+  }
+
+  log("info", "Dispatcher v8 (Forge Edition) running. Ctrl+C to stop.");
 }
 
 main().catch((err) => {

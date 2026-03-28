@@ -1,0 +1,7 @@
+{
+  "slug": "shipping-checklist",
+  "trigger": "shipping checklist, create pr, before merge, ready to ship",
+  "model": "claude",
+  "load_on_retry": [],
+  "replaces_flat_file": "shipping-checklist.md"
+}

@@ -1,0 +1,7 @@
+{
+  "slug": "tdd-workflow",
+  "trigger": "all code tasks",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "tdd-workflow.md"
+}

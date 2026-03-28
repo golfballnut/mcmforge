@@ -1,0 +1,7 @@
+{
+  "slug": "code-review",
+  "trigger": "review pr, check pr, is this pr good, quality gate",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "code-review.md"
+}

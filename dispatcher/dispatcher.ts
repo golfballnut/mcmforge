@@ -1019,12 +1019,17 @@ async function executeTask(task: Task) {
   const warRoomContext = await getWarRoomContext(task);
   const agentStats = await getAgentStats(cli, task.company_id);
 
+  // Forge v8: build agent identity string for prompt injection
+  const agentIdentityStr = forgeAgent
+    ? `You are ${forgeAgent.name}, ${forgeAgent.title} at ${task.company_registry?.name || "the company"}.\n${forgeAgent.identity_prompt}`
+    : undefined;
+
   try {
     let result: ExecutionResult;
 
     switch (taskType) {
       case "code":
-        result = await executeCodeTask(task, cli, vaultContext, warRoomContext, agentStats);
+        result = await executeCodeTask(task, cli, vaultContext, warRoomContext, agentStats, agentIdentityStr);
         break;
       case "research":
         result = await executeServiceTask(task, cli, "research", vaultContext, warRoomContext, agentStats);
@@ -1571,7 +1576,7 @@ async function getAgentStats(cliTarget: string, companyId: string): Promise<stri
 // Code Task Execution (git + PR workflow)
 // ============================================
 
-async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = "", warRoomContext: string = "", agentStats: string = ""): Promise<ExecutionResult> {
+async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = "", warRoomContext: string = "", agentStats: string = "", agentIdentityParam?: string): Promise<ExecutionResult> {
   const company = task.company_registry;
   const companySlug = company?.slug || "unknown";
 
@@ -1608,12 +1613,7 @@ async function executeCodeTask(task: Task, cli: CliTool, vaultContext: string = 
 
   log("info", `[code] Executing in ${repoPath} with ${cli} (context: ${enrichedContext.length} chars)`, { task: task.title });
 
-  // Forge v8: build agent identity string if we have a forge agent
-  const agentIdentity = forgeAgent
-    ? `You are ${forgeAgent.name}, ${forgeAgent.title} at ${task.company_registry?.name || "the company"}.\n${forgeAgent.identity_prompt}`
-    : undefined;
-
-  const prompt = buildCodePrompt(task, enrichedContext, agentIdentity);
+  const prompt = buildCodePrompt(task, enrichedContext, agentIdentityParam);
 
   // v6: Session-based multi-turn execution for Claude tasks
   if (cli === "claude" && sessionManager) {

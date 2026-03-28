@@ -241,6 +241,20 @@ export async function runCalendarBridge(): Promise<{
 
   const supabase = createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
 
+  // Authenticate as agent for RLS access
+  const agentEmail = process.env.AGENT_EMAIL || "agent@mcmforge.com";
+  const agentPassword = process.env.AGENT_PASSWORD;
+  if (agentPassword) {
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: agentEmail,
+      password: agentPassword,
+    });
+    if (authError) {
+      log("error", `Agent auth failed: ${authError.message}`);
+      return { created, skipped };
+    }
+  }
+
   // Fetch all company calendars from company_registry
   const { data: companies, error: companyError } = await supabase
     .from("company_registry")

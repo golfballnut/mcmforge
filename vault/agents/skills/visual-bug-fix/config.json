@@ -1,0 +1,7 @@
+{
+  "slug": "visual-bug-fix",
+  "trigger": "visual bug, screenshot bug, css broken, layout broken, ui issue, visual regression, telegram screenshot",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "visual-bug-fix.md"
+}

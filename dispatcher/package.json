@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "start": "tsx dispatcher.ts",
-    "dev": "tsx watch dispatcher.ts"
+    "dev": "tsx watch dispatcher.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.2.0",
@@ -18,6 +20,9 @@
     "tsx": "^4.19.0"
   },
   "devDependencies": {
-    "@types/pngjs": "^6.0.5"
+    "@types/pngjs": "^6.0.5",
+    "@vitest/coverage-v8": "^1.6.0",
+    "typescript": "^6.0.2",
+    "vitest": "^1.6.0"
   }
 }

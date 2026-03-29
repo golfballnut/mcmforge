@@ -1,0 +1,7 @@
+{
+  "slug": "poi-research",
+  "trigger": "POI, points of interest, gas, food, trail research, dirtsync poi",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "poi-research.md"
+}

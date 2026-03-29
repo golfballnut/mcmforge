@@ -1,0 +1,7 @@
+{
+  "slug": "feature-proposal",
+  "trigger": "feature proposal, propose feature, ideation, new feature, competitive gap, product idea",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "feature-proposal.md"
+}

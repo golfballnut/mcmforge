@@ -1,0 +1,7 @@
+{
+  "slug": "competitive-scan",
+  "trigger": "competitive scan, compare competitor, where do we stand, competitor analysis, market gap",
+  "model": "gemini",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "competitive-scan.md"
+}

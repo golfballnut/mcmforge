@@ -1,0 +1,7 @@
+{
+  "slug": "daily-ops",
+  "trigger": "daily ops, morning cycle, pr triage, task queue, ship cadence, operational rhythm",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "daily-ops.md"
+}

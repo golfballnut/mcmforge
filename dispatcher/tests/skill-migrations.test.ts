@@ -199,3 +199,127 @@ describe('Phase 2 core content quality gates', () => {
     expect(lower).toMatch(/architecture/)
   })
 })
+
+// ───────────────────────────────────────────────────────────────────────────
+// Phase 3: competitive-scan, daily-ops, feature-proposal, visual-bug-fix
+// These are the remaining flat-file skills. Tests fail until packages exist.
+// ───────────────────────────────────────────────────────────────────────────
+
+const PHASE3_SKILLS = ['competitive-scan', 'daily-ops', 'feature-proposal', 'visual-bug-fix']
+
+describe('Phase 3 skill package migrations', () => {
+  PHASE3_SKILLS.forEach(skill => {
+    describe(skill, () => {
+      it('is a valid skill package directory (has core.md)', () => {
+        const skillDir = join(VAULT_SKILLS, skill)
+        expect(isSkillPackage(skillDir)).toBe(true)
+      })
+
+      it(`core.md is within context budget (< ${CORE_MAX_CHARS} chars)`, () => {
+        const corePath = join(VAULT_SKILLS, skill, 'core.md')
+        const content = readFileSync(corePath, 'utf-8')
+        expect(content.length).toBeLessThan(CORE_MAX_CHARS)
+      })
+
+      it('workflow.md exists and has meaningful content (> 200 chars)', () => {
+        const workflowPath = join(VAULT_SKILLS, skill, 'workflow.md')
+        expect(existsSync(workflowPath)).toBe(true)
+        const content = readFileSync(workflowPath, 'utf-8')
+        expect(content.length).toBeGreaterThan(200)
+      })
+
+      it('config.json is valid JSON with required fields', () => {
+        const configPath = join(VAULT_SKILLS, skill, 'config.json')
+        expect(existsSync(configPath)).toBe(true)
+        const raw = readFileSync(configPath, 'utf-8')
+        const config = JSON.parse(raw)
+        expect(config).toHaveProperty('slug')
+        expect(config).toHaveProperty('trigger')
+        expect(config.slug).toBe(skill)
+      })
+
+      it('buildSkillPackageRows produces correct file_role + parent_slug', () => {
+        const skillDir = join(VAULT_SKILLS, skill)
+        const rows = buildSkillPackageRows(skillDir, 'agents/skills', null)
+
+        const coreRow = rows.find(r => r.file_role === 'core')
+        const workflowRow = rows.find(r => r.file_role === 'workflow')
+
+        expect(coreRow).toBeDefined()
+        expect(coreRow?.parent_slug).toBe(skill)
+        expect(coreRow?.slug).toBe(`${skill}--core`)
+        expect(coreRow?.category).toBe('skill')
+
+        expect(workflowRow).toBeDefined()
+        expect(workflowRow?.parent_slug).toBe(skill)
+        expect(workflowRow?.slug).toBe(`${skill}--workflow`)
+      })
+
+      it('all rows reference correct file_path prefix', () => {
+        const skillDir = join(VAULT_SKILLS, skill)
+        const rows = buildSkillPackageRows(skillDir, 'agents/skills', null)
+        rows.forEach(row => {
+          expect(row.file_path).toMatch(new RegExp(`^agents/skills/${skill}/`))
+        })
+      })
+    })
+  })
+})
+
+describe('Phase 3 core content quality gates', () => {
+  it('competitive-scan core.md mentions competitor and gap', () => {
+    const content = readFileSync(join(VAULT_SKILLS, 'competitive-scan', 'core.md'), 'utf-8')
+    const lower = content.toLowerCase()
+    expect(lower).toMatch(/competitor|competitive/)
+    expect(lower).toMatch(/gap/)
+  })
+
+  it('daily-ops core.md mentions ship or merge or priority', () => {
+    const content = readFileSync(join(VAULT_SKILLS, 'daily-ops', 'core.md'), 'utf-8')
+    const lower = content.toLowerCase()
+    expect(lower).toMatch(/ship|merge|priority/)
+  })
+
+  it('feature-proposal core.md mentions proposal and problem', () => {
+    const content = readFileSync(join(VAULT_SKILLS, 'feature-proposal', 'core.md'), 'utf-8')
+    const lower = content.toLowerCase()
+    expect(lower).toMatch(/proposal|propose/)
+    expect(lower).toMatch(/problem/)
+  })
+
+  it('visual-bug-fix core.md mentions screenshot and fix', () => {
+    const content = readFileSync(join(VAULT_SKILLS, 'visual-bug-fix', 'core.md'), 'utf-8')
+    const lower = content.toLowerCase()
+    expect(lower).toMatch(/screenshot|visual/)
+    expect(lower).toMatch(/fix/)
+  })
+})
+
+// ───────────────────────────────────────────────────────────────────────────
+// Cross-cutting: ALL migrated packages must have standardized config.json
+// plan-then-code is currently missing slug, trigger, load_on_retry
+// ───────────────────────────────────────────────────────────────────────────
+
+const ALL_PACKAGE_SKILLS = [
+  ...PRIORITY_SKILLS,
+  ...PHASE2_SKILLS,
+  'plan-then-code',
+  ...PHASE3_SKILLS,
+]
+
+describe('All packages — standardized config.json schema', () => {
+  ALL_PACKAGE_SKILLS.forEach(skill => {
+    it(`${skill}/config.json has slug, trigger, model, load_on_retry`, () => {
+      const configPath = join(VAULT_SKILLS, skill, 'config.json')
+      expect(existsSync(configPath)).toBe(true)
+      const config = JSON.parse(readFileSync(configPath, 'utf-8'))
+      expect(config).toHaveProperty('slug')
+      expect(config).toHaveProperty('trigger')
+      expect(config).toHaveProperty('model')
+      expect(config).toHaveProperty('load_on_retry')
+      expect(config.slug).toBe(skill)
+      expect(['claude', 'gemini', 'codex']).toContain(config.model)
+      expect(Array.isArray(config.load_on_retry)).toBe(true)
+    })
+  })
+})

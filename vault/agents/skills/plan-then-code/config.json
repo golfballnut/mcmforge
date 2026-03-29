@@ -1,7 +1,10 @@
 {
+  "slug": "plan-then-code",
+  "trigger": "plan then code, complex task, multi-file, plan first, architect before coding",
   "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "plan-then-code.md",
   "timeout_ms": 300000,
   "review_tier": "high",
-  "max_context_chars": 8000,
-  "description": "Plan-first coding workflow for complex multi-file tasks"
+  "max_context_chars": 8000
 }

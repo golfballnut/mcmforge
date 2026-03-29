@@ -1,0 +1,7 @@
+{
+  "slug": "codebase-aware",
+  "trigger": "codebase context, architecture, load context, before code",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "codebase-aware.md"
+}

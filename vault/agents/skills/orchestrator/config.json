@@ -1,0 +1,7 @@
+{
+  "slug": "orchestrator",
+  "trigger": "classify, route, task type, dispatch",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": "orchestrator.md"
+}

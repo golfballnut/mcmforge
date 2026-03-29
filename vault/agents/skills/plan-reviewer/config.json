@@ -1,0 +1,7 @@
+{
+  "slug": "plan-reviewer",
+  "trigger": "review plan, score plan, approve plan, plan quality",
+  "model": "claude",
+  "load_on_retry": [],
+  "replaces_flat_file": "plan-reviewer.md"
+}

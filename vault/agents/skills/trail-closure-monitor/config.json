@@ -1,0 +1,11 @@
+{
+  "slug": "trail-closure-monitor",
+  "trigger": "trail closure, trail closed, closure monitor, trail alerts, trail status, wv state parks, blm moab, mojave closure",
+  "model": "claude",
+  "load_on_retry": ["reference"],
+  "replaces_flat_file": null,
+  "schedule": "0 10 * * *",
+  "company": "dirtsync",
+  "cost_cap_usd": 1.50,
+  "priority": 2
+}

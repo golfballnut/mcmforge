@@ -1,0 +1,55 @@
+{
+  "last_updated": "2026-03-29",
+  "sources": [
+    {
+      "name": "WV State Parks",
+      "url": "https://wvstateparks.com",
+      "agency": "WV State Parks",
+      "region": "West Virginia",
+      "scraping": false,
+      "scraping_note": "Site does not expose a live alerts feed; JavaScript-heavy with no structured data endpoint. Manual check required before each scheduled run.",
+      "manual_check_url": "https://wvstateparks.com/alerts",
+      "priority": "weekly",
+      "last_checked": null
+    },
+    {
+      "name": "BLM Moab Field Office",
+      "url": "https://www.blm.gov/office/moab-field-office",
+      "agency": "BLM",
+      "region": "Utah - Moab",
+      "scraping": true,
+      "priority": "daily",
+      "priority_reason": "Active reopen timeline evolving rapidly as of 2026-03-29; check every run until stable",
+      "last_checked": null
+    },
+    {
+      "name": "Western Mojave BLM (Barstow Field Office)",
+      "url": "https://www.blm.gov/office/barstow-field-office",
+      "agency": "BLM",
+      "region": "California - Western Mojave",
+      "scraping": true,
+      "priority": "daily",
+      "priority_reason": "Active court order status evolving rapidly as of 2026-03-29; check every run until court ruling is final",
+      "last_checked": null
+    },
+    {
+      "name": "Forest Service Recreation.gov",
+      "url": "https://www.recreation.gov",
+      "agency": "USFS",
+      "region": "National",
+      "scraping": true,
+      "api_endpoint": "https://ridb.recreation.gov/api/v1/",
+      "priority": "weekly",
+      "last_checked": null
+    },
+    {
+      "name": "Hatfield-McCoy Trail System",
+      "url": "https://trailsheaven.com",
+      "agency": "Hatfield-McCoy",
+      "region": "West Virginia",
+      "scraping": true,
+      "priority": "weekly",
+      "last_checked": null
+    }
+  ]
+}

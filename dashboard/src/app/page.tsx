@@ -19,10 +19,20 @@ async function getRecentRuns() {
   const supabase = await createForgeClient();
   const { data } = await supabase
     .from("runs")
-    .select("id, agent_id, status, summary, started_at, finished_at")
-    .order("started_at", { ascending: false })
-    .limit(50);
+    .select("id, agent_id, status, summary, started_at, finished_at, context_snapshot")
+    .order("created_at", { ascending: false })
+    .limit(100);
   return data ?? [];
+}
+
+function buildLatestRunMap(runs: any[]): Record<string, any> {
+  const map: Record<string, any> = {};
+  for (const run of runs) {
+    if (!map[run.agent_id]) {
+      map[run.agent_id] = run;
+    }
+  }
+  return map;
 }
 
 async function getStats() {
@@ -97,6 +107,8 @@ export default async function HomePage() {
     getStats(),
   ]);
 
+  const latestRunMap = buildLatestRunMap(recentRuns);
+
   const runningCount = agents.filter((a) => a.status === "running").length;
 
   const spendFormatted = `$${stats.monthlySpend.toFixed(2)}`;
@@ -141,7 +153,7 @@ export default async function HomePage() {
         >
           Agents
         </h2>
-        <DashboardClient initialAgents={agents} recentRuns={recentRuns} />
+        <DashboardClient initialAgents={agents} recentRuns={recentRuns} latestRunMap={latestRunMap} />
       </div>
     </div>
   );

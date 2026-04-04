@@ -8,13 +8,13 @@ export default async function ApprovalsPage() {
 
   const { data: pending } = await supabase
     .from("approval_queue")
-    .select("*, company_registry(name)")
+    .select("*, company_registry(name), agents!approval_queue_requested_by_agent_id_fkey(name)")
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 
   const { data: history } = await supabase
     .from("approval_queue")
-    .select("*, company_registry(name)")
+    .select("*, company_registry(name), agents!approval_queue_requested_by_agent_id_fkey(name)")
     .in("status", ["approved", "rejected"])
     .order("decided_at", { ascending: false });
 
@@ -98,6 +98,28 @@ export default async function ApprovalsPage() {
                       Pending
                     </span>
                   </div>
+                </div>
+
+                {/* Requester + payload */}
+                <div className="flex items-center gap-3 flex-wrap text-xs text-[#5f6368] mb-2">
+                  {(item as any).agents?.name && (
+                    <span className="flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {(item as any).agents.name}
+                    </span>
+                  )}
+                  {(item as any).payload && (
+                    <details className="w-full mt-1">
+                      <summary className="cursor-pointer text-[#1a73e8] hover:underline text-xs select-none">
+                        View payload
+                      </summary>
+                      <pre className="mt-1.5 p-2 bg-[#f1f3f4] rounded text-[10px] text-[#202124] overflow-x-auto max-h-32 whitespace-pre-wrap break-all">
+                        {JSON.stringify((item as any).payload, null, 2)}
+                      </pre>
+                    </details>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-4 flex-wrap text-sm">

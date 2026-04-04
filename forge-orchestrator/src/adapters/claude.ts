@@ -3,6 +3,7 @@ import path from 'node:path';
 import { CLIAdapter, AdapterExecuteInput, AdapterExecuteResult } from './types.js';
 import { runChildProcess } from '../utils/child-process.js';
 import { renderTemplate } from '../utils/template.js';
+import { logger } from '../utils/logger.js';
 
 export const claudeAdapter: CLIAdapter = {
   type: 'claude',
@@ -39,7 +40,12 @@ export const claudeAdapter: CLIAdapter = {
     const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
 
     const args = ['--print', '-', '--output-format', 'stream-json', '--verbose'];
-    if (input.sessionId) args.push('--resume', input.sessionId);
+    if (input.sessionId) {
+      logger.info({ sessionId: input.sessionId, agentId: input.agent.id, agentName: input.agent.name }, 'Resuming Claude session');
+      args.push('--resume', input.sessionId);
+    } else {
+      logger.info({ agentId: input.agent.id, agentName: input.agent.name }, 'Starting new Claude session');
+    }
     if (dangerouslySkipPermissions) args.push('--dangerously-skip-permissions');
     if (model) args.push('--model', model);
     if (maxTurns > 0) args.push('--max-turns', String(maxTurns));

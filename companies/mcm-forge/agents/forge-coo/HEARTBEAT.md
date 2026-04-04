@@ -35,6 +35,34 @@ If nothing is pending and nothing is stuck: comment status update and exit.
 
 ---
 
+## Delegation via Forge API
+
+To delegate work to a report, use the issues API. Replace `<agent-id>` with the target
+agent's UUID from the agents table.
+
+```bash
+curl -X POST $FORGE_API_URL/api/agent/issues \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "...",
+    "description": "...",
+    "assigneeAgentId": "<agent-id>",
+    "priority": "high"
+  }'
+```
+
+Common report agent IDs (check `$FORGE_AGENT_HOME/../` for AGENTS.md files):
+- Forge Builder — code implementation tasks
+- Forge QA — test coverage and validation
+- Forge Reviewer — PR review and merge approval
+
+Do not block on delegation. Fire the API call, log the issue ID, and exit. The assigned
+agent will pick it up on its next heartbeat.
+
+---
+
 ## Key Rule
 
 **3 turns. Don't overthink. Route and exit.**

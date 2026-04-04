@@ -76,13 +76,14 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
     .from('issues')
     .insert({
       company_id: routine.company_id,
-      title: routine.issue_title ?? routine.name,
-      description: routine.issue_description ?? null,
+      title: routine.title,
+      description: routine.description ?? null,
       assignee_agent_id: agentId,
       project_id: routine.project_id ?? null,
-      priority: routine.priority ?? 'normal',
+      priority: routine.priority ?? 'medium',
       status: 'todo',
-      source: 'routine',
+      origin_kind: 'routine',
+      origin_id: routine.id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })

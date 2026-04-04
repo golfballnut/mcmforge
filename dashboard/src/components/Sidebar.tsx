@@ -88,6 +88,14 @@ function IconGoals() {
   );
 }
 
+function IconSkills() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+}
+
 function IconSettings() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,6 +332,12 @@ export default function Sidebar() {
             badge="Beta"
             badgeVariant="beta"
             isActive={isActive("/routines")}
+          />
+          <NavLink
+            href="/skills"
+            icon={<IconSkills />}
+            label="Skills"
+            isActive={isActive("/skills")}
           />
           <NavLink
             href="/goals"

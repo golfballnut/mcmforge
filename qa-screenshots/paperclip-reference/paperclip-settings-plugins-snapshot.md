@@ -1,0 +1,97 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e16]:
+                  - img [ref=e17]
+                  - generic [ref=e18]: D
+            - status [ref=e19]
+          - button "Add company" [ref=e22]:
+            - img [ref=e23]
+        - complementary [ref=e25]:
+          - generic [ref=e26]:
+            - img [ref=e27]
+            - generic [ref=e30]: Instance Settings
+          - navigation [ref=e31]:
+            - generic [ref=e32]:
+              - link "General" [ref=e33] [cursor=pointer]:
+                - /url: /instance/settings/general
+                - img [ref=e35]
+                - generic [ref=e36]: General
+              - link "Heartbeats" [ref=e37] [cursor=pointer]:
+                - /url: /instance/settings/heartbeats
+                - img [ref=e39]
+                - generic [ref=e42]: Heartbeats
+              - link "Experimental" [ref=e43] [cursor=pointer]:
+                - /url: /instance/settings/experimental
+                - img [ref=e45]
+                - generic [ref=e47]: Experimental
+              - link "Plugins" [ref=e48] [cursor=pointer]:
+                - /url: /instance/settings/plugins
+                - img [ref=e50]
+                - generic [ref=e52]: Plugins
+      - generic [ref=e54]:
+        - link "Documentation" [ref=e55] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e56]
+          - generic [ref=e58]: Documentation
+        - generic [ref=e59]: v
+        - link "Instance settings" [ref=e60] [cursor=pointer]:
+          - /url: /instance/settings/plugins
+          - img
+        - button "Switch to light mode" [ref=e61]:
+          - img
+    - generic [ref=e62]:
+      - navigation "breadcrumb" [ref=e66]:
+        - list [ref=e67]:
+          - listitem [ref=e68]:
+            - link "DirtSync" [ref=e69] [cursor=pointer]:
+              - /url: /DIRA/dashboard
+          - listitem [ref=e70]:
+            - img [ref=e71]
+          - listitem [ref=e73]:
+            - link "Settings" [ref=e74] [cursor=pointer]:
+              - /url: /instance/settings/heartbeats
+          - listitem [ref=e75]:
+            - img [ref=e76]
+          - listitem [ref=e78]:
+            - link "Plugins" [disabled] [ref=e79]
+      - main [ref=e81]:
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - img [ref=e85]
+              - heading "Plugin Manager" [level=1] [ref=e87]
+            - button "Install Plugin" [ref=e88]:
+              - img
+              - text: Install Plugin
+          - generic [ref=e90]:
+            - img [ref=e91]
+            - generic [ref=e93]:
+              - paragraph [ref=e94]: Plugins are alpha.
+              - paragraph [ref=e95]: The plugin runtime and API surface are still changing. Expect breaking changes while this feature settles.
+          - generic [ref=e96]:
+            - generic [ref=e97]:
+              - img [ref=e98]
+              - heading "Available Plugins" [level=2] [ref=e100]
+              - generic [ref=e101]: Examples
+            - generic [ref=e102]: No bundled example plugins were found in this checkout.
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - img [ref=e105]
+              - heading "Installed Plugins" [level=2] [ref=e107]
+            - generic [ref=e109]:
+              - img [ref=e110]
+              - paragraph [ref=e112]: No plugins installed
+              - paragraph [ref=e113]: Install a plugin to extend functionality.
+  - generic [ref=e114]:
+    - heading "Command Palette" [level=2] [ref=e115]
+    - paragraph [ref=e116]: Search for a command to run...

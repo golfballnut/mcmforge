@@ -1,0 +1,909 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e452]:
+          - generic [ref=e453]:
+            - generic [ref=e454]: DirtSync
+            - button [ref=e455]:
+              - img
+          - navigation [ref=e456]:
+            - generic [ref=e457]:
+              - button "New Issue" [ref=e458]:
+                - img [ref=e459]
+                - generic [ref=e462]: New Issue
+              - link "Dashboard 7 live" [ref=e1571] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e465]
+                - generic [ref=e470]: Dashboard
+                - generic [ref=e475]: 7 live
+              - link "Inbox 15" [ref=e476] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e478]
+                - generic [ref=e482]: Inbox
+                - generic [ref=e483]: "15"
+            - generic [ref=e484]:
+              - generic [ref=e485]: Work
+              - generic [ref=e486]:
+                - link "Issues" [ref=e487] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e489]
+                  - generic [ref=e492]: Issues
+                - link "Routines Beta" [ref=e493] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e495]
+                  - generic [ref=e500]: Routines
+                  - generic [ref=e501]: Beta
+                - link "Goals" [ref=e502] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e504]
+                  - generic [ref=e508]: Goals
+            - generic [ref=e509]:
+              - generic [ref=e511]:
+                - button "Projects" [expanded] [ref=e512]:
+                  - img [ref=e513]
+                  - generic [ref=e515]: Projects
+                - button "New project" [ref=e516]:
+                  - img [ref=e517]
+              - generic [ref=e518]:
+                - button "DirtSync iOS" [ref=e520]:
+                  - link "DirtSync iOS" [ref=e522] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e524]: DirtSync iOS
+                - status [ref=e525]
+            - generic [ref=e526]:
+              - generic [ref=e528]:
+                - button "Agents" [expanded] [ref=e529]:
+                  - img [ref=e530]
+                  - generic [ref=e532]: Agents
+                - button "New agent" [ref=e533]:
+                  - img [ref=e534]
+              - generic [ref=e536]:
+                - link "DirtSync COO" [ref=e537] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e538]
+                  - generic [ref=e540]: DirtSync COO
+                - link "Build & Test Agent" [ref=e541] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e542]
+                  - generic [ref=e544]: Build & Test Agent
+                - link "Drive Publisher" [ref=e545] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e546]
+                  - generic [ref=e548]: Drive Publisher
+                - link "HUD Engineer" [ref=e549] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e550]
+                  - generic [ref=e553]: HUD Engineer
+                - link "Map View Engineer" [ref=e554] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e555]
+                  - generic [ref=e558]: Map View Engineer
+                - link "Navigation Engineer" [ref=e559] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e560]
+                  - generic [ref=e565]: Navigation Engineer
+                - link "QA Rider" [ref=e566] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e567]
+                  - generic [ref=e571]: QA Rider
+                - link "Ride Recording Engineer" [ref=e572] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e573]
+                  - generic [ref=e576]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e577] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e578]
+                  - generic [ref=e589]: Routine Manager
+                - link "Ship Engineer" [ref=e590] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e591]
+                  - generic [ref=e596]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e597] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e598]
+                  - generic [ref=e601]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e602] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e603]
+                  - generic [ref=e610]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e611] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e612]
+                  - generic [ref=e615]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e616] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e617]
+                  - generic [ref=e620]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 4 live" [ref=e1572] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e622]
+                  - generic [ref=e625]: Waze Search UI Expert
+                  - generic [ref=e630]: 4 live
+                - link "XCUITest Engineer" [ref=e631] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e632]
+                  - generic [ref=e635]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e636] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e637]
+                  - generic [ref=e639]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e640] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e641]
+                  - generic [ref=e649]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e650] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e651]
+                  - generic [ref=e654]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e655] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e656]
+                  - generic [ref=e665]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e666] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e667]
+                  - generic [ref=e676]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent 1 live" [ref=e677] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e678]
+                  - generic [ref=e683]: Doc Organizer Agent
+                  - generic [ref=e688]: 1 live
+                - link "Feature Usage Agent" [ref=e689] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e690]
+                  - generic [ref=e693]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e694] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e695]
+                  - generic [ref=e703]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e704] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e705]
+                  - generic [ref=e709]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e710] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e711]
+                  - generic [ref=e714]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e715] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e716]
+                  - generic [ref=e719]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e720] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e721]
+                  - generic [ref=e724]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e725] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e726]
+                  - generic [ref=e733]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e734] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e735]
+                  - generic [ref=e738]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e739] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e740]
+                  - generic [ref=e744]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e745] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e746]
+                  - generic [ref=e749]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e750] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e751]
+                  - generic [ref=e755]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e756] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e757]
+                  - generic [ref=e762]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e763] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e764]
+                  - generic [ref=e768]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e769] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e770]
+                  - generic [ref=e773]: Valhalla Health Agent
+            - generic [ref=e774]:
+              - generic [ref=e775]: Company
+              - generic [ref=e776]:
+                - link "Org" [ref=e777] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e779]
+                  - generic [ref=e784]: Org
+                - link "Skills" [ref=e785] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e787]
+                  - generic [ref=e797]: Skills
+                - link "Costs" [ref=e798] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e800]
+                  - generic [ref=e802]: Costs
+                - link "Activity" [ref=e803] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e805]
+                  - generic [ref=e809]: Activity
+                - link "Settings" [ref=e810] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e812]
+                  - generic [ref=e815]: Settings
+      - generic [ref=e382]:
+        - link "Documentation" [ref=e383] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e384]
+          - generic [ref=e386]: Documentation
+        - generic [ref=e387]: v
+        - link "Instance settings" [ref=e388] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e389]:
+          - img
+    - generic [ref=e390]:
+      - navigation "breadcrumb" [ref=e816]:
+        - list [ref=e817]:
+          - listitem [ref=e818]:
+            - link "Skills" [ref=e819] [cursor=pointer]:
+              - /url: /DIRA/skills
+          - listitem [ref=e820]:
+            - img [ref=e821]
+          - listitem [ref=e823]:
+            - link "Detail" [disabled] [ref=e824]
+      - main [ref=e396]:
+        - generic [ref=e397]:
+          - complementary [ref=e398]:
+            - generic [ref=e399]:
+              - generic [ref=e400]:
+                - generic [ref=e401]:
+                  - heading "Skills" [level=1] [ref=e402]
+                  - paragraph [ref=e403]: 30 available
+                - generic [ref=e404]:
+                  - button "Scan project workspaces for skills" [ref=e405]:
+                    - img
+                  - button [ref=e406]:
+                    - img
+              - generic [ref=e407]:
+                - img [ref=e408]
+                - textbox "Filter skills" [ref=e411]
+              - generic [ref=e412]:
+                - textbox "Paste path, GitHub URL, or skills.sh command" [ref=e413]
+                - button "Add" [ref=e414]
+            - generic [ref=e825]:
+              - generic [ref=e826]:
+                - generic [ref=e827]:
+                  - link "Paperclip managed Ferrostar Navigation" [ref=e828] [cursor=pointer]:
+                    - /url: /DIRA/skills/ee47f24c-a9fc-40bd-a596-f320909a1f8d
+                    - generic [ref=e829]:
+                      - generic [ref=e830]:
+                        - img [ref=e831]
+                        - generic [ref=e833]: Paperclip managed
+                      - generic [ref=e834]: Ferrostar Navigation
+                  - button "Collapse Ferrostar Navigation" [ref=e835]:
+                    - img [ref=e836]
+                - link "SKILL.md" [ref=e841] [cursor=pointer]:
+                  - /url: /DIRA/skills/ee47f24c-a9fc-40bd-a596-f320909a1f8d/files/SKILL.md
+                  - img [ref=e843]
+                  - generic [ref=e846]: SKILL.md
+              - generic [ref=e847]:
+                - generic [ref=e848]:
+                  - link "Paperclip managed MapLibre iOS Specialist" [ref=e849] [cursor=pointer]:
+                    - /url: /DIRA/skills/8a6e7429-de6b-403c-986f-78730cd4847c
+                    - generic [ref=e850]:
+                      - generic [ref=e851]:
+                        - img [ref=e852]
+                        - generic [ref=e854]: Paperclip managed
+                      - generic [ref=e855]: MapLibre iOS Specialist
+                  - button "Expand MapLibre iOS Specialist" [ref=e856]:
+                    - img [ref=e857]
+                - link [ref=e860] [cursor=pointer]:
+                  - /url: /DIRA/skills/8a6e7429-de6b-403c-986f-78730cd4847c/files/SKILL.md
+                  - img [ref=e862]
+                  - generic [ref=e865]: SKILL.md
+              - generic [ref=e866]:
+                - generic [ref=e867]:
+                  - link "Paperclip managed Trail Data Pipeline" [ref=e868] [cursor=pointer]:
+                    - /url: /DIRA/skills/c9a2773f-b180-40b7-8f61-1974fc51a083
+                    - generic [ref=e869]:
+                      - generic [ref=e870]:
+                        - img [ref=e871]
+                        - generic [ref=e873]: Paperclip managed
+                      - generic [ref=e874]: Trail Data Pipeline
+                  - button "Expand Trail Data Pipeline" [ref=e875]:
+                    - img [ref=e876]
+                - link [ref=e879] [cursor=pointer]:
+                  - /url: /DIRA/skills/c9a2773f-b180-40b7-8f61-1974fc51a083/files/SKILL.md
+                  - img [ref=e881]
+                  - generic [ref=e884]: SKILL.md
+              - generic [ref=e885]:
+                - generic [ref=e886]:
+                  - link "Paperclip managed Valhalla Routing Specialist" [ref=e887] [cursor=pointer]:
+                    - /url: /DIRA/skills/acaf8223-5fd0-45dd-adf2-208be816b65c
+                    - generic [ref=e888]:
+                      - generic [ref=e889]:
+                        - img [ref=e890]
+                        - generic [ref=e892]: Paperclip managed
+                      - generic [ref=e893]: Valhalla Routing Specialist
+                  - button "Expand Valhalla Routing Specialist" [ref=e894]:
+                    - img [ref=e895]
+                - link [ref=e898] [cursor=pointer]:
+                  - /url: /DIRA/skills/acaf8223-5fd0-45dd-adf2-208be816b65c/files/SKILL.md
+                  - img [ref=e900]
+                  - generic [ref=e903]: SKILL.md
+              - generic [ref=e904]:
+                - generic [ref=e905]:
+                  - link "GitHub managed brainstorming" [ref=e906] [cursor=pointer]:
+                    - /url: /DIRA/skills/b3178164-b7cd-435e-84f0-3405f847d044
+                    - generic [ref=e907]:
+                      - generic [ref=e908]:
+                        - img [ref=e909]
+                        - generic [ref=e912]: GitHub managed
+                      - generic [ref=e913]: brainstorming
+                  - button "Expand brainstorming" [ref=e914]:
+                    - img [ref=e915]
+                - link [ref=e918] [cursor=pointer]:
+                  - /url: /DIRA/skills/b3178164-b7cd-435e-84f0-3405f847d044/files/SKILL.md
+                  - img [ref=e920]
+                  - generic [ref=e923]: SKILL.md
+              - generic [ref=e924]:
+                - generic [ref=e925]:
+                  - link "Folder managed brainstorming" [ref=e926] [cursor=pointer]:
+                    - /url: /DIRA/skills/1e123b62-ff40-4bad-a981-b9daa8f5897b
+                    - generic [ref=e927]:
+                      - generic [ref=e928]:
+                        - img [ref=e929]
+                        - generic [ref=e931]: Folder managed
+                      - generic [ref=e932]: brainstorming
+                  - button "Expand brainstorming" [ref=e933]:
+                    - img [ref=e934]
+                - link [ref=e937] [cursor=pointer]:
+                  - /url: /DIRA/skills/1e123b62-ff40-4bad-a981-b9daa8f5897b/files/SKILL.md
+                  - img [ref=e939]
+                  - generic [ref=e942]: SKILL.md
+              - generic [ref=e943]:
+                - generic [ref=e944]:
+                  - link "Paperclip managed duplicate-trail-detection" [ref=e945] [cursor=pointer]:
+                    - /url: /DIRA/skills/2163a29b-cc2f-4508-8d00-a61c9d36a99a
+                    - generic [ref=e946]:
+                      - generic [ref=e947]:
+                        - img [ref=e948]
+                        - generic [ref=e950]: Paperclip managed
+                      - generic [ref=e951]: duplicate-trail-detection
+                  - button "Expand duplicate-trail-detection" [ref=e952]:
+                    - img [ref=e953]
+                - link [ref=e956] [cursor=pointer]:
+                  - /url: /DIRA/skills/2163a29b-cc2f-4508-8d00-a61c9d36a99a/files/SKILL.md
+                  - img [ref=e958]
+                  - generic [ref=e961]: SKILL.md
+              - generic [ref=e962]:
+                - generic [ref=e963]:
+                  - link "GitHub managed finishing-a-development-branch" [ref=e964] [cursor=pointer]:
+                    - /url: /DIRA/skills/c5f06e2b-bf78-4800-8dcc-4b5e8b055be7
+                    - generic [ref=e965]:
+                      - generic [ref=e966]:
+                        - img [ref=e967]
+                        - generic [ref=e970]: GitHub managed
+                      - generic [ref=e971]: finishing-a-development-branch
+                  - button "Expand finishing-a-development-branch" [ref=e972]:
+                    - img [ref=e973]
+                - link [ref=e976] [cursor=pointer]:
+                  - /url: /DIRA/skills/c5f06e2b-bf78-4800-8dcc-4b5e8b055be7/files/SKILL.md
+                  - img [ref=e978]
+                  - generic [ref=e981]: SKILL.md
+              - generic [ref=e982]:
+                - generic [ref=e983]:
+                  - link "Folder managed finishing-a-development-branch" [ref=e984] [cursor=pointer]:
+                    - /url: /DIRA/skills/e4a72dd3-7754-4911-a554-397c619360f4
+                    - generic [ref=e985]:
+                      - generic [ref=e986]:
+                        - img [ref=e987]
+                        - generic [ref=e989]: Folder managed
+                      - generic [ref=e990]: finishing-a-development-branch
+                  - button "Expand finishing-a-development-branch" [ref=e991]:
+                    - img [ref=e992]
+                - link [ref=e995] [cursor=pointer]:
+                  - /url: /DIRA/skills/e4a72dd3-7754-4911-a554-397c619360f4/files/SKILL.md
+                  - img [ref=e997]
+                  - generic [ref=e1000]: SKILL.md
+              - generic [ref=e1001]:
+                - generic [ref=e1002]:
+                  - link "Paperclip managed hud-engineering" [ref=e1003] [cursor=pointer]:
+                    - /url: /DIRA/skills/3d441198-6ccc-46b1-834b-26cf1747d5bf
+                    - generic [ref=e1004]:
+                      - generic [ref=e1005]:
+                        - img [ref=e1006]
+                        - generic [ref=e1008]: Paperclip managed
+                      - generic [ref=e1009]: hud-engineering
+                  - button "Expand hud-engineering" [ref=e1010]:
+                    - img [ref=e1011]
+                - link [ref=e1014] [cursor=pointer]:
+                  - /url: /DIRA/skills/3d441198-6ccc-46b1-834b-26cf1747d5bf/files/SKILL.md
+                  - img [ref=e1016]
+                  - generic [ref=e1019]: SKILL.md
+              - generic [ref=e1020]:
+                - generic [ref=e1021]:
+                  - link "Paperclip managed intersection-detection" [ref=e1022] [cursor=pointer]:
+                    - /url: /DIRA/skills/64842ff7-0f39-4e28-8584-af9bb4334ac1
+                    - generic [ref=e1023]:
+                      - generic [ref=e1024]:
+                        - img [ref=e1025]
+                        - generic [ref=e1027]: Paperclip managed
+                      - generic [ref=e1028]: intersection-detection
+                  - button "Expand intersection-detection" [ref=e1029]:
+                    - img [ref=e1030]
+                - link [ref=e1033] [cursor=pointer]:
+                  - /url: /DIRA/skills/64842ff7-0f39-4e28-8584-af9bb4334ac1/files/SKILL.md
+                  - img [ref=e1035]
+                  - generic [ref=e1038]: SKILL.md
+              - generic [ref=e1039]:
+                - generic [ref=e1040]:
+                  - link "Paperclip managed ios-qa" [ref=e1041] [cursor=pointer]:
+                    - /url: /DIRA/skills/67afb29f-e772-41cf-9b85-a98b5c26259c
+                    - generic [ref=e1042]:
+                      - generic [ref=e1043]:
+                        - img [ref=e1044]
+                        - generic [ref=e1046]: Paperclip managed
+                      - generic [ref=e1047]: ios-qa
+                  - button "Expand ios-qa" [ref=e1048]:
+                    - img [ref=e1049]
+                - link [ref=e1052] [cursor=pointer]:
+                  - /url: /DIRA/skills/67afb29f-e772-41cf-9b85-a98b5c26259c/files/SKILL.md
+                  - img [ref=e1054]
+                  - generic [ref=e1057]: SKILL.md
+              - generic [ref=e1058]:
+                - generic [ref=e1059]:
+                  - link "Paperclip managed local-poi" [ref=e1060] [cursor=pointer]:
+                    - /url: /DIRA/skills/99c0b252-9c0e-4014-bfca-a6260cffaa6a
+                    - generic [ref=e1061]:
+                      - generic [ref=e1062]:
+                        - img [ref=e1063]
+                        - generic [ref=e1065]: Paperclip managed
+                      - generic [ref=e1066]: local-poi
+                  - button "Expand local-poi" [ref=e1067]:
+                    - img [ref=e1068]
+                - link [ref=e1071] [cursor=pointer]:
+                  - /url: /DIRA/skills/99c0b252-9c0e-4014-bfca-a6260cffaa6a/files/SKILL.md
+                  - img [ref=e1073]
+                  - generic [ref=e1076]: SKILL.md
+              - generic [ref=e1077]:
+                - generic [ref=e1078]:
+                  - link "Paperclip managed paperclip" [ref=e1079] [cursor=pointer]:
+                    - /url: /DIRA/skills/d85d111c-614d-4f28-92d8-637db2ef5f98
+                    - generic [ref=e1080]:
+                      - generic [ref=e1081]:
+                        - img [ref=e1082]
+                        - generic [ref=e1084]: Paperclip managed
+                      - generic [ref=e1085]: paperclip
+                  - button "Expand paperclip" [ref=e1086]:
+                    - img [ref=e1087]
+                - generic [ref=e1089]:
+                  - generic [ref=e1091]:
+                    - button [ref=e1092]:
+                      - img [ref=e1094]
+                      - generic [ref=e1096]: references
+                    - button [ref=e1097]:
+                      - img [ref=e1098]
+                  - link [ref=e1100] [cursor=pointer]:
+                    - /url: /DIRA/skills/d85d111c-614d-4f28-92d8-637db2ef5f98/files/SKILL.md
+                    - img [ref=e1102]
+                    - generic [ref=e1105]: SKILL.md
+              - generic [ref=e1106]:
+                - generic [ref=e1107]:
+                  - link "Paperclip managed paperclip-create-agent" [ref=e1108] [cursor=pointer]:
+                    - /url: /DIRA/skills/afb298c2-7b98-4c73-8773-a8adbcddae9a
+                    - generic [ref=e1109]:
+                      - generic [ref=e1110]:
+                        - img [ref=e1111]
+                        - generic [ref=e1113]: Paperclip managed
+                      - generic [ref=e1114]: paperclip-create-agent
+                  - button "Expand paperclip-create-agent" [ref=e1115]:
+                    - img [ref=e1116]
+                - generic [ref=e1118]:
+                  - generic [ref=e1120]:
+                    - button [ref=e1121]:
+                      - img [ref=e1123]
+                      - generic [ref=e1125]: references
+                    - button [ref=e1126]:
+                      - img [ref=e1127]
+                  - link [ref=e1129] [cursor=pointer]:
+                    - /url: /DIRA/skills/afb298c2-7b98-4c73-8773-a8adbcddae9a/files/SKILL.md
+                    - img [ref=e1131]
+                    - generic [ref=e1134]: SKILL.md
+              - generic [ref=e1135]:
+                - generic [ref=e1136]:
+                  - link "Paperclip managed paperclip-create-plugin" [ref=e1137] [cursor=pointer]:
+                    - /url: /DIRA/skills/f3e785d3-2861-47a6-99eb-827d94fee127
+                    - generic [ref=e1138]:
+                      - generic [ref=e1139]:
+                        - img [ref=e1140]
+                        - generic [ref=e1142]: Paperclip managed
+                      - generic [ref=e1143]: paperclip-create-plugin
+                  - button "Expand paperclip-create-plugin" [ref=e1144]:
+                    - img [ref=e1145]
+                - link [ref=e1148] [cursor=pointer]:
+                  - /url: /DIRA/skills/f3e785d3-2861-47a6-99eb-827d94fee127/files/SKILL.md
+                  - img [ref=e1150]
+                  - generic [ref=e1153]: SKILL.md
+              - generic [ref=e1154]:
+                - generic [ref=e1155]:
+                  - link "Paperclip managed para-memory-files" [ref=e1156] [cursor=pointer]:
+                    - /url: /DIRA/skills/44eda565-1ad6-4897-965b-4de97623c7f9
+                    - generic [ref=e1157]:
+                      - generic [ref=e1158]:
+                        - img [ref=e1159]
+                        - generic [ref=e1161]: Paperclip managed
+                      - generic [ref=e1162]: para-memory-files
+                  - button "Expand para-memory-files" [ref=e1163]:
+                    - img [ref=e1164]
+                - generic [ref=e1166]:
+                  - generic [ref=e1168]:
+                    - button [ref=e1169]:
+                      - img [ref=e1171]
+                      - generic [ref=e1173]: references
+                    - button [ref=e1174]:
+                      - img [ref=e1175]
+                  - link [ref=e1177] [cursor=pointer]:
+                    - /url: /DIRA/skills/44eda565-1ad6-4897-965b-4de97623c7f9/files/SKILL.md
+                    - img [ref=e1179]
+                    - generic [ref=e1182]: SKILL.md
+              - generic [ref=e1183]:
+                - generic [ref=e1184]:
+                  - link "Paperclip managed poi-engineering" [ref=e1185] [cursor=pointer]:
+                    - /url: /DIRA/skills/e26955d9-6e6d-4759-a7cc-6ac0bf721a1d
+                    - generic [ref=e1186]:
+                      - generic [ref=e1187]:
+                        - img [ref=e1188]
+                        - generic [ref=e1190]: Paperclip managed
+                      - generic [ref=e1191]: poi-engineering
+                  - button "Expand poi-engineering" [ref=e1192]:
+                    - img [ref=e1193]
+                - link [ref=e1196] [cursor=pointer]:
+                  - /url: /DIRA/skills/e26955d9-6e6d-4759-a7cc-6ac0bf721a1d/files/SKILL.md
+                  - img [ref=e1198]
+                  - generic [ref=e1201]: SKILL.md
+              - generic [ref=e1202]:
+                - generic [ref=e1203]:
+                  - link "GitHub managed requesting-code-review" [ref=e1204] [cursor=pointer]:
+                    - /url: /DIRA/skills/cf475128-c39e-44df-9c50-986e5d124417
+                    - generic [ref=e1205]:
+                      - generic [ref=e1206]:
+                        - img [ref=e1207]
+                        - generic [ref=e1210]: GitHub managed
+                      - generic [ref=e1211]: requesting-code-review
+                  - button "Expand requesting-code-review" [ref=e1212]:
+                    - img [ref=e1213]
+                - link [ref=e1216] [cursor=pointer]:
+                  - /url: /DIRA/skills/cf475128-c39e-44df-9c50-986e5d124417/files/SKILL.md
+                  - img [ref=e1218]
+                  - generic [ref=e1221]: SKILL.md
+              - generic [ref=e1222]:
+                - generic [ref=e1223]:
+                  - link "Folder managed requesting-code-review" [ref=e1224] [cursor=pointer]:
+                    - /url: /DIRA/skills/524a761a-41dc-4f1d-85d9-d88f75825578
+                    - generic [ref=e1225]:
+                      - generic [ref=e1226]:
+                        - img [ref=e1227]
+                        - generic [ref=e1229]: Folder managed
+                      - generic [ref=e1230]: requesting-code-review
+                  - button "Expand requesting-code-review" [ref=e1231]:
+                    - img [ref=e1232]
+                - link [ref=e1235] [cursor=pointer]:
+                  - /url: /DIRA/skills/524a761a-41dc-4f1d-85d9-d88f75825578/files/SKILL.md
+                  - img [ref=e1237]
+                  - generic [ref=e1240]: SKILL.md
+              - generic [ref=e1241]:
+                - generic [ref=e1242]:
+                  - link "Paperclip managed road-junction" [ref=e1243] [cursor=pointer]:
+                    - /url: /DIRA/skills/eca376e0-f6c4-4386-b071-915f98ce41fa
+                    - generic [ref=e1244]:
+                      - generic [ref=e1245]:
+                        - img [ref=e1246]
+                        - generic [ref=e1248]: Paperclip managed
+                      - generic [ref=e1249]: road-junction
+                  - button "Expand road-junction" [ref=e1250]:
+                    - img [ref=e1251]
+                - link [ref=e1254] [cursor=pointer]:
+                  - /url: /DIRA/skills/eca376e0-f6c4-4386-b071-915f98ce41fa/files/SKILL.md
+                  - img [ref=e1256]
+                  - generic [ref=e1259]: SKILL.md
+              - generic [ref=e1260]:
+                - generic [ref=e1261]:
+                  - link "GitHub managed systematic-debugging" [ref=e1262] [cursor=pointer]:
+                    - /url: /DIRA/skills/04d81a5a-b134-4764-9ab5-f6a8b2e59f87
+                    - generic [ref=e1263]:
+                      - generic [ref=e1264]:
+                        - img [ref=e1265]
+                        - generic [ref=e1268]: GitHub managed
+                      - generic [ref=e1269]: systematic-debugging
+                  - button "Expand systematic-debugging" [ref=e1270]:
+                    - img [ref=e1271]
+                - link [ref=e1274] [cursor=pointer]:
+                  - /url: /DIRA/skills/04d81a5a-b134-4764-9ab5-f6a8b2e59f87/files/SKILL.md
+                  - img [ref=e1276]
+                  - generic [ref=e1279]: SKILL.md
+              - generic [ref=e1280]:
+                - generic [ref=e1281]:
+                  - link "Folder managed systematic-debugging" [ref=e1282] [cursor=pointer]:
+                    - /url: /DIRA/skills/996ef717-4890-4a26-827a-f51984a13d14
+                    - generic [ref=e1283]:
+                      - generic [ref=e1284]:
+                        - img [ref=e1285]
+                        - generic [ref=e1287]: Folder managed
+                      - generic [ref=e1288]: systematic-debugging
+                  - button "Expand systematic-debugging" [ref=e1289]:
+                    - img [ref=e1290]
+                - link [ref=e1293] [cursor=pointer]:
+                  - /url: /DIRA/skills/996ef717-4890-4a26-827a-f51984a13d14/files/SKILL.md
+                  - img [ref=e1295]
+                  - generic [ref=e1298]: SKILL.md
+              - generic [ref=e1299]:
+                - generic [ref=e1300]:
+                  - link "GitHub managed test-driven-development" [ref=e1301] [cursor=pointer]:
+                    - /url: /DIRA/skills/4d4a4074-6c9b-49ba-a443-86230a8da253
+                    - generic [ref=e1302]:
+                      - generic [ref=e1303]:
+                        - img [ref=e1304]
+                        - generic [ref=e1307]: GitHub managed
+                      - generic [ref=e1308]: test-driven-development
+                  - button "Expand test-driven-development" [ref=e1309]:
+                    - img [ref=e1310]
+                - link [ref=e1313] [cursor=pointer]:
+                  - /url: /DIRA/skills/4d4a4074-6c9b-49ba-a443-86230a8da253/files/SKILL.md
+                  - img [ref=e1315]
+                  - generic [ref=e1318]: SKILL.md
+              - generic [ref=e1319]:
+                - generic [ref=e1320]:
+                  - link "Folder managed test-driven-development" [ref=e1321] [cursor=pointer]:
+                    - /url: /DIRA/skills/4df949cb-7f6a-4621-adf3-9b7ae525e171
+                    - generic [ref=e1322]:
+                      - generic [ref=e1323]:
+                        - img [ref=e1324]
+                        - generic [ref=e1326]: Folder managed
+                      - generic [ref=e1327]: test-driven-development
+                  - button "Expand test-driven-development" [ref=e1328]:
+                    - img [ref=e1329]
+                - link [ref=e1332] [cursor=pointer]:
+                  - /url: /DIRA/skills/4df949cb-7f6a-4621-adf3-9b7ae525e171/files/SKILL.md
+                  - img [ref=e1334]
+                  - generic [ref=e1337]: SKILL.md
+              - generic [ref=e1338]:
+                - generic [ref=e1339]:
+                  - link "Paperclip managed trail-geometry" [ref=e1340] [cursor=pointer]:
+                    - /url: /DIRA/skills/0072651f-0492-4348-bf62-75f53d623cee
+                    - generic [ref=e1341]:
+                      - generic [ref=e1342]:
+                        - img [ref=e1343]
+                        - generic [ref=e1345]: Paperclip managed
+                      - generic [ref=e1346]: trail-geometry
+                  - button "Expand trail-geometry" [ref=e1347]:
+                    - img [ref=e1348]
+                - link [ref=e1351] [cursor=pointer]:
+                  - /url: /DIRA/skills/0072651f-0492-4348-bf62-75f53d623cee/files/SKILL.md
+                  - img [ref=e1353]
+                  - generic [ref=e1356]: SKILL.md
+              - generic [ref=e1357]:
+                - generic [ref=e1358]:
+                  - link "GitHub managed verification-before-completion" [ref=e1359] [cursor=pointer]:
+                    - /url: /DIRA/skills/0c02d4fb-7fcc-4933-bd30-a81d09741181
+                    - generic [ref=e1360]:
+                      - generic [ref=e1361]:
+                        - img [ref=e1362]
+                        - generic [ref=e1365]: GitHub managed
+                      - generic [ref=e1366]: verification-before-completion
+                  - button "Expand verification-before-completion" [ref=e1367]:
+                    - img [ref=e1368]
+                - link [ref=e1371] [cursor=pointer]:
+                  - /url: /DIRA/skills/0c02d4fb-7fcc-4933-bd30-a81d09741181/files/SKILL.md
+                  - img [ref=e1373]
+                  - generic [ref=e1376]: SKILL.md
+              - generic [ref=e1377]:
+                - generic [ref=e1378]:
+                  - link "Folder managed verification-before-completion" [ref=e1379] [cursor=pointer]:
+                    - /url: /DIRA/skills/c5b2c324-a279-49aa-9a0f-8649091c80e7
+                    - generic [ref=e1380]:
+                      - generic [ref=e1381]:
+                        - img [ref=e1382]
+                        - generic [ref=e1384]: Folder managed
+                      - generic [ref=e1385]: verification-before-completion
+                  - button "Expand verification-before-completion" [ref=e1386]:
+                    - img [ref=e1387]
+                - link [ref=e1390] [cursor=pointer]:
+                  - /url: /DIRA/skills/c5b2c324-a279-49aa-9a0f-8649091c80e7/files/SKILL.md
+                  - img [ref=e1392]
+                  - generic [ref=e1395]: SKILL.md
+              - generic [ref=e1396]:
+                - generic [ref=e1397]:
+                  - link "GitHub managed writing-plans" [ref=e1398] [cursor=pointer]:
+                    - /url: /DIRA/skills/b66de1ed-da88-4e9b-9d59-a40e4cf1ea6f
+                    - generic [ref=e1399]:
+                      - generic [ref=e1400]:
+                        - img [ref=e1401]
+                        - generic [ref=e1404]: GitHub managed
+                      - generic [ref=e1405]: writing-plans
+                  - button "Expand writing-plans" [ref=e1406]:
+                    - img [ref=e1407]
+                - link [ref=e1410] [cursor=pointer]:
+                  - /url: /DIRA/skills/b66de1ed-da88-4e9b-9d59-a40e4cf1ea6f/files/SKILL.md
+                  - img [ref=e1412]
+                  - generic [ref=e1415]: SKILL.md
+              - generic [ref=e1416]:
+                - generic [ref=e1417]:
+                  - link "Folder managed writing-plans" [ref=e1418] [cursor=pointer]:
+                    - /url: /DIRA/skills/9d1a088f-b1d0-4a6f-a737-37090b30e988
+                    - generic [ref=e1419]:
+                      - generic [ref=e1420]:
+                        - img [ref=e1421]
+                        - generic [ref=e1423]: Folder managed
+                      - generic [ref=e1424]: writing-plans
+                  - button "Expand writing-plans" [ref=e1425]:
+                    - img [ref=e1426]
+                - link [ref=e1429] [cursor=pointer]:
+                  - /url: /DIRA/skills/9d1a088f-b1d0-4a6f-a737-37090b30e988/files/SKILL.md
+                  - img [ref=e1431]
+                  - generic [ref=e1434]: SKILL.md
+          - generic [ref=e1435]:
+            - generic [ref=e1436]:
+              - generic [ref=e1437]:
+                - heading "Ferrostar Navigation" [level=1] [ref=e1439]:
+                  - img [ref=e1440]
+                  - text: Ferrostar Navigation
+                - button "Edit" [ref=e1442]:
+                  - img [ref=e1443]
+                  - text: Edit
+              - generic [ref=e1446]:
+                - generic [ref=e1447]:
+                  - generic [ref=e1448]:
+                    - generic [ref=e1449]: Source
+                    - generic [ref=e1450]:
+                      - img [ref=e1451]
+                      - button "Paperclip workspace" [ref=e1453] [cursor=pointer]
+                  - generic [ref=e1454]:
+                    - generic [ref=e1455]: Key
+                    - generic [ref=e1456]: company/b724f8bb-9567-47a1-8ec6-fd8e23c70093/ferrostar-navigation
+                  - generic [ref=e1457]:
+                    - generic [ref=e1458]: Mode
+                    - generic [ref=e1459]: Editable
+                - generic [ref=e1460]:
+                  - generic [ref=e1461]: Used by
+                  - link "Ship Engineer" [ref=e1463] [cursor=pointer]:
+                    - /url: /DIRA/agents/ship-engineer/skills
+            - generic [ref=e1465]:
+              - generic [ref=e1467]: SKILL.md
+              - generic [ref=e1469]:
+                - button "View" [ref=e1470]:
+                  - generic [ref=e1471]:
+                    - img [ref=e1472]
+                    - text: View
+                - button "Code" [ref=e1475]:
+                  - generic [ref=e1476]:
+                    - img [ref=e1477]
+                    - text: Code
+            - generic [ref=e1482]:
+              - 'heading "Skill: Ferrostar Navigation Specialist" [level=1] [ref=e1483]'
+              - blockquote [ref=e1484]:
+                - paragraph [ref=e1485]: "Last updated: April 2, 2026 Used by: DirtSync engineers, navigation agents Origin: Sessions 63-71 — navigation implementation and field testing"
+              - separator [ref=e1486]
+              - heading "Goal" [level=2] [ref=e1487]
+              - paragraph [ref=e1488]: Build Ferrostar-based turn-by-turn navigation features for the DirtSync trail riding app.
+              - heading "DirtSync Ferrostar Setup" [level=2] [ref=e1489]
+              - list [ref=e1490]:
+                - listitem [ref=e1491]:
+                  - strong [ref=e1492]: "Package:"
+                  - code [ref=e1493]: stadiamaps/ferrostar
+                  - text: (Swift, via SPM)
+                - listitem [ref=e1494]:
+                  - strong [ref=e1495]: "Location provider:"
+                  - text: ALWAYS use
+                  - code [ref=e1496]: CoreLocationProvider
+                  - text: (feeds both MapLibre AND Ferrostar)
+                - listitem [ref=e1497]:
+                  - strong [ref=e1498]: "Route source:"
+                  - text: Valhalla routes converted via
+                  - code [ref=e1499]: convertToFerrostarRoute()
+                - listitem [ref=e1500]:
+                  - strong [ref=e1501]: "Voice:"
+                  - text: Ferrostar handles voice during navigation. TrailNavigationState voice is fallback only.
+              - heading "Critical Rules" [level=2] [ref=e1502]
+              - 'heading "GPS Provider: CoreLocationProvider ONLY" [level=3] [ref=e1503]'
+              - list [ref=e1504]:
+                - listitem [ref=e1505]:
+                  - code [ref=e1506]: CoreLocationProvider
+                  - text: reads from
+                  - code [ref=e1507]: CLLocationManager
+                  - text: which gets real GPS (device) or simctl (simulator)
+                - listitem [ref=e1508]:
+                  - code [ref=e1509]: SimulatedLocationProvider
+                  - text: feeds Ferrostar INTERNALLY only — MapLibre's map view does NOT receive these updates
+                - listitem [ref=e1510]: Using SimulatedLocationProvider creates dual GPS streams that diverge → nav exits immediately
+                - listitem [ref=e1511]:
+                  - text: "For simulator testing: use"
+                  - code [ref=e1512]: simctl location start
+                  - text: with waypoints → feeds CLLocationManager → drives BOTH map AND Ferrostar
+              - heading "Voice Navigation" [level=3] [ref=e1513]
+              - list [ref=e1514]:
+                - listitem [ref=e1515]:
+                  - text: Ferrostar has its own
+                  - code [ref=e1516]: AVSpeechSynthesizer
+                - listitem [ref=e1517]:
+                  - text: TrailNavigationState has its own
+                  - code [ref=e1518]: AVSpeechSynthesizer
+                - listitem [ref=e1519]: JunctionDetectionService has its own voice manager
+                - listitem [ref=e1520]:
+                  - strong [ref=e1521]: 3 synthesizers can overlap!
+                  - text: Only Ferrostar speaks during active navigation.
+                - listitem [ref=e1522]:
+                  - text: Set
+                  - code [ref=e1523]: trailNavState.voiceManager.isNavigationActive = true
+                  - text: when Ferrostar starts
+              - heading "Dark Theme" [level=3] [ref=e1524]
+              - list [ref=e1525]:
+                - listitem [ref=e1526]: Navigation uses CARTO Dark Matter basemap
+                - listitem [ref=e1527]:
+                  - code [ref=e1528]: mapStyleManager.useNavDarkTheme = true
+                  - text: when nav starts
+                - listitem [ref=e1529]:
+                  - code [ref=e1530]: mapStyleManager.useNavDarkTheme = false
+                  - text: when nav stops
+                - listitem [ref=e1531]:
+                  - text: Free riding also uses dark theme via
+                  - code [ref=e1532]: useFreeRiderDarkTheme
+              - heading "Camera During Navigation" [level=3] [ref=e1533]
+              - list [ref=e1534]:
+                - listitem [ref=e1535]:
+                  - code [ref=e1536]: .followWithCourse
+                  - text: mode — map rotates to direction of travel (GPS course, not compass)
+                - listitem [ref=e1537]: z18 zoom, pitch 45°
+                - listitem [ref=e1538]: "Pan cooldown: 5 seconds after user pan, then auto-recenter"
+                - listitem [ref=e1539]: "State machine controls camera: approaching→onRoute→offRoute→arriving→complete"
+              - heading "Reroute Flow" [level=3] [ref=e1540]
+              - list [ref=e1541]:
+                - listitem [ref=e1542]:
+                  - text: Ferrostar detects deviation →
+                  - code [ref=e1543]: onReroute
+                  - text: callback
+                - listitem [ref=e1544]:
+                  - text: NavStateMachine transitions to
+                  - code [ref=e1545]: .rerouting
+                - listitem [ref=e1546]: "Hybrid routing recalculates: Valhalla trails + Mapbox roads"
+                - listitem [ref=e1547]: If hybrid fails, pure Valhalla fallback
+                - listitem [ref=e1548]: "Voice: \"Make a U-turn\" on wrong direction detection"
+              - heading "Simulator Testing" [level=2] [ref=e1549]
+              - code [ref=e1574]: "# Feed GPS along a route (speed=6.7 m/s ≈ 15 MPH) cat waypoints.txt | xcrun simctl location $DEVICE start --speed=6.7 --interval=1 -"
+              - list [ref=e1552]:
+                - listitem [ref=e1553]: "Waypoints file: lat,lon per line (from Valhalla route export or all-trails.geojson)"
+                - listitem [ref=e1554]: MUST use CoreLocationProvider path (not SimulatedLocationProvider)
+                - listitem [ref=e1555]:
+                  - code [ref=e1556]: "--uitesting"
+                  - text: "launch arg: throttles MapLibre to low-power FPS, auto-login"
+              - heading "Distance Formatting (Waze-style)" [level=2] [ref=e1557]
+              - list [ref=e1558]:
+                - listitem [ref=e1559]: "500+ feet: round to nearest 100"
+                - listitem [ref=e1560]: "100-500 feet: round to nearest 50"
+                - listitem [ref=e1561]: "<100 feet: exact"
+                - listitem [ref=e1562]:
+                  - text: Implemented in
+                  - code [ref=e1563]: TurnCardView.formatDistance()
+                  - text: and
+                  - code [ref=e1564]: FerrostarNavigationService.formattedDistanceToManeuver
+              - heading "Anti-Patterns" [level=2] [ref=e1565]
+              - list [ref=e1566]:
+                - listitem [ref=e1567]: NEVER use SimulatedLocationProvider for visual testing — only CoreLocationProvider
+                - listitem [ref=e1568]: NEVER run both Ferrostar voice AND TrailNavigationState voice simultaneously
+                - listitem [ref=e1569]: NEVER set camera zoom/pitch without checking navState (state machine controls camera)
+                - listitem [ref=e1570]: NEVER skip the coordinator.parent = self update in updateUIView
+  - generic [ref=e448]:
+    - heading "Command Palette" [level=2] [ref=e449]
+    - paragraph [ref=e450]: Search for a command to run...

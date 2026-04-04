@@ -1,0 +1,960 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 7 live" [ref=e195] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e200]: 7 live
+              - link "Inbox 15" [ref=e201] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e47]
+                - generic [ref=e50]: Inbox
+                - generic [ref=e203]: "15"
+            - generic [ref=e51]:
+              - generic [ref=e52]: Work
+              - generic [ref=e53]:
+                - link "Issues" [ref=e54] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e56]
+                  - generic [ref=e59]: Issues
+                - link "Routines Beta" [ref=e60] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e62]
+                  - generic [ref=e67]: Routines
+                  - generic [ref=e68]: Beta
+                - link "Goals" [ref=e69] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e71]
+                  - generic [ref=e75]: Goals
+            - generic [ref=e76]:
+              - generic [ref=e78]:
+                - button "Projects" [expanded] [ref=e79]:
+                  - img [ref=e80]
+                  - generic [ref=e82]: Projects
+                - button "New project" [ref=e83]:
+                  - img [ref=e84]
+              - generic [ref=e204]:
+                - button "DirtSync iOS" [ref=e206]:
+                  - link "DirtSync iOS" [ref=e208] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e210]: DirtSync iOS
+                - status [ref=e85]
+            - generic [ref=e86]:
+              - generic [ref=e88]:
+                - button "Agents" [expanded] [ref=e89]:
+                  - img [ref=e90]
+                  - generic [ref=e92]: Agents
+                - button "New agent" [ref=e93]:
+                  - img [ref=e94]
+              - generic [ref=e212]:
+                - link "DirtSync COO" [ref=e213] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e214]
+                  - generic [ref=e216]: DirtSync COO
+                - link "Build & Test Agent" [ref=e217] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e218]
+                  - generic [ref=e220]: Build & Test Agent
+                - link "Drive Publisher" [ref=e221] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e222]
+                  - generic [ref=e224]: Drive Publisher
+                - link "HUD Engineer" [ref=e225] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e226]
+                  - generic [ref=e229]: HUD Engineer
+                - link "Map View Engineer" [ref=e230] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e231]
+                  - generic [ref=e234]: Map View Engineer
+                - link "Navigation Engineer" [ref=e235] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e236]
+                  - generic [ref=e241]: Navigation Engineer
+                - link "QA Rider" [ref=e242] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e243]
+                  - generic [ref=e247]: QA Rider
+                - link "Ride Recording Engineer" [ref=e248] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e249]
+                  - generic [ref=e252]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e253] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e254]
+                  - generic [ref=e265]: Routine Manager
+                - link "Ship Engineer" [ref=e266] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e267]
+                  - generic [ref=e272]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e273] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e274]
+                  - generic [ref=e277]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e278] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e279]
+                  - generic [ref=e286]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e287] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e288]
+                  - generic [ref=e291]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e292] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e293]
+                  - generic [ref=e296]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 5 live" [ref=e297] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e298]
+                  - generic [ref=e301]: Waze Search UI Expert
+                  - generic [ref=e306]: 5 live
+                - link "XCUITest Engineer" [ref=e307] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e308]
+                  - generic [ref=e311]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e312] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e313]
+                  - generic [ref=e315]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e316] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e317]
+                  - generic [ref=e325]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e326] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e327]
+                  - generic [ref=e330]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e331] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e332]
+                  - generic [ref=e341]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e342] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e343]
+                  - generic [ref=e352]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e353] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e354]
+                  - generic [ref=e359]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e360] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e361]
+                  - generic [ref=e364]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e365] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e366]
+                  - generic [ref=e374]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e375] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e376]
+                  - generic [ref=e380]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e381] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e382]
+                  - generic [ref=e385]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e386] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e387]
+                  - generic [ref=e390]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e391] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e392]
+                  - generic [ref=e395]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e396] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e397]
+                  - generic [ref=e404]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e405] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e406]
+                  - generic [ref=e409]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e410] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e411]
+                  - generic [ref=e415]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e416] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e417]
+                  - generic [ref=e420]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e421] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e422]
+                  - generic [ref=e426]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e427] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e428]
+                  - generic [ref=e433]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e434] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e435]
+                  - generic [ref=e439]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e440] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e441]
+                  - generic [ref=e444]: Valhalla Health Agent
+            - generic [ref=e95]:
+              - generic [ref=e96]: Company
+              - generic [ref=e97]:
+                - link "Org" [ref=e98] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e100]
+                  - generic [ref=e105]: Org
+                - link "Skills" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e108]
+                  - generic [ref=e118]: Skills
+                - link "Costs" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e121]
+                  - generic [ref=e123]: Costs
+                - link "Activity" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e126]
+                  - generic [ref=e130]: Activity
+                - link "Settings" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e133]
+                  - generic [ref=e136]: Settings
+      - generic [ref=e138]:
+        - link "Documentation" [ref=e139] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e140]
+          - generic [ref=e142]: Documentation
+        - generic [ref=e143]: v
+        - link "Instance settings" [ref=e144] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e145]:
+          - img
+    - generic [ref=e146]:
+      - navigation "breadcrumb" [ref=e1479]:
+        - list [ref=e1480]:
+          - listitem [ref=e1481]:
+            - link "Issues" [ref=e1482] [cursor=pointer]:
+              - /url: /DIRA/issues
+          - listitem [ref=e1483]:
+            - img [ref=e1484]
+          - listitem [ref=e1486]:
+            - link "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity)" [disabled] [ref=e1487]
+      - generic [ref=e151]:
+        - main [ref=e152]:
+          - generic [ref=e1488]:
+            - navigation [ref=e1489]:
+              - 'link "DIRA-85: Full visual audit — screenshot every screen, compare to Waze" [ref=e1491] [cursor=pointer]':
+                - /url: /DIRA/issues/DIRA-88
+              - img [ref=e1492]
+              - generic [ref=e1494]: "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity)"
+            - generic [ref=e1495]:
+              - generic [ref=e1496]:
+                - img [ref=e1500] [cursor=pointer]
+                - generic [ref=e1502]: DIRA-91
+                - generic [ref=e1503]:
+                  - img [ref=e1504]
+                  - text: No project
+                - generic [ref=e1506]:
+                  - button "Copy issue as markdown" [ref=e1507]:
+                    - img
+                  - button "Show properties":
+                    - img
+                  - button [ref=e1508]:
+                    - img
+              - heading "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity)" [level=2] [ref=e1509] [cursor=pointer]
+              - generic [ref=e1510]:
+                - textbox "editable markdown" [ref=e1515]:
+                  - paragraph [ref=e1516]: QA found DirtSync uses a dark UI theme across all chrome elements. Waze uses a light theme on the search/home screen.
+                  - paragraph [ref=e1517]: "Required changes:"
+                  - list [ref=e1518]:
+                    - listitem [ref=e1519]: "Search panel background: #FFFFFF (currently ~#2C2C2E dark)"
+                    - listitem [ref=e1520]: "Search bar background: #FFFFFF with light border ~#E5E5EA (currently ~#2C2C2E dark)"
+                    - listitem [ref=e1521]: "Search bar text color: #000000 or #1C1C1E (currently white)"
+                    - listitem [ref=e1522]: "Status bar: dark-on-light (currently white-on-dark)"
+                    - listitem [ref=e1523]: "Search result rows background: #FFFFFF (currently dark)"
+                    - listitem [ref=e1524]: "Search result text: #000000 primary, #8E8E93 secondary (currently white)"
+                  - paragraph [ref=e1525]: "Reference: /qa-screenshots/waze-reference/IMG_5556.PNG"
+                - generic [ref=e1527]: Idle
+            - generic [ref=e1529]:
+              - button "Upload attachment" [ref=e1530]:
+                - img
+                - generic [ref=e1531]: Upload attachment
+              - button "New document" [ref=e1532]:
+                - img
+                - generic [ref=e1533]: New document
+            - generic [ref=e1534]:
+              - tablist [ref=e1535]:
+                - tab "Comments" [selected] [ref=e1536]:
+                  - img
+                  - text: Comments
+                - tab "Sub-issues" [ref=e1537]:
+                  - img
+                  - text: Sub-issues
+                - tab "Activity" [ref=e1538]:
+                  - img
+                  - text: Activity
+              - tabpanel "Comments" [ref=e1539]:
+                - generic [ref=e1540]:
+                  - heading "Comments & Runs (5)" [level=3] [ref=e1541]
+                  - generic [ref=e1542]:
+                    - generic [ref=e1543]:
+                      - generic [ref=e1544]:
+                        - generic [ref=e1545]:
+                          - generic [ref=e1547]: YO
+                          - generic [ref=e1548]: You
+                        - generic [ref=e1549]:
+                          - link "Apr 3, 2026, 8:00 PM" [ref=e1550] [cursor=pointer]:
+                            - /url: "#comment-3d19d58d-127b-4737-a16f-b3e31dca9b9b"
+                          - button "Copy as markdown" [ref=e1551]:
+                            - img [ref=e1552]
+                      - paragraph [ref=e1556]: "Picking up this issue. Starting work. Plan: (1) Set sheet background to #FFFFFF using .presentationBackground(.white). (2) Apply .environment(.colorScheme, .light) to enforce light theme. (3) Replace all dark color constants (darkBg, cardBg, etc.) with white/light gray. (4) Switch toolbar to .toolbarColorScheme(.light). (5) Set search bar background to #F2F2F7, text to #000000, placeholder to #8E8E93."
+                    - generic [ref=e1557]:
+                      - generic [ref=e1558]:
+                        - generic [ref=e1559]:
+                          - generic [ref=e1561]: YO
+                          - generic [ref=e1562]: You
+                        - generic [ref=e1563]:
+                          - link "Apr 3, 2026, 8:11 PM" [ref=e1564] [cursor=pointer]:
+                            - /url: "#comment-dbae52e0-c348-4234-ad21-668a29c2191a"
+                          - button "Copy as markdown" [ref=e1565]:
+                            - img [ref=e1566]
+                      - generic [ref=e1569]:
+                        - heading "Self-Check — Waze UI Parity (Code Review + Build Verification)" [level=2] [ref=e1570]
+                        - paragraph [ref=e1571]:
+                          - strong [ref=e1572]: "Build:"
+                          - text: ✅ SUCCEEDED (zero errors)
+                          - strong [ref=e1573]: "Commit:"
+                          - code [ref=e1574]: 17a83861
+                          - text: "on"
+                          - code [ref=e1575]: feature/waze-road-navigation
+                          - strong [ref=e1576]: "Note:"
+                          - text: Search sheet visual verification requires XCUITest Engineer (CLI cannot open sheet — per known gotcha in AGENTS.md)
+                        - heading "Element-by-Element PASS/FAIL" [level=3] [ref=e1577]
+                        - table [ref=e1578]:
+                          - rowgroup [ref=e1579]:
+                            - row "Element Status Notes" [ref=e1580]:
+                              - columnheader "Element" [ref=e1581]
+                              - columnheader "Status" [ref=e1582]
+                              - columnheader "Notes" [ref=e1583]
+                          - rowgroup [ref=e1584]:
+                            - row "Light white background ✅ PASS .background(.white) + .environment(.colorScheme, .light) + .presentationBackground(.white)" [ref=e1585]:
+                              - cell "Light white background" [ref=e1586]
+                              - cell "✅ PASS" [ref=e1587]
+                              - cell ".background(.white) + .environment(.colorScheme, .light) + .presentationBackground(.white)" [ref=e1588]:
+                                - code [ref=e1589]: .background(.white)
+                                - text: +
+                                - code [ref=e1590]: .environment(.colorScheme, .light)
+                                - text: +
+                                - code [ref=e1591]: .presentationBackground(.white)
+                            - 'row "Search bar: rounded pill, gray bg ✅ PASS RoundedRectangle(cornerRadius: 24), bg #F2F2F7" [ref=e1592]':
+                              - 'cell "Search bar: rounded pill, gray bg" [ref=e1593]'
+                              - cell "✅ PASS" [ref=e1594]
+                              - 'cell "RoundedRectangle(cornerRadius: 24), bg #F2F2F7" [ref=e1595]':
+                                - code [ref=e1596]: "RoundedRectangle(cornerRadius: 24)"
+                                - text: ", bg"
+                                - code [ref=e1597]: "#F2F2F7"
+                            - 'row "Search bar: magnifying glass left ✅ PASS Image(systemName: \"magnifyingglass\")" [ref=e1598]':
+                              - 'cell "Search bar: magnifying glass left" [ref=e1599]'
+                              - cell "✅ PASS" [ref=e1600]
+                              - 'cell "Image(systemName: \"magnifyingglass\")" [ref=e1601]':
+                                - code [ref=e1602]: "Image(systemName: \"magnifyingglass\")"
+                            - 'row "Search bar: mic.fill right (blue) ✅ PASS Fixed: was .gray, now Color(red: 0, green: 122/255, blue: 1) (#007AFF)" [ref=e1603]':
+                              - 'cell "Search bar: mic.fill right (blue)" [ref=e1604]'
+                              - cell "✅ PASS" [ref=e1605]
+                              - 'cell "Fixed: was .gray, now Color(red: 0, green: 122/255, blue: 1) (#007AFF)" [ref=e1606]':
+                                - text: "Fixed: was"
+                                - code [ref=e1607]: .gray
+                                - text: ", now"
+                                - code [ref=e1608]: "Color(red: 0, green: 122/255, blue: 1)"
+                                - text: (#007AFF)
+                            - 'row "Search bar: X clear button when typing ✅ PASS xmark.circle.fill shown when !searchText.isEmpty" [ref=e1609]':
+                              - 'cell "Search bar: X clear button when typing" [ref=e1610]'
+                              - cell "✅ PASS" [ref=e1611]
+                              - cell "xmark.circle.fill shown when !searchText.isEmpty" [ref=e1612]:
+                                - code [ref=e1613]: xmark.circle.fill
+                                - text: shown when
+                                - code [ref=e1614]: "!searchText.isEmpty"
+                            - 'row "Category tiles: horizontal scroll ✅ PASS ScrollView(.horizontal, showsIndicators: false)" [ref=e1615]':
+                              - 'cell "Category tiles: horizontal scroll" [ref=e1616]'
+                              - cell "✅ PASS" [ref=e1617]
+                              - 'cell "ScrollView(.horizontal, showsIndicators: false)" [ref=e1618]':
+                                - code [ref=e1619]: "ScrollView(.horizontal, showsIndicators: false)"
+                            - 'row "Category tiles: Waze square layout (icon top, label below) ✅ PASS Changed from capsule pill to vertical VStack tile 68×68pt cornerRadius 12" [ref=e1620]':
+                              - 'cell "Category tiles: Waze square layout (icon top, label below)" [ref=e1621]'
+                              - cell "✅ PASS" [ref=e1622]
+                              - cell "Changed from capsule pill to vertical VStack tile 68×68pt cornerRadius 12" [ref=e1623]:
+                                - text: Changed from capsule pill to vertical
+                                - code [ref=e1624]: VStack
+                                - text: tile 68×68pt cornerRadius 12
+                            - 'row "Category tile — Saved (bookmark.fill, orange) ✅ PASS Fixed: was flag.fill" [ref=e1625]':
+                              - cell "Category tile — Saved (bookmark.fill, orange)" [ref=e1626]
+                              - cell "✅ PASS" [ref=e1627]
+                              - 'cell "Fixed: was flag.fill" [ref=e1628]':
+                                - text: "Fixed: was"
+                                - code [ref=e1629]: flag.fill
+                            - 'row "Category tile — Crisis (exclamationmark.triangle.fill, red) ✅ PASS Fixed: was cross.fill; color #E53935" [ref=e1630]':
+                              - cell "Category tile — Crisis (exclamationmark.triangle.fill, red)" [ref=e1631]
+                              - cell "✅ PASS" [ref=e1632]
+                              - 'cell "Fixed: was cross.fill; color #E53935" [ref=e1633]':
+                                - text: "Fixed: was"
+                                - code [ref=e1634]: cross.fill
+                                - text: ; color
+                                - code [ref=e1635]: "#E53935"
+                            - 'row "Category tile — Gas (fuelpump.fill, green) ✅ PASS Fixed: was .orange; now #43A047" [ref=e1636]':
+                              - cell "Category tile — Gas (fuelpump.fill, green)" [ref=e1637]
+                              - cell "✅ PASS" [ref=e1638]
+                              - 'cell "Fixed: was .orange; now #43A047" [ref=e1639]':
+                                - text: "Fixed: was"
+                                - code [ref=e1640]: .orange
+                                - text: ; now
+                                - code [ref=e1641]: "#43A047"
+                            - 'row "Category tile — Food (fork.knife, orange) ✅ PASS Fixed: was .green; now .orange (#FF8C00)" [ref=e1642]':
+                              - cell "Category tile — Food (fork.knife, orange)" [ref=e1643]
+                              - cell "✅ PASS" [ref=e1644]
+                              - 'cell "Fixed: was .green; now .orange (#FF8C00)" [ref=e1645]':
+                                - text: "Fixed: was"
+                                - code [ref=e1646]: .green
+                                - text: ; now
+                                - code [ref=e1647]: .orange
+                                - text: (#FF8C00)
+                            - row "Category tile — Parking (p.square.fill, blue) ✅ PASS Unchanged" [ref=e1648]:
+                              - cell "Category tile — Parking (p.square.fill, blue)" [ref=e1649]
+                              - cell "✅ PASS" [ref=e1650]
+                              - cell "Unchanged" [ref=e1651]
+                            - 'row "Home shortcut: orange house.fill icon + address ✅ PASS house.fill in .orange, address subtitle" [ref=e1652]':
+                              - 'cell "Home shortcut: orange house.fill icon + address" [ref=e1653]'
+                              - cell "✅ PASS" [ref=e1654]
+                              - cell "house.fill in .orange, address subtitle" [ref=e1655]:
+                                - code [ref=e1656]: house.fill
+                                - text: in
+                                - code [ref=e1657]: .orange
+                                - text: ", address subtitle"
+                            - 'row "Work shortcut: orange briefcase.fill icon + address ✅ PASS briefcase.fill in .orange, address subtitle" [ref=e1658]':
+                              - 'cell "Work shortcut: orange briefcase.fill icon + address" [ref=e1659]'
+                              - cell "✅ PASS" [ref=e1660]
+                              - cell "briefcase.fill in .orange, address subtitle" [ref=e1661]:
+                                - code [ref=e1662]: briefcase.fill
+                                - text: in
+                                - code [ref=e1663]: .orange
+                                - text: ", address subtitle"
+                            - row "Recent section header ✅ PASS \"Recent\" in gray semibold caps" [ref=e1664]:
+                              - cell "Recent section header" [ref=e1665]
+                              - cell "✅ PASS" [ref=e1666]
+                              - cell "\"Recent\" in gray semibold caps" [ref=e1667]
+                            - 'row "Recent rows: clock icon, bold name, gray address ✅ PASS clock.fill gray, .semibold name, .gray address" [ref=e1668]':
+                              - 'cell "Recent rows: clock icon, bold name, gray address" [ref=e1669]'
+                              - cell "✅ PASS" [ref=e1670]
+                              - cell "clock.fill gray, .semibold name, .gray address" [ref=e1671]:
+                                - code [ref=e1672]: clock.fill
+                                - text: gray,
+                                - code [ref=e1673]: .semibold
+                                - text: name,
+                                - code [ref=e1674]: .gray
+                                - text: address
+                            - 'row "Autocomplete: pin icon, bold name, gray address ✅ PASS mappin.circle.fill gray, .semibold name, .gray address" [ref=e1675]':
+                              - 'cell "Autocomplete: pin icon, bold name, gray address" [ref=e1676]'
+                              - cell "✅ PASS" [ref=e1677]
+                              - cell "mappin.circle.fill gray, .semibold name, .gray address" [ref=e1678]:
+                                - code [ref=e1679]: mappin.circle.fill
+                                - text: gray,
+                                - code [ref=e1680]: .semibold
+                                - text: name,
+                                - code [ref=e1681]: .gray
+                                - text: address
+                            - 'row "Autocomplete: distance right-aligned in miles ✅ PASS distanceString() divides by 1609.34, formats \"X.X mi\"" [ref=e1682]':
+                              - 'cell "Autocomplete: distance right-aligned in miles" [ref=e1683]'
+                              - cell "✅ PASS" [ref=e1684]
+                              - cell "distanceString() divides by 1609.34, formats \"X.X mi\"" [ref=e1685]:
+                                - code [ref=e1686]: distanceString()
+                                - text: divides by 1609.34, formats "X.X mi"
+                            - row "Thin gray dividers between rows ✅ PASS Divider().padding(.leading, 60)" [ref=e1687]:
+                              - cell "Thin gray dividers between rows" [ref=e1688]
+                              - cell "✅ PASS" [ref=e1689]
+                              - cell "Divider().padding(.leading, 60)" [ref=e1690]:
+                                - code [ref=e1691]: Divider().padding(.leading, 60)
+                            - row "No dark theme remnants ✅ PASS No darkBg/cardBg colors anywhere in file" [ref=e1692]:
+                              - cell "No dark theme remnants" [ref=e1693]
+                              - cell "✅ PASS" [ref=e1694]
+                              - cell "No darkBg/cardBg colors anywhere in file" [ref=e1695]:
+                                - text: "No"
+                                - code [ref=e1696]: darkBg
+                                - text: /
+                                - code [ref=e1697]: cardBg
+                                - text: colors anywhere in file
+                        - 'heading "All 20 elements: PASS" [level=3] [ref=e1698]'
+                        - paragraph [ref=e1699]:
+                          - text: "Reference screenshots:"
+                          - code [ref=e1700]: /qa-screenshots/waze-reference/IMG_5556.PNG
+                          - text: ","
+                          - code [ref=e1701]: /qa-screenshots/waze-reference/IMG_5886.PNG
+                    - generic [ref=e1702]:
+                      - generic [ref=e1703]:
+                        - generic [ref=e1704]:
+                          - generic [ref=e1706]: YO
+                          - generic [ref=e1707]: You
+                        - generic [ref=e1708]:
+                          - link "Apr 3, 2026, 8:11 PM" [ref=e1709] [cursor=pointer]:
+                            - /url: "#comment-49a7fad1-5779-4f21-b44e-a5e095edd00f"
+                          - button "Copy as markdown" [ref=e1710]:
+                            - img [ref=e1711]
+                      - generic [ref=e1714]:
+                        - heading "Self-Check — Waze UI Parity (Code Review + Build Verification)" [level=2] [ref=e1715]
+                        - paragraph [ref=e1716]:
+                          - strong [ref=e1717]: "Build:"
+                          - text: ✅ SUCCEEDED (zero errors)
+                          - strong [ref=e1718]: "Commit:"
+                          - code [ref=e1719]: 17a83861
+                          - text: "on"
+                          - code [ref=e1720]: feature/waze-road-navigation
+                          - strong [ref=e1721]: "Note:"
+                          - text: Search sheet visual verification requires XCUITest Engineer (CLI cannot open sheet — per known gotcha in AGENTS.md)
+                        - heading "Element-by-Element PASS/FAIL" [level=3] [ref=e1722]
+                        - table [ref=e1723]:
+                          - rowgroup [ref=e1724]:
+                            - row "Element Status Notes" [ref=e1725]:
+                              - columnheader "Element" [ref=e1726]
+                              - columnheader "Status" [ref=e1727]
+                              - columnheader "Notes" [ref=e1728]
+                          - rowgroup [ref=e1729]:
+                            - row "Light white background ✅ PASS .background(.white) + .environment(.colorScheme, .light) + .presentationBackground(.white)" [ref=e1730]:
+                              - cell "Light white background" [ref=e1731]
+                              - cell "✅ PASS" [ref=e1732]
+                              - cell ".background(.white) + .environment(.colorScheme, .light) + .presentationBackground(.white)" [ref=e1733]:
+                                - code [ref=e1734]: .background(.white)
+                                - text: +
+                                - code [ref=e1735]: .environment(.colorScheme, .light)
+                                - text: +
+                                - code [ref=e1736]: .presentationBackground(.white)
+                            - 'row "Search bar: rounded pill, gray bg ✅ PASS RoundedRectangle(cornerRadius: 24), bg #F2F2F7" [ref=e1737]':
+                              - 'cell "Search bar: rounded pill, gray bg" [ref=e1738]'
+                              - cell "✅ PASS" [ref=e1739]
+                              - 'cell "RoundedRectangle(cornerRadius: 24), bg #F2F2F7" [ref=e1740]':
+                                - code [ref=e1741]: "RoundedRectangle(cornerRadius: 24)"
+                                - text: ", bg"
+                                - code [ref=e1742]: "#F2F2F7"
+                            - 'row "Search bar: magnifying glass left ✅ PASS Image(systemName: \"magnifyingglass\")" [ref=e1743]':
+                              - 'cell "Search bar: magnifying glass left" [ref=e1744]'
+                              - cell "✅ PASS" [ref=e1745]
+                              - 'cell "Image(systemName: \"magnifyingglass\")" [ref=e1746]':
+                                - code [ref=e1747]: "Image(systemName: \"magnifyingglass\")"
+                            - 'row "Search bar: mic.fill right (blue) ✅ PASS Fixed: was .gray, now Color(red: 0, green: 122/255, blue: 1) (#007AFF)" [ref=e1748]':
+                              - 'cell "Search bar: mic.fill right (blue)" [ref=e1749]'
+                              - cell "✅ PASS" [ref=e1750]
+                              - 'cell "Fixed: was .gray, now Color(red: 0, green: 122/255, blue: 1) (#007AFF)" [ref=e1751]':
+                                - text: "Fixed: was"
+                                - code [ref=e1752]: .gray
+                                - text: ", now"
+                                - code [ref=e1753]: "Color(red: 0, green: 122/255, blue: 1)"
+                                - text: (#007AFF)
+                            - 'row "Search bar: X clear button when typing ✅ PASS xmark.circle.fill shown when !searchText.isEmpty" [ref=e1754]':
+                              - 'cell "Search bar: X clear button when typing" [ref=e1755]'
+                              - cell "✅ PASS" [ref=e1756]
+                              - cell "xmark.circle.fill shown when !searchText.isEmpty" [ref=e1757]:
+                                - code [ref=e1758]: xmark.circle.fill
+                                - text: shown when
+                                - code [ref=e1759]: "!searchText.isEmpty"
+                            - 'row "Category tiles: horizontal scroll ✅ PASS ScrollView(.horizontal, showsIndicators: false)" [ref=e1760]':
+                              - 'cell "Category tiles: horizontal scroll" [ref=e1761]'
+                              - cell "✅ PASS" [ref=e1762]
+                              - 'cell "ScrollView(.horizontal, showsIndicators: false)" [ref=e1763]':
+                                - code [ref=e1764]: "ScrollView(.horizontal, showsIndicators: false)"
+                            - 'row "Category tiles: Waze square layout (icon top, label below) ✅ PASS Changed from capsule pill to vertical VStack tile 68×68pt cornerRadius 12" [ref=e1765]':
+                              - 'cell "Category tiles: Waze square layout (icon top, label below)" [ref=e1766]'
+                              - cell "✅ PASS" [ref=e1767]
+                              - cell "Changed from capsule pill to vertical VStack tile 68×68pt cornerRadius 12" [ref=e1768]:
+                                - text: Changed from capsule pill to vertical
+                                - code [ref=e1769]: VStack
+                                - text: tile 68×68pt cornerRadius 12
+                            - 'row "Category tile — Saved (bookmark.fill, orange) ✅ PASS Fixed: was flag.fill" [ref=e1770]':
+                              - cell "Category tile — Saved (bookmark.fill, orange)" [ref=e1771]
+                              - cell "✅ PASS" [ref=e1772]
+                              - 'cell "Fixed: was flag.fill" [ref=e1773]':
+                                - text: "Fixed: was"
+                                - code [ref=e1774]: flag.fill
+                            - 'row "Category tile — Crisis (exclamationmark.triangle.fill, red) ✅ PASS Fixed: was cross.fill; color #E53935" [ref=e1775]':
+                              - cell "Category tile — Crisis (exclamationmark.triangle.fill, red)" [ref=e1776]
+                              - cell "✅ PASS" [ref=e1777]
+                              - 'cell "Fixed: was cross.fill; color #E53935" [ref=e1778]':
+                                - text: "Fixed: was"
+                                - code [ref=e1779]: cross.fill
+                                - text: ; color
+                                - code [ref=e1780]: "#E53935"
+                            - 'row "Category tile — Gas (fuelpump.fill, green) ✅ PASS Fixed: was .orange; now #43A047" [ref=e1781]':
+                              - cell "Category tile — Gas (fuelpump.fill, green)" [ref=e1782]
+                              - cell "✅ PASS" [ref=e1783]
+                              - 'cell "Fixed: was .orange; now #43A047" [ref=e1784]':
+                                - text: "Fixed: was"
+                                - code [ref=e1785]: .orange
+                                - text: ; now
+                                - code [ref=e1786]: "#43A047"
+                            - 'row "Category tile — Food (fork.knife, orange) ✅ PASS Fixed: was .green; now .orange (#FF8C00)" [ref=e1787]':
+                              - cell "Category tile — Food (fork.knife, orange)" [ref=e1788]
+                              - cell "✅ PASS" [ref=e1789]
+                              - 'cell "Fixed: was .green; now .orange (#FF8C00)" [ref=e1790]':
+                                - text: "Fixed: was"
+                                - code [ref=e1791]: .green
+                                - text: ; now
+                                - code [ref=e1792]: .orange
+                                - text: (#FF8C00)
+                            - row "Category tile — Parking (p.square.fill, blue) ✅ PASS Unchanged" [ref=e1793]:
+                              - cell "Category tile — Parking (p.square.fill, blue)" [ref=e1794]
+                              - cell "✅ PASS" [ref=e1795]
+                              - cell "Unchanged" [ref=e1796]
+                            - 'row "Home shortcut: orange house.fill icon + address ✅ PASS house.fill in .orange, address subtitle" [ref=e1797]':
+                              - 'cell "Home shortcut: orange house.fill icon + address" [ref=e1798]'
+                              - cell "✅ PASS" [ref=e1799]
+                              - cell "house.fill in .orange, address subtitle" [ref=e1800]:
+                                - code [ref=e1801]: house.fill
+                                - text: in
+                                - code [ref=e1802]: .orange
+                                - text: ", address subtitle"
+                            - 'row "Work shortcut: orange briefcase.fill icon + address ✅ PASS briefcase.fill in .orange, address subtitle" [ref=e1803]':
+                              - 'cell "Work shortcut: orange briefcase.fill icon + address" [ref=e1804]'
+                              - cell "✅ PASS" [ref=e1805]
+                              - cell "briefcase.fill in .orange, address subtitle" [ref=e1806]:
+                                - code [ref=e1807]: briefcase.fill
+                                - text: in
+                                - code [ref=e1808]: .orange
+                                - text: ", address subtitle"
+                            - row "Recent section header ✅ PASS \"Recent\" in gray semibold caps" [ref=e1809]:
+                              - cell "Recent section header" [ref=e1810]
+                              - cell "✅ PASS" [ref=e1811]
+                              - cell "\"Recent\" in gray semibold caps" [ref=e1812]
+                            - 'row "Recent rows: clock icon, bold name, gray address ✅ PASS clock.fill gray, .semibold name, .gray address" [ref=e1813]':
+                              - 'cell "Recent rows: clock icon, bold name, gray address" [ref=e1814]'
+                              - cell "✅ PASS" [ref=e1815]
+                              - cell "clock.fill gray, .semibold name, .gray address" [ref=e1816]:
+                                - code [ref=e1817]: clock.fill
+                                - text: gray,
+                                - code [ref=e1818]: .semibold
+                                - text: name,
+                                - code [ref=e1819]: .gray
+                                - text: address
+                            - 'row "Autocomplete: pin icon, bold name, gray address ✅ PASS mappin.circle.fill gray, .semibold name, .gray address" [ref=e1820]':
+                              - 'cell "Autocomplete: pin icon, bold name, gray address" [ref=e1821]'
+                              - cell "✅ PASS" [ref=e1822]
+                              - cell "mappin.circle.fill gray, .semibold name, .gray address" [ref=e1823]:
+                                - code [ref=e1824]: mappin.circle.fill
+                                - text: gray,
+                                - code [ref=e1825]: .semibold
+                                - text: name,
+                                - code [ref=e1826]: .gray
+                                - text: address
+                            - 'row "Autocomplete: distance right-aligned in miles ✅ PASS distanceString() divides by 1609.34, formats \"X.X mi\"" [ref=e1827]':
+                              - 'cell "Autocomplete: distance right-aligned in miles" [ref=e1828]'
+                              - cell "✅ PASS" [ref=e1829]
+                              - cell "distanceString() divides by 1609.34, formats \"X.X mi\"" [ref=e1830]:
+                                - code [ref=e1831]: distanceString()
+                                - text: divides by 1609.34, formats "X.X mi"
+                            - row "Thin gray dividers between rows ✅ PASS Divider().padding(.leading, 60)" [ref=e1832]:
+                              - cell "Thin gray dividers between rows" [ref=e1833]
+                              - cell "✅ PASS" [ref=e1834]
+                              - cell "Divider().padding(.leading, 60)" [ref=e1835]:
+                                - code [ref=e1836]: Divider().padding(.leading, 60)
+                            - row "No dark theme remnants ✅ PASS No darkBg/cardBg colors anywhere in file" [ref=e1837]:
+                              - cell "No dark theme remnants" [ref=e1838]
+                              - cell "✅ PASS" [ref=e1839]
+                              - cell "No darkBg/cardBg colors anywhere in file" [ref=e1840]:
+                                - text: "No"
+                                - code [ref=e1841]: darkBg
+                                - text: /
+                                - code [ref=e1842]: cardBg
+                                - text: colors anywhere in file
+                        - 'heading "All 20 elements: PASS" [level=3] [ref=e1843]'
+                        - paragraph [ref=e1844]:
+                          - text: "Reference screenshots:"
+                          - code [ref=e1845]: /qa-screenshots/waze-reference/IMG_5556.PNG
+                          - text: ","
+                          - code [ref=e1846]: /qa-screenshots/waze-reference/IMG_5886.PNG
+                    - generic [ref=e1847]:
+                      - generic [ref=e1848]:
+                        - generic [ref=e1849]:
+                          - generic [ref=e1851]: YO
+                          - generic [ref=e1852]: You
+                        - generic [ref=e1853]:
+                          - link "Apr 3, 2026, 8:12 PM" [ref=e1854] [cursor=pointer]:
+                            - /url: "#comment-55a2f05a-b3d2-49a8-aac4-6779455f2a34"
+                          - button "Copy as markdown" [ref=e1855]:
+                            - img [ref=e1856]
+                      - generic [ref=e1859]:
+                        - heading "Self-Check — Waze UI Parity (Code Review + Build Verification)" [level=2] [ref=e1860]
+                        - paragraph [ref=e1861]:
+                          - strong [ref=e1862]: "Build:"
+                          - text: ✅ SUCCEEDED (zero errors)
+                          - strong [ref=e1863]: "Commit:"
+                          - code [ref=e1864]: 17a83861
+                          - text: "on"
+                          - code [ref=e1865]: feature/waze-road-navigation
+                          - strong [ref=e1866]: "Note:"
+                          - text: Search sheet visual verification requires XCUITest Engineer (CLI cannot open sheet — per known gotcha in AGENTS.md)
+                        - heading "Element-by-Element PASS/FAIL" [level=3] [ref=e1867]
+                        - table [ref=e1868]:
+                          - rowgroup [ref=e1869]:
+                            - row "Element Status Notes" [ref=e1870]:
+                              - columnheader "Element" [ref=e1871]
+                              - columnheader "Status" [ref=e1872]
+                              - columnheader "Notes" [ref=e1873]
+                          - rowgroup [ref=e1874]:
+                            - row "Light white background ✅ PASS .background(.white) + .environment(.colorScheme, .light) + .presentationBackground(.white)" [ref=e1875]:
+                              - cell "Light white background" [ref=e1876]
+                              - cell "✅ PASS" [ref=e1877]
+                              - cell ".background(.white) + .environment(.colorScheme, .light) + .presentationBackground(.white)" [ref=e1878]:
+                                - code [ref=e1879]: .background(.white)
+                                - text: +
+                                - code [ref=e1880]: .environment(.colorScheme, .light)
+                                - text: +
+                                - code [ref=e1881]: .presentationBackground(.white)
+                            - 'row "Search bar: rounded pill, gray bg ✅ PASS RoundedRectangle(cornerRadius: 24), bg #F2F2F7" [ref=e1882]':
+                              - 'cell "Search bar: rounded pill, gray bg" [ref=e1883]'
+                              - cell "✅ PASS" [ref=e1884]
+                              - 'cell "RoundedRectangle(cornerRadius: 24), bg #F2F2F7" [ref=e1885]':
+                                - code [ref=e1886]: "RoundedRectangle(cornerRadius: 24)"
+                                - text: ", bg"
+                                - code [ref=e1887]: "#F2F2F7"
+                            - 'row "Search bar: magnifying glass left ✅ PASS Image(systemName: \"magnifyingglass\")" [ref=e1888]':
+                              - 'cell "Search bar: magnifying glass left" [ref=e1889]'
+                              - cell "✅ PASS" [ref=e1890]
+                              - 'cell "Image(systemName: \"magnifyingglass\")" [ref=e1891]':
+                                - code [ref=e1892]: "Image(systemName: \"magnifyingglass\")"
+                            - 'row "Search bar: mic.fill right (blue) ✅ PASS Fixed: was .gray, now Color(red: 0, green: 122/255, blue: 1) (#007AFF)" [ref=e1893]':
+                              - 'cell "Search bar: mic.fill right (blue)" [ref=e1894]'
+                              - cell "✅ PASS" [ref=e1895]
+                              - 'cell "Fixed: was .gray, now Color(red: 0, green: 122/255, blue: 1) (#007AFF)" [ref=e1896]':
+                                - text: "Fixed: was"
+                                - code [ref=e1897]: .gray
+                                - text: ", now"
+                                - code [ref=e1898]: "Color(red: 0, green: 122/255, blue: 1)"
+                                - text: (#007AFF)
+                            - 'row "Search bar: X clear button when typing ✅ PASS xmark.circle.fill shown when !searchText.isEmpty" [ref=e1899]':
+                              - 'cell "Search bar: X clear button when typing" [ref=e1900]'
+                              - cell "✅ PASS" [ref=e1901]
+                              - cell "xmark.circle.fill shown when !searchText.isEmpty" [ref=e1902]:
+                                - code [ref=e1903]: xmark.circle.fill
+                                - text: shown when
+                                - code [ref=e1904]: "!searchText.isEmpty"
+                            - 'row "Category tiles: horizontal scroll ✅ PASS ScrollView(.horizontal, showsIndicators: false)" [ref=e1905]':
+                              - 'cell "Category tiles: horizontal scroll" [ref=e1906]'
+                              - cell "✅ PASS" [ref=e1907]
+                              - 'cell "ScrollView(.horizontal, showsIndicators: false)" [ref=e1908]':
+                                - code [ref=e1909]: "ScrollView(.horizontal, showsIndicators: false)"
+                            - 'row "Category tiles: Waze square layout (icon top, label below) ✅ PASS Changed from capsule pill to vertical VStack tile 68×68pt cornerRadius 12" [ref=e1910]':
+                              - 'cell "Category tiles: Waze square layout (icon top, label below)" [ref=e1911]'
+                              - cell "✅ PASS" [ref=e1912]
+                              - cell "Changed from capsule pill to vertical VStack tile 68×68pt cornerRadius 12" [ref=e1913]:
+                                - text: Changed from capsule pill to vertical
+                                - code [ref=e1914]: VStack
+                                - text: tile 68×68pt cornerRadius 12
+                            - 'row "Category tile — Saved (bookmark.fill, orange) ✅ PASS Fixed: was flag.fill" [ref=e1915]':
+                              - cell "Category tile — Saved (bookmark.fill, orange)" [ref=e1916]
+                              - cell "✅ PASS" [ref=e1917]
+                              - 'cell "Fixed: was flag.fill" [ref=e1918]':
+                                - text: "Fixed: was"
+                                - code [ref=e1919]: flag.fill
+                            - 'row "Category tile — Crisis (exclamationmark.triangle.fill, red) ✅ PASS Fixed: was cross.fill; color #E53935" [ref=e1920]':
+                              - cell "Category tile — Crisis (exclamationmark.triangle.fill, red)" [ref=e1921]
+                              - cell "✅ PASS" [ref=e1922]
+                              - 'cell "Fixed: was cross.fill; color #E53935" [ref=e1923]':
+                                - text: "Fixed: was"
+                                - code [ref=e1924]: cross.fill
+                                - text: ; color
+                                - code [ref=e1925]: "#E53935"
+                            - 'row "Category tile — Gas (fuelpump.fill, green) ✅ PASS Fixed: was .orange; now #43A047" [ref=e1926]':
+                              - cell "Category tile — Gas (fuelpump.fill, green)" [ref=e1927]
+                              - cell "✅ PASS" [ref=e1928]
+                              - 'cell "Fixed: was .orange; now #43A047" [ref=e1929]':
+                                - text: "Fixed: was"
+                                - code [ref=e1930]: .orange
+                                - text: ; now
+                                - code [ref=e1931]: "#43A047"
+                            - 'row "Category tile — Food (fork.knife, orange) ✅ PASS Fixed: was .green; now .orange (#FF8C00)" [ref=e1932]':
+                              - cell "Category tile — Food (fork.knife, orange)" [ref=e1933]
+                              - cell "✅ PASS" [ref=e1934]
+                              - 'cell "Fixed: was .green; now .orange (#FF8C00)" [ref=e1935]':
+                                - text: "Fixed: was"
+                                - code [ref=e1936]: .green
+                                - text: ; now
+                                - code [ref=e1937]: .orange
+                                - text: (#FF8C00)
+                            - row "Category tile — Parking (p.square.fill, blue) ✅ PASS Unchanged" [ref=e1938]:
+                              - cell "Category tile — Parking (p.square.fill, blue)" [ref=e1939]
+                              - cell "✅ PASS" [ref=e1940]
+                              - cell "Unchanged" [ref=e1941]
+                            - 'row "Home shortcut: orange house.fill icon + address ✅ PASS house.fill in .orange, address subtitle" [ref=e1942]':
+                              - 'cell "Home shortcut: orange house.fill icon + address" [ref=e1943]'
+                              - cell "✅ PASS" [ref=e1944]
+                              - cell "house.fill in .orange, address subtitle" [ref=e1945]:
+                                - code [ref=e1946]: house.fill
+                                - text: in
+                                - code [ref=e1947]: .orange
+                                - text: ", address subtitle"
+                            - 'row "Work shortcut: orange briefcase.fill icon + address ✅ PASS briefcase.fill in .orange, address subtitle" [ref=e1948]':
+                              - 'cell "Work shortcut: orange briefcase.fill icon + address" [ref=e1949]'
+                              - cell "✅ PASS" [ref=e1950]
+                              - cell "briefcase.fill in .orange, address subtitle" [ref=e1951]:
+                                - code [ref=e1952]: briefcase.fill
+                                - text: in
+                                - code [ref=e1953]: .orange
+                                - text: ", address subtitle"
+                            - row "Recent section header ✅ PASS \"Recent\" in gray semibold caps" [ref=e1954]:
+                              - cell "Recent section header" [ref=e1955]
+                              - cell "✅ PASS" [ref=e1956]
+                              - cell "\"Recent\" in gray semibold caps" [ref=e1957]
+                            - 'row "Recent rows: clock icon, bold name, gray address ✅ PASS clock.fill gray, .semibold name, .gray address" [ref=e1958]':
+                              - 'cell "Recent rows: clock icon, bold name, gray address" [ref=e1959]'
+                              - cell "✅ PASS" [ref=e1960]
+                              - cell "clock.fill gray, .semibold name, .gray address" [ref=e1961]:
+                                - code [ref=e1962]: clock.fill
+                                - text: gray,
+                                - code [ref=e1963]: .semibold
+                                - text: name,
+                                - code [ref=e1964]: .gray
+                                - text: address
+                            - 'row "Autocomplete: pin icon, bold name, gray address ✅ PASS mappin.circle.fill gray, .semibold name, .gray address" [ref=e1965]':
+                              - 'cell "Autocomplete: pin icon, bold name, gray address" [ref=e1966]'
+                              - cell "✅ PASS" [ref=e1967]
+                              - cell "mappin.circle.fill gray, .semibold name, .gray address" [ref=e1968]:
+                                - code [ref=e1969]: mappin.circle.fill
+                                - text: gray,
+                                - code [ref=e1970]: .semibold
+                                - text: name,
+                                - code [ref=e1971]: .gray
+                                - text: address
+                            - 'row "Autocomplete: distance right-aligned in miles ✅ PASS distanceString() divides by 1609.34, formats \"X.X mi\"" [ref=e1972]':
+                              - 'cell "Autocomplete: distance right-aligned in miles" [ref=e1973]'
+                              - cell "✅ PASS" [ref=e1974]
+                              - cell "distanceString() divides by 1609.34, formats \"X.X mi\"" [ref=e1975]:
+                                - code [ref=e1976]: distanceString()
+                                - text: divides by 1609.34, formats "X.X mi"
+                            - row "Thin gray dividers between rows ✅ PASS Divider().padding(.leading, 60)" [ref=e1977]:
+                              - cell "Thin gray dividers between rows" [ref=e1978]
+                              - cell "✅ PASS" [ref=e1979]
+                              - cell "Divider().padding(.leading, 60)" [ref=e1980]:
+                                - code [ref=e1981]: Divider().padding(.leading, 60)
+                            - row "No dark theme remnants ✅ PASS No darkBg/cardBg colors anywhere in file" [ref=e1982]:
+                              - cell "No dark theme remnants" [ref=e1983]
+                              - cell "✅ PASS" [ref=e1984]
+                              - cell "No darkBg/cardBg colors anywhere in file" [ref=e1985]:
+                                - text: "No"
+                                - code [ref=e1986]: darkBg
+                                - text: /
+                                - code [ref=e1987]: cardBg
+                                - text: colors anywhere in file
+                        - 'heading "All 20 elements: PASS" [level=3] [ref=e1988]'
+                        - paragraph [ref=e1989]:
+                          - text: "Reference screenshots:"
+                          - code [ref=e1990]: /qa-screenshots/waze-reference/IMG_5556.PNG
+                          - text: ","
+                          - code [ref=e1991]: /qa-screenshots/waze-reference/IMG_5886.PNG
+                    - generic [ref=e1992]:
+                      - generic [ref=e1993]:
+                        - link "WE Waze Search UI Expert" [ref=e1994] [cursor=pointer]:
+                          - /url: /agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+                          - generic [ref=e1995]:
+                            - generic [ref=e1997]: WE
+                            - generic [ref=e1998]: Waze Search UI Expert
+                        - generic [ref=e1999]: Apr 3, 2026, 8:15 PM
+                      - generic [ref=e2000]:
+                        - generic [ref=e2001]: Run
+                        - link "b61c2d9f" [ref=e2002] [cursor=pointer]:
+                          - /url: /agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0/runs/b61c2d9f-2580-4f81-9c15-04f0e2ebc38c
+                        - generic [ref=e2003]: succeeded
+                  - generic [ref=e2004]:
+                    - generic [ref=e2007]:
+                      - textbox "editable markdown" [ref=e2009]:
+                        - paragraph [ref=e2010]
+                      - generic:
+                        - paragraph: Leave a comment...
+                    - generic [ref=e2011]:
+                      - button "Attach image" [ref=e2013]:
+                        - img
+                      - generic [ref=e2014] [cursor=pointer]:
+                        - checkbox "Re-open" [checked] [ref=e2015]
+                        - text: Re-open
+                      - button "Waze Search UI Expert" [ref=e2016]:
+                        - img [ref=e2017]
+                        - generic [ref=e2020]: Waze Search UI Expert
+                      - button "Comment" [disabled]
+            - button "Scroll to bottom" [ref=e2021]:
+              - img [ref=e2022]
+        - complementary [ref=e2024]:
+          - generic [ref=e2025]:
+            - generic [ref=e2026]:
+              - generic [ref=e2027]: Properties
+              - button [ref=e2028]:
+                - img
+            - generic [ref=e2033]:
+              - generic [ref=e2034]:
+                - generic [ref=e2035]:
+                  - generic [ref=e2036]: Status
+                  - button "Done" [ref=e2038] [cursor=pointer]:
+                    - generic [ref=e2041]: Done
+                - generic [ref=e2042]:
+                  - generic [ref=e2043]: Priority
+                  - button "High" [ref=e2045] [cursor=pointer]:
+                    - img [ref=e2047]
+                    - generic [ref=e2049]: High
+                - generic [ref=e2050]:
+                  - generic [ref=e2051]: Labels
+                  - button "No labels" [ref=e2053] [cursor=pointer]:
+                    - img [ref=e2054]
+                    - generic [ref=e2057]: No labels
+                - generic [ref=e2058]:
+                  - generic [ref=e2059]: Assignee
+                  - generic [ref=e2060]:
+                    - button "WE Waze Search UI Expert" [ref=e2061] [cursor=pointer]:
+                      - generic [ref=e2062]:
+                        - generic [ref=e2064]: WE
+                        - generic [ref=e2065]: Waze Search UI Expert
+                    - link [ref=e2066] [cursor=pointer]:
+                      - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+                      - img [ref=e2067]
+                - generic [ref=e2070]:
+                  - generic [ref=e2071]: Project
+                  - button "No project" [ref=e2073] [cursor=pointer]:
+                    - img [ref=e2074]
+                    - generic [ref=e2076]: No project
+                - generic [ref=e2077]:
+                  - generic [ref=e2078]: Parent
+                  - 'link "DIRA-85: Full visual audit — screenshot every screen, compare to Waze" [ref=e2080] [cursor=pointer]':
+                    - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e2081]:
+                - generic [ref=e2082]:
+                  - generic [ref=e2083]: Created by
+                  - generic [ref=e2084]:
+                    - img [ref=e2085]
+                    - generic [ref=e2088]: Me
+                - generic [ref=e2089]:
+                  - generic [ref=e2090]: Completed
+                  - generic [ref=e2092]: Apr 3, 2026
+                - generic [ref=e2093]:
+                  - generic [ref=e2094]: Created
+                  - generic [ref=e2096]: Apr 3, 2026
+                - generic [ref=e2097]:
+                  - generic [ref=e2098]: Updated
+                  - generic [ref=e2100]: 6m ago
+  - generic [ref=e192]:
+    - heading "Command Palette" [level=2] [ref=e193]
+    - paragraph [ref=e194]: Search for a command to run...

@@ -1,0 +1,8602 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 6 live" [ref=e170] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e175]: 6 live
+              - link "Inbox 15" [ref=e176] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e47]
+                - generic [ref=e50]: Inbox
+                - generic [ref=e178]: "15"
+            - generic [ref=e51]:
+              - generic [ref=e52]: Work
+              - generic [ref=e53]:
+                - link "Issues" [ref=e54] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e56]
+                  - generic [ref=e59]: Issues
+                - link "Routines Beta" [ref=e60] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e62]
+                  - generic [ref=e67]: Routines
+                  - generic [ref=e68]: Beta
+                - link "Goals" [ref=e69] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e71]
+                  - generic [ref=e75]: Goals
+            - generic [ref=e76]:
+              - generic [ref=e78]:
+                - button "Projects" [expanded] [ref=e79]:
+                  - img [ref=e80]
+                  - generic [ref=e82]: Projects
+                - button "New project" [ref=e83]:
+                  - img [ref=e84]
+              - generic [ref=e179]:
+                - button "DirtSync iOS" [ref=e181]:
+                  - link "DirtSync iOS" [ref=e183] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e185]: DirtSync iOS
+                - status [ref=e85]
+            - generic [ref=e86]:
+              - generic [ref=e88]:
+                - button "Agents" [expanded] [ref=e89]:
+                  - img [ref=e90]
+                  - generic [ref=e92]: Agents
+                - button "New agent" [ref=e93]:
+                  - img [ref=e94]
+              - generic [ref=e187]:
+                - link "DirtSync COO" [ref=e188] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e189]
+                  - generic [ref=e191]: DirtSync COO
+                - link "Build & Test Agent" [ref=e192] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e193]
+                  - generic [ref=e195]: Build & Test Agent
+                - link "Drive Publisher" [ref=e196] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e197]
+                  - generic [ref=e199]: Drive Publisher
+                - link "HUD Engineer" [ref=e200] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e201]
+                  - generic [ref=e204]: HUD Engineer
+                - link "Map View Engineer" [ref=e205] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e206]
+                  - generic [ref=e209]: Map View Engineer
+                - link "Navigation Engineer" [ref=e210] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e211]
+                  - generic [ref=e216]: Navigation Engineer
+                - link "QA Rider" [ref=e217] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e218]
+                  - generic [ref=e222]: QA Rider
+                - link "Ride Recording Engineer" [ref=e223] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e224]
+                  - generic [ref=e227]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e228] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e229]
+                  - generic [ref=e240]: Routine Manager
+                - link "Ship Engineer" [ref=e241] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e242]
+                  - generic [ref=e247]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e248] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e249]
+                  - generic [ref=e252]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e253] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e254]
+                  - generic [ref=e261]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e262] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e263]
+                  - generic [ref=e266]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e267] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e268]
+                  - generic [ref=e271]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 4 live" [ref=e272] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e273]
+                  - generic [ref=e276]: Waze Search UI Expert
+                  - generic [ref=e281]: 4 live
+                - link "XCUITest Engineer" [ref=e282] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e283]
+                  - generic [ref=e286]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e287] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e288]
+                  - generic [ref=e290]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e291] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e292]
+                  - generic [ref=e300]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e301] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e302]
+                  - generic [ref=e305]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e306] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e307]
+                  - generic [ref=e316]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e317] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e318]
+                  - generic [ref=e327]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e328] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e329]
+                  - generic [ref=e334]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e335] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e336]
+                  - generic [ref=e339]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e340] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e341]
+                  - generic [ref=e349]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e350] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e351]
+                  - generic [ref=e355]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e356] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e357]
+                  - generic [ref=e360]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e361] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e362]
+                  - generic [ref=e365]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e366] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e367]
+                  - generic [ref=e370]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e371] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e372]
+                  - generic [ref=e379]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e380] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e381]
+                  - generic [ref=e384]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e385] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e386]
+                  - generic [ref=e390]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e391] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e392]
+                  - generic [ref=e395]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e396] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e397]
+                  - generic [ref=e401]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e402] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e403]
+                  - generic [ref=e408]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e409] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e410]
+                  - generic [ref=e414]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e415] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e416]
+                  - generic [ref=e419]: Valhalla Health Agent
+            - generic [ref=e95]:
+              - generic [ref=e96]: Company
+              - generic [ref=e97]:
+                - link "Org" [ref=e98] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e100]
+                  - generic [ref=e105]: Org
+                - link "Skills" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e108]
+                  - generic [ref=e118]: Skills
+                - link "Costs" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e121]
+                  - generic [ref=e123]: Costs
+                - link "Activity" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e126]
+                  - generic [ref=e130]: Activity
+                - link "Settings" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e133]
+                  - generic [ref=e136]: Settings
+      - generic [ref=e138]:
+        - link "Documentation" [ref=e139] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e140]
+          - generic [ref=e142]: Documentation
+        - generic [ref=e143]: v
+        - link "Instance settings" [ref=e144] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e145]:
+          - img
+    - generic [ref=e146]:
+      - heading "Activity" [level=1] [ref=e150]
+      - main [ref=e152]:
+        - generic [ref=e420]:
+          - combobox [ref=e422]:
+            - generic: All types
+            - img
+          - generic [ref=e423]:
+            - generic [ref=e425]:
+              - paragraph [ref=e426]:
+                - generic [ref=e427]:
+                  - generic [ref=e429]: SY
+                  - generic [ref=e430]: System
+                - generic [ref=e431]: routine run triggered
+              - generic [ref=e432]: 2m ago
+            - generic [ref=e434]:
+              - paragraph [ref=e435]:
+                - generic [ref=e436]:
+                  - generic [ref=e438]: SY
+                  - generic [ref=e439]: System
+                - generic [ref=e440]: routine run triggered
+              - generic [ref=e441]: 2m ago
+            - link "BO Board commented on DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 2m ago" [ref=e442] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e443]:
+                - paragraph [ref=e444]:
+                  - generic [ref=e445]:
+                    - generic [ref=e447]: BO
+                    - generic [ref=e448]: Board
+                  - generic [ref=e449]: commented on
+                  - text: DIRA-93
+                  - generic [ref=e450]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                - generic [ref=e451]: 2m ago
+            - link "BO Board commented on DIRA-94— [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model 2m ago" [ref=e452] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-94
+              - generic [ref=e453]:
+                - paragraph [ref=e454]:
+                  - generic [ref=e455]:
+                    - generic [ref=e457]: BO
+                    - generic [ref=e458]: Board
+                  - generic [ref=e459]: commented on
+                  - text: DIRA-94
+                  - generic [ref=e460]: — [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model
+                - generic [ref=e461]: 2m ago
+            - link "BO Board issue read marked DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 3m ago" [ref=e462] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e463]:
+                - paragraph [ref=e464]:
+                  - generic [ref=e465]:
+                    - generic [ref=e467]: BO
+                    - generic [ref=e468]: Board
+                  - generic [ref=e469]: issue read marked
+                  - text: DIRA-91
+                  - generic [ref=e470]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e471]: 3m ago
+            - link "BO Board commented on DIRA-94— [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model 11m ago" [ref=e472] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-94
+              - generic [ref=e473]:
+                - paragraph [ref=e474]:
+                  - generic [ref=e475]:
+                    - generic [ref=e477]: BO
+                    - generic [ref=e478]: Board
+                  - generic [ref=e479]: commented on
+                  - text: DIRA-94
+                  - generic [ref=e480]: — [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model
+                - generic [ref=e481]: 11m ago
+            - link "BO Board commented on DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 11m ago" [ref=e482] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e483]:
+                - paragraph [ref=e484]:
+                  - generic [ref=e485]:
+                    - generic [ref=e487]: BO
+                    - generic [ref=e488]: Board
+                  - generic [ref=e489]: commented on
+                  - text: DIRA-93
+                  - generic [ref=e490]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                - generic [ref=e491]: 11m ago
+            - link "BO Board commented on DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 17m ago" [ref=e492] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e493]:
+                - paragraph [ref=e494]:
+                  - generic [ref=e495]:
+                    - generic [ref=e497]: BO
+                    - generic [ref=e498]: Board
+                  - generic [ref=e499]: commented on
+                  - text: DIRA-90
+                  - generic [ref=e500]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                - generic [ref=e501]: 17m ago
+            - link "BO Board commented on DIRA-94— [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model 18m ago" [ref=e502] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-94
+              - generic [ref=e503]:
+                - paragraph [ref=e504]:
+                  - generic [ref=e505]:
+                    - generic [ref=e507]: BO
+                    - generic [ref=e508]: Board
+                  - generic [ref=e509]: commented on
+                  - text: DIRA-94
+                  - generic [ref=e510]: — [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model
+                - generic [ref=e511]: 18m ago
+            - link "BO Board commented on DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 18m ago" [ref=e512] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e513]:
+                - paragraph [ref=e514]:
+                  - generic [ref=e515]:
+                    - generic [ref=e517]: BO
+                    - generic [ref=e518]: Board
+                  - generic [ref=e519]: commented on
+                  - text: DIRA-93
+                  - generic [ref=e520]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                - generic [ref=e521]: 18m ago
+            - link "BO Board commented on DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 18m ago" [ref=e522] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e523]:
+                - paragraph [ref=e524]:
+                  - generic [ref=e525]:
+                    - generic [ref=e527]: BO
+                    - generic [ref=e528]: Board
+                  - generic [ref=e529]: commented on
+                  - text: DIRA-93
+                  - generic [ref=e530]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                - generic [ref=e531]: 18m ago
+            - link "BO Board changed status to done on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 18m ago" [ref=e532] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e533]:
+                - paragraph [ref=e534]:
+                  - generic [ref=e535]:
+                    - generic [ref=e537]: BO
+                    - generic [ref=e538]: Board
+                  - generic [ref=e539]: changed status to done on
+                  - text: DIRA-95
+                  - generic [ref=e540]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e541]: 18m ago
+            - link "BO Board changed status to done on DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 18m ago" [ref=e542] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e543]:
+                - paragraph [ref=e544]:
+                  - generic [ref=e545]:
+                    - generic [ref=e547]: BO
+                    - generic [ref=e548]: Board
+                  - generic [ref=e549]: changed status to done on
+                  - text: DIRA-92
+                  - generic [ref=e550]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e551]: 18m ago
+            - link "BO Board changed status to done on DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 18m ago" [ref=e552] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e553]:
+                - paragraph [ref=e554]:
+                  - generic [ref=e555]:
+                    - generic [ref=e557]: BO
+                    - generic [ref=e558]: Board
+                  - generic [ref=e559]: changed status to done on
+                  - text: DIRA-91
+                  - generic [ref=e560]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e561]: 18m ago
+            - link "BO Board changed status from todo to done on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 19m ago" [ref=e562] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e563]:
+                - paragraph [ref=e564]:
+                  - generic [ref=e565]:
+                    - generic [ref=e567]: BO
+                    - generic [ref=e568]: Board
+                  - generic [ref=e569]: changed status from todo to done on
+                  - text: DIRA-95
+                  - generic [ref=e570]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e571]: 19m ago
+            - link "BO Board changed status from todo to done on DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 19m ago" [ref=e572] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e573]:
+                - paragraph [ref=e574]:
+                  - generic [ref=e575]:
+                    - generic [ref=e577]: BO
+                    - generic [ref=e578]: Board
+                  - generic [ref=e579]: changed status from todo to done on
+                  - text: DIRA-92
+                  - generic [ref=e580]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e581]: 19m ago
+            - link "BO Board changed status from todo to done on DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 19m ago" [ref=e582] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e583]:
+                - paragraph [ref=e584]:
+                  - generic [ref=e585]:
+                    - generic [ref=e587]: BO
+                    - generic [ref=e588]: Board
+                  - generic [ref=e589]: changed status from todo to done on
+                  - text: DIRA-91
+                  - generic [ref=e590]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e591]: 19m ago
+            - link "BO Board changed status from todo to done on DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 19m ago" [ref=e592] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e593]:
+                - paragraph [ref=e594]:
+                  - generic [ref=e595]:
+                    - generic [ref=e597]: BO
+                    - generic [ref=e598]: Board
+                  - generic [ref=e599]: changed status from todo to done on
+                  - text: DIRA-90
+                  - generic [ref=e600]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                - generic [ref=e601]: 19m ago
+            - link "BO Board commented on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 20m ago" [ref=e602] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e603]:
+                - paragraph [ref=e604]:
+                  - generic [ref=e605]:
+                    - generic [ref=e607]: BO
+                    - generic [ref=e608]: Board
+                  - generic [ref=e609]: commented on
+                  - text: DIRA-95
+                  - generic [ref=e610]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e611]: 20m ago
+            - link "BO Board commented on DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 20m ago" [ref=e612] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e613]:
+                - paragraph [ref=e614]:
+                  - generic [ref=e615]:
+                    - generic [ref=e617]: BO
+                    - generic [ref=e618]: Board
+                  - generic [ref=e619]: commented on
+                  - text: DIRA-92
+                  - generic [ref=e620]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e621]: 20m ago
+            - link "BO Board commented on DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 20m ago" [ref=e622] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e623]:
+                - paragraph [ref=e624]:
+                  - generic [ref=e625]:
+                    - generic [ref=e627]: BO
+                    - generic [ref=e628]: Board
+                  - generic [ref=e629]: commented on
+                  - text: DIRA-91
+                  - generic [ref=e630]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e631]: 20m ago
+            - link "BO Board commented on DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 20m ago" [ref=e632] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e633]:
+                - paragraph [ref=e634]:
+                  - generic [ref=e635]:
+                    - generic [ref=e637]: BO
+                    - generic [ref=e638]: Board
+                  - generic [ref=e639]: commented on
+                  - text: DIRA-90
+                  - generic [ref=e640]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                - generic [ref=e641]: 20m ago
+            - link "BO Board commented on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 21m ago" [ref=e642] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e643]:
+                - paragraph [ref=e644]:
+                  - generic [ref=e645]:
+                    - generic [ref=e647]: BO
+                    - generic [ref=e648]: Board
+                  - generic [ref=e649]: commented on
+                  - text: DIRA-95
+                  - generic [ref=e650]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e651]: 21m ago
+            - link "BO Board commented on DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 21m ago" [ref=e652] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e653]:
+                - paragraph [ref=e654]:
+                  - generic [ref=e655]:
+                    - generic [ref=e657]: BO
+                    - generic [ref=e658]: Board
+                  - generic [ref=e659]: commented on
+                  - text: DIRA-92
+                  - generic [ref=e660]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e661]: 21m ago
+            - link "BO Board commented on DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 21m ago" [ref=e662] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e663]:
+                - paragraph [ref=e664]:
+                  - generic [ref=e665]:
+                    - generic [ref=e667]: BO
+                    - generic [ref=e668]: Board
+                  - generic [ref=e669]: commented on
+                  - text: DIRA-91
+                  - generic [ref=e670]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e671]: 21m ago
+            - link "BO Board commented on DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 21m ago" [ref=e672] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e673]:
+                - paragraph [ref=e674]:
+                  - generic [ref=e675]:
+                    - generic [ref=e677]: BO
+                    - generic [ref=e678]: Board
+                  - generic [ref=e679]: commented on
+                  - text: DIRA-90
+                  - generic [ref=e680]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                - generic [ref=e681]: 21m ago
+            - link "BO Board commented on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 21m ago" [ref=e682] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e683]:
+                - paragraph [ref=e684]:
+                  - generic [ref=e685]:
+                    - generic [ref=e687]: BO
+                    - generic [ref=e688]: Board
+                  - generic [ref=e689]: commented on
+                  - text: DIRA-95
+                  - generic [ref=e690]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e691]: 21m ago
+            - link "BO Board commented on DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 21m ago" [ref=e692] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e693]:
+                - paragraph [ref=e694]:
+                  - generic [ref=e695]:
+                    - generic [ref=e697]: BO
+                    - generic [ref=e698]: Board
+                  - generic [ref=e699]: commented on
+                  - text: DIRA-92
+                  - generic [ref=e700]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e701]: 21m ago
+            - link "BO Board commented on DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 21m ago" [ref=e702] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e703]:
+                - paragraph [ref=e704]:
+                  - generic [ref=e705]:
+                    - generic [ref=e707]: BO
+                    - generic [ref=e708]: Board
+                  - generic [ref=e709]: commented on
+                  - text: DIRA-91
+                  - generic [ref=e710]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e711]: 21m ago
+            - link "BO Board commented on DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 21m ago" [ref=e712] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e713]:
+                - paragraph [ref=e714]:
+                  - generic [ref=e715]:
+                    - generic [ref=e717]: BO
+                    - generic [ref=e718]: Board
+                  - generic [ref=e719]: commented on
+                  - text: DIRA-90
+                  - generic [ref=e720]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                - generic [ref=e721]: 21m ago
+            - link "BO Board commented on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 30m ago" [ref=e722] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e723]:
+                - paragraph [ref=e724]:
+                  - generic [ref=e725]:
+                    - generic [ref=e727]: BO
+                    - generic [ref=e728]: Board
+                  - generic [ref=e729]: commented on
+                  - text: DIRA-95
+                  - generic [ref=e730]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e731]: 30m ago
+            - link "BO Board commented on DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 30m ago" [ref=e732] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e733]:
+                - paragraph [ref=e734]:
+                  - generic [ref=e735]:
+                    - generic [ref=e737]: BO
+                    - generic [ref=e738]: Board
+                  - generic [ref=e739]: commented on
+                  - text: DIRA-92
+                  - generic [ref=e740]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e741]: 30m ago
+            - link "BO Board commented on DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 31m ago" [ref=e742] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e743]:
+                - paragraph [ref=e744]:
+                  - generic [ref=e745]:
+                    - generic [ref=e747]: BO
+                    - generic [ref=e748]: Board
+                  - generic [ref=e749]: commented on
+                  - text: DIRA-91
+                  - generic [ref=e750]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e751]: 31m ago
+            - generic [ref=e753]:
+              - paragraph [ref=e754]:
+                - generic [ref=e755]:
+                  - generic [ref=e757]: SY
+                  - generic [ref=e758]: System
+                - generic [ref=e759]: routine run triggered
+              - generic [ref=e760]: 32m ago
+            - generic [ref=e762]:
+              - paragraph [ref=e763]:
+                - generic [ref=e764]:
+                  - generic [ref=e766]: SY
+                  - generic [ref=e767]: System
+                - generic [ref=e768]: routine run triggered
+              - generic [ref=e769]: 32m ago
+            - link "BO Board commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 32m ago" [ref=e770] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e771]:
+                - paragraph [ref=e772]:
+                  - generic [ref=e773]:
+                    - generic [ref=e775]: BO
+                    - generic [ref=e776]: Board
+                  - generic [ref=e777]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e778]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e779]: 32m ago
+            - 'link "BO Board changed status from in progress to done on DIRA-89— DIRA-86: Write XCUITests for full Waze navigation flow 32m ago" [ref=e780] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-89
+              - generic [ref=e781]:
+                - paragraph [ref=e782]:
+                  - generic [ref=e783]:
+                    - generic [ref=e785]: BO
+                    - generic [ref=e786]: Board
+                  - generic [ref=e787]: changed status from in progress to done on
+                  - text: DIRA-89
+                  - generic [ref=e788]: "— DIRA-86: Write XCUITests for full Waze navigation flow"
+                - generic [ref=e789]: 32m ago
+            - 'link "BO Board commented on DIRA-89— DIRA-86: Write XCUITests for full Waze navigation flow 33m ago" [ref=e790] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-89
+              - generic [ref=e791]:
+                - paragraph [ref=e792]:
+                  - generic [ref=e793]:
+                    - generic [ref=e795]: BO
+                    - generic [ref=e796]: Board
+                  - generic [ref=e797]: commented on
+                  - text: DIRA-89
+                  - generic [ref=e798]: "— DIRA-86: Write XCUITests for full Waze navigation flow"
+                - generic [ref=e799]: 33m ago
+            - 'link "BO Board changed status from todo to done on DIRA-88— DIRA-85: Full visual audit — screenshot every screen, compare to Waze 36m ago" [ref=e800] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e801]:
+                - paragraph [ref=e802]:
+                  - generic [ref=e803]:
+                    - generic [ref=e805]: BO
+                    - generic [ref=e806]: Board
+                  - generic [ref=e807]: changed status from todo to done on
+                  - text: DIRA-88
+                  - generic [ref=e808]: "— DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                - generic [ref=e809]: 36m ago
+            - 'link "BO Board commented on DIRA-88— DIRA-85: Full visual audit — screenshot every screen, compare to Waze 36m ago" [ref=e810] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e811]:
+                - paragraph [ref=e812]:
+                  - generic [ref=e813]:
+                    - generic [ref=e815]: BO
+                    - generic [ref=e816]: Board
+                  - generic [ref=e817]: commented on
+                  - text: DIRA-88
+                  - generic [ref=e818]: "— DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                - generic [ref=e819]: 36m ago
+            - link "BO Board updated DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 37m ago" [ref=e820] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e821]:
+                - paragraph [ref=e822]:
+                  - generic [ref=e823]:
+                    - generic [ref=e825]: BO
+                    - generic [ref=e826]: Board
+                  - generic [ref=e827]: updated
+                  - text: DIRA-95
+                  - generic [ref=e828]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e829]: 37m ago
+            - link "BO Board updated DIRA-94— [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model 37m ago" [ref=e830] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-94
+              - generic [ref=e831]:
+                - paragraph [ref=e832]:
+                  - generic [ref=e833]:
+                    - generic [ref=e835]: BO
+                    - generic [ref=e836]: Board
+                  - generic [ref=e837]: updated
+                  - text: DIRA-94
+                  - generic [ref=e838]: — [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model
+                - generic [ref=e839]: 37m ago
+            - link "BO Board updated DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 37m ago" [ref=e840] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e841]:
+                - paragraph [ref=e842]:
+                  - generic [ref=e843]:
+                    - generic [ref=e845]: BO
+                    - generic [ref=e846]: Board
+                  - generic [ref=e847]: updated
+                  - text: DIRA-93
+                  - generic [ref=e848]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                - generic [ref=e849]: 37m ago
+            - link "BO Board updated DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 37m ago" [ref=e850] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e851]:
+                - paragraph [ref=e852]:
+                  - generic [ref=e853]:
+                    - generic [ref=e855]: BO
+                    - generic [ref=e856]: Board
+                  - generic [ref=e857]: updated
+                  - text: DIRA-92
+                  - generic [ref=e858]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e859]: 37m ago
+            - link "BO Board updated DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 37m ago" [ref=e860] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e861]:
+                - paragraph [ref=e862]:
+                  - generic [ref=e863]:
+                    - generic [ref=e865]: BO
+                    - generic [ref=e866]: Board
+                  - generic [ref=e867]: updated
+                  - text: DIRA-91
+                  - generic [ref=e868]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e869]: 37m ago
+            - link "BO Board updated DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 37m ago" [ref=e870] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e871]:
+                - paragraph [ref=e872]:
+                  - generic [ref=e873]:
+                    - generic [ref=e875]: BO
+                    - generic [ref=e876]: Board
+                  - generic [ref=e877]: updated
+                  - text: DIRA-90
+                  - generic [ref=e878]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                - generic [ref=e879]: 37m ago
+            - link "BO Board created DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 37m ago" [ref=e880] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e881]:
+                - paragraph [ref=e882]:
+                  - generic [ref=e883]:
+                    - generic [ref=e885]: BO
+                    - generic [ref=e886]: Board
+                  - generic [ref=e887]: created
+                  - text: DIRA-95
+                  - generic [ref=e888]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                - generic [ref=e889]: 37m ago
+            - link "BO Board created DIRA-94— [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model 37m ago" [ref=e890] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-94
+              - generic [ref=e891]:
+                - paragraph [ref=e892]:
+                  - generic [ref=e893]:
+                    - generic [ref=e895]: BO
+                    - generic [ref=e896]: Board
+                  - generic [ref=e897]: created
+                  - text: DIRA-94
+                  - generic [ref=e898]: — [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model
+                - generic [ref=e899]: 37m ago
+            - link "BO Board created DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 37m ago" [ref=e900] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e901]:
+                - paragraph [ref=e902]:
+                  - generic [ref=e903]:
+                    - generic [ref=e905]: BO
+                    - generic [ref=e906]: Board
+                  - generic [ref=e907]: created
+                  - text: DIRA-93
+                  - generic [ref=e908]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                - generic [ref=e909]: 37m ago
+            - link "BO Board created DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 37m ago" [ref=e910] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e911]:
+                - paragraph [ref=e912]:
+                  - generic [ref=e913]:
+                    - generic [ref=e915]: BO
+                    - generic [ref=e916]: Board
+                  - generic [ref=e917]: created
+                  - text: DIRA-92
+                  - generic [ref=e918]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                - generic [ref=e919]: 37m ago
+            - link "BO Board created DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 37m ago" [ref=e920] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e921]:
+                - paragraph [ref=e922]:
+                  - generic [ref=e923]:
+                    - generic [ref=e925]: BO
+                    - generic [ref=e926]: Board
+                  - generic [ref=e927]: created
+                  - text: DIRA-91
+                  - generic [ref=e928]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                - generic [ref=e929]: 37m ago
+            - link "BO Board created DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 37m ago" [ref=e930] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e931]:
+                - paragraph [ref=e932]:
+                  - generic [ref=e933]:
+                    - generic [ref=e935]: BO
+                    - generic [ref=e936]: Board
+                  - generic [ref=e937]: created
+                  - text: DIRA-90
+                  - generic [ref=e938]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                - generic [ref=e939]: 37m ago
+            - 'link "BO Board commented on DIRA-88— DIRA-85: Full visual audit — screenshot every screen, compare to Waze 38m ago" [ref=e940] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e941]:
+                - paragraph [ref=e942]:
+                  - generic [ref=e943]:
+                    - generic [ref=e945]: BO
+                    - generic [ref=e946]: Board
+                  - generic [ref=e947]: commented on
+                  - text: DIRA-88
+                  - generic [ref=e948]: "— DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                - generic [ref=e949]: 38m ago
+            - 'link "BO Board commented on DIRA-89— DIRA-86: Write XCUITests for full Waze navigation flow 42m ago" [ref=e950] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-89
+              - generic [ref=e951]:
+                - paragraph [ref=e952]:
+                  - generic [ref=e953]:
+                    - generic [ref=e955]: BO
+                    - generic [ref=e956]: Board
+                  - generic [ref=e957]: commented on
+                  - text: DIRA-89
+                  - generic [ref=e958]: "— DIRA-86: Write XCUITests for full Waze navigation flow"
+                - generic [ref=e959]: 42m ago
+            - 'link "BO Board changed status from todo to in progress on DIRA-89— DIRA-86: Write XCUITests for full Waze navigation flow 42m ago" [ref=e960] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-89
+              - generic [ref=e961]:
+                - paragraph [ref=e962]:
+                  - generic [ref=e963]:
+                    - generic [ref=e965]: BO
+                    - generic [ref=e966]: Board
+                  - generic [ref=e967]: changed status from todo to in progress on
+                  - text: DIRA-89
+                  - generic [ref=e968]: "— DIRA-86: Write XCUITests for full Waze navigation flow"
+                - generic [ref=e969]: 42m ago
+            - 'link "BO Board commented on DIRA-88— DIRA-85: Full visual audit — screenshot every screen, compare to Waze 42m ago" [ref=e970] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e971]:
+                - paragraph [ref=e972]:
+                  - generic [ref=e973]:
+                    - generic [ref=e975]: BO
+                    - generic [ref=e976]: Board
+                  - generic [ref=e977]: commented on
+                  - text: DIRA-88
+                  - generic [ref=e978]: "— DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                - generic [ref=e979]: 42m ago
+            - 'link "BO Board created DIRA-89— DIRA-86: Write XCUITests for full Waze navigation flow 44m ago" [ref=e980] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-89
+              - generic [ref=e981]:
+                - paragraph [ref=e982]:
+                  - generic [ref=e983]:
+                    - generic [ref=e985]: BO
+                    - generic [ref=e986]: Board
+                  - generic [ref=e987]: created
+                  - text: DIRA-89
+                  - generic [ref=e988]: "— DIRA-86: Write XCUITests for full Waze navigation flow"
+                - generic [ref=e989]: 44m ago
+            - 'link "BO Board created DIRA-88— DIRA-85: Full visual audit — screenshot every screen, compare to Waze 45m ago" [ref=e990] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e991]:
+                - paragraph [ref=e992]:
+                  - generic [ref=e993]:
+                    - generic [ref=e995]: BO
+                    - generic [ref=e996]: Board
+                  - generic [ref=e997]: created
+                  - text: DIRA-88
+                  - generic [ref=e998]: "— DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                - generic [ref=e999]: 45m ago
+            - link "BO Board updated XCUITest Engineer 46m ago" [ref=e1000] [cursor=pointer]:
+              - /url: /DIRA/agents/79859abf-bd31-4047-97b4-52edad5ff9ac
+              - generic [ref=e1001]:
+                - paragraph [ref=e1002]:
+                  - generic [ref=e1003]:
+                    - generic [ref=e1005]: BO
+                    - generic [ref=e1006]: Board
+                  - generic [ref=e1007]: updated
+                  - text: XCUITest Engineer
+                - generic [ref=e1008]: 46m ago
+            - link "BO Board created XCUITest Engineer 46m ago" [ref=e1009] [cursor=pointer]:
+              - /url: /DIRA/agents/79859abf-bd31-4047-97b4-52edad5ff9ac
+              - generic [ref=e1010]:
+                - paragraph [ref=e1011]:
+                  - generic [ref=e1012]:
+                    - generic [ref=e1014]: BO
+                    - generic [ref=e1015]: Board
+                  - generic [ref=e1016]: created
+                  - text: XCUITest Engineer
+                - generic [ref=e1017]: 46m ago
+            - link "BO Board updated Simulator QA Agent 46m ago" [ref=e1018] [cursor=pointer]:
+              - /url: /DIRA/agents/8b8c0633-8613-4e9d-9be0-df3022f52c4a
+              - generic [ref=e1019]:
+                - paragraph [ref=e1020]:
+                  - generic [ref=e1021]:
+                    - generic [ref=e1023]: BO
+                    - generic [ref=e1024]: Board
+                  - generic [ref=e1025]: updated
+                  - text: Simulator QA Agent
+                - generic [ref=e1026]: 46m ago
+            - link "BO Board created Simulator QA Agent 46m ago" [ref=e1027] [cursor=pointer]:
+              - /url: /DIRA/agents/8b8c0633-8613-4e9d-9be0-df3022f52c4a
+              - generic [ref=e1028]:
+                - paragraph [ref=e1029]:
+                  - generic [ref=e1030]:
+                    - generic [ref=e1032]: BO
+                    - generic [ref=e1033]: Board
+                  - generic [ref=e1034]: created
+                  - text: Simulator QA Agent
+                - generic [ref=e1035]: 46m ago
+            - link "BO Board changed status from cancelled to done on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 50m ago" [ref=e1036] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e1037]:
+                - paragraph [ref=e1038]:
+                  - generic [ref=e1039]:
+                    - generic [ref=e1041]: BO
+                    - generic [ref=e1042]: Board
+                  - generic [ref=e1043]: changed status from cancelled to done on
+                  - text: DIRA-1
+                  - generic [ref=e1044]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e1045]: 50m ago
+            - 'link "BO Board commented on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 51m ago" [ref=e1046] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1047]:
+                - paragraph [ref=e1048]:
+                  - generic [ref=e1049]:
+                    - generic [ref=e1051]: BO
+                    - generic [ref=e1052]: Board
+                  - generic [ref=e1053]: commented on
+                  - text: DIRA-82
+                  - generic [ref=e1054]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1055]: 51m ago
+            - 'link "BO Board changed status from todo to done on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 58m ago" [ref=e1056] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1057]:
+                - paragraph [ref=e1058]:
+                  - generic [ref=e1059]:
+                    - generic [ref=e1061]: BO
+                    - generic [ref=e1062]: Board
+                  - generic [ref=e1063]: changed status from todo to done on
+                  - text: DIRA-81
+                  - generic [ref=e1064]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1065]: 58m ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 58m ago" [ref=e1066] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1067]:
+                - paragraph [ref=e1068]:
+                  - generic [ref=e1069]:
+                    - generic [ref=e1071]: BO
+                    - generic [ref=e1072]: Board
+                  - generic [ref=e1073]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1074]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1075]: 58m ago
+            - 'link "BO Board commented on DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 58m ago" [ref=e1076] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1077]:
+                - paragraph [ref=e1078]:
+                  - generic [ref=e1079]:
+                    - generic [ref=e1081]: BO
+                    - generic [ref=e1082]: Board
+                  - generic [ref=e1083]: commented on
+                  - text: DIRA-83
+                  - generic [ref=e1084]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1085]: 58m ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 59m ago" [ref=e1086] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1087]:
+                - paragraph [ref=e1088]:
+                  - generic [ref=e1089]:
+                    - generic [ref=e1091]: BO
+                    - generic [ref=e1092]: Board
+                  - generic [ref=e1093]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1094]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1095]: 59m ago
+            - link "BO Board updated Waze Nav HUD Expert 59m ago" [ref=e1096] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1097]:
+                - paragraph [ref=e1098]:
+                  - generic [ref=e1099]:
+                    - generic [ref=e1101]: BO
+                    - generic [ref=e1102]: Board
+                  - generic [ref=e1103]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1104]: 59m ago
+            - link "BO Board updated Revenue Scanner Agent 1h ago" [ref=e1105] [cursor=pointer]:
+              - /url: /DIRA/agents/dea6abc2-eeec-4a84-b6db-50140e5f272d
+              - generic [ref=e1106]:
+                - paragraph [ref=e1107]:
+                  - generic [ref=e1108]:
+                    - generic [ref=e1110]: BO
+                    - generic [ref=e1111]: Board
+                  - generic [ref=e1112]: updated
+                  - text: Revenue Scanner Agent
+                - generic [ref=e1113]: 1h ago
+            - link "BO Board updated Competitor Watch Agent 1h ago" [ref=e1114] [cursor=pointer]:
+              - /url: /DIRA/agents/3512acdb-a5aa-4fc5-a9b4-ad5c70c7c9f2
+              - generic [ref=e1115]:
+                - paragraph [ref=e1116]:
+                  - generic [ref=e1117]:
+                    - generic [ref=e1119]: BO
+                    - generic [ref=e1120]: Board
+                  - generic [ref=e1121]: updated
+                  - text: Competitor Watch Agent
+                - generic [ref=e1122]: 1h ago
+            - link "BO Board updated Feature Usage Agent 1h ago" [ref=e1123] [cursor=pointer]:
+              - /url: /DIRA/agents/15cbec3a-4008-4f95-b3e1-e91bf4167e7e
+              - generic [ref=e1124]:
+                - paragraph [ref=e1125]:
+                  - generic [ref=e1126]:
+                    - generic [ref=e1128]: BO
+                    - generic [ref=e1129]: Board
+                  - generic [ref=e1130]: updated
+                  - text: Feature Usage Agent
+                - generic [ref=e1131]: 1h ago
+            - link "BO Board updated Ride Audit Agent 1h ago" [ref=e1132] [cursor=pointer]:
+              - /url: /DIRA/agents/1a3ec5fd-8c64-44e7-90cc-93e9369ad03a
+              - generic [ref=e1133]:
+                - paragraph [ref=e1134]:
+                  - generic [ref=e1135]:
+                    - generic [ref=e1137]: BO
+                    - generic [ref=e1138]: Board
+                  - generic [ref=e1139]: updated
+                  - text: Ride Audit Agent
+                - generic [ref=e1140]: 1h ago
+            - link "BO Board updated Difficulty Calibration Agent 1h ago" [ref=e1141] [cursor=pointer]:
+              - /url: /DIRA/agents/0c9ff633-298b-41f9-9ff4-e5c00c1ed7a6
+              - generic [ref=e1142]:
+                - paragraph [ref=e1143]:
+                  - generic [ref=e1144]:
+                    - generic [ref=e1146]: BO
+                    - generic [ref=e1147]: Board
+                  - generic [ref=e1148]: updated
+                  - text: Difficulty Calibration Agent
+                - generic [ref=e1149]: 1h ago
+            - link "BO Board updated Routine Manager 1h ago" [ref=e1150] [cursor=pointer]:
+              - /url: /DIRA/agents/e523856c-db72-4b58-9b46-9bd0a2ff2828
+              - generic [ref=e1151]:
+                - paragraph [ref=e1152]:
+                  - generic [ref=e1153]:
+                    - generic [ref=e1155]: BO
+                    - generic [ref=e1156]: Board
+                  - generic [ref=e1157]: updated
+                  - text: Routine Manager
+                - generic [ref=e1158]: 1h ago
+            - link "BO Board updated Road Network Agent 1h ago" [ref=e1159] [cursor=pointer]:
+              - /url: /DIRA/agents/1e2e64b9-cb73-400a-a07a-6fa436b4b0c3
+              - generic [ref=e1160]:
+                - paragraph [ref=e1161]:
+                  - generic [ref=e1162]:
+                    - generic [ref=e1164]: BO
+                    - generic [ref=e1165]: Board
+                  - generic [ref=e1166]: updated
+                  - text: Road Network Agent
+                - generic [ref=e1167]: 1h ago
+            - link "BO Board updated SDK Releases Agent 1h ago" [ref=e1168] [cursor=pointer]:
+              - /url: /DIRA/agents/9fec7856-1ca4-4b6d-b6ae-8f5c517a18fa
+              - generic [ref=e1169]:
+                - paragraph [ref=e1170]:
+                  - generic [ref=e1171]:
+                    - generic [ref=e1173]: BO
+                    - generic [ref=e1174]: Board
+                  - generic [ref=e1175]: updated
+                  - text: SDK Releases Agent
+                - generic [ref=e1176]: 1h ago
+            - link "BO Board updated TestFlight Monitor Agent 1h ago" [ref=e1177] [cursor=pointer]:
+              - /url: /DIRA/agents/68daceb3-90a4-4789-8239-064ca2f88a4f
+              - generic [ref=e1178]:
+                - paragraph [ref=e1179]:
+                  - generic [ref=e1180]:
+                    - generic [ref=e1182]: BO
+                    - generic [ref=e1183]: Board
+                  - generic [ref=e1184]: updated
+                  - text: TestFlight Monitor Agent
+                - generic [ref=e1185]: 1h ago
+            - link "BO Board updated MBTiles Sync Agent 1h ago" [ref=e1186] [cursor=pointer]:
+              - /url: /DIRA/agents/8d924062-f100-44ae-a402-cfdf4d06466c
+              - generic [ref=e1187]:
+                - paragraph [ref=e1188]:
+                  - generic [ref=e1189]:
+                    - generic [ref=e1191]: BO
+                    - generic [ref=e1192]: Board
+                  - generic [ref=e1193]: updated
+                  - text: MBTiles Sync Agent
+                - generic [ref=e1194]: 1h ago
+            - link "BO Board updated New Trail Scanner Agent 1h ago" [ref=e1195] [cursor=pointer]:
+              - /url: /DIRA/agents/52538aa7-cacb-4a2c-b53b-130a98b77123
+              - generic [ref=e1196]:
+                - paragraph [ref=e1197]:
+                  - generic [ref=e1198]:
+                    - generic [ref=e1200]: BO
+                    - generic [ref=e1201]: Board
+                  - generic [ref=e1202]: updated
+                  - text: New Trail Scanner Agent
+                - generic [ref=e1203]: 1h ago
+            - link "BO Board updated OSM Monitor Agent 1h ago" [ref=e1204] [cursor=pointer]:
+              - /url: /DIRA/agents/c20844a1-b818-4896-b64d-71160cac8f89
+              - generic [ref=e1205]:
+                - paragraph [ref=e1206]:
+                  - generic [ref=e1207]:
+                    - generic [ref=e1209]: BO
+                    - generic [ref=e1210]: Board
+                  - generic [ref=e1211]: updated
+                  - text: OSM Monitor Agent
+                - generic [ref=e1212]: 1h ago
+            - link "BO Board updated Valhalla Health Agent 1h ago" [ref=e1213] [cursor=pointer]:
+              - /url: /DIRA/agents/9c88378d-c858-499c-a2d5-168e1257ba3f
+              - generic [ref=e1214]:
+                - paragraph [ref=e1215]:
+                  - generic [ref=e1216]:
+                    - generic [ref=e1218]: BO
+                    - generic [ref=e1219]: Board
+                  - generic [ref=e1220]: updated
+                  - text: Valhalla Health Agent
+                - generic [ref=e1221]: 1h ago
+            - link "BO Board updated POI Freshness Agent 1h ago" [ref=e1222] [cursor=pointer]:
+              - /url: /DIRA/agents/6a02b30f-71d5-4308-b261-fc91b3f0744c
+              - generic [ref=e1223]:
+                - paragraph [ref=e1224]:
+                  - generic [ref=e1225]:
+                    - generic [ref=e1227]: BO
+                    - generic [ref=e1228]: Board
+                  - generic [ref=e1229]: updated
+                  - text: POI Freshness Agent
+                - generic [ref=e1230]: 1h ago
+            - link "BO Board updated Claude AI Scanner Agent 1h ago" [ref=e1231] [cursor=pointer]:
+              - /url: /DIRA/agents/eb1e72b2-9e79-435f-a4bb-70571c7a0104
+              - generic [ref=e1232]:
+                - paragraph [ref=e1233]:
+                  - generic [ref=e1234]:
+                    - generic [ref=e1236]: BO
+                    - generic [ref=e1237]: Board
+                  - generic [ref=e1238]: updated
+                  - text: Claude AI Scanner Agent
+                - generic [ref=e1239]: 1h ago
+            - link "BO Board updated Learning Extractor Agent 1h ago" [ref=e1240] [cursor=pointer]:
+              - /url: /DIRA/agents/8257e556-ee8e-4cfb-a20a-c8bd8b4b1443
+              - generic [ref=e1241]:
+                - paragraph [ref=e1242]:
+                  - generic [ref=e1243]:
+                    - generic [ref=e1245]: BO
+                    - generic [ref=e1246]: Board
+                  - generic [ref=e1247]: updated
+                  - text: Learning Extractor Agent
+                - generic [ref=e1248]: 1h ago
+            - link "BO Board updated Crash Monitor Agent 1h ago" [ref=e1249] [cursor=pointer]:
+              - /url: /DIRA/agents/7eba745c-2d92-4e48-8e73-b638001e78b1
+              - generic [ref=e1250]:
+                - paragraph [ref=e1251]:
+                  - generic [ref=e1252]:
+                    - generic [ref=e1254]: BO
+                    - generic [ref=e1255]: Board
+                  - generic [ref=e1256]: updated
+                  - text: Crash Monitor Agent
+                - generic [ref=e1257]: 1h ago
+            - link "BO Board updated Doc Organizer Agent 1h ago" [ref=e1258] [cursor=pointer]:
+              - /url: /DIRA/agents/b515e05f-7bac-4975-8ba0-cc5115df57bd
+              - generic [ref=e1259]:
+                - paragraph [ref=e1260]:
+                  - generic [ref=e1261]:
+                    - generic [ref=e1263]: BO
+                    - generic [ref=e1264]: Board
+                  - generic [ref=e1265]: updated
+                  - text: Doc Organizer Agent
+                - generic [ref=e1266]: 1h ago
+            - link "BO Board updated App Store Readiness Agent 1h ago" [ref=e1267] [cursor=pointer]:
+              - /url: /DIRA/agents/f40bd229-28f6-4577-b3f3-dc14c611576d
+              - generic [ref=e1268]:
+                - paragraph [ref=e1269]:
+                  - generic [ref=e1270]:
+                    - generic [ref=e1272]: BO
+                    - generic [ref=e1273]: Board
+                  - generic [ref=e1274]: updated
+                  - text: App Store Readiness Agent
+                - generic [ref=e1275]: 1h ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1276] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1277]:
+                - paragraph [ref=e1278]:
+                  - generic [ref=e1279]:
+                    - generic [ref=e1281]: BO
+                    - generic [ref=e1282]: Board
+                  - generic [ref=e1283]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1284]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1285]: 1h ago
+            - link "BO Board updated Trail Data Expert 1h ago" [ref=e1286] [cursor=pointer]:
+              - /url: /DIRA/agents/7fac51b6-316c-4064-bebc-5f75973ecc75
+              - generic [ref=e1287]:
+                - paragraph [ref=e1288]:
+                  - generic [ref=e1289]:
+                    - generic [ref=e1291]: BO
+                    - generic [ref=e1292]: Board
+                  - generic [ref=e1293]: updated
+                  - text: Trail Data Expert
+                - generic [ref=e1294]: 1h ago
+            - link "BO Board updated Navigation Engineer 1h ago" [ref=e1295] [cursor=pointer]:
+              - /url: /DIRA/agents/116cd6bf-513a-4e6d-ad29-a91c00c37f8c
+              - generic [ref=e1296]:
+                - paragraph [ref=e1297]:
+                  - generic [ref=e1298]:
+                    - generic [ref=e1300]: BO
+                    - generic [ref=e1301]: Board
+                  - generic [ref=e1302]: updated
+                  - text: Navigation Engineer
+                - generic [ref=e1303]: 1h ago
+            - link "BO Board updated Build & Test Agent 1h ago" [ref=e1304] [cursor=pointer]:
+              - /url: /DIRA/agents/4e30cd83-61a5-4ada-8c78-c4a073f23887
+              - generic [ref=e1305]:
+                - paragraph [ref=e1306]:
+                  - generic [ref=e1307]:
+                    - generic [ref=e1309]: BO
+                    - generic [ref=e1310]: Board
+                  - generic [ref=e1311]: updated
+                  - text: Build & Test Agent
+                - generic [ref=e1312]: 1h ago
+            - link "BO Board updated Map View Engineer 1h ago" [ref=e1313] [cursor=pointer]:
+              - /url: /DIRA/agents/52403416-c5d7-48ea-8aa8-d8128d0ef203
+              - generic [ref=e1314]:
+                - paragraph [ref=e1315]:
+                  - generic [ref=e1316]:
+                    - generic [ref=e1318]: BO
+                    - generic [ref=e1319]: Board
+                  - generic [ref=e1320]: updated
+                  - text: Map View Engineer
+                - generic [ref=e1321]: 1h ago
+            - link "BO Board updated Ride Recording Engineer 1h ago" [ref=e1322] [cursor=pointer]:
+              - /url: /DIRA/agents/ec2973e0-f829-4731-ab5a-6a663ba4a78a
+              - generic [ref=e1323]:
+                - paragraph [ref=e1324]:
+                  - generic [ref=e1325]:
+                    - generic [ref=e1327]: BO
+                    - generic [ref=e1328]: Board
+                  - generic [ref=e1329]: updated
+                  - text: Ride Recording Engineer
+                - generic [ref=e1330]: 1h ago
+            - link "BO Board updated HUD Engineer 1h ago" [ref=e1331] [cursor=pointer]:
+              - /url: /DIRA/agents/150f7571-f071-4906-bb01-fad0498138ba
+              - generic [ref=e1332]:
+                - paragraph [ref=e1333]:
+                  - generic [ref=e1334]:
+                    - generic [ref=e1336]: BO
+                    - generic [ref=e1337]: Board
+                  - generic [ref=e1338]: updated
+                  - text: HUD Engineer
+                - generic [ref=e1339]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1340] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1341]:
+                - paragraph [ref=e1342]:
+                  - generic [ref=e1343]:
+                    - generic [ref=e1345]: BO
+                    - generic [ref=e1346]: Board
+                  - generic [ref=e1347]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1348]: 1h ago
+            - link "BO Board updated Drive Publisher 1h ago" [ref=e1349] [cursor=pointer]:
+              - /url: /DIRA/agents/84bc85f0-0c1e-4bc6-8734-fe357265d10b
+              - generic [ref=e1350]:
+                - paragraph [ref=e1351]:
+                  - generic [ref=e1352]:
+                    - generic [ref=e1354]: BO
+                    - generic [ref=e1355]: Board
+                  - generic [ref=e1356]: updated
+                  - text: Drive Publisher
+                - generic [ref=e1357]: 1h ago
+            - generic [ref=e1359]:
+              - paragraph [ref=e1360]:
+                - generic [ref=e1361]:
+                  - generic [ref=e1363]: SY
+                  - generic [ref=e1364]: System
+                - generic [ref=e1365]: routine run triggered
+              - generic [ref=e1366]: 1h ago
+            - generic [ref=e1368]:
+              - paragraph [ref=e1369]:
+                - generic [ref=e1370]:
+                  - generic [ref=e1372]: SY
+                  - generic [ref=e1373]: System
+                - generic [ref=e1374]: routine run triggered
+              - generic [ref=e1375]: 1h ago
+            - link "BO Board updated DirtSync COO 1h ago" [ref=e1376] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e1377]:
+                - paragraph [ref=e1378]:
+                  - generic [ref=e1379]:
+                    - generic [ref=e1381]: BO
+                    - generic [ref=e1382]: Board
+                  - generic [ref=e1383]: updated
+                  - text: DirtSync COO
+                - generic [ref=e1384]: 1h ago
+            - link "BO Board updated Waze Search UI Expert 1h ago" [ref=e1385] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1386]:
+                - paragraph [ref=e1387]:
+                  - generic [ref=e1388]:
+                    - generic [ref=e1390]: BO
+                    - generic [ref=e1391]: Board
+                  - generic [ref=e1392]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1393]: 1h ago
+            - link "BO Board updated Waze Nav HUD Expert 1h ago" [ref=e1394] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1395]:
+                - paragraph [ref=e1396]:
+                  - generic [ref=e1397]:
+                    - generic [ref=e1399]: BO
+                    - generic [ref=e1400]: Board
+                  - generic [ref=e1401]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1402]: 1h ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1403] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1404]:
+                - paragraph [ref=e1405]:
+                  - generic [ref=e1406]:
+                    - generic [ref=e1408]: BO
+                    - generic [ref=e1409]: Board
+                  - generic [ref=e1410]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1411]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1412]: 1h ago
+            - 'link "BO Board commented on DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 1h ago" [ref=e1413] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1414]:
+                - paragraph [ref=e1415]:
+                  - generic [ref=e1416]:
+                    - generic [ref=e1418]: BO
+                    - generic [ref=e1419]: Board
+                  - generic [ref=e1420]: commented on
+                  - text: DIRA-83
+                  - generic [ref=e1421]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1422]: 1h ago
+            - link "BO Board updated Waze Nav HUD Expert 1h ago" [ref=e1423] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1424]:
+                - paragraph [ref=e1425]:
+                  - generic [ref=e1426]:
+                    - generic [ref=e1428]: BO
+                    - generic [ref=e1429]: Board
+                  - generic [ref=e1430]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1431]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1432] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1433]:
+                - paragraph [ref=e1434]:
+                  - generic [ref=e1435]:
+                    - generic [ref=e1437]: BO
+                    - generic [ref=e1438]: Board
+                  - generic [ref=e1439]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1440]: 1h ago
+            - link "BO Board updated Waze Search UI Expert 1h ago" [ref=e1441] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1442]:
+                - paragraph [ref=e1443]:
+                  - generic [ref=e1444]:
+                    - generic [ref=e1446]: BO
+                    - generic [ref=e1447]: Board
+                  - generic [ref=e1448]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1449]: 1h ago
+            - 'link "BO Board commented on DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 1h ago" [ref=e1450] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1451]:
+                - paragraph [ref=e1452]:
+                  - generic [ref=e1453]:
+                    - generic [ref=e1455]: BO
+                    - generic [ref=e1456]: Board
+                  - generic [ref=e1457]: commented on
+                  - text: DIRA-83
+                  - generic [ref=e1458]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1459]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1460] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1461]:
+                - paragraph [ref=e1462]:
+                  - generic [ref=e1463]:
+                    - generic [ref=e1465]: BO
+                    - generic [ref=e1466]: Board
+                  - generic [ref=e1467]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1468]: 1h ago
+            - 'link "BO Board commented on DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 1h ago" [ref=e1469] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1470]:
+                - paragraph [ref=e1471]:
+                  - generic [ref=e1472]:
+                    - generic [ref=e1474]: BO
+                    - generic [ref=e1475]: Board
+                  - generic [ref=e1476]: commented on
+                  - text: DIRA-83
+                  - generic [ref=e1477]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1478]: 1h ago
+            - 'link "BO Board changed status from todo to done on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1479] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1480]:
+                - paragraph [ref=e1481]:
+                  - generic [ref=e1482]:
+                    - generic [ref=e1484]: BO
+                    - generic [ref=e1485]: Board
+                  - generic [ref=e1486]: changed status from todo to done on
+                  - text: DIRA-82
+                  - generic [ref=e1487]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1488]: 1h ago
+            - 'link "BO Board commented on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1489] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1490]:
+                - paragraph [ref=e1491]:
+                  - generic [ref=e1492]:
+                    - generic [ref=e1494]: BO
+                    - generic [ref=e1495]: Board
+                  - generic [ref=e1496]: commented on
+                  - text: DIRA-82
+                  - generic [ref=e1497]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1498]: 1h ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1499] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1500]:
+                - paragraph [ref=e1501]:
+                  - generic [ref=e1502]:
+                    - generic [ref=e1504]: BO
+                    - generic [ref=e1505]: Board
+                  - generic [ref=e1506]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1507]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1508]: 1h ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1509] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1510]:
+                - paragraph [ref=e1511]:
+                  - generic [ref=e1512]:
+                    - generic [ref=e1514]: BO
+                    - generic [ref=e1515]: Board
+                  - generic [ref=e1516]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1517]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1518]: 1h ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1519] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1520]:
+                - paragraph [ref=e1521]:
+                  - generic [ref=e1522]:
+                    - generic [ref=e1524]: BO
+                    - generic [ref=e1525]: Board
+                  - generic [ref=e1526]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1527]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1528]: 1h ago
+            - 'link "BO Board commented on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1529] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1530]:
+                - paragraph [ref=e1531]:
+                  - generic [ref=e1532]:
+                    - generic [ref=e1534]: BO
+                    - generic [ref=e1535]: Board
+                  - generic [ref=e1536]: commented on
+                  - text: DIRA-81
+                  - generic [ref=e1537]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1538]: 1h ago
+            - 'link "BO Board commented on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1539] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1540]:
+                - paragraph [ref=e1541]:
+                  - generic [ref=e1542]:
+                    - generic [ref=e1544]: BO
+                    - generic [ref=e1545]: Board
+                  - generic [ref=e1546]: commented on
+                  - text: DIRA-82
+                  - generic [ref=e1547]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1548]: 1h ago
+            - 'link "BO Board commented on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1549] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1550]:
+                - paragraph [ref=e1551]:
+                  - generic [ref=e1552]:
+                    - generic [ref=e1554]: BO
+                    - generic [ref=e1555]: Board
+                  - generic [ref=e1556]: commented on
+                  - text: DIRA-82
+                  - generic [ref=e1557]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1558]: 1h ago
+            - link "BO Board commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 1h ago" [ref=e1559] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e1560]:
+                - paragraph [ref=e1561]:
+                  - generic [ref=e1562]:
+                    - generic [ref=e1564]: BO
+                    - generic [ref=e1565]: Board
+                  - generic [ref=e1566]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e1567]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e1568]: 1h ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 1h ago" [ref=e1569] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1570]:
+                - paragraph [ref=e1571]:
+                  - generic [ref=e1572]:
+                    - generic [ref=e1574]: BO
+                    - generic [ref=e1575]: Board
+                  - generic [ref=e1576]: changed status from backlog to todo on
+                  - text: DIRA-83
+                  - generic [ref=e1577]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1578]: 1h ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1579] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1580]:
+                - paragraph [ref=e1581]:
+                  - generic [ref=e1582]:
+                    - generic [ref=e1584]: BO
+                    - generic [ref=e1585]: Board
+                  - generic [ref=e1586]: changed status from backlog to todo on
+                  - text: DIRA-82
+                  - generic [ref=e1587]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1588]: 1h ago
+            - link "BO Board updated Waze Nav HUD Expert 1h ago" [ref=e1589] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1590]:
+                - paragraph [ref=e1591]:
+                  - generic [ref=e1592]:
+                    - generic [ref=e1594]: BO
+                    - generic [ref=e1595]: Board
+                  - generic [ref=e1596]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1597]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1598] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1599]:
+                - paragraph [ref=e1600]:
+                  - generic [ref=e1601]:
+                    - generic [ref=e1603]: BO
+                    - generic [ref=e1604]: Board
+                  - generic [ref=e1605]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1606]: 1h ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1607] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1608]:
+                - paragraph [ref=e1609]:
+                  - generic [ref=e1610]:
+                    - generic [ref=e1612]: BO
+                    - generic [ref=e1613]: Board
+                  - generic [ref=e1614]: changed status from backlog to todo on
+                  - text: DIRA-81
+                  - generic [ref=e1615]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1616]: 1h ago
+            - link "BO Board updated Waze Search UI Expert 1h ago" [ref=e1617] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1618]:
+                - paragraph [ref=e1619]:
+                  - generic [ref=e1620]:
+                    - generic [ref=e1622]: BO
+                    - generic [ref=e1623]: Board
+                  - generic [ref=e1624]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1625]: 1h ago
+            - link "BO Board updated DirtSync COO 1h ago" [ref=e1626] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e1627]:
+                - paragraph [ref=e1628]:
+                  - generic [ref=e1629]:
+                    - generic [ref=e1631]: BO
+                    - generic [ref=e1632]: Board
+                  - generic [ref=e1633]: updated
+                  - text: DirtSync COO
+                - generic [ref=e1634]: 1h ago
+            - link "BO Board updated Waze Nav HUD Expert 1h ago" [ref=e1635] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1636]:
+                - paragraph [ref=e1637]:
+                  - generic [ref=e1638]:
+                    - generic [ref=e1640]: BO
+                    - generic [ref=e1641]: Board
+                  - generic [ref=e1642]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1643]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1644] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1645]:
+                - paragraph [ref=e1646]:
+                  - generic [ref=e1647]:
+                    - generic [ref=e1649]: BO
+                    - generic [ref=e1650]: Board
+                  - generic [ref=e1651]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1652]: 1h ago
+            - link "BO Board updated Waze Search UI Expert 1h ago" [ref=e1653] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1654]:
+                - paragraph [ref=e1655]:
+                  - generic [ref=e1656]:
+                    - generic [ref=e1658]: BO
+                    - generic [ref=e1659]: Board
+                  - generic [ref=e1660]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1661]: 1h ago
+            - link "BO Board updated Waze Nav HUD Expert 1h ago" [ref=e1662] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1663]:
+                - paragraph [ref=e1664]:
+                  - generic [ref=e1665]:
+                    - generic [ref=e1667]: BO
+                    - generic [ref=e1668]: Board
+                  - generic [ref=e1669]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1670]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1671] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1672]:
+                - paragraph [ref=e1673]:
+                  - generic [ref=e1674]:
+                    - generic [ref=e1676]: BO
+                    - generic [ref=e1677]: Board
+                  - generic [ref=e1678]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1679]: 1h ago
+            - link "BO Board updated Waze Search UI Expert 1h ago" [ref=e1680] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1681]:
+                - paragraph [ref=e1682]:
+                  - generic [ref=e1683]:
+                    - generic [ref=e1685]: BO
+                    - generic [ref=e1686]: Board
+                  - generic [ref=e1687]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1688]: 1h ago
+            - generic [ref=e1690]:
+              - paragraph [ref=e1691]:
+                - generic [ref=e1692]:
+                  - generic [ref=e1694]: SY
+                  - generic [ref=e1695]: System
+                - generic [ref=e1696]: routine run triggered
+              - generic [ref=e1697]: 1h ago
+            - generic [ref=e1699]:
+              - paragraph [ref=e1700]:
+                - generic [ref=e1701]:
+                  - generic [ref=e1703]: SY
+                  - generic [ref=e1704]: System
+                - generic [ref=e1705]: routine run triggered
+              - generic [ref=e1706]: 1h ago
+            - 'link "BO Board changed status from todo to backlog on DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 1h ago" [ref=e1707] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1708]:
+                - paragraph [ref=e1709]:
+                  - generic [ref=e1710]:
+                    - generic [ref=e1712]: BO
+                    - generic [ref=e1713]: Board
+                  - generic [ref=e1714]: changed status from todo to backlog on
+                  - text: DIRA-83
+                  - generic [ref=e1715]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1716]: 1h ago
+            - 'link "BO Board changed status from todo to backlog on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1717] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1718]:
+                - paragraph [ref=e1719]:
+                  - generic [ref=e1720]:
+                    - generic [ref=e1722]: BO
+                    - generic [ref=e1723]: Board
+                  - generic [ref=e1724]: changed status from todo to backlog on
+                  - text: DIRA-82
+                  - generic [ref=e1725]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1726]: 1h ago
+            - 'link "BO Board changed status from todo to backlog on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1727] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1728]:
+                - paragraph [ref=e1729]:
+                  - generic [ref=e1730]:
+                    - generic [ref=e1732]: BO
+                    - generic [ref=e1733]: Board
+                  - generic [ref=e1734]: changed status from todo to backlog on
+                  - text: DIRA-81
+                  - generic [ref=e1735]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1736]: 1h ago
+            - link "BO Board updated Waze Nav HUD Expert 1h ago" [ref=e1737] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1738]:
+                - paragraph [ref=e1739]:
+                  - generic [ref=e1740]:
+                    - generic [ref=e1742]: BO
+                    - generic [ref=e1743]: Board
+                  - generic [ref=e1744]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1745]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1746] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1747]:
+                - paragraph [ref=e1748]:
+                  - generic [ref=e1749]:
+                    - generic [ref=e1751]: BO
+                    - generic [ref=e1752]: Board
+                  - generic [ref=e1753]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1754]: 1h ago
+            - link "BO Board updated Waze Search UI Expert 1h ago" [ref=e1755] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1756]:
+                - paragraph [ref=e1757]:
+                  - generic [ref=e1758]:
+                    - generic [ref=e1760]: BO
+                    - generic [ref=e1761]: Board
+                  - generic [ref=e1762]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1763]: 1h ago
+            - link "BO Board created DIRA-85— Audit and finalize 3 Waze UI Expert agents for production readiness 1h ago" [ref=e1764] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-85
+              - generic [ref=e1765]:
+                - paragraph [ref=e1766]:
+                  - generic [ref=e1767]:
+                    - generic [ref=e1769]: BO
+                    - generic [ref=e1770]: Board
+                  - generic [ref=e1771]: created
+                  - text: DIRA-85
+                  - generic [ref=e1772]: — Audit and finalize 3 Waze UI Expert agents for production readiness
+                - generic [ref=e1773]: 1h ago
+            - link "BO Board changed status from in progress to done on 1h ago" [ref=e1774] [cursor=pointer]:
+              - /url: /DIRA/issues/0031b423-2189-4d36-8901-79008a76fca2
+              - generic [ref=e1775]:
+                - paragraph [ref=e1776]:
+                  - generic [ref=e1777]:
+                    - generic [ref=e1779]: BO
+                    - generic [ref=e1780]: Board
+                  - generic [ref=e1781]: changed status from in progress to done on
+                - generic [ref=e1782]: 1h ago
+            - link "BO Board commented on 1h ago" [ref=e1783] [cursor=pointer]:
+              - /url: /DIRA/issues/0031b423-2189-4d36-8901-79008a76fca2
+              - generic [ref=e1784]:
+                - paragraph [ref=e1785]:
+                  - generic [ref=e1786]:
+                    - generic [ref=e1788]: BO
+                    - generic [ref=e1789]: Board
+                  - generic [ref=e1790]: commented on
+                - generic [ref=e1791]: 1h ago
+            - link "BO Board updated Waze Nav HUD Expert 1h ago" [ref=e1792] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1793]:
+                - paragraph [ref=e1794]:
+                  - generic [ref=e1795]:
+                    - generic [ref=e1797]: BO
+                    - generic [ref=e1798]: Board
+                  - generic [ref=e1799]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1800]: 1h ago
+            - link "BO Board updated Waze Route Preview Expert 1h ago" [ref=e1801] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1802]:
+                - paragraph [ref=e1803]:
+                  - generic [ref=e1804]:
+                    - generic [ref=e1806]: BO
+                    - generic [ref=e1807]: Board
+                  - generic [ref=e1808]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1809]: 1h ago
+            - link "BO Board updated Waze Search UI Expert 1h ago" [ref=e1810] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1811]:
+                - paragraph [ref=e1812]:
+                  - generic [ref=e1813]:
+                    - generic [ref=e1815]: BO
+                    - generic [ref=e1816]: Board
+                  - generic [ref=e1817]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1818]: 1h ago
+            - 'link "BO Board updated DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 1h ago" [ref=e1819] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1820]:
+                - paragraph [ref=e1821]:
+                  - generic [ref=e1822]:
+                    - generic [ref=e1824]: BO
+                    - generic [ref=e1825]: Board
+                  - generic [ref=e1826]: updated
+                  - text: DIRA-83
+                  - generic [ref=e1827]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1828]: 1h ago
+            - 'link "BO Board updated DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1829] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1830]:
+                - paragraph [ref=e1831]:
+                  - generic [ref=e1832]:
+                    - generic [ref=e1834]: BO
+                    - generic [ref=e1835]: Board
+                  - generic [ref=e1836]: updated
+                  - text: DIRA-82
+                  - generic [ref=e1837]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1838]: 1h ago
+            - 'link "BO Board updated DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1839] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1840]:
+                - paragraph [ref=e1841]:
+                  - generic [ref=e1842]:
+                    - generic [ref=e1844]: BO
+                    - generic [ref=e1845]: Board
+                  - generic [ref=e1846]: updated
+                  - text: DIRA-81
+                  - generic [ref=e1847]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1848]: 1h ago
+            - link "BO Board changed status from todo to in progress on 1h ago" [ref=e1849] [cursor=pointer]:
+              - /url: /DIRA/issues/0031b423-2189-4d36-8901-79008a76fca2
+              - generic [ref=e1850]:
+                - paragraph [ref=e1851]:
+                  - generic [ref=e1852]:
+                    - generic [ref=e1854]: BO
+                    - generic [ref=e1855]: Board
+                  - generic [ref=e1856]: changed status from todo to in progress on
+                - generic [ref=e1857]: 1h ago
+            - 'link "BO Board updated DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1858] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1859]:
+                - paragraph [ref=e1860]:
+                  - generic [ref=e1861]:
+                    - generic [ref=e1863]: BO
+                    - generic [ref=e1864]: Board
+                  - generic [ref=e1865]: updated
+                  - text: DIRA-81
+                  - generic [ref=e1866]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1867]: 1h ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 1h ago" [ref=e1868] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1869]:
+                - paragraph [ref=e1870]:
+                  - generic [ref=e1871]:
+                    - generic [ref=e1873]: BO
+                    - generic [ref=e1874]: Board
+                  - generic [ref=e1875]: changed status from backlog to todo on
+                  - text: DIRA-83
+                  - generic [ref=e1876]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1877]: 1h ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 1h ago" [ref=e1878] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1879]:
+                - paragraph [ref=e1880]:
+                  - generic [ref=e1881]:
+                    - generic [ref=e1883]: BO
+                    - generic [ref=e1884]: Board
+                  - generic [ref=e1885]: changed status from backlog to todo on
+                  - text: DIRA-82
+                  - generic [ref=e1886]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1887]: 1h ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 1h ago" [ref=e1888] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1889]:
+                - paragraph [ref=e1890]:
+                  - generic [ref=e1891]:
+                    - generic [ref=e1893]: BO
+                    - generic [ref=e1894]: Board
+                  - generic [ref=e1895]: changed status from backlog to todo on
+                  - text: DIRA-81
+                  - generic [ref=e1896]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1897]: 1h ago
+            - link "BO Board invoked heartbeat for Morning Agenda Agent 1h ago" [ref=e1898] [cursor=pointer]:
+              - /url: /DIRA/agents/17688b64-08fa-46a0-abcd-37446bf4bd97/runs/c260bde0-d344-4d26-be60-95ecd415f71f
+              - generic [ref=e1899]:
+                - paragraph [ref=e1900]:
+                  - generic [ref=e1901]:
+                    - generic [ref=e1903]: BO
+                    - generic [ref=e1904]: Board
+                  - generic [ref=e1905]: invoked heartbeat for
+                  - text: Morning Agenda Agent
+                - generic [ref=e1906]: 1h ago
+            - generic [ref=e1908]:
+              - paragraph [ref=e1909]:
+                - generic [ref=e1910]:
+                  - generic [ref=e1912]: BO
+                  - generic [ref=e1913]: Board
+                - generic [ref=e1914]: routine run triggered
+              - generic [ref=e1915]: 1h ago
+            - generic [ref=e1917]:
+              - paragraph [ref=e1918]:
+                - generic [ref=e1919]:
+                  - generic [ref=e1921]: BO
+                  - generic [ref=e1922]: Board
+                - generic [ref=e1923]: routine trigger updated
+              - generic [ref=e1924]: 1h ago
+            - generic [ref=e1926]:
+              - paragraph [ref=e1927]:
+                - generic [ref=e1928]:
+                  - generic [ref=e1930]: BO
+                  - generic [ref=e1931]: Board
+                - generic [ref=e1932]: routine updated
+              - generic [ref=e1933]: 1h ago
+            - link "BO Board updated Morning Agenda Agent 1h ago" [ref=e1934] [cursor=pointer]:
+              - /url: /DIRA/agents/17688b64-08fa-46a0-abcd-37446bf4bd97
+              - generic [ref=e1935]:
+                - paragraph [ref=e1936]:
+                  - generic [ref=e1937]:
+                    - generic [ref=e1939]: BO
+                    - generic [ref=e1940]: Board
+                  - generic [ref=e1941]: updated
+                  - text: Morning Agenda Agent
+                - generic [ref=e1942]: 1h ago
+            - 'link "BO Board created DIRA-83— DIRA-82: Match Nav HUD to Waze active navigation 2h ago" [ref=e1943] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e1944]:
+                - paragraph [ref=e1945]:
+                  - generic [ref=e1946]:
+                    - generic [ref=e1948]: BO
+                    - generic [ref=e1949]: Board
+                  - generic [ref=e1950]: created
+                  - text: DIRA-83
+                  - generic [ref=e1951]: "— DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e1952]: 2h ago
+            - 'link "BO Board created DIRA-82— DIRA-81: Match RouteSelectionView to Waze route preview 2h ago" [ref=e1953] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e1954]:
+                - paragraph [ref=e1955]:
+                  - generic [ref=e1956]:
+                    - generic [ref=e1958]: BO
+                    - generic [ref=e1959]: Board
+                  - generic [ref=e1960]: created
+                  - text: DIRA-82
+                  - generic [ref=e1961]: "— DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e1962]: 2h ago
+            - 'link "BO Board created DIRA-81— DIRA-80: Match WhereToSheetView to Waze search screen 2h ago" [ref=e1963] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e1964]:
+                - paragraph [ref=e1965]:
+                  - generic [ref=e1966]:
+                    - generic [ref=e1968]: BO
+                    - generic [ref=e1969]: Board
+                  - generic [ref=e1970]: created
+                  - text: DIRA-81
+                  - generic [ref=e1971]: "— DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e1972]: 2h ago
+            - link "BO Board updated Waze Nav HUD Expert 2h ago" [ref=e1973] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e1974]:
+                - paragraph [ref=e1975]:
+                  - generic [ref=e1976]:
+                    - generic [ref=e1978]: BO
+                    - generic [ref=e1979]: Board
+                  - generic [ref=e1980]: updated
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e1981]: 2h ago
+            - link "BO Board updated Waze Route Preview Expert 2h ago" [ref=e1982] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e1983]:
+                - paragraph [ref=e1984]:
+                  - generic [ref=e1985]:
+                    - generic [ref=e1987]: BO
+                    - generic [ref=e1988]: Board
+                  - generic [ref=e1989]: updated
+                  - text: Waze Route Preview Expert
+                - generic [ref=e1990]: 2h ago
+            - link "BO Board updated Waze Search UI Expert 2h ago" [ref=e1991] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e1992]:
+                - paragraph [ref=e1993]:
+                  - generic [ref=e1994]:
+                    - generic [ref=e1996]: BO
+                    - generic [ref=e1997]: Board
+                  - generic [ref=e1998]: updated
+                  - text: Waze Search UI Expert
+                - generic [ref=e1999]: 2h ago
+            - generic [ref=e2001]:
+              - paragraph [ref=e2002]:
+                - generic [ref=e2003]:
+                  - generic [ref=e2005]: SY
+                  - generic [ref=e2006]: System
+                - generic [ref=e2007]: routine run triggered
+              - generic [ref=e2008]: 2h ago
+            - generic [ref=e2010]:
+              - paragraph [ref=e2011]:
+                - generic [ref=e2012]:
+                  - generic [ref=e2014]: SY
+                  - generic [ref=e2015]: System
+                - generic [ref=e2016]: routine run triggered
+              - generic [ref=e2017]: 2h ago
+            - link "BO Board created Waze Nav HUD Expert 2h ago" [ref=e2018] [cursor=pointer]:
+              - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2
+              - generic [ref=e2019]:
+                - paragraph [ref=e2020]:
+                  - generic [ref=e2021]:
+                    - generic [ref=e2023]: BO
+                    - generic [ref=e2024]: Board
+                  - generic [ref=e2025]: created
+                  - text: Waze Nav HUD Expert
+                - generic [ref=e2026]: 2h ago
+            - link "BO Board created Waze Route Preview Expert 2h ago" [ref=e2027] [cursor=pointer]:
+              - /url: /DIRA/agents/59abc003-3b9d-4b30-8858-c2e315653763
+              - generic [ref=e2028]:
+                - paragraph [ref=e2029]:
+                  - generic [ref=e2030]:
+                    - generic [ref=e2032]: BO
+                    - generic [ref=e2033]: Board
+                  - generic [ref=e2034]: created
+                  - text: Waze Route Preview Expert
+                - generic [ref=e2035]: 2h ago
+            - link "BO Board created Waze Search UI Expert 2h ago" [ref=e2036] [cursor=pointer]:
+              - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0
+              - generic [ref=e2037]:
+                - paragraph [ref=e2038]:
+                  - generic [ref=e2039]:
+                    - generic [ref=e2041]: BO
+                    - generic [ref=e2042]: Board
+                  - generic [ref=e2043]: created
+                  - text: Waze Search UI Expert
+                - generic [ref=e2044]: 2h ago
+            - generic [ref=e2046]:
+              - paragraph [ref=e2047]:
+                - generic [ref=e2048]:
+                  - generic [ref=e2050]: SY
+                  - generic [ref=e2051]: System
+                - generic [ref=e2052]: routine run triggered
+              - generic [ref=e2053]: 2h ago
+            - generic [ref=e2055]:
+              - paragraph [ref=e2056]:
+                - generic [ref=e2057]:
+                  - generic [ref=e2059]: SY
+                  - generic [ref=e2060]: System
+                - generic [ref=e2061]: routine run triggered
+              - generic [ref=e2062]: 2h ago
+            - generic [ref=e2064]:
+              - paragraph [ref=e2065]:
+                - generic [ref=e2066]:
+                  - generic [ref=e2068]: SY
+                  - generic [ref=e2069]: System
+                - generic [ref=e2070]: routine run triggered
+              - generic [ref=e2071]: 3h ago
+            - generic [ref=e2073]:
+              - paragraph [ref=e2074]:
+                - generic [ref=e2075]:
+                  - generic [ref=e2077]: SY
+                  - generic [ref=e2078]: System
+                - generic [ref=e2079]: routine run triggered
+              - generic [ref=e2080]: 3h ago
+            - generic [ref=e2082]:
+              - paragraph [ref=e2083]:
+                - generic [ref=e2084]:
+                  - generic [ref=e2086]: SY
+                  - generic [ref=e2087]: System
+                - generic [ref=e2088]: routine run triggered
+              - generic [ref=e2089]: 3h ago
+            - generic [ref=e2091]:
+              - paragraph [ref=e2092]:
+                - generic [ref=e2093]:
+                  - generic [ref=e2095]: SY
+                  - generic [ref=e2096]: System
+                - generic [ref=e2097]: routine run triggered
+              - generic [ref=e2098]: 3h ago
+            - link "TE Trail Data Expert changed status from todo to cancelled on DIRA-75— [ALERT] Trail data files missing — GeoJSON and MBTiles 3h ago" [ref=e2099] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-75
+              - generic [ref=e2100]:
+                - paragraph [ref=e2101]:
+                  - generic [ref=e2102]:
+                    - generic [ref=e2104]: TE
+                    - generic [ref=e2105]: Trail Data Expert
+                  - generic [ref=e2106]: changed status from todo to cancelled on
+                  - text: DIRA-75
+                  - generic [ref=e2107]: — [ALERT] Trail data files missing — GeoJSON and MBTiles
+                - generic [ref=e2108]: 3h ago
+            - link "TE Trail Data Expert commented on DIRA-75— [ALERT] Trail data files missing — GeoJSON and MBTiles 3h ago" [ref=e2109] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-75
+              - generic [ref=e2110]:
+                - paragraph [ref=e2111]:
+                  - generic [ref=e2112]:
+                    - generic [ref=e2114]: TE
+                    - generic [ref=e2115]: Trail Data Expert
+                  - generic [ref=e2116]: commented on
+                  - text: DIRA-75
+                  - generic [ref=e2117]: — [ALERT] Trail data files missing — GeoJSON and MBTiles
+                - generic [ref=e2118]: 3h ago
+            - generic [ref=e2120]:
+              - paragraph [ref=e2121]:
+                - generic [ref=e2122]:
+                  - generic [ref=e2124]: SY
+                  - generic [ref=e2125]: System
+                - generic [ref=e2126]: routine run triggered
+              - generic [ref=e2127]: 4h ago
+            - generic [ref=e2129]:
+              - paragraph [ref=e2130]:
+                - generic [ref=e2131]:
+                  - generic [ref=e2133]: SY
+                  - generic [ref=e2134]: System
+                - generic [ref=e2135]: routine run triggered
+              - generic [ref=e2136]: 4h ago
+            - link "BO Board changed status from in progress to done on 4h ago" [ref=e2137] [cursor=pointer]:
+              - /url: /DIRA/issues/2f611b57-691b-4207-adb0-64b73fd6b647
+              - generic [ref=e2138]:
+                - paragraph [ref=e2139]:
+                  - generic [ref=e2140]:
+                    - generic [ref=e2142]: BO
+                    - generic [ref=e2143]: Board
+                  - generic [ref=e2144]: changed status from in progress to done on
+                - generic [ref=e2145]: 4h ago
+            - link "BO Board created DIRA-75— [ALERT] Trail data files missing — GeoJSON and MBTiles 4h ago" [ref=e2146] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-75
+              - generic [ref=e2147]:
+                - paragraph [ref=e2148]:
+                  - generic [ref=e2149]:
+                    - generic [ref=e2151]: BO
+                    - generic [ref=e2152]: Board
+                  - generic [ref=e2153]: created
+                  - text: DIRA-75
+                  - generic [ref=e2154]: — [ALERT] Trail data files missing — GeoJSON and MBTiles
+                - generic [ref=e2155]: 4h ago
+            - link "BO Board commented on 4h ago" [ref=e2156] [cursor=pointer]:
+              - /url: /DIRA/issues/2f611b57-691b-4207-adb0-64b73fd6b647
+              - generic [ref=e2157]:
+                - paragraph [ref=e2158]:
+                  - generic [ref=e2159]:
+                    - generic [ref=e2161]: BO
+                    - generic [ref=e2162]: Board
+                  - generic [ref=e2163]: commented on
+                - generic [ref=e2164]: 4h ago
+            - link "BO Board changed status from todo to in progress on 4h ago" [ref=e2165] [cursor=pointer]:
+              - /url: /DIRA/issues/2f611b57-691b-4207-adb0-64b73fd6b647
+              - generic [ref=e2166]:
+                - paragraph [ref=e2167]:
+                  - generic [ref=e2168]:
+                    - generic [ref=e2170]: BO
+                    - generic [ref=e2171]: Board
+                  - generic [ref=e2172]: changed status from todo to in progress on
+                - generic [ref=e2173]: 4h ago
+            - link "BO Board invoked heartbeat for Trail Data Health Agent 4h ago" [ref=e2174] [cursor=pointer]:
+              - /url: /DIRA/agents/d15513fc-6950-4019-a7d3-9a10cda6e114/runs/b4b1224a-4617-422c-8929-ea230988eab6
+              - generic [ref=e2175]:
+                - paragraph [ref=e2176]:
+                  - generic [ref=e2177]:
+                    - generic [ref=e2179]: BO
+                    - generic [ref=e2180]: Board
+                  - generic [ref=e2181]: invoked heartbeat for
+                  - text: Trail Data Health Agent
+                - generic [ref=e2182]: 4h ago
+            - generic [ref=e2184]:
+              - paragraph [ref=e2185]:
+                - generic [ref=e2186]:
+                  - generic [ref=e2188]: BO
+                  - generic [ref=e2189]: Board
+                - generic [ref=e2190]: routine run triggered
+              - generic [ref=e2191]: 4h ago
+            - link "BO Board updated Trail Data Health Agent 4h ago" [ref=e2192] [cursor=pointer]:
+              - /url: /DIRA/agents/d15513fc-6950-4019-a7d3-9a10cda6e114
+              - generic [ref=e2193]:
+                - paragraph [ref=e2194]:
+                  - generic [ref=e2195]:
+                    - generic [ref=e2197]: BO
+                    - generic [ref=e2198]: Board
+                  - generic [ref=e2199]: updated
+                  - text: Trail Data Health Agent
+                - generic [ref=e2200]: 4h ago
+            - generic [ref=e2202]:
+              - paragraph [ref=e2203]:
+                - generic [ref=e2204]:
+                  - generic [ref=e2206]: SY
+                  - generic [ref=e2207]: System
+                - generic [ref=e2208]: routine run triggered
+              - generic [ref=e2209]: 4h ago
+            - generic [ref=e2211]:
+              - paragraph [ref=e2212]:
+                - generic [ref=e2213]:
+                  - generic [ref=e2215]: SY
+                  - generic [ref=e2216]: System
+                - generic [ref=e2217]: routine run triggered
+              - generic [ref=e2218]: 4h ago
+            - generic [ref=e2220]:
+              - paragraph [ref=e2221]:
+                - generic [ref=e2222]:
+                  - generic [ref=e2224]: SY
+                  - generic [ref=e2225]: System
+                - generic [ref=e2226]: routine run triggered
+              - generic [ref=e2227]: 5h ago
+            - generic [ref=e2229]:
+              - paragraph [ref=e2230]:
+                - generic [ref=e2231]:
+                  - generic [ref=e2233]: SY
+                  - generic [ref=e2234]: System
+                - generic [ref=e2235]: routine run triggered
+              - generic [ref=e2236]: 5h ago
+            - link "BO Board updated HUD Engineer 5h ago" [ref=e2237] [cursor=pointer]:
+              - /url: /DIRA/agents/150f7571-f071-4906-bb01-fad0498138ba
+              - generic [ref=e2238]:
+                - paragraph [ref=e2239]:
+                  - generic [ref=e2240]:
+                    - generic [ref=e2242]: BO
+                    - generic [ref=e2243]: Board
+                  - generic [ref=e2244]: updated
+                  - text: HUD Engineer
+                - generic [ref=e2245]: 5h ago
+            - link "BO Board created DIRA-71— Hide End Ride button during Waze-model free riding 5h ago" [ref=e2246] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-71
+              - generic [ref=e2247]:
+                - paragraph [ref=e2248]:
+                  - generic [ref=e2249]:
+                    - generic [ref=e2251]: BO
+                    - generic [ref=e2252]: Board
+                  - generic [ref=e2253]: created
+                  - text: DIRA-71
+                  - generic [ref=e2254]: — Hide End Ride button during Waze-model free riding
+                - generic [ref=e2255]: 5h ago
+            - 'link "BO Board changed status from todo to cancelled on DIRA-69— Fix trail data: McMForge, Road Trail, Tight Pond Damn spelling 5h ago" [ref=e2256] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-69
+              - generic [ref=e2257]:
+                - paragraph [ref=e2258]:
+                  - generic [ref=e2259]:
+                    - generic [ref=e2261]: BO
+                    - generic [ref=e2262]: Board
+                  - generic [ref=e2263]: changed status from todo to cancelled on
+                  - text: DIRA-69
+                  - generic [ref=e2264]: "— Fix trail data: McMForge, Road Trail, Tight Pond Damn spelling"
+                - generic [ref=e2265]: 5h ago
+            - 'link "BO Board changed status from todo to cancelled on DIRA-68— Fix trail detection: too broad, flickers at intersections, detects roads as trails 5h ago" [ref=e2266] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-68
+              - generic [ref=e2267]:
+                - paragraph [ref=e2268]:
+                  - generic [ref=e2269]:
+                    - generic [ref=e2271]: BO
+                    - generic [ref=e2272]: Board
+                  - generic [ref=e2273]: changed status from todo to cancelled on
+                  - text: DIRA-68
+                  - generic [ref=e2274]: "— Fix trail detection: too broad, flickers at intersections, detects roads as trails"
+                - generic [ref=e2275]: 5h ago
+            - link "BO Board changed status from todo to cancelled on DIRA-67— Remove blue trail line overlay during free riding 5h ago" [ref=e2276] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-67
+              - generic [ref=e2277]:
+                - paragraph [ref=e2278]:
+                  - generic [ref=e2279]:
+                    - generic [ref=e2281]: BO
+                    - generic [ref=e2282]: Board
+                  - generic [ref=e2283]: changed status from todo to cancelled on
+                  - text: DIRA-67
+                  - generic [ref=e2284]: — Remove blue trail line overlay during free riding
+                - generic [ref=e2285]: 5h ago
+            - link "BO Board changed status from todo to cancelled on DIRA-66— Remove End Ride button during free riding (Waze model) 5h ago" [ref=e2286] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-66
+              - generic [ref=e2287]:
+                - paragraph [ref=e2288]:
+                  - generic [ref=e2289]:
+                    - generic [ref=e2291]: BO
+                    - generic [ref=e2292]: Board
+                  - generic [ref=e2293]: changed status from todo to cancelled on
+                  - text: DIRA-66
+                  - generic [ref=e2294]: — Remove End Ride button during free riding (Waze model)
+                - generic [ref=e2295]: 5h ago
+            - generic [ref=e2297]:
+              - paragraph [ref=e2298]:
+                - generic [ref=e2299]:
+                  - generic [ref=e2301]: SY
+                  - generic [ref=e2302]: System
+                - generic [ref=e2303]: routine run triggered
+              - generic [ref=e2304]: 5h ago
+            - generic [ref=e2306]:
+              - paragraph [ref=e2307]:
+                - generic [ref=e2308]:
+                  - generic [ref=e2310]: SY
+                  - generic [ref=e2311]: System
+                - generic [ref=e2312]: routine run triggered
+              - generic [ref=e2313]: 5h ago
+            - 'link "BO Board created DIRA-69— Fix trail data: McMForge, Road Trail, Tight Pond Damn spelling 5h ago" [ref=e2314] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-69
+              - generic [ref=e2315]:
+                - paragraph [ref=e2316]:
+                  - generic [ref=e2317]:
+                    - generic [ref=e2319]: BO
+                    - generic [ref=e2320]: Board
+                  - generic [ref=e2321]: created
+                  - text: DIRA-69
+                  - generic [ref=e2322]: "— Fix trail data: McMForge, Road Trail, Tight Pond Damn spelling"
+                - generic [ref=e2323]: 5h ago
+            - 'link "BO Board created DIRA-68— Fix trail detection: too broad, flickers at intersections, detects roads as trails 5h ago" [ref=e2324] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-68
+              - generic [ref=e2325]:
+                - paragraph [ref=e2326]:
+                  - generic [ref=e2327]:
+                    - generic [ref=e2329]: BO
+                    - generic [ref=e2330]: Board
+                  - generic [ref=e2331]: created
+                  - text: DIRA-68
+                  - generic [ref=e2332]: "— Fix trail detection: too broad, flickers at intersections, detects roads as trails"
+                - generic [ref=e2333]: 5h ago
+            - link "BO Board created DIRA-67— Remove blue trail line overlay during free riding 5h ago" [ref=e2334] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-67
+              - generic [ref=e2335]:
+                - paragraph [ref=e2336]:
+                  - generic [ref=e2337]:
+                    - generic [ref=e2339]: BO
+                    - generic [ref=e2340]: Board
+                  - generic [ref=e2341]: created
+                  - text: DIRA-67
+                  - generic [ref=e2342]: — Remove blue trail line overlay during free riding
+                - generic [ref=e2343]: 5h ago
+            - link "BO Board created DIRA-66— Remove End Ride button during free riding (Waze model) 5h ago" [ref=e2344] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-66
+              - generic [ref=e2345]:
+                - paragraph [ref=e2346]:
+                  - generic [ref=e2347]:
+                    - generic [ref=e2349]: BO
+                    - generic [ref=e2350]: Board
+                  - generic [ref=e2351]: created
+                  - text: DIRA-66
+                  - generic [ref=e2352]: — Remove End Ride button during free riding (Waze model)
+                - generic [ref=e2353]: 5h ago
+            - generic [ref=e2355]:
+              - paragraph [ref=e2356]:
+                - generic [ref=e2357]:
+                  - generic [ref=e2359]: SY
+                  - generic [ref=e2360]: System
+                - generic [ref=e2361]: routine run triggered
+              - generic [ref=e2362]: 6h ago
+            - generic [ref=e2364]:
+              - paragraph [ref=e2365]:
+                - generic [ref=e2366]:
+                  - generic [ref=e2368]: SY
+                  - generic [ref=e2369]: System
+                - generic [ref=e2370]: routine run triggered
+              - generic [ref=e2371]: 6h ago
+            - generic [ref=e2373]:
+              - paragraph [ref=e2374]:
+                - generic [ref=e2375]:
+                  - generic [ref=e2377]: SY
+                  - generic [ref=e2378]: System
+                - generic [ref=e2379]: routine run triggered
+              - generic [ref=e2380]: 6h ago
+            - generic [ref=e2382]:
+              - paragraph [ref=e2383]:
+                - generic [ref=e2384]:
+                  - generic [ref=e2386]: SY
+                  - generic [ref=e2387]: System
+                - generic [ref=e2388]: routine run triggered
+              - generic [ref=e2389]: 6h ago
+            - generic [ref=e2391]:
+              - paragraph [ref=e2392]:
+                - generic [ref=e2393]:
+                  - generic [ref=e2395]: SY
+                  - generic [ref=e2396]: System
+                - generic [ref=e2397]: routine run triggered
+              - generic [ref=e2398]: 7h ago
+            - generic [ref=e2400]:
+              - paragraph [ref=e2401]:
+                - generic [ref=e2402]:
+                  - generic [ref=e2404]: SY
+                  - generic [ref=e2405]: System
+                - generic [ref=e2406]: routine run triggered
+              - generic [ref=e2407]: 7h ago
+            - generic [ref=e2409]:
+              - paragraph [ref=e2410]:
+                - generic [ref=e2411]:
+                  - generic [ref=e2413]: SY
+                  - generic [ref=e2414]: System
+                - generic [ref=e2415]: routine run triggered
+              - generic [ref=e2416]: 7h ago
+            - generic [ref=e2418]:
+              - paragraph [ref=e2419]:
+                - generic [ref=e2420]:
+                  - generic [ref=e2422]: SY
+                  - generic [ref=e2423]: System
+                - generic [ref=e2424]: routine run triggered
+              - generic [ref=e2425]: 7h ago
+            - generic [ref=e2427]:
+              - paragraph [ref=e2428]:
+                - generic [ref=e2429]:
+                  - generic [ref=e2431]: SY
+                  - generic [ref=e2432]: System
+                - generic [ref=e2433]: routine run triggered
+              - generic [ref=e2434]: 8h ago
+            - generic [ref=e2436]:
+              - paragraph [ref=e2437]:
+                - generic [ref=e2438]:
+                  - generic [ref=e2440]: SY
+                  - generic [ref=e2441]: System
+                - generic [ref=e2442]: routine run triggered
+              - generic [ref=e2443]: 8h ago
+            - 'link "BO Board changed status from todo to done on DIRA-60— QA: Navigation State Machine — PR #341 8h ago" [ref=e2444] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-60
+              - generic [ref=e2445]:
+                - paragraph [ref=e2446]:
+                  - generic [ref=e2447]:
+                    - generic [ref=e2449]: BO
+                    - generic [ref=e2450]: Board
+                  - generic [ref=e2451]: changed status from todo to done on
+                  - text: DIRA-60
+                  - generic [ref=e2452]: "— QA: Navigation State Machine — PR #341"
+                - generic [ref=e2453]: 8h ago
+            - 'link "BO Board commented on DIRA-60— QA: Navigation State Machine — PR #341 8h ago" [ref=e2454] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-60
+              - generic [ref=e2455]:
+                - paragraph [ref=e2456]:
+                  - generic [ref=e2457]:
+                    - generic [ref=e2459]: BO
+                    - generic [ref=e2460]: Board
+                  - generic [ref=e2461]: commented on
+                  - text: DIRA-60
+                  - generic [ref=e2462]: "— QA: Navigation State Machine — PR #341"
+                - generic [ref=e2463]: 8h ago
+            - 'link "BO Board commented on DIRA-60— QA: Navigation State Machine — PR #341 8h ago" [ref=e2464] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-60
+              - generic [ref=e2465]:
+                - paragraph [ref=e2466]:
+                  - generic [ref=e2467]:
+                    - generic [ref=e2469]: BO
+                    - generic [ref=e2470]: Board
+                  - generic [ref=e2471]: commented on
+                  - text: DIRA-60
+                  - generic [ref=e2472]: "— QA: Navigation State Machine — PR #341"
+                - generic [ref=e2473]: 8h ago
+            - link "BO Board commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 8h ago" [ref=e2474] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e2475]:
+                - paragraph [ref=e2476]:
+                  - generic [ref=e2477]:
+                    - generic [ref=e2479]: BO
+                    - generic [ref=e2480]: Board
+                  - generic [ref=e2481]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e2482]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e2483]: 8h ago
+            - 'link "BO Board created DIRA-60— QA: Navigation State Machine — PR #341 8h ago" [ref=e2484] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-60
+              - generic [ref=e2485]:
+                - paragraph [ref=e2486]:
+                  - generic [ref=e2487]:
+                    - generic [ref=e2489]: BO
+                    - generic [ref=e2490]: Board
+                  - generic [ref=e2491]: created
+                  - text: DIRA-60
+                  - generic [ref=e2492]: "— QA: Navigation State Machine — PR #341"
+                - generic [ref=e2493]: 8h ago
+            - 'link "BO Board changed status from todo to done on DIRA-58— QA: Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2494] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-58
+              - generic [ref=e2495]:
+                - paragraph [ref=e2496]:
+                  - generic [ref=e2497]:
+                    - generic [ref=e2499]: BO
+                    - generic [ref=e2500]: Board
+                  - generic [ref=e2501]: changed status from todo to done on
+                  - text: DIRA-58
+                  - generic [ref=e2502]: "— QA: Fix background auto-save modal + GPS speed spike false starts"
+                - generic [ref=e2503]: 8h ago
+            - 'link "BO Board commented on DIRA-58— QA: Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2504] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-58
+              - generic [ref=e2505]:
+                - paragraph [ref=e2506]:
+                  - generic [ref=e2507]:
+                    - generic [ref=e2509]: BO
+                    - generic [ref=e2510]: Board
+                  - generic [ref=e2511]: commented on
+                  - text: DIRA-58
+                  - generic [ref=e2512]: "— QA: Fix background auto-save modal + GPS speed spike false starts"
+                - generic [ref=e2513]: 8h ago
+            - generic [ref=e2515]:
+              - paragraph [ref=e2516]:
+                - generic [ref=e2517]:
+                  - generic [ref=e2519]: SY
+                  - generic [ref=e2520]: System
+                - generic [ref=e2521]: routine run triggered
+              - generic [ref=e2522]: 8h ago
+            - generic [ref=e2524]:
+              - paragraph [ref=e2525]:
+                - generic [ref=e2526]:
+                  - generic [ref=e2528]: SY
+                  - generic [ref=e2529]: System
+                - generic [ref=e2530]: routine run triggered
+              - generic [ref=e2531]: 8h ago
+            - 'link "BO Board commented on DIRA-58— QA: Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2532] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-58
+              - generic [ref=e2533]:
+                - paragraph [ref=e2534]:
+                  - generic [ref=e2535]:
+                    - generic [ref=e2537]: BO
+                    - generic [ref=e2538]: Board
+                  - generic [ref=e2539]: commented on
+                  - text: DIRA-58
+                  - generic [ref=e2540]: "— QA: Fix background auto-save modal + GPS speed spike false starts"
+                - generic [ref=e2541]: 8h ago
+            - link "BO Board commented on DIRA-57— Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2542] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-57
+              - generic [ref=e2543]:
+                - paragraph [ref=e2544]:
+                  - generic [ref=e2545]:
+                    - generic [ref=e2547]: BO
+                    - generic [ref=e2548]: Board
+                  - generic [ref=e2549]: commented on
+                  - text: DIRA-57
+                  - generic [ref=e2550]: — Fix background auto-save modal + GPS speed spike false starts
+                - generic [ref=e2551]: 8h ago
+            - 'link "BO Board created DIRA-58— QA: Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2552] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-58
+              - generic [ref=e2553]:
+                - paragraph [ref=e2554]:
+                  - generic [ref=e2555]:
+                    - generic [ref=e2557]: BO
+                    - generic [ref=e2558]: Board
+                  - generic [ref=e2559]: created
+                  - text: DIRA-58
+                  - generic [ref=e2560]: "— QA: Fix background auto-save modal + GPS speed spike false starts"
+                - generic [ref=e2561]: 8h ago
+            - link "BO Board commented on DIRA-57— Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2562] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-57
+              - generic [ref=e2563]:
+                - paragraph [ref=e2564]:
+                  - generic [ref=e2565]:
+                    - generic [ref=e2567]: BO
+                    - generic [ref=e2568]: Board
+                  - generic [ref=e2569]: commented on
+                  - text: DIRA-57
+                  - generic [ref=e2570]: — Fix background auto-save modal + GPS speed spike false starts
+                - generic [ref=e2571]: 8h ago
+            - link "BO Board commented on DIRA-57— Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2572] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-57
+              - generic [ref=e2573]:
+                - paragraph [ref=e2574]:
+                  - generic [ref=e2575]:
+                    - generic [ref=e2577]: BO
+                    - generic [ref=e2578]: Board
+                  - generic [ref=e2579]: commented on
+                  - text: DIRA-57
+                  - generic [ref=e2580]: — Fix background auto-save modal + GPS speed spike false starts
+                - generic [ref=e2581]: 8h ago
+            - link "BO Board created DIRA-57— Fix background auto-save modal + GPS speed spike false starts 8h ago" [ref=e2582] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-57
+              - generic [ref=e2583]:
+                - paragraph [ref=e2584]:
+                  - generic [ref=e2585]:
+                    - generic [ref=e2587]: BO
+                    - generic [ref=e2588]: Board
+                  - generic [ref=e2589]: created
+                  - text: DIRA-57
+                  - generic [ref=e2590]: — Fix background auto-save modal + GPS speed spike false starts
+                - generic [ref=e2591]: 8h ago
+            - generic [ref=e2593]:
+              - paragraph [ref=e2594]:
+                - generic [ref=e2595]:
+                  - generic [ref=e2597]: SY
+                  - generic [ref=e2598]: System
+                - generic [ref=e2599]: routine run triggered
+              - generic [ref=e2600]: 9h ago
+            - generic [ref=e2602]:
+              - paragraph [ref=e2603]:
+                - generic [ref=e2604]:
+                  - generic [ref=e2606]: SY
+                  - generic [ref=e2607]: System
+                - generic [ref=e2608]: routine run triggered
+              - generic [ref=e2609]: 9h ago
+            - 'link "BO Board changed status from todo to done on DIRA-54— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal 9h ago" [ref=e2610] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-54
+              - generic [ref=e2611]:
+                - paragraph [ref=e2612]:
+                  - generic [ref=e2613]:
+                    - generic [ref=e2615]: BO
+                    - generic [ref=e2616]: Board
+                  - generic [ref=e2617]: changed status from todo to done on
+                  - text: DIRA-54
+                  - generic [ref=e2618]: "— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal"
+                - generic [ref=e2619]: 9h ago
+            - 'link "BO Board commented on DIRA-54— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal 9h ago" [ref=e2620] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-54
+              - generic [ref=e2621]:
+                - paragraph [ref=e2622]:
+                  - generic [ref=e2623]:
+                    - generic [ref=e2625]: BO
+                    - generic [ref=e2626]: Board
+                  - generic [ref=e2627]: commented on
+                  - text: DIRA-54
+                  - generic [ref=e2628]: "— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal"
+                - generic [ref=e2629]: 9h ago
+            - generic [ref=e2631]:
+              - paragraph [ref=e2632]:
+                - generic [ref=e2633]:
+                  - generic [ref=e2635]: SY
+                  - generic [ref=e2636]: System
+                - generic [ref=e2637]: routine run triggered
+              - generic [ref=e2638]: 9h ago
+            - generic [ref=e2640]:
+              - paragraph [ref=e2641]:
+                - generic [ref=e2642]:
+                  - generic [ref=e2644]: SY
+                  - generic [ref=e2645]: System
+                - generic [ref=e2646]: routine run triggered
+              - generic [ref=e2647]: 9h ago
+            - 'link "BO Board changed status from in review to done on DIRA-53— Fix auto-record: speed gate + suppress Ride Complete modal in free riding 9h ago" [ref=e2648] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-53
+              - generic [ref=e2649]:
+                - paragraph [ref=e2650]:
+                  - generic [ref=e2651]:
+                    - generic [ref=e2653]: BO
+                    - generic [ref=e2654]: Board
+                  - generic [ref=e2655]: changed status from in review to done on
+                  - text: DIRA-53
+                  - generic [ref=e2656]: "— Fix auto-record: speed gate + suppress Ride Complete modal in free riding"
+                - generic [ref=e2657]: 9h ago
+            - 'link "BO Board commented on DIRA-54— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal 9h ago" [ref=e2658] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-54
+              - generic [ref=e2659]:
+                - paragraph [ref=e2660]:
+                  - generic [ref=e2661]:
+                    - generic [ref=e2663]: BO
+                    - generic [ref=e2664]: Board
+                  - generic [ref=e2665]: commented on
+                  - text: DIRA-54
+                  - generic [ref=e2666]: "— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal"
+                - generic [ref=e2667]: 9h ago
+            - 'link "BO Board issue read marked DIRA-53— Fix auto-record: speed gate + suppress Ride Complete modal in free riding 9h ago" [ref=e2668] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-53
+              - generic [ref=e2669]:
+                - paragraph [ref=e2670]:
+                  - generic [ref=e2671]:
+                    - generic [ref=e2673]: BO
+                    - generic [ref=e2674]: Board
+                  - generic [ref=e2675]: issue read marked
+                  - text: DIRA-53
+                  - generic [ref=e2676]: "— Fix auto-record: speed gate + suppress Ride Complete modal in free riding"
+                - generic [ref=e2677]: 9h ago
+            - 'link "BO Board created DIRA-54— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal 9h ago" [ref=e2678] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-54
+              - generic [ref=e2679]:
+                - paragraph [ref=e2680]:
+                  - generic [ref=e2681]:
+                    - generic [ref=e2683]: BO
+                    - generic [ref=e2684]: Board
+                  - generic [ref=e2685]: created
+                  - text: DIRA-54
+                  - generic [ref=e2686]: "— QA: Verify DIRA-53 speed gate + suppress Ride Complete modal"
+                - generic [ref=e2687]: 9h ago
+            - 'link "BO Board changed status from todo to in review on DIRA-53— Fix auto-record: speed gate + suppress Ride Complete modal in free riding 9h ago" [ref=e2688] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-53
+              - generic [ref=e2689]:
+                - paragraph [ref=e2690]:
+                  - generic [ref=e2691]:
+                    - generic [ref=e2693]: BO
+                    - generic [ref=e2694]: Board
+                  - generic [ref=e2695]: changed status from todo to in review on
+                  - text: DIRA-53
+                  - generic [ref=e2696]: "— Fix auto-record: speed gate + suppress Ride Complete modal in free riding"
+                - generic [ref=e2697]: 9h ago
+            - 'link "BO Board created DIRA-53— Fix auto-record: speed gate + suppress Ride Complete modal in free riding 10h ago" [ref=e2698] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-53
+              - generic [ref=e2699]:
+                - paragraph [ref=e2700]:
+                  - generic [ref=e2701]:
+                    - generic [ref=e2703]: BO
+                    - generic [ref=e2704]: Board
+                  - generic [ref=e2705]: created
+                  - text: DIRA-53
+                  - generic [ref=e2706]: "— Fix auto-record: speed gate + suppress Ride Complete modal in free riding"
+                - generic [ref=e2707]: 10h ago
+            - 'link "BO Board changed status from todo to cancelled on DIRA-50— Fix auto-record: should not trigger on walking speed or show Ride Complete unprompted 10h ago" [ref=e2708] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-50
+              - generic [ref=e2709]:
+                - paragraph [ref=e2710]:
+                  - generic [ref=e2711]:
+                    - generic [ref=e2713]: BO
+                    - generic [ref=e2714]: Board
+                  - generic [ref=e2715]: changed status from todo to cancelled on
+                  - text: DIRA-50
+                  - generic [ref=e2716]: "— Fix auto-record: should not trigger on walking speed or show Ride Complete unprompted"
+                - generic [ref=e2717]: 10h ago
+            - generic [ref=e2719]:
+              - paragraph [ref=e2720]:
+                - generic [ref=e2721]:
+                  - generic [ref=e2723]: SY
+                  - generic [ref=e2724]: System
+                - generic [ref=e2725]: routine run triggered
+              - generic [ref=e2726]: 10h ago
+            - generic [ref=e2728]:
+              - paragraph [ref=e2729]:
+                - generic [ref=e2730]:
+                  - generic [ref=e2732]: SY
+                  - generic [ref=e2733]: System
+                - generic [ref=e2734]: routine run triggered
+              - generic [ref=e2735]: 10h ago
+            - generic [ref=e2737]:
+              - paragraph [ref=e2738]:
+                - generic [ref=e2739]:
+                  - generic [ref=e2741]: SY
+                  - generic [ref=e2742]: System
+                - generic [ref=e2743]: routine run triggered
+              - generic [ref=e2744]: 10h ago
+            - generic [ref=e2746]:
+              - paragraph [ref=e2747]:
+                - generic [ref=e2748]:
+                  - generic [ref=e2750]: SY
+                  - generic [ref=e2751]: System
+                - generic [ref=e2752]: routine run triggered
+              - generic [ref=e2753]: 10h ago
+            - 'link "BO Board created DIRA-50— Fix auto-record: should not trigger on walking speed or show Ride Complete unprompted 10h ago" [ref=e2754] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-50
+              - generic [ref=e2755]:
+                - paragraph [ref=e2756]:
+                  - generic [ref=e2757]:
+                    - generic [ref=e2759]: BO
+                    - generic [ref=e2760]: Board
+                  - generic [ref=e2761]: created
+                  - text: DIRA-50
+                  - generic [ref=e2762]: "— Fix auto-record: should not trigger on walking speed or show Ride Complete unprompted"
+                - generic [ref=e2763]: 10h ago
+            - link "BO Board changed status from todo to cancelled on 10h ago" [ref=e2764] [cursor=pointer]:
+              - /url: /DIRA/issues/e955bba4-a687-4810-9f73-a40d9c709dc3
+              - generic [ref=e2765]:
+                - paragraph [ref=e2766]:
+                  - generic [ref=e2767]:
+                    - generic [ref=e2769]: BO
+                    - generic [ref=e2770]: Board
+                  - generic [ref=e2771]: changed status from todo to cancelled on
+                - generic [ref=e2772]: 10h ago
+            - link "BO Board changed status from todo to cancelled on DIRA-27— Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills 10h ago" [ref=e2773] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-27
+              - generic [ref=e2774]:
+                - paragraph [ref=e2775]:
+                  - generic [ref=e2776]:
+                    - generic [ref=e2778]: BO
+                    - generic [ref=e2779]: Board
+                  - generic [ref=e2780]: changed status from todo to cancelled on
+                  - text: DIRA-27
+                  - generic [ref=e2781]: — Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills
+                - generic [ref=e2782]: 10h ago
+            - link "BO Board changed status from todo to cancelled on DIRA-30— Hire Pipeline Manager — enforce flow order and catch skipped steps 10h ago" [ref=e2783] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-30
+              - generic [ref=e2784]:
+                - paragraph [ref=e2785]:
+                  - generic [ref=e2786]:
+                    - generic [ref=e2788]: BO
+                    - generic [ref=e2789]: Board
+                  - generic [ref=e2790]: changed status from todo to cancelled on
+                  - text: DIRA-30
+                  - generic [ref=e2791]: — Hire Pipeline Manager — enforce flow order and catch skipped steps
+                - generic [ref=e2792]: 10h ago
+            - link "BO Board changed status from in progress to cancelled on DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 10h ago" [ref=e2793] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e2794]:
+                - paragraph [ref=e2795]:
+                  - generic [ref=e2796]:
+                    - generic [ref=e2798]: BO
+                    - generic [ref=e2799]: Board
+                  - generic [ref=e2800]: changed status from in progress to cancelled on
+                  - text: DIRA-18
+                  - generic [ref=e2801]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e2802]: 10h ago
+            - link "BO Board changed status from in progress to cancelled on DIRA-32— Hire Onboarding Specialist — every new agent passes 10/10 before going active 10h ago" [ref=e2803] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-32
+              - generic [ref=e2804]:
+                - paragraph [ref=e2805]:
+                  - generic [ref=e2806]:
+                    - generic [ref=e2808]: BO
+                    - generic [ref=e2809]: Board
+                  - generic [ref=e2810]: changed status from in progress to cancelled on
+                  - text: DIRA-32
+                  - generic [ref=e2811]: — Hire Onboarding Specialist — every new agent passes 10/10 before going active
+                - generic [ref=e2812]: 10h ago
+            - 'link "BO Board changed status from backlog to cancelled on DIRA-40— POI Research: Rockhouse 10h ago" [ref=e2813] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-40
+              - generic [ref=e2814]:
+                - paragraph [ref=e2815]:
+                  - generic [ref=e2816]:
+                    - generic [ref=e2818]: BO
+                    - generic [ref=e2819]: Board
+                  - generic [ref=e2820]: changed status from backlog to cancelled on
+                  - text: DIRA-40
+                  - generic [ref=e2821]: "— POI Research: Rockhouse"
+                - generic [ref=e2822]: 10h ago
+            - link "BO Board changed status from in review to cancelled on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 10h ago" [ref=e2823] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e2824]:
+                - paragraph [ref=e2825]:
+                  - generic [ref=e2826]:
+                    - generic [ref=e2828]: BO
+                    - generic [ref=e2829]: Board
+                  - generic [ref=e2830]: changed status from in review to cancelled on
+                  - text: DIRA-1
+                  - generic [ref=e2831]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e2832]: 10h ago
+            - 'link "BO Board changed status from in progress to cancelled on DIRA-28— QA: Visual verification of Add-a-Stop feature — DIRA-25 10h ago" [ref=e2833] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-28
+              - generic [ref=e2834]:
+                - paragraph [ref=e2835]:
+                  - generic [ref=e2836]:
+                    - generic [ref=e2838]: BO
+                    - generic [ref=e2839]: Board
+                  - generic [ref=e2840]: changed status from in progress to cancelled on
+                  - text: DIRA-28
+                  - generic [ref=e2841]: "— QA: Visual verification of Add-a-Stop feature — DIRA-25"
+                - generic [ref=e2842]: 10h ago
+            - 'link "BO Board changed status from in review to cancelled on DIRA-31— PR: feat/dira-20-hud-trail-header → master (trail name header) 10h ago" [ref=e2843] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-31
+              - generic [ref=e2844]:
+                - paragraph [ref=e2845]:
+                  - generic [ref=e2846]:
+                    - generic [ref=e2848]: BO
+                    - generic [ref=e2849]: Board
+                  - generic [ref=e2850]: changed status from in review to cancelled on
+                  - text: DIRA-31
+                  - generic [ref=e2851]: "— PR: feat/dira-20-hud-trail-header → master (trail name header)"
+                - generic [ref=e2852]: 10h ago
+            - link "BO Board changed status from in review to cancelled on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 10h ago" [ref=e2853] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e2854]:
+                - paragraph [ref=e2855]:
+                  - generic [ref=e2856]:
+                    - generic [ref=e2858]: BO
+                    - generic [ref=e2859]: Board
+                  - generic [ref=e2860]: changed status from in review to cancelled on
+                  - text: DIRA-20
+                  - generic [ref=e2861]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e2862]: 10h ago
+            - 'link "BO Board changed status from todo to cancelled on DIRA-33— QA: Verify Add-a-Stop buttons on branch feat/dira-23-add-a-stop 10h ago" [ref=e2863] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-33
+              - generic [ref=e2864]:
+                - paragraph [ref=e2865]:
+                  - generic [ref=e2866]:
+                    - generic [ref=e2868]: BO
+                    - generic [ref=e2869]: Board
+                  - generic [ref=e2870]: changed status from todo to cancelled on
+                  - text: DIRA-33
+                  - generic [ref=e2871]: "— QA: Verify Add-a-Stop buttons on branch feat/dira-23-add-a-stop"
+                - generic [ref=e2872]: 10h ago
+            - link "BO Board changed status from in review to cancelled on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 10h ago" [ref=e2873] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e2874]:
+                - paragraph [ref=e2875]:
+                  - generic [ref=e2876]:
+                    - generic [ref=e2878]: BO
+                    - generic [ref=e2879]: Board
+                  - generic [ref=e2880]: changed status from in review to cancelled on
+                  - text: DIRA-25
+                  - generic [ref=e2881]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e2882]: 10h ago
+            - 'link "BO Board changed status from in progress to cancelled on DIRA-24— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data 10h ago" [ref=e2883] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-24
+              - generic [ref=e2884]:
+                - paragraph [ref=e2885]:
+                  - generic [ref=e2886]:
+                    - generic [ref=e2888]: BO
+                    - generic [ref=e2889]: Board
+                  - generic [ref=e2890]: changed status from in progress to cancelled on
+                  - text: DIRA-24
+                  - generic [ref=e2891]: "— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data"
+                - generic [ref=e2892]: 10h ago
+            - link "BO Board changed status from in review to cancelled on DIRA-38— Find all duplicate trails in Burning Rock 10h ago" [ref=e2893] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-38
+              - generic [ref=e2894]:
+                - paragraph [ref=e2895]:
+                  - generic [ref=e2896]:
+                    - generic [ref=e2898]: BO
+                    - generic [ref=e2899]: Board
+                  - generic [ref=e2900]: changed status from in review to cancelled on
+                  - text: DIRA-38
+                  - generic [ref=e2901]: — Find all duplicate trails in Burning Rock
+                - generic [ref=e2902]: 10h ago
+            - link "BO Board updated Drive Publisher 11h ago" [ref=e2903] [cursor=pointer]:
+              - /url: /DIRA/agents/84bc85f0-0c1e-4bc6-8734-fe357265d10b
+              - generic [ref=e2904]:
+                - paragraph [ref=e2905]:
+                  - generic [ref=e2906]:
+                    - generic [ref=e2908]: BO
+                    - generic [ref=e2909]: Board
+                  - generic [ref=e2910]: updated
+                  - text: Drive Publisher
+                - generic [ref=e2911]: 11h ago
+            - link "BO Board updated Trail Data Expert 11h ago" [ref=e2912] [cursor=pointer]:
+              - /url: /DIRA/agents/7fac51b6-316c-4064-bebc-5f75973ecc75
+              - generic [ref=e2913]:
+                - paragraph [ref=e2914]:
+                  - generic [ref=e2915]:
+                    - generic [ref=e2917]: BO
+                    - generic [ref=e2918]: Board
+                  - generic [ref=e2919]: updated
+                  - text: Trail Data Expert
+                - generic [ref=e2920]: 11h ago
+            - link "BO Board updated DirtSync COO 11h ago" [ref=e2921] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e2922]:
+                - paragraph [ref=e2923]:
+                  - generic [ref=e2924]:
+                    - generic [ref=e2926]: BO
+                    - generic [ref=e2927]: Board
+                  - generic [ref=e2928]: updated
+                  - text: DirtSync COO
+                - generic [ref=e2929]: 11h ago
+            - link "BO Board updated QA Rider 11h ago" [ref=e2930] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6
+              - generic [ref=e2931]:
+                - paragraph [ref=e2932]:
+                  - generic [ref=e2933]:
+                    - generic [ref=e2935]: BO
+                    - generic [ref=e2936]: Board
+                  - generic [ref=e2937]: updated
+                  - text: QA Rider
+                - generic [ref=e2938]: 11h ago
+            - link "BO Board updated Ship Engineer 11h ago" [ref=e2939] [cursor=pointer]:
+              - /url: /DIRA/agents/8d7e55c5-6f4a-4582-bc4f-d9285a7b0d77
+              - generic [ref=e2940]:
+                - paragraph [ref=e2941]:
+                  - generic [ref=e2942]:
+                    - generic [ref=e2944]: BO
+                    - generic [ref=e2945]: Board
+                  - generic [ref=e2946]: updated
+                  - text: Ship Engineer
+                - generic [ref=e2947]: 11h ago
+            - link "BO Board created HUD Engineer 11h ago" [ref=e2948] [cursor=pointer]:
+              - /url: /DIRA/agents/150f7571-f071-4906-bb01-fad0498138ba
+              - generic [ref=e2949]:
+                - paragraph [ref=e2950]:
+                  - generic [ref=e2951]:
+                    - generic [ref=e2953]: BO
+                    - generic [ref=e2954]: Board
+                  - generic [ref=e2955]: created
+                  - text: HUD Engineer
+                - generic [ref=e2956]: 11h ago
+            - link "BO Board created Navigation Engineer 11h ago" [ref=e2957] [cursor=pointer]:
+              - /url: /DIRA/agents/116cd6bf-513a-4e6d-ad29-a91c00c37f8c
+              - generic [ref=e2958]:
+                - paragraph [ref=e2959]:
+                  - generic [ref=e2960]:
+                    - generic [ref=e2962]: BO
+                    - generic [ref=e2963]: Board
+                  - generic [ref=e2964]: created
+                  - text: Navigation Engineer
+                - generic [ref=e2965]: 11h ago
+            - link "BO Board created Build & Test Agent 11h ago" [ref=e2966] [cursor=pointer]:
+              - /url: /DIRA/agents/4e30cd83-61a5-4ada-8c78-c4a073f23887
+              - generic [ref=e2967]:
+                - paragraph [ref=e2968]:
+                  - generic [ref=e2969]:
+                    - generic [ref=e2971]: BO
+                    - generic [ref=e2972]: Board
+                  - generic [ref=e2973]: created
+                  - text: Build & Test Agent
+                - generic [ref=e2974]: 11h ago
+            - link "BO Board created Map View Engineer 11h ago" [ref=e2975] [cursor=pointer]:
+              - /url: /DIRA/agents/52403416-c5d7-48ea-8aa8-d8128d0ef203
+              - generic [ref=e2976]:
+                - paragraph [ref=e2977]:
+                  - generic [ref=e2978]:
+                    - generic [ref=e2980]: BO
+                    - generic [ref=e2981]: Board
+                  - generic [ref=e2982]: created
+                  - text: Map View Engineer
+                - generic [ref=e2983]: 11h ago
+            - link "BO Board created Ride Recording Engineer 11h ago" [ref=e2984] [cursor=pointer]:
+              - /url: /DIRA/agents/ec2973e0-f829-4731-ab5a-6a663ba4a78a
+              - generic [ref=e2985]:
+                - paragraph [ref=e2986]:
+                  - generic [ref=e2987]:
+                    - generic [ref=e2989]: BO
+                    - generic [ref=e2990]: Board
+                  - generic [ref=e2991]: created
+                  - text: Ride Recording Engineer
+                - generic [ref=e2992]: 11h ago
+            - generic [ref=e2994]:
+              - paragraph [ref=e2995]:
+                - generic [ref=e2996]:
+                  - generic [ref=e2998]: SY
+                  - generic [ref=e2999]: System
+                - generic [ref=e3000]: routine run triggered
+              - generic [ref=e3001]: 11h ago
+            - generic [ref=e3003]:
+              - paragraph [ref=e3004]:
+                - generic [ref=e3005]:
+                  - generic [ref=e3007]: SY
+                  - generic [ref=e3008]: System
+                - generic [ref=e3009]: routine run triggered
+              - generic [ref=e3010]: 11h ago
+            - link "BO Board updated Drive Publisher 11h ago" [ref=e3011] [cursor=pointer]:
+              - /url: /DIRA/agents/84bc85f0-0c1e-4bc6-8734-fe357265d10b
+              - generic [ref=e3012]:
+                - paragraph [ref=e3013]:
+                  - generic [ref=e3014]:
+                    - generic [ref=e3016]: BO
+                    - generic [ref=e3017]: Board
+                  - generic [ref=e3018]: updated
+                  - text: Drive Publisher
+                - generic [ref=e3019]: 11h ago
+            - link "BO Board updated Trail Data Expert 11h ago" [ref=e3020] [cursor=pointer]:
+              - /url: /DIRA/agents/7fac51b6-316c-4064-bebc-5f75973ecc75
+              - generic [ref=e3021]:
+                - paragraph [ref=e3022]:
+                  - generic [ref=e3023]:
+                    - generic [ref=e3025]: BO
+                    - generic [ref=e3026]: Board
+                  - generic [ref=e3027]: updated
+                  - text: Trail Data Expert
+                - generic [ref=e3028]: 11h ago
+            - link "BO Board updated QA Rider 11h ago" [ref=e3029] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6
+              - generic [ref=e3030]:
+                - paragraph [ref=e3031]:
+                  - generic [ref=e3032]:
+                    - generic [ref=e3034]: BO
+                    - generic [ref=e3035]: Board
+                  - generic [ref=e3036]: updated
+                  - text: QA Rider
+                - generic [ref=e3037]: 11h ago
+            - link "BO Board updated Ship Engineer 11h ago" [ref=e3038] [cursor=pointer]:
+              - /url: /DIRA/agents/8d7e55c5-6f4a-4582-bc4f-d9285a7b0d77
+              - generic [ref=e3039]:
+                - paragraph [ref=e3040]:
+                  - generic [ref=e3041]:
+                    - generic [ref=e3043]: BO
+                    - generic [ref=e3044]: Board
+                  - generic [ref=e3045]: updated
+                  - text: Ship Engineer
+                - generic [ref=e3046]: 11h ago
+            - link "BO Board updated DirtSync COO 11h ago" [ref=e3047] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e3048]:
+                - paragraph [ref=e3049]:
+                  - generic [ref=e3050]:
+                    - generic [ref=e3052]: BO
+                    - generic [ref=e3053]: Board
+                  - generic [ref=e3054]: updated
+                  - text: DirtSync COO
+                - generic [ref=e3055]: 11h ago
+            - link "BO Board updated Revenue Scanner Agent 11h ago" [ref=e3056] [cursor=pointer]:
+              - /url: /DIRA/agents/dea6abc2-eeec-4a84-b6db-50140e5f272d
+              - generic [ref=e3057]:
+                - paragraph [ref=e3058]:
+                  - generic [ref=e3059]:
+                    - generic [ref=e3061]: BO
+                    - generic [ref=e3062]: Board
+                  - generic [ref=e3063]: updated
+                  - text: Revenue Scanner Agent
+                - generic [ref=e3064]: 11h ago
+            - link "BO Board updated App Store Readiness Agent 11h ago" [ref=e3065] [cursor=pointer]:
+              - /url: /DIRA/agents/f40bd229-28f6-4577-b3f3-dc14c611576d
+              - generic [ref=e3066]:
+                - paragraph [ref=e3067]:
+                  - generic [ref=e3068]:
+                    - generic [ref=e3070]: BO
+                    - generic [ref=e3071]: Board
+                  - generic [ref=e3072]: updated
+                  - text: App Store Readiness Agent
+                - generic [ref=e3073]: 11h ago
+            - link "BO Board updated Road Network Agent 11h ago" [ref=e3074] [cursor=pointer]:
+              - /url: /DIRA/agents/1e2e64b9-cb73-400a-a07a-6fa436b4b0c3
+              - generic [ref=e3075]:
+                - paragraph [ref=e3076]:
+                  - generic [ref=e3077]:
+                    - generic [ref=e3079]: BO
+                    - generic [ref=e3080]: Board
+                  - generic [ref=e3081]: updated
+                  - text: Road Network Agent
+                - generic [ref=e3082]: 11h ago
+            - link "BO Board updated Difficulty Calibration Agent 11h ago" [ref=e3083] [cursor=pointer]:
+              - /url: /DIRA/agents/0c9ff633-298b-41f9-9ff4-e5c00c1ed7a6
+              - generic [ref=e3084]:
+                - paragraph [ref=e3085]:
+                  - generic [ref=e3086]:
+                    - generic [ref=e3088]: BO
+                    - generic [ref=e3089]: Board
+                  - generic [ref=e3090]: updated
+                  - text: Difficulty Calibration Agent
+                - generic [ref=e3091]: 11h ago
+            - link "BO Board updated POI Freshness Agent 11h ago" [ref=e3092] [cursor=pointer]:
+              - /url: /DIRA/agents/6a02b30f-71d5-4308-b261-fc91b3f0744c
+              - generic [ref=e3093]:
+                - paragraph [ref=e3094]:
+                  - generic [ref=e3095]:
+                    - generic [ref=e3097]: BO
+                    - generic [ref=e3098]: Board
+                  - generic [ref=e3099]: updated
+                  - text: POI Freshness Agent
+                - generic [ref=e3100]: 11h ago
+            - link "BO Board updated New Trail Scanner Agent 11h ago" [ref=e3101] [cursor=pointer]:
+              - /url: /DIRA/agents/52538aa7-cacb-4a2c-b53b-130a98b77123
+              - generic [ref=e3102]:
+                - paragraph [ref=e3103]:
+                  - generic [ref=e3104]:
+                    - generic [ref=e3106]: BO
+                    - generic [ref=e3107]: Board
+                  - generic [ref=e3108]: updated
+                  - text: New Trail Scanner Agent
+                - generic [ref=e3109]: 11h ago
+            - link "BO Board updated SDK Releases Agent 11h ago" [ref=e3110] [cursor=pointer]:
+              - /url: /DIRA/agents/9fec7856-1ca4-4b6d-b6ae-8f5c517a18fa
+              - generic [ref=e3111]:
+                - paragraph [ref=e3112]:
+                  - generic [ref=e3113]:
+                    - generic [ref=e3115]: BO
+                    - generic [ref=e3116]: Board
+                  - generic [ref=e3117]: updated
+                  - text: SDK Releases Agent
+                - generic [ref=e3118]: 11h ago
+            - link "BO Board updated Competitor Watch Agent 11h ago" [ref=e3119] [cursor=pointer]:
+              - /url: /DIRA/agents/3512acdb-a5aa-4fc5-a9b4-ad5c70c7c9f2
+              - generic [ref=e3120]:
+                - paragraph [ref=e3121]:
+                  - generic [ref=e3122]:
+                    - generic [ref=e3124]: BO
+                    - generic [ref=e3125]: Board
+                  - generic [ref=e3126]: updated
+                  - text: Competitor Watch Agent
+                - generic [ref=e3127]: 11h ago
+            - link "BO Board updated Claude AI Scanner Agent 11h ago" [ref=e3128] [cursor=pointer]:
+              - /url: /DIRA/agents/eb1e72b2-9e79-435f-a4bb-70571c7a0104
+              - generic [ref=e3129]:
+                - paragraph [ref=e3130]:
+                  - generic [ref=e3131]:
+                    - generic [ref=e3133]: BO
+                    - generic [ref=e3134]: Board
+                  - generic [ref=e3135]: updated
+                  - text: Claude AI Scanner Agent
+                - generic [ref=e3136]: 11h ago
+            - link "BO Board updated TestFlight Monitor Agent 11h ago" [ref=e3137] [cursor=pointer]:
+              - /url: /DIRA/agents/68daceb3-90a4-4789-8239-064ca2f88a4f
+              - generic [ref=e3138]:
+                - paragraph [ref=e3139]:
+                  - generic [ref=e3140]:
+                    - generic [ref=e3142]: BO
+                    - generic [ref=e3143]: Board
+                  - generic [ref=e3144]: updated
+                  - text: TestFlight Monitor Agent
+                - generic [ref=e3145]: 11h ago
+            - link "BO Board updated Feature Usage Agent 11h ago" [ref=e3146] [cursor=pointer]:
+              - /url: /DIRA/agents/15cbec3a-4008-4f95-b3e1-e91bf4167e7e
+              - generic [ref=e3147]:
+                - paragraph [ref=e3148]:
+                  - generic [ref=e3149]:
+                    - generic [ref=e3151]: BO
+                    - generic [ref=e3152]: Board
+                  - generic [ref=e3153]: updated
+                  - text: Feature Usage Agent
+                - generic [ref=e3154]: 11h ago
+            - link "BO Board updated Morning Agenda Agent 11h ago" [ref=e3155] [cursor=pointer]:
+              - /url: /DIRA/agents/17688b64-08fa-46a0-abcd-37446bf4bd97
+              - generic [ref=e3156]:
+                - paragraph [ref=e3157]:
+                  - generic [ref=e3158]:
+                    - generic [ref=e3160]: BO
+                    - generic [ref=e3161]: Board
+                  - generic [ref=e3162]: updated
+                  - text: Morning Agenda Agent
+                - generic [ref=e3163]: 11h ago
+            - link "BO Board updated OSM Monitor Agent 11h ago" [ref=e3164] [cursor=pointer]:
+              - /url: /DIRA/agents/c20844a1-b818-4896-b64d-71160cac8f89
+              - generic [ref=e3165]:
+                - paragraph [ref=e3166]:
+                  - generic [ref=e3167]:
+                    - generic [ref=e3169]: BO
+                    - generic [ref=e3170]: Board
+                  - generic [ref=e3171]: updated
+                  - text: OSM Monitor Agent
+                - generic [ref=e3172]: 11h ago
+            - link "BO Board updated Valhalla Health Agent 11h ago" [ref=e3173] [cursor=pointer]:
+              - /url: /DIRA/agents/9c88378d-c858-499c-a2d5-168e1257ba3f
+              - generic [ref=e3174]:
+                - paragraph [ref=e3175]:
+                  - generic [ref=e3176]:
+                    - generic [ref=e3178]: BO
+                    - generic [ref=e3179]: Board
+                  - generic [ref=e3180]: updated
+                  - text: Valhalla Health Agent
+                - generic [ref=e3181]: 11h ago
+            - link "BO Board updated Ride Audit Agent 11h ago" [ref=e3182] [cursor=pointer]:
+              - /url: /DIRA/agents/1a3ec5fd-8c64-44e7-90cc-93e9369ad03a
+              - generic [ref=e3183]:
+                - paragraph [ref=e3184]:
+                  - generic [ref=e3185]:
+                    - generic [ref=e3187]: BO
+                    - generic [ref=e3188]: Board
+                  - generic [ref=e3189]: updated
+                  - text: Ride Audit Agent
+                - generic [ref=e3190]: 11h ago
+            - link "BO Board updated Crash Monitor Agent 11h ago" [ref=e3191] [cursor=pointer]:
+              - /url: /DIRA/agents/7eba745c-2d92-4e48-8e73-b638001e78b1
+              - generic [ref=e3192]:
+                - paragraph [ref=e3193]:
+                  - generic [ref=e3194]:
+                    - generic [ref=e3196]: BO
+                    - generic [ref=e3197]: Board
+                  - generic [ref=e3198]: updated
+                  - text: Crash Monitor Agent
+                - generic [ref=e3199]: 11h ago
+            - link "BO Board updated MBTiles Sync Agent 11h ago" [ref=e3200] [cursor=pointer]:
+              - /url: /DIRA/agents/8d924062-f100-44ae-a402-cfdf4d06466c
+              - generic [ref=e3201]:
+                - paragraph [ref=e3202]:
+                  - generic [ref=e3203]:
+                    - generic [ref=e3205]: BO
+                    - generic [ref=e3206]: Board
+                  - generic [ref=e3207]: updated
+                  - text: MBTiles Sync Agent
+                - generic [ref=e3208]: 11h ago
+            - link "BO Board updated Doc Organizer Agent 11h ago" [ref=e3209] [cursor=pointer]:
+              - /url: /DIRA/agents/b515e05f-7bac-4975-8ba0-cc5115df57bd
+              - generic [ref=e3210]:
+                - paragraph [ref=e3211]:
+                  - generic [ref=e3212]:
+                    - generic [ref=e3214]: BO
+                    - generic [ref=e3215]: Board
+                  - generic [ref=e3216]: updated
+                  - text: Doc Organizer Agent
+                - generic [ref=e3217]: 11h ago
+            - link "BO Board updated Learning Extractor Agent 11h ago" [ref=e3218] [cursor=pointer]:
+              - /url: /DIRA/agents/8257e556-ee8e-4cfb-a20a-c8bd8b4b1443
+              - generic [ref=e3219]:
+                - paragraph [ref=e3220]:
+                  - generic [ref=e3221]:
+                    - generic [ref=e3223]: BO
+                    - generic [ref=e3224]: Board
+                  - generic [ref=e3225]: updated
+                  - text: Learning Extractor Agent
+                - generic [ref=e3226]: 11h ago
+            - link "BO Board updated Trail Data Health Agent 11h ago" [ref=e3227] [cursor=pointer]:
+              - /url: /DIRA/agents/d15513fc-6950-4019-a7d3-9a10cda6e114
+              - generic [ref=e3228]:
+                - paragraph [ref=e3229]:
+                  - generic [ref=e3230]:
+                    - generic [ref=e3232]: BO
+                    - generic [ref=e3233]: Board
+                  - generic [ref=e3234]: updated
+                  - text: Trail Data Health Agent
+                - generic [ref=e3235]: 11h ago
+            - link "BO Board created Routine Manager 11h ago" [ref=e3236] [cursor=pointer]:
+              - /url: /DIRA/agents/e523856c-db72-4b58-9b46-9bd0a2ff2828
+              - generic [ref=e3237]:
+                - paragraph [ref=e3238]:
+                  - generic [ref=e3239]:
+                    - generic [ref=e3241]: BO
+                    - generic [ref=e3242]: Board
+                  - generic [ref=e3243]: created
+                  - text: Routine Manager
+                - generic [ref=e3244]: 11h ago
+            - link "BO Board updated Trail Data Health Agent 11h ago" [ref=e3245] [cursor=pointer]:
+              - /url: /DIRA/agents/d15513fc-6950-4019-a7d3-9a10cda6e114
+              - generic [ref=e3246]:
+                - paragraph [ref=e3247]:
+                  - generic [ref=e3248]:
+                    - generic [ref=e3250]: BO
+                    - generic [ref=e3251]: Board
+                  - generic [ref=e3252]: updated
+                  - text: Trail Data Health Agent
+                - generic [ref=e3253]: 11h ago
+            - generic [ref=e3255]:
+              - paragraph [ref=e3256]:
+                - generic [ref=e3257]:
+                  - generic [ref=e3259]: BO
+                  - generic [ref=e3260]: Board
+                - generic [ref=e3261]: routine run triggered
+              - generic [ref=e3262]: 11h ago
+            - generic [ref=e3264]:
+              - paragraph [ref=e3265]:
+                - generic [ref=e3266]:
+                  - generic [ref=e3268]: BO
+                  - generic [ref=e3269]: Board
+                - generic [ref=e3270]: routine updated
+              - generic [ref=e3271]: 11h ago
+            - link "BO Board created Revenue Scanner Agent 11h ago" [ref=e3272] [cursor=pointer]:
+              - /url: /DIRA/agents/dea6abc2-eeec-4a84-b6db-50140e5f272d
+              - generic [ref=e3273]:
+                - paragraph [ref=e3274]:
+                  - generic [ref=e3275]:
+                    - generic [ref=e3277]: BO
+                    - generic [ref=e3278]: Board
+                  - generic [ref=e3279]: created
+                  - text: Revenue Scanner Agent
+                - generic [ref=e3280]: 11h ago
+            - generic [ref=e3282]:
+              - paragraph [ref=e3283]:
+                - generic [ref=e3284]:
+                  - generic [ref=e3286]: BO
+                  - generic [ref=e3287]: Board
+                - generic [ref=e3288]: routine updated
+              - generic [ref=e3289]: 11h ago
+            - link "BO Board created App Store Readiness Agent 11h ago" [ref=e3290] [cursor=pointer]:
+              - /url: /DIRA/agents/f40bd229-28f6-4577-b3f3-dc14c611576d
+              - generic [ref=e3291]:
+                - paragraph [ref=e3292]:
+                  - generic [ref=e3293]:
+                    - generic [ref=e3295]: BO
+                    - generic [ref=e3296]: Board
+                  - generic [ref=e3297]: created
+                  - text: App Store Readiness Agent
+                - generic [ref=e3298]: 11h ago
+            - generic [ref=e3300]:
+              - paragraph [ref=e3301]:
+                - generic [ref=e3302]:
+                  - generic [ref=e3304]: BO
+                  - generic [ref=e3305]: Board
+                - generic [ref=e3306]: routine updated
+              - generic [ref=e3307]: 11h ago
+            - link "BO Board created Road Network Agent 11h ago" [ref=e3308] [cursor=pointer]:
+              - /url: /DIRA/agents/1e2e64b9-cb73-400a-a07a-6fa436b4b0c3
+              - generic [ref=e3309]:
+                - paragraph [ref=e3310]:
+                  - generic [ref=e3311]:
+                    - generic [ref=e3313]: BO
+                    - generic [ref=e3314]: Board
+                  - generic [ref=e3315]: created
+                  - text: Road Network Agent
+                - generic [ref=e3316]: 11h ago
+            - generic [ref=e3318]:
+              - paragraph [ref=e3319]:
+                - generic [ref=e3320]:
+                  - generic [ref=e3322]: BO
+                  - generic [ref=e3323]: Board
+                - generic [ref=e3324]: routine updated
+              - generic [ref=e3325]: 11h ago
+            - link "BO Board created Difficulty Calibration Agent 11h ago" [ref=e3326] [cursor=pointer]:
+              - /url: /DIRA/agents/0c9ff633-298b-41f9-9ff4-e5c00c1ed7a6
+              - generic [ref=e3327]:
+                - paragraph [ref=e3328]:
+                  - generic [ref=e3329]:
+                    - generic [ref=e3331]: BO
+                    - generic [ref=e3332]: Board
+                  - generic [ref=e3333]: created
+                  - text: Difficulty Calibration Agent
+                - generic [ref=e3334]: 11h ago
+            - generic [ref=e3336]:
+              - paragraph [ref=e3337]:
+                - generic [ref=e3338]:
+                  - generic [ref=e3340]: BO
+                  - generic [ref=e3341]: Board
+                - generic [ref=e3342]: routine updated
+              - generic [ref=e3343]: 11h ago
+            - link "BO Board created POI Freshness Agent 11h ago" [ref=e3344] [cursor=pointer]:
+              - /url: /DIRA/agents/6a02b30f-71d5-4308-b261-fc91b3f0744c
+              - generic [ref=e3345]:
+                - paragraph [ref=e3346]:
+                  - generic [ref=e3347]:
+                    - generic [ref=e3349]: BO
+                    - generic [ref=e3350]: Board
+                  - generic [ref=e3351]: created
+                  - text: POI Freshness Agent
+                - generic [ref=e3352]: 11h ago
+            - generic [ref=e3354]:
+              - paragraph [ref=e3355]:
+                - generic [ref=e3356]:
+                  - generic [ref=e3358]: BO
+                  - generic [ref=e3359]: Board
+                - generic [ref=e3360]: routine updated
+              - generic [ref=e3361]: 11h ago
+            - link "BO Board created New Trail Scanner Agent 11h ago" [ref=e3362] [cursor=pointer]:
+              - /url: /DIRA/agents/52538aa7-cacb-4a2c-b53b-130a98b77123
+              - generic [ref=e3363]:
+                - paragraph [ref=e3364]:
+                  - generic [ref=e3365]:
+                    - generic [ref=e3367]: BO
+                    - generic [ref=e3368]: Board
+                  - generic [ref=e3369]: created
+                  - text: New Trail Scanner Agent
+                - generic [ref=e3370]: 11h ago
+            - generic [ref=e3372]:
+              - paragraph [ref=e3373]:
+                - generic [ref=e3374]:
+                  - generic [ref=e3376]: BO
+                  - generic [ref=e3377]: Board
+                - generic [ref=e3378]: routine updated
+              - generic [ref=e3379]: 11h ago
+            - link "BO Board created SDK Releases Agent 11h ago" [ref=e3380] [cursor=pointer]:
+              - /url: /DIRA/agents/9fec7856-1ca4-4b6d-b6ae-8f5c517a18fa
+              - generic [ref=e3381]:
+                - paragraph [ref=e3382]:
+                  - generic [ref=e3383]:
+                    - generic [ref=e3385]: BO
+                    - generic [ref=e3386]: Board
+                  - generic [ref=e3387]: created
+                  - text: SDK Releases Agent
+                - generic [ref=e3388]: 11h ago
+            - generic [ref=e3390]:
+              - paragraph [ref=e3391]:
+                - generic [ref=e3392]:
+                  - generic [ref=e3394]: BO
+                  - generic [ref=e3395]: Board
+                - generic [ref=e3396]: routine updated
+              - generic [ref=e3397]: 11h ago
+            - link "BO Board created Competitor Watch Agent 11h ago" [ref=e3398] [cursor=pointer]:
+              - /url: /DIRA/agents/3512acdb-a5aa-4fc5-a9b4-ad5c70c7c9f2
+              - generic [ref=e3399]:
+                - paragraph [ref=e3400]:
+                  - generic [ref=e3401]:
+                    - generic [ref=e3403]: BO
+                    - generic [ref=e3404]: Board
+                  - generic [ref=e3405]: created
+                  - text: Competitor Watch Agent
+                - generic [ref=e3406]: 11h ago
+            - generic [ref=e3408]:
+              - paragraph [ref=e3409]:
+                - generic [ref=e3410]:
+                  - generic [ref=e3412]: BO
+                  - generic [ref=e3413]: Board
+                - generic [ref=e3414]: routine updated
+              - generic [ref=e3415]: 11h ago
+            - link "BO Board created Claude AI Scanner Agent 11h ago" [ref=e3416] [cursor=pointer]:
+              - /url: /DIRA/agents/eb1e72b2-9e79-435f-a4bb-70571c7a0104
+              - generic [ref=e3417]:
+                - paragraph [ref=e3418]:
+                  - generic [ref=e3419]:
+                    - generic [ref=e3421]: BO
+                    - generic [ref=e3422]: Board
+                  - generic [ref=e3423]: created
+                  - text: Claude AI Scanner Agent
+                - generic [ref=e3424]: 11h ago
+            - generic [ref=e3426]:
+              - paragraph [ref=e3427]:
+                - generic [ref=e3428]:
+                  - generic [ref=e3430]: BO
+                  - generic [ref=e3431]: Board
+                - generic [ref=e3432]: routine updated
+              - generic [ref=e3433]: 11h ago
+            - link "BO Board created TestFlight Monitor Agent 11h ago" [ref=e3434] [cursor=pointer]:
+              - /url: /DIRA/agents/68daceb3-90a4-4789-8239-064ca2f88a4f
+              - generic [ref=e3435]:
+                - paragraph [ref=e3436]:
+                  - generic [ref=e3437]:
+                    - generic [ref=e3439]: BO
+                    - generic [ref=e3440]: Board
+                  - generic [ref=e3441]: created
+                  - text: TestFlight Monitor Agent
+                - generic [ref=e3442]: 11h ago
+            - generic [ref=e3444]:
+              - paragraph [ref=e3445]:
+                - generic [ref=e3446]:
+                  - generic [ref=e3448]: BO
+                  - generic [ref=e3449]: Board
+                - generic [ref=e3450]: routine updated
+              - generic [ref=e3451]: 11h ago
+            - link "BO Board created Feature Usage Agent 11h ago" [ref=e3452] [cursor=pointer]:
+              - /url: /DIRA/agents/15cbec3a-4008-4f95-b3e1-e91bf4167e7e
+              - generic [ref=e3453]:
+                - paragraph [ref=e3454]:
+                  - generic [ref=e3455]:
+                    - generic [ref=e3457]: BO
+                    - generic [ref=e3458]: Board
+                  - generic [ref=e3459]: created
+                  - text: Feature Usage Agent
+                - generic [ref=e3460]: 11h ago
+            - generic [ref=e3462]:
+              - paragraph [ref=e3463]:
+                - generic [ref=e3464]:
+                  - generic [ref=e3466]: BO
+                  - generic [ref=e3467]: Board
+                - generic [ref=e3468]: routine updated
+              - generic [ref=e3469]: 11h ago
+            - link "BO Board created Morning Agenda Agent 11h ago" [ref=e3470] [cursor=pointer]:
+              - /url: /DIRA/agents/17688b64-08fa-46a0-abcd-37446bf4bd97
+              - generic [ref=e3471]:
+                - paragraph [ref=e3472]:
+                  - generic [ref=e3473]:
+                    - generic [ref=e3475]: BO
+                    - generic [ref=e3476]: Board
+                  - generic [ref=e3477]: created
+                  - text: Morning Agenda Agent
+                - generic [ref=e3478]: 11h ago
+            - generic [ref=e3480]:
+              - paragraph [ref=e3481]:
+                - generic [ref=e3482]:
+                  - generic [ref=e3484]: BO
+                  - generic [ref=e3485]: Board
+                - generic [ref=e3486]: routine trigger created
+              - generic [ref=e3487]: 11h ago
+            - generic [ref=e3489]:
+              - paragraph [ref=e3490]:
+                - generic [ref=e3491]:
+                  - generic [ref=e3493]: BO
+                  - generic [ref=e3494]: Board
+                - generic [ref=e3495]: routine updated
+              - generic [ref=e3496]: 11h ago
+            - link "BO Board created OSM Monitor Agent 11h ago" [ref=e3497] [cursor=pointer]:
+              - /url: /DIRA/agents/c20844a1-b818-4896-b64d-71160cac8f89
+              - generic [ref=e3498]:
+                - paragraph [ref=e3499]:
+                  - generic [ref=e3500]:
+                    - generic [ref=e3502]: BO
+                    - generic [ref=e3503]: Board
+                  - generic [ref=e3504]: created
+                  - text: OSM Monitor Agent
+                - generic [ref=e3505]: 11h ago
+            - generic [ref=e3507]:
+              - paragraph [ref=e3508]:
+                - generic [ref=e3509]:
+                  - generic [ref=e3511]: BO
+                  - generic [ref=e3512]: Board
+                - generic [ref=e3513]: routine trigger created
+              - generic [ref=e3514]: 11h ago
+            - generic [ref=e3516]:
+              - paragraph [ref=e3517]:
+                - generic [ref=e3518]:
+                  - generic [ref=e3520]: BO
+                  - generic [ref=e3521]: Board
+                - generic [ref=e3522]: routine updated
+              - generic [ref=e3523]: 11h ago
+            - link "BO Board created Valhalla Health Agent 11h ago" [ref=e3524] [cursor=pointer]:
+              - /url: /DIRA/agents/9c88378d-c858-499c-a2d5-168e1257ba3f
+              - generic [ref=e3525]:
+                - paragraph [ref=e3526]:
+                  - generic [ref=e3527]:
+                    - generic [ref=e3529]: BO
+                    - generic [ref=e3530]: Board
+                  - generic [ref=e3531]: created
+                  - text: Valhalla Health Agent
+                - generic [ref=e3532]: 11h ago
+            - generic [ref=e3534]:
+              - paragraph [ref=e3535]:
+                - generic [ref=e3536]:
+                  - generic [ref=e3538]: BO
+                  - generic [ref=e3539]: Board
+                - generic [ref=e3540]: routine trigger created
+              - generic [ref=e3541]: 11h ago
+            - generic [ref=e3543]:
+              - paragraph [ref=e3544]:
+                - generic [ref=e3545]:
+                  - generic [ref=e3547]: BO
+                  - generic [ref=e3548]: Board
+                - generic [ref=e3549]: routine updated
+              - generic [ref=e3550]: 11h ago
+            - link "BO Board created Ride Audit Agent 11h ago" [ref=e3551] [cursor=pointer]:
+              - /url: /DIRA/agents/1a3ec5fd-8c64-44e7-90cc-93e9369ad03a
+              - generic [ref=e3552]:
+                - paragraph [ref=e3553]:
+                  - generic [ref=e3554]:
+                    - generic [ref=e3556]: BO
+                    - generic [ref=e3557]: Board
+                  - generic [ref=e3558]: created
+                  - text: Ride Audit Agent
+                - generic [ref=e3559]: 11h ago
+            - generic [ref=e3561]:
+              - paragraph [ref=e3562]:
+                - generic [ref=e3563]:
+                  - generic [ref=e3565]: BO
+                  - generic [ref=e3566]: Board
+                - generic [ref=e3567]: routine trigger created
+              - generic [ref=e3568]: 11h ago
+            - generic [ref=e3570]:
+              - paragraph [ref=e3571]:
+                - generic [ref=e3572]:
+                  - generic [ref=e3574]: BO
+                  - generic [ref=e3575]: Board
+                - generic [ref=e3576]: routine updated
+              - generic [ref=e3577]: 11h ago
+            - link "BO Board created Crash Monitor Agent 11h ago" [ref=e3578] [cursor=pointer]:
+              - /url: /DIRA/agents/7eba745c-2d92-4e48-8e73-b638001e78b1
+              - generic [ref=e3579]:
+                - paragraph [ref=e3580]:
+                  - generic [ref=e3581]:
+                    - generic [ref=e3583]: BO
+                    - generic [ref=e3584]: Board
+                  - generic [ref=e3585]: created
+                  - text: Crash Monitor Agent
+                - generic [ref=e3586]: 11h ago
+            - generic [ref=e3588]:
+              - paragraph [ref=e3589]:
+                - generic [ref=e3590]:
+                  - generic [ref=e3592]: BO
+                  - generic [ref=e3593]: Board
+                - generic [ref=e3594]: routine trigger created
+              - generic [ref=e3595]: 11h ago
+            - generic [ref=e3597]:
+              - paragraph [ref=e3598]:
+                - generic [ref=e3599]:
+                  - generic [ref=e3601]: BO
+                  - generic [ref=e3602]: Board
+                - generic [ref=e3603]: routine updated
+              - generic [ref=e3604]: 11h ago
+            - link "BO Board created MBTiles Sync Agent 11h ago" [ref=e3605] [cursor=pointer]:
+              - /url: /DIRA/agents/8d924062-f100-44ae-a402-cfdf4d06466c
+              - generic [ref=e3606]:
+                - paragraph [ref=e3607]:
+                  - generic [ref=e3608]:
+                    - generic [ref=e3610]: BO
+                    - generic [ref=e3611]: Board
+                  - generic [ref=e3612]: created
+                  - text: MBTiles Sync Agent
+                - generic [ref=e3613]: 11h ago
+            - generic [ref=e3615]:
+              - paragraph [ref=e3616]:
+                - generic [ref=e3617]:
+                  - generic [ref=e3619]: BO
+                  - generic [ref=e3620]: Board
+                - generic [ref=e3621]: routine updated
+              - generic [ref=e3622]: 11h ago
+            - link "BO Board created Doc Organizer Agent 11h ago" [ref=e3623] [cursor=pointer]:
+              - /url: /DIRA/agents/b515e05f-7bac-4975-8ba0-cc5115df57bd
+              - generic [ref=e3624]:
+                - paragraph [ref=e3625]:
+                  - generic [ref=e3626]:
+                    - generic [ref=e3628]: BO
+                    - generic [ref=e3629]: Board
+                  - generic [ref=e3630]: created
+                  - text: Doc Organizer Agent
+                - generic [ref=e3631]: 11h ago
+            - generic [ref=e3633]:
+              - paragraph [ref=e3634]:
+                - generic [ref=e3635]:
+                  - generic [ref=e3637]: BO
+                  - generic [ref=e3638]: Board
+                - generic [ref=e3639]: routine updated
+              - generic [ref=e3640]: 11h ago
+            - link "BO Board created Learning Extractor Agent 11h ago" [ref=e3641] [cursor=pointer]:
+              - /url: /DIRA/agents/8257e556-ee8e-4cfb-a20a-c8bd8b4b1443
+              - generic [ref=e3642]:
+                - paragraph [ref=e3643]:
+                  - generic [ref=e3644]:
+                    - generic [ref=e3646]: BO
+                    - generic [ref=e3647]: Board
+                  - generic [ref=e3648]: created
+                  - text: Learning Extractor Agent
+                - generic [ref=e3649]: 11h ago
+            - generic [ref=e3651]:
+              - paragraph [ref=e3652]:
+                - generic [ref=e3653]:
+                  - generic [ref=e3655]: SY
+                  - generic [ref=e3656]: System
+                - generic [ref=e3657]: routine run triggered
+              - generic [ref=e3658]: 11h ago
+            - generic [ref=e3660]:
+              - paragraph [ref=e3661]:
+                - generic [ref=e3662]:
+                  - generic [ref=e3664]: SY
+                  - generic [ref=e3665]: System
+                - generic [ref=e3666]: routine run triggered
+              - generic [ref=e3667]: 11h ago
+            - generic [ref=e3669]:
+              - paragraph [ref=e3670]:
+                - generic [ref=e3671]:
+                  - generic [ref=e3673]: BO
+                  - generic [ref=e3674]: Board
+                - generic [ref=e3675]: routine run triggered
+              - generic [ref=e3676]: 11h ago
+            - generic [ref=e3678]:
+              - paragraph [ref=e3679]:
+                - generic [ref=e3680]:
+                  - generic [ref=e3682]: BO
+                  - generic [ref=e3683]: Board
+                - generic [ref=e3684]: routine trigger created
+              - generic [ref=e3685]: 11h ago
+            - generic [ref=e3687]:
+              - paragraph [ref=e3688]:
+                - generic [ref=e3689]:
+                  - generic [ref=e3691]: BO
+                  - generic [ref=e3692]: Board
+                - generic [ref=e3693]: routine updated
+              - generic [ref=e3694]: 11h ago
+            - link "BO Board created Trail Data Health Agent 11h ago" [ref=e3695] [cursor=pointer]:
+              - /url: /DIRA/agents/d15513fc-6950-4019-a7d3-9a10cda6e114
+              - generic [ref=e3696]:
+                - paragraph [ref=e3697]:
+                  - generic [ref=e3698]:
+                    - generic [ref=e3700]: BO
+                    - generic [ref=e3701]: Board
+                  - generic [ref=e3702]: created
+                  - text: Trail Data Health Agent
+                - generic [ref=e3703]: 11h ago
+            - generic [ref=e3705]:
+              - paragraph [ref=e3706]:
+                - generic [ref=e3707]:
+                  - generic [ref=e3709]: SY
+                  - generic [ref=e3710]: System
+                - generic [ref=e3711]: routine run triggered
+              - generic [ref=e3712]: 12h ago
+            - generic [ref=e3714]:
+              - paragraph [ref=e3715]:
+                - generic [ref=e3716]:
+                  - generic [ref=e3718]: SY
+                  - generic [ref=e3719]: System
+                - generic [ref=e3720]: routine run triggered
+              - generic [ref=e3721]: 12h ago
+            - generic [ref=e3723]:
+              - paragraph [ref=e3724]:
+                - generic [ref=e3725]:
+                  - generic [ref=e3727]: BO
+                  - generic [ref=e3728]: Board
+                - generic [ref=e3729]: routine trigger created
+              - generic [ref=e3730]: 12h ago
+            - generic [ref=e3732]:
+              - paragraph [ref=e3733]:
+                - generic [ref=e3734]:
+                  - generic [ref=e3736]: BO
+                  - generic [ref=e3737]: Board
+                - generic [ref=e3738]: routine trigger created
+              - generic [ref=e3739]: 12h ago
+            - generic [ref=e3741]:
+              - paragraph [ref=e3742]:
+                - generic [ref=e3743]:
+                  - generic [ref=e3745]: BO
+                  - generic [ref=e3746]: Board
+                - generic [ref=e3747]: routine trigger created
+              - generic [ref=e3748]: 12h ago
+            - generic [ref=e3750]:
+              - paragraph [ref=e3751]:
+                - generic [ref=e3752]:
+                  - generic [ref=e3754]: BO
+                  - generic [ref=e3755]: Board
+                - generic [ref=e3756]: routine trigger created
+              - generic [ref=e3757]: 12h ago
+            - generic [ref=e3759]:
+              - paragraph [ref=e3760]:
+                - generic [ref=e3761]:
+                  - generic [ref=e3763]: BO
+                  - generic [ref=e3764]: Board
+                - generic [ref=e3765]: routine trigger created
+              - generic [ref=e3766]: 12h ago
+            - generic [ref=e3768]:
+              - paragraph [ref=e3769]:
+                - generic [ref=e3770]:
+                  - generic [ref=e3772]: BO
+                  - generic [ref=e3773]: Board
+                - generic [ref=e3774]: routine trigger created
+              - generic [ref=e3775]: 12h ago
+            - generic [ref=e3777]:
+              - paragraph [ref=e3778]:
+                - generic [ref=e3779]:
+                  - generic [ref=e3781]: BO
+                  - generic [ref=e3782]: Board
+                - generic [ref=e3783]: routine trigger created
+              - generic [ref=e3784]: 12h ago
+            - generic [ref=e3786]:
+              - paragraph [ref=e3787]:
+                - generic [ref=e3788]:
+                  - generic [ref=e3790]: BO
+                  - generic [ref=e3791]: Board
+                - generic [ref=e3792]: routine trigger created
+              - generic [ref=e3793]: 12h ago
+            - generic [ref=e3795]:
+              - paragraph [ref=e3796]:
+                - generic [ref=e3797]:
+                  - generic [ref=e3799]: BO
+                  - generic [ref=e3800]: Board
+                - generic [ref=e3801]: routine trigger created
+              - generic [ref=e3802]: 12h ago
+            - generic [ref=e3804]:
+              - paragraph [ref=e3805]:
+                - generic [ref=e3806]:
+                  - generic [ref=e3808]: BO
+                  - generic [ref=e3809]: Board
+                - generic [ref=e3810]: routine trigger created
+              - generic [ref=e3811]: 12h ago
+            - generic [ref=e3813]:
+              - paragraph [ref=e3814]:
+                - generic [ref=e3815]:
+                  - generic [ref=e3817]: BO
+                  - generic [ref=e3818]: Board
+                - generic [ref=e3819]: routine trigger created
+              - generic [ref=e3820]: 12h ago
+            - generic [ref=e3822]:
+              - paragraph [ref=e3823]:
+                - generic [ref=e3824]:
+                  - generic [ref=e3826]: BO
+                  - generic [ref=e3827]: Board
+                - generic [ref=e3828]: routine trigger created
+              - generic [ref=e3829]: 12h ago
+            - generic [ref=e3831]:
+              - paragraph [ref=e3832]:
+                - generic [ref=e3833]:
+                  - generic [ref=e3835]: BO
+                  - generic [ref=e3836]: Board
+                - generic [ref=e3837]: routine trigger created
+              - generic [ref=e3838]: 12h ago
+            - generic [ref=e3840]:
+              - paragraph [ref=e3841]:
+                - generic [ref=e3842]:
+                  - generic [ref=e3844]: BO
+                  - generic [ref=e3845]: Board
+                - generic [ref=e3846]: routine trigger created
+              - generic [ref=e3847]: 12h ago
+            - generic [ref=e3849]:
+              - paragraph [ref=e3850]:
+                - generic [ref=e3851]:
+                  - generic [ref=e3853]: BO
+                  - generic [ref=e3854]: Board
+                - generic [ref=e3855]: routine trigger created
+              - generic [ref=e3856]: 12h ago
+            - generic [ref=e3858]:
+              - paragraph [ref=e3859]:
+                - generic [ref=e3860]:
+                  - generic [ref=e3862]: BO
+                  - generic [ref=e3863]: Board
+                - generic [ref=e3864]: routine trigger created
+              - generic [ref=e3865]: 12h ago
+            - 'link "BO Board issue read marked DIRA-42— QA: Verify Mini-Why A trail detection V4 12h ago" [ref=e3866] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e3867]:
+                - paragraph [ref=e3868]:
+                  - generic [ref=e3869]:
+                    - generic [ref=e3871]: BO
+                    - generic [ref=e3872]: Board
+                  - generic [ref=e3873]: issue read marked
+                  - text: DIRA-42
+                  - generic [ref=e3874]: "— QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e3875]: 12h ago
+            - 'link "BO Board changed status from in progress to done on DIRA-42— QA: Verify Mini-Why A trail detection V4 21h ago" [ref=e3876] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e3877]:
+                - paragraph [ref=e3878]:
+                  - generic [ref=e3879]:
+                    - generic [ref=e3881]: BO
+                    - generic [ref=e3882]: Board
+                  - generic [ref=e3883]: changed status from in progress to done on
+                  - text: DIRA-42
+                  - generic [ref=e3884]: "— QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e3885]: 21h ago
+            - 'link "BO Board commented on DIRA-42— QA: Verify Mini-Why A trail detection V4 21h ago" [ref=e3886] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e3887]:
+                - paragraph [ref=e3888]:
+                  - generic [ref=e3889]:
+                    - generic [ref=e3891]: BO
+                    - generic [ref=e3892]: Board
+                  - generic [ref=e3893]: commented on
+                  - text: DIRA-42
+                  - generic [ref=e3894]: "— QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e3895]: 21h ago
+            - generic [ref=e3897]:
+              - paragraph [ref=e3898]:
+                - generic [ref=e3899]:
+                  - generic [ref=e3901]: BO
+                  - generic [ref=e3902]: Board
+                - generic [ref=e3903]: routine created
+              - generic [ref=e3904]: 21h ago
+            - generic [ref=e3906]:
+              - paragraph [ref=e3907]:
+                - generic [ref=e3908]:
+                  - generic [ref=e3910]: BO
+                  - generic [ref=e3911]: Board
+                - generic [ref=e3912]: routine created
+              - generic [ref=e3913]: 21h ago
+            - generic [ref=e3915]:
+              - paragraph [ref=e3916]:
+                - generic [ref=e3917]:
+                  - generic [ref=e3919]: BO
+                  - generic [ref=e3920]: Board
+                - generic [ref=e3921]: routine created
+              - generic [ref=e3922]: 21h ago
+            - generic [ref=e3924]:
+              - paragraph [ref=e3925]:
+                - generic [ref=e3926]:
+                  - generic [ref=e3928]: BO
+                  - generic [ref=e3929]: Board
+                - generic [ref=e3930]: routine created
+              - generic [ref=e3931]: 21h ago
+            - generic [ref=e3933]:
+              - paragraph [ref=e3934]:
+                - generic [ref=e3935]:
+                  - generic [ref=e3937]: BO
+                  - generic [ref=e3938]: Board
+                - generic [ref=e3939]: routine created
+              - generic [ref=e3940]: 21h ago
+            - generic [ref=e3942]:
+              - paragraph [ref=e3943]:
+                - generic [ref=e3944]:
+                  - generic [ref=e3946]: BO
+                  - generic [ref=e3947]: Board
+                - generic [ref=e3948]: routine created
+              - generic [ref=e3949]: 21h ago
+            - generic [ref=e3951]:
+              - paragraph [ref=e3952]:
+                - generic [ref=e3953]:
+                  - generic [ref=e3955]: BO
+                  - generic [ref=e3956]: Board
+                - generic [ref=e3957]: routine created
+              - generic [ref=e3958]: 21h ago
+            - generic [ref=e3960]:
+              - paragraph [ref=e3961]:
+                - generic [ref=e3962]:
+                  - generic [ref=e3964]: BO
+                  - generic [ref=e3965]: Board
+                - generic [ref=e3966]: routine created
+              - generic [ref=e3967]: 21h ago
+            - generic [ref=e3969]:
+              - paragraph [ref=e3970]:
+                - generic [ref=e3971]:
+                  - generic [ref=e3973]: BO
+                  - generic [ref=e3974]: Board
+                - generic [ref=e3975]: routine created
+              - generic [ref=e3976]: 21h ago
+            - generic [ref=e3978]:
+              - paragraph [ref=e3979]:
+                - generic [ref=e3980]:
+                  - generic [ref=e3982]: BO
+                  - generic [ref=e3983]: Board
+                - generic [ref=e3984]: routine created
+              - generic [ref=e3985]: 21h ago
+            - generic [ref=e3987]:
+              - paragraph [ref=e3988]:
+                - generic [ref=e3989]:
+                  - generic [ref=e3991]: BO
+                  - generic [ref=e3992]: Board
+                - generic [ref=e3993]: routine created
+              - generic [ref=e3994]: 21h ago
+            - generic [ref=e3996]:
+              - paragraph [ref=e3997]:
+                - generic [ref=e3998]:
+                  - generic [ref=e4000]: BO
+                  - generic [ref=e4001]: Board
+                - generic [ref=e4002]: routine created
+              - generic [ref=e4003]: 21h ago
+            - generic [ref=e4005]:
+              - paragraph [ref=e4006]:
+                - generic [ref=e4007]:
+                  - generic [ref=e4009]: BO
+                  - generic [ref=e4010]: Board
+                - generic [ref=e4011]: routine created
+              - generic [ref=e4012]: 21h ago
+            - generic [ref=e4014]:
+              - paragraph [ref=e4015]:
+                - generic [ref=e4016]:
+                  - generic [ref=e4018]: BO
+                  - generic [ref=e4019]: Board
+                - generic [ref=e4020]: routine created
+              - generic [ref=e4021]: 21h ago
+            - generic [ref=e4023]:
+              - paragraph [ref=e4024]:
+                - generic [ref=e4025]:
+                  - generic [ref=e4027]: BO
+                  - generic [ref=e4028]: Board
+                - generic [ref=e4029]: routine created
+              - generic [ref=e4030]: 21h ago
+            - generic [ref=e4032]:
+              - paragraph [ref=e4033]:
+                - generic [ref=e4034]:
+                  - generic [ref=e4036]: BO
+                  - generic [ref=e4037]: Board
+                - generic [ref=e4038]: routine created
+              - generic [ref=e4039]: 21h ago
+            - generic [ref=e4041]:
+              - paragraph [ref=e4042]:
+                - generic [ref=e4043]:
+                  - generic [ref=e4045]: BO
+                  - generic [ref=e4046]: Board
+                - generic [ref=e4047]: routine created
+              - generic [ref=e4048]: 21h ago
+            - generic [ref=e4050]:
+              - paragraph [ref=e4051]:
+                - generic [ref=e4052]:
+                  - generic [ref=e4054]: BO
+                  - generic [ref=e4055]: Board
+                - generic [ref=e4056]: routine created
+              - generic [ref=e4057]: 21h ago
+            - generic [ref=e4059]:
+              - paragraph [ref=e4060]:
+                - generic [ref=e4061]:
+                  - generic [ref=e4063]: BO
+                  - generic [ref=e4064]: Board
+                - generic [ref=e4065]: routine created
+              - generic [ref=e4066]: 21h ago
+            - generic [ref=e4068]:
+              - paragraph [ref=e4069]:
+                - generic [ref=e4070]:
+                  - generic [ref=e4072]: BO
+                  - generic [ref=e4073]: Board
+                - generic [ref=e4074]: routine created
+              - generic [ref=e4075]: 21h ago
+            - link "BO Board cancelled heartbeat for QA Rider 21h ago" [ref=e4076] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6/runs/073f6ce8-9e8a-4211-8655-9e2f51bb3c1a
+              - generic [ref=e4077]:
+                - paragraph [ref=e4078]:
+                  - generic [ref=e4079]:
+                    - generic [ref=e4081]: BO
+                    - generic [ref=e4082]: Board
+                  - generic [ref=e4083]: cancelled heartbeat for
+                  - text: QA Rider
+                - generic [ref=e4084]: 21h ago
+            - generic [ref=e4086]:
+              - paragraph [ref=e4087]:
+                - generic [ref=e4088]:
+                  - generic [ref=e4090]: BO
+                  - generic [ref=e4091]: Board
+                - generic [ref=e4092]: routine created
+              - generic [ref=e4093]: 22h ago
+            - generic [ref=e4095]:
+              - paragraph [ref=e4096]:
+                - generic [ref=e4097]:
+                  - generic [ref=e4099]: BO
+                  - generic [ref=e4100]: Board
+                - generic [ref=e4101]: routine created
+              - generic [ref=e4102]: 22h ago
+            - generic [ref=e4104]:
+              - paragraph [ref=e4105]:
+                - generic [ref=e4106]:
+                  - generic [ref=e4108]: BO
+                  - generic [ref=e4109]: Board
+                - generic [ref=e4110]: routine created
+              - generic [ref=e4111]: 22h ago
+            - 'link "BO Board changed status from todo to in progress on DIRA-42— QA: Verify Mini-Why A trail detection V4 22h ago" [ref=e4112] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e4113]:
+                - paragraph [ref=e4114]:
+                  - generic [ref=e4115]:
+                    - generic [ref=e4117]: BO
+                    - generic [ref=e4118]: Board
+                  - generic [ref=e4119]: changed status from todo to in progress on
+                  - text: DIRA-42
+                  - generic [ref=e4120]: "— QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e4121]: 22h ago
+            - link "BO Board updated DirtSync COO 22h ago" [ref=e4122] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e4123]:
+                - paragraph [ref=e4124]:
+                  - generic [ref=e4125]:
+                    - generic [ref=e4127]: BO
+                    - generic [ref=e4128]: Board
+                  - generic [ref=e4129]: updated
+                  - text: DirtSync COO
+                - generic [ref=e4130]: 22h ago
+            - link "BO Board updated Ship Engineer 22h ago" [ref=e4131] [cursor=pointer]:
+              - /url: /DIRA/agents/8d7e55c5-6f4a-4582-bc4f-d9285a7b0d77
+              - generic [ref=e4132]:
+                - paragraph [ref=e4133]:
+                  - generic [ref=e4134]:
+                    - generic [ref=e4136]: BO
+                    - generic [ref=e4137]: Board
+                  - generic [ref=e4138]: updated
+                  - text: Ship Engineer
+                - generic [ref=e4139]: 22h ago
+            - link "BO Board updated Drive Publisher 22h ago" [ref=e4140] [cursor=pointer]:
+              - /url: /DIRA/agents/84bc85f0-0c1e-4bc6-8734-fe357265d10b
+              - generic [ref=e4141]:
+                - paragraph [ref=e4142]:
+                  - generic [ref=e4143]:
+                    - generic [ref=e4145]: BO
+                    - generic [ref=e4146]: Board
+                  - generic [ref=e4147]: updated
+                  - text: Drive Publisher
+                - generic [ref=e4148]: 22h ago
+            - link "BO Board updated Trail Data Expert 22h ago" [ref=e4149] [cursor=pointer]:
+              - /url: /DIRA/agents/7fac51b6-316c-4064-bebc-5f75973ecc75
+              - generic [ref=e4150]:
+                - paragraph [ref=e4151]:
+                  - generic [ref=e4152]:
+                    - generic [ref=e4154]: BO
+                    - generic [ref=e4155]: Board
+                  - generic [ref=e4156]: updated
+                  - text: Trail Data Expert
+                - generic [ref=e4157]: 22h ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-42— QA: Verify Mini-Why A trail detection V4 22h ago" [ref=e4158] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e4159]:
+                - paragraph [ref=e4160]:
+                  - generic [ref=e4161]:
+                    - generic [ref=e4163]: BO
+                    - generic [ref=e4164]: Board
+                  - generic [ref=e4165]: changed status from backlog to todo on
+                  - text: DIRA-42
+                  - generic [ref=e4166]: "— QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e4167]: 22h ago
+            - link "BO Board invoked heartbeat for QA Rider 22h ago" [ref=e4168] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6/runs/073f6ce8-9e8a-4211-8655-9e2f51bb3c1a
+              - generic [ref=e4169]:
+                - paragraph [ref=e4170]:
+                  - generic [ref=e4171]:
+                    - generic [ref=e4173]: BO
+                    - generic [ref=e4174]: Board
+                  - generic [ref=e4175]: invoked heartbeat for
+                  - text: QA Rider
+                - generic [ref=e4176]: 22h ago
+            - link "BO Board agent skills synced DirtSync COO 22h ago" [ref=e4177] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e4178]:
+                - paragraph [ref=e4179]:
+                  - generic [ref=e4180]:
+                    - generic [ref=e4182]: BO
+                    - generic [ref=e4183]: Board
+                  - generic [ref=e4184]: agent skills synced
+                  - text: DirtSync COO
+                - generic [ref=e4185]: 22h ago
+            - link "BO Board agent skills synced Drive Publisher 22h ago" [ref=e4186] [cursor=pointer]:
+              - /url: /DIRA/agents/84bc85f0-0c1e-4bc6-8734-fe357265d10b
+              - generic [ref=e4187]:
+                - paragraph [ref=e4188]:
+                  - generic [ref=e4189]:
+                    - generic [ref=e4191]: BO
+                    - generic [ref=e4192]: Board
+                  - generic [ref=e4193]: agent skills synced
+                  - text: Drive Publisher
+                - generic [ref=e4194]: 22h ago
+            - link "BO Board agent skills synced Trail Data Expert 22h ago" [ref=e4195] [cursor=pointer]:
+              - /url: /DIRA/agents/7fac51b6-316c-4064-bebc-5f75973ecc75
+              - generic [ref=e4196]:
+                - paragraph [ref=e4197]:
+                  - generic [ref=e4198]:
+                    - generic [ref=e4200]: BO
+                    - generic [ref=e4201]: Board
+                  - generic [ref=e4202]: agent skills synced
+                  - text: Trail Data Expert
+                - generic [ref=e4203]: 22h ago
+            - link "BO Board agent skills synced QA Rider 22h ago" [ref=e4204] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6
+              - generic [ref=e4205]:
+                - paragraph [ref=e4206]:
+                  - generic [ref=e4207]:
+                    - generic [ref=e4209]: BO
+                    - generic [ref=e4210]: Board
+                  - generic [ref=e4211]: agent skills synced
+                  - text: QA Rider
+                - generic [ref=e4212]: 22h ago
+            - link "BO Board agent skills synced Ship Engineer 22h ago" [ref=e4213] [cursor=pointer]:
+              - /url: /DIRA/agents/8d7e55c5-6f4a-4582-bc4f-d9285a7b0d77
+              - generic [ref=e4214]:
+                - paragraph [ref=e4215]:
+                  - generic [ref=e4216]:
+                    - generic [ref=e4218]: BO
+                    - generic [ref=e4219]: Board
+                  - generic [ref=e4220]: agent skills synced
+                  - text: Ship Engineer
+                - generic [ref=e4221]: 22h ago
+            - generic [ref=e4223]:
+              - paragraph [ref=e4224]:
+                - generic [ref=e4225]:
+                  - generic [ref=e4227]: BO
+                  - generic [ref=e4228]: Board
+                - generic [ref=e4229]: company skill created
+              - generic [ref=e4230]: 22h ago
+            - generic [ref=e4232]:
+              - paragraph [ref=e4233]:
+                - generic [ref=e4234]:
+                  - generic [ref=e4236]: BO
+                  - generic [ref=e4237]: Board
+                - generic [ref=e4238]: company skill created
+              - generic [ref=e4239]: 22h ago
+            - generic [ref=e4241]:
+              - paragraph [ref=e4242]:
+                - generic [ref=e4243]:
+                  - generic [ref=e4245]: BO
+                  - generic [ref=e4246]: Board
+                - generic [ref=e4247]: company skill created
+              - generic [ref=e4248]: 22h ago
+            - generic [ref=e4250]:
+              - paragraph [ref=e4251]:
+                - generic [ref=e4252]:
+                  - generic [ref=e4254]: BO
+                  - generic [ref=e4255]: Board
+                - generic [ref=e4256]: company skill created
+              - generic [ref=e4257]: 22h ago
+            - link "BO Board updated DirtSync COO 22h ago" [ref=e4258] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e4259]:
+                - paragraph [ref=e4260]:
+                  - generic [ref=e4261]:
+                    - generic [ref=e4263]: BO
+                    - generic [ref=e4264]: Board
+                  - generic [ref=e4265]: updated
+                  - text: DirtSync COO
+                - generic [ref=e4266]: 22h ago
+            - link "BO Board updated Drive Publisher 22h ago" [ref=e4267] [cursor=pointer]:
+              - /url: /DIRA/agents/84bc85f0-0c1e-4bc6-8734-fe357265d10b
+              - generic [ref=e4268]:
+                - paragraph [ref=e4269]:
+                  - generic [ref=e4270]:
+                    - generic [ref=e4272]: BO
+                    - generic [ref=e4273]: Board
+                  - generic [ref=e4274]: updated
+                  - text: Drive Publisher
+                - generic [ref=e4275]: 22h ago
+            - link "BO Board updated Trail Data Expert 22h ago" [ref=e4276] [cursor=pointer]:
+              - /url: /DIRA/agents/7fac51b6-316c-4064-bebc-5f75973ecc75
+              - generic [ref=e4277]:
+                - paragraph [ref=e4278]:
+                  - generic [ref=e4279]:
+                    - generic [ref=e4281]: BO
+                    - generic [ref=e4282]: Board
+                  - generic [ref=e4283]: updated
+                  - text: Trail Data Expert
+                - generic [ref=e4284]: 22h ago
+            - link "BO Board updated QA Rider 22h ago" [ref=e4285] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6
+              - generic [ref=e4286]:
+                - paragraph [ref=e4287]:
+                  - generic [ref=e4288]:
+                    - generic [ref=e4290]: BO
+                    - generic [ref=e4291]: Board
+                  - generic [ref=e4292]: updated
+                  - text: QA Rider
+                - generic [ref=e4293]: 22h ago
+            - link "BO Board updated Ship Engineer 22h ago" [ref=e4294] [cursor=pointer]:
+              - /url: /DIRA/agents/8d7e55c5-6f4a-4582-bc4f-d9285a7b0d77
+              - generic [ref=e4295]:
+                - paragraph [ref=e4296]:
+                  - generic [ref=e4297]:
+                    - generic [ref=e4299]: BO
+                    - generic [ref=e4300]: Board
+                  - generic [ref=e4301]: updated
+                  - text: Ship Engineer
+                - generic [ref=e4302]: 22h ago
+            - link "BO Board updated QA Rider 22h ago" [ref=e4303] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6
+              - generic [ref=e4304]:
+                - paragraph [ref=e4305]:
+                  - generic [ref=e4306]:
+                    - generic [ref=e4308]: BO
+                    - generic [ref=e4309]: Board
+                  - generic [ref=e4310]: updated
+                  - text: QA Rider
+                - generic [ref=e4311]: 22h ago
+            - 'link "BO Board created DIRA-42— QA: Verify Mini-Why A trail detection V4 22h ago" [ref=e4312] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e4313]:
+                - paragraph [ref=e4314]:
+                  - generic [ref=e4315]:
+                    - generic [ref=e4317]: BO
+                    - generic [ref=e4318]: Board
+                  - generic [ref=e4319]: created
+                  - text: DIRA-42
+                  - generic [ref=e4320]: "— QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e4321]: 22h ago
+            - link "BO Board created Drive Publisher 22h ago" [ref=e4322] [cursor=pointer]:
+              - /url: /DIRA/agents/84bc85f0-0c1e-4bc6-8734-fe357265d10b
+              - generic [ref=e4323]:
+                - paragraph [ref=e4324]:
+                  - generic [ref=e4325]:
+                    - generic [ref=e4327]: BO
+                    - generic [ref=e4328]: Board
+                  - generic [ref=e4329]: created
+                  - text: Drive Publisher
+                - generic [ref=e4330]: 22h ago
+            - link "BO Board created DirtSync COO 22h ago" [ref=e4331] [cursor=pointer]:
+              - /url: /DIRA/agents/7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - generic [ref=e4332]:
+                - paragraph [ref=e4333]:
+                  - generic [ref=e4334]:
+                    - generic [ref=e4336]: BO
+                    - generic [ref=e4337]: Board
+                  - generic [ref=e4338]: created
+                  - text: DirtSync COO
+                - generic [ref=e4339]: 22h ago
+            - link "BO Board created Trail Data Expert 22h ago" [ref=e4340] [cursor=pointer]:
+              - /url: /DIRA/agents/7fac51b6-316c-4064-bebc-5f75973ecc75
+              - generic [ref=e4341]:
+                - paragraph [ref=e4342]:
+                  - generic [ref=e4343]:
+                    - generic [ref=e4345]: BO
+                    - generic [ref=e4346]: Board
+                  - generic [ref=e4347]: created
+                  - text: Trail Data Expert
+                - generic [ref=e4348]: 22h ago
+            - link "BO Board created QA Rider 22h ago" [ref=e4349] [cursor=pointer]:
+              - /url: /DIRA/agents/465ac5eb-1af2-48f7-9a01-6262f81a56a6
+              - generic [ref=e4350]:
+                - paragraph [ref=e4351]:
+                  - generic [ref=e4352]:
+                    - generic [ref=e4354]: BO
+                    - generic [ref=e4355]: Board
+                  - generic [ref=e4356]: created
+                  - text: QA Rider
+                - generic [ref=e4357]: 22h ago
+            - link "BO Board created Ship Engineer 22h ago" [ref=e4358] [cursor=pointer]:
+              - /url: /DIRA/agents/8d7e55c5-6f4a-4582-bc4f-d9285a7b0d77
+              - generic [ref=e4359]:
+                - paragraph [ref=e4360]:
+                  - generic [ref=e4361]:
+                    - generic [ref=e4363]: BO
+                    - generic [ref=e4364]: Board
+                  - generic [ref=e4365]: created
+                  - text: Ship Engineer
+                - generic [ref=e4366]: 22h ago
+            - link "BO Board updated 22h ago" [ref=e4367] [cursor=pointer]:
+              - /url: /DIRA/agents/84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+              - generic [ref=e4368]:
+                - paragraph [ref=e4369]:
+                  - generic [ref=e4370]:
+                    - generic [ref=e4372]: BO
+                    - generic [ref=e4373]: Board
+                  - generic [ref=e4374]: updated
+                - generic [ref=e4375]: 22h ago
+            - link "BO Board updated 22h ago" [ref=e4376] [cursor=pointer]:
+              - /url: /DIRA/agents/1c49c43c-d81f-47a5-9711-87a240054835
+              - generic [ref=e4377]:
+                - paragraph [ref=e4378]:
+                  - generic [ref=e4379]:
+                    - generic [ref=e4381]: BO
+                    - generic [ref=e4382]: Board
+                  - generic [ref=e4383]: updated
+                - generic [ref=e4384]: 22h ago
+            - link "BO Board updated 22h ago" [ref=e4385] [cursor=pointer]:
+              - /url: /DIRA/agents/951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+              - generic [ref=e4386]:
+                - paragraph [ref=e4387]:
+                  - generic [ref=e4388]:
+                    - generic [ref=e4390]: BO
+                    - generic [ref=e4391]: Board
+                  - generic [ref=e4392]: updated
+                - generic [ref=e4393]: 22h ago
+            - link "BO Board updated 22h ago" [ref=e4394] [cursor=pointer]:
+              - /url: /DIRA/agents/433f3415-71cd-4438-878a-c3d8be50cb77
+              - generic [ref=e4395]:
+                - paragraph [ref=e4396]:
+                  - generic [ref=e4397]:
+                    - generic [ref=e4399]: BO
+                    - generic [ref=e4400]: Board
+                  - generic [ref=e4401]: updated
+                - generic [ref=e4402]: 22h ago
+            - link "BO Board updated 22h ago" [ref=e4403] [cursor=pointer]:
+              - /url: /DIRA/agents/bb135eea-c58b-4d3a-bac2-88bc66ff7461
+              - generic [ref=e4404]:
+                - paragraph [ref=e4405]:
+                  - generic [ref=e4406]:
+                    - generic [ref=e4408]: BO
+                    - generic [ref=e4409]: Board
+                  - generic [ref=e4410]: updated
+                - generic [ref=e4411]: 22h ago
+            - link "BO Board paused 4d ago" [ref=e4412] [cursor=pointer]:
+              - /url: /DIRA/agents/84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+              - generic [ref=e4413]:
+                - paragraph [ref=e4414]:
+                  - generic [ref=e4415]:
+                    - generic [ref=e4417]: BO
+                    - generic [ref=e4418]: Board
+                  - generic [ref=e4419]: paused
+                - generic [ref=e4420]: 4d ago
+            - 'link "84 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf changed status from in progress to done on DIRA-41— POI Research: Burning Rock 4d ago" [ref=e4421] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e4422]:
+                - paragraph [ref=e4423]:
+                  - generic [ref=e4424]:
+                    - generic [ref=e4426]: "84"
+                    - generic [ref=e4427]: 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+                  - generic [ref=e4428]: changed status from in progress to done on
+                  - text: DIRA-41
+                  - generic [ref=e4429]: "— POI Research: Burning Rock"
+                - generic [ref=e4430]: 4d ago
+            - 'link "84 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf commented on DIRA-41— POI Research: Burning Rock 4d ago" [ref=e4431] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e4432]:
+                - paragraph [ref=e4433]:
+                  - generic [ref=e4434]:
+                    - generic [ref=e4436]: "84"
+                    - generic [ref=e4437]: 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+                  - generic [ref=e4438]: commented on
+                  - text: DIRA-41
+                  - generic [ref=e4439]: "— POI Research: Burning Rock"
+                - generic [ref=e4440]: 4d ago
+            - 'link "84 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf checked out DIRA-41— POI Research: Burning Rock 4d ago" [ref=e4441] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e4442]:
+                - paragraph [ref=e4443]:
+                  - generic [ref=e4444]:
+                    - generic [ref=e4446]: "84"
+                    - generic [ref=e4447]: 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+                  - generic [ref=e4448]: checked out
+                  - text: DIRA-41
+                  - generic [ref=e4449]: "— POI Research: Burning Rock"
+                - generic [ref=e4450]: 4d ago
+            - 'link "84 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf checked out DIRA-41— POI Research: Burning Rock 4d ago" [ref=e4451] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e4452]:
+                - paragraph [ref=e4453]:
+                  - generic [ref=e4454]:
+                    - generic [ref=e4456]: "84"
+                    - generic [ref=e4457]: 84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+                  - generic [ref=e4458]: checked out
+                  - text: DIRA-41
+                  - generic [ref=e4459]: "— POI Research: Burning Rock"
+                - generic [ref=e4460]: 4d ago
+            - link "BO Board paused 4d ago" [ref=e4461] [cursor=pointer]:
+              - /url: /DIRA/agents/951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+              - generic [ref=e4462]:
+                - paragraph [ref=e4463]:
+                  - generic [ref=e4464]:
+                    - generic [ref=e4466]: BO
+                    - generic [ref=e4467]: Board
+                  - generic [ref=e4468]: paused
+                - generic [ref=e4469]: 4d ago
+            - link "BO Board paused 4d ago" [ref=e4470] [cursor=pointer]:
+              - /url: /DIRA/agents/433f3415-71cd-4438-878a-c3d8be50cb77
+              - generic [ref=e4471]:
+                - paragraph [ref=e4472]:
+                  - generic [ref=e4473]:
+                    - generic [ref=e4475]: BO
+                    - generic [ref=e4476]: Board
+                  - generic [ref=e4477]: paused
+                - generic [ref=e4478]: 4d ago
+            - 'link "BO Board changed status from backlog to todo on DIRA-41— POI Research: Burning Rock 4d ago" [ref=e4479] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e4480]:
+                - paragraph [ref=e4481]:
+                  - generic [ref=e4482]:
+                    - generic [ref=e4484]: BO
+                    - generic [ref=e4485]: Board
+                  - generic [ref=e4486]: changed status from backlog to todo on
+                  - text: DIRA-41
+                  - generic [ref=e4487]: "— POI Research: Burning Rock"
+                - generic [ref=e4488]: 4d ago
+            - 'link "BO Board created DIRA-41— POI Research: Burning Rock 4d ago" [ref=e4489] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e4490]:
+                - paragraph [ref=e4491]:
+                  - generic [ref=e4492]:
+                    - generic [ref=e4494]: BO
+                    - generic [ref=e4495]: Board
+                  - generic [ref=e4496]: created
+                  - text: DIRA-41
+                  - generic [ref=e4497]: "— POI Research: Burning Rock"
+                - generic [ref=e4498]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4499] [cursor=pointer]:
+              - /url: /DIRA/agents/84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+              - generic [ref=e4500]:
+                - paragraph [ref=e4501]:
+                  - generic [ref=e4502]:
+                    - generic [ref=e4504]: BO
+                    - generic [ref=e4505]: Board
+                  - generic [ref=e4506]: updated
+                - generic [ref=e4507]: 4d ago
+            - 'link "BO Board created DIRA-40— POI Research: Rockhouse 4d ago" [ref=e4508] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-40
+              - generic [ref=e4509]:
+                - paragraph [ref=e4510]:
+                  - generic [ref=e4511]:
+                    - generic [ref=e4513]: BO
+                    - generic [ref=e4514]: Board
+                  - generic [ref=e4515]: created
+                  - text: DIRA-40
+                  - generic [ref=e4516]: "— POI Research: Rockhouse"
+                - generic [ref=e4517]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4518] [cursor=pointer]:
+              - /url: /DIRA/agents/84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+              - generic [ref=e4519]:
+                - paragraph [ref=e4520]:
+                  - generic [ref=e4521]:
+                    - generic [ref=e4523]: BO
+                    - generic [ref=e4524]: Board
+                  - generic [ref=e4525]: updated
+                - generic [ref=e4526]: 4d ago
+            - generic [ref=e4528]:
+              - paragraph [ref=e4529]:
+                - generic [ref=e4530]:
+                  - generic [ref=e4532]: BO
+                  - generic [ref=e4533]: Board
+                - generic [ref=e4534]: invite openclaw prompt created
+              - generic [ref=e4535]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4536] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e4537]:
+                - paragraph [ref=e4538]:
+                  - generic [ref=e4539]:
+                    - generic [ref=e4541]: BO
+                    - generic [ref=e4542]: Board
+                  - generic [ref=e4543]: updated
+                - generic [ref=e4544]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4545] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e4546]:
+                - paragraph [ref=e4547]:
+                  - generic [ref=e4548]:
+                    - generic [ref=e4550]: BO
+                    - generic [ref=e4551]: Board
+                  - generic [ref=e4552]: updated
+                - generic [ref=e4553]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4554] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e4555]:
+                - paragraph [ref=e4556]:
+                  - generic [ref=e4557]:
+                    - generic [ref=e4559]: BO
+                    - generic [ref=e4560]: Board
+                  - generic [ref=e4561]: updated
+                - generic [ref=e4562]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4563] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e4564]:
+                - paragraph [ref=e4565]:
+                  - generic [ref=e4566]:
+                    - generic [ref=e4568]: BO
+                    - generic [ref=e4569]: Board
+                  - generic [ref=e4570]: updated
+                - generic [ref=e4571]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4572] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e4573]:
+                - paragraph [ref=e4574]:
+                  - generic [ref=e4575]:
+                    - generic [ref=e4577]: BO
+                    - generic [ref=e4578]: Board
+                  - generic [ref=e4579]: updated
+                - generic [ref=e4580]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4581] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e4582]:
+                - paragraph [ref=e4583]:
+                  - generic [ref=e4584]:
+                    - generic [ref=e4586]: BO
+                    - generic [ref=e4587]: Board
+                  - generic [ref=e4588]: updated
+                - generic [ref=e4589]: 4d ago
+            - link "43 433f3415-71cd-4438-878a-c3d8be50cb77 changed status from in progress to done on DIRA-39— Re-detect intersections for Burning Rock (bug fixed) 4d ago" [ref=e4590] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-39
+              - generic [ref=e4591]:
+                - paragraph [ref=e4592]:
+                  - generic [ref=e4593]:
+                    - generic [ref=e4595]: "43"
+                    - generic [ref=e4596]: 433f3415-71cd-4438-878a-c3d8be50cb77
+                  - generic [ref=e4597]: changed status from in progress to done on
+                  - text: DIRA-39
+                  - generic [ref=e4598]: — Re-detect intersections for Burning Rock (bug fixed)
+                - generic [ref=e4599]: 4d ago
+            - link "43 433f3415-71cd-4438-878a-c3d8be50cb77 commented on DIRA-39— Re-detect intersections for Burning Rock (bug fixed) 4d ago" [ref=e4600] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-39
+              - generic [ref=e4601]:
+                - paragraph [ref=e4602]:
+                  - generic [ref=e4603]:
+                    - generic [ref=e4605]: "43"
+                    - generic [ref=e4606]: 433f3415-71cd-4438-878a-c3d8be50cb77
+                  - generic [ref=e4607]: commented on
+                  - text: DIRA-39
+                  - generic [ref=e4608]: — Re-detect intersections for Burning Rock (bug fixed)
+                - generic [ref=e4609]: 4d ago
+            - link "43 433f3415-71cd-4438-878a-c3d8be50cb77 checked out DIRA-39— Re-detect intersections for Burning Rock (bug fixed) 4d ago" [ref=e4610] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-39
+              - generic [ref=e4611]:
+                - paragraph [ref=e4612]:
+                  - generic [ref=e4613]:
+                    - generic [ref=e4615]: "43"
+                    - generic [ref=e4616]: 433f3415-71cd-4438-878a-c3d8be50cb77
+                  - generic [ref=e4617]: checked out
+                  - text: DIRA-39
+                  - generic [ref=e4618]: — Re-detect intersections for Burning Rock (bug fixed)
+                - generic [ref=e4619]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4620] [cursor=pointer]:
+              - /url: /DIRA/agents/433f3415-71cd-4438-878a-c3d8be50cb77
+              - generic [ref=e4621]:
+                - paragraph [ref=e4622]:
+                  - generic [ref=e4623]:
+                    - generic [ref=e4625]: BO
+                    - generic [ref=e4626]: Board
+                  - generic [ref=e4627]: updated
+                - generic [ref=e4628]: 4d ago
+            - link "BO Board created DIRA-39— Re-detect intersections for Burning Rock (bug fixed) 4d ago" [ref=e4629] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-39
+              - generic [ref=e4630]:
+                - paragraph [ref=e4631]:
+                  - generic [ref=e4632]:
+                    - generic [ref=e4634]: BO
+                    - generic [ref=e4635]: Board
+                  - generic [ref=e4636]: created
+                  - text: DIRA-39
+                  - generic [ref=e4637]: — Re-detect intersections for Burning Rock (bug fixed)
+                - generic [ref=e4638]: 4d ago
+            - link "95 951caaf9-f2e5-4de4-ab81-c57b490e2bf8 changed status from in progress to in review on DIRA-38— Find all duplicate trails in Burning Rock 4d ago" [ref=e4639] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-38
+              - generic [ref=e4640]:
+                - paragraph [ref=e4641]:
+                  - generic [ref=e4642]:
+                    - generic [ref=e4644]: "95"
+                    - generic [ref=e4645]: 951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+                  - generic [ref=e4646]: changed status from in progress to in review on
+                  - text: DIRA-38
+                  - generic [ref=e4647]: — Find all duplicate trails in Burning Rock
+                - generic [ref=e4648]: 4d ago
+            - link "95 951caaf9-f2e5-4de4-ab81-c57b490e2bf8 commented on DIRA-38— Find all duplicate trails in Burning Rock 4d ago" [ref=e4649] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-38
+              - generic [ref=e4650]:
+                - paragraph [ref=e4651]:
+                  - generic [ref=e4652]:
+                    - generic [ref=e4654]: "95"
+                    - generic [ref=e4655]: 951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+                  - generic [ref=e4656]: commented on
+                  - text: DIRA-38
+                  - generic [ref=e4657]: — Find all duplicate trails in Burning Rock
+                - generic [ref=e4658]: 4d ago
+            - link "95 951caaf9-f2e5-4de4-ab81-c57b490e2bf8 checked out DIRA-38— Find all duplicate trails in Burning Rock 4d ago" [ref=e4659] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-38
+              - generic [ref=e4660]:
+                - paragraph [ref=e4661]:
+                  - generic [ref=e4662]:
+                    - generic [ref=e4664]: "95"
+                    - generic [ref=e4665]: 951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+                  - generic [ref=e4666]: checked out
+                  - text: DIRA-38
+                  - generic [ref=e4667]: — Find all duplicate trails in Burning Rock
+                - generic [ref=e4668]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4669] [cursor=pointer]:
+              - /url: /DIRA/agents/951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+              - generic [ref=e4670]:
+                - paragraph [ref=e4671]:
+                  - generic [ref=e4672]:
+                    - generic [ref=e4674]: BO
+                    - generic [ref=e4675]: Board
+                  - generic [ref=e4676]: updated
+                - generic [ref=e4677]: 4d ago
+            - link "BO Board created DIRA-38— Find all duplicate trails in Burning Rock 4d ago" [ref=e4678] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-38
+              - generic [ref=e4679]:
+                - paragraph [ref=e4680]:
+                  - generic [ref=e4681]:
+                    - generic [ref=e4683]: BO
+                    - generic [ref=e4684]: Board
+                  - generic [ref=e4685]: created
+                  - text: DIRA-38
+                  - generic [ref=e4686]: — Find all duplicate trails in Burning Rock
+                - generic [ref=e4687]: 4d ago
+            - link "BO Board approved 4d ago" [ref=e4688] [cursor=pointer]:
+              - /url: /DIRA/approvals/6904c78c-08dc-4989-bce0-abeed2a4d57f
+              - generic [ref=e4689]:
+                - paragraph [ref=e4690]:
+                  - generic [ref=e4691]:
+                    - generic [ref=e4693]: BO
+                    - generic [ref=e4694]: Board
+                  - generic [ref=e4695]: approved
+                - generic [ref=e4696]: 4d ago
+            - generic [ref=e4698]:
+              - paragraph [ref=e4699]:
+                - generic [ref=e4700]:
+                  - generic [ref=e4702]: BO
+                  - generic [ref=e4703]: Board
+                - generic [ref=e4704]: budget policy upserted
+              - generic [ref=e4705]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e4706] [cursor=pointer]:
+              - /url: /DIRA/agents/951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+              - generic [ref=e4707]:
+                - paragraph [ref=e4708]:
+                  - generic [ref=e4709]:
+                    - generic [ref=e4711]: BO
+                    - generic [ref=e4712]: Board
+                  - generic [ref=e4713]: agent skills synced
+                - generic [ref=e4714]: 4d ago
+            - link "BO Board requested approval 4d ago" [ref=e4715] [cursor=pointer]:
+              - /url: /DIRA/approvals/6904c78c-08dc-4989-bce0-abeed2a4d57f
+              - generic [ref=e4716]:
+                - paragraph [ref=e4717]:
+                  - generic [ref=e4718]:
+                    - generic [ref=e4720]: BO
+                    - generic [ref=e4721]: Board
+                  - generic [ref=e4722]: requested approval
+                - generic [ref=e4723]: 4d ago
+            - link "BO Board agent hire created 4d ago" [ref=e4724] [cursor=pointer]:
+              - /url: /DIRA/agents/951caaf9-f2e5-4de4-ab81-c57b490e2bf8
+              - generic [ref=e4725]:
+                - paragraph [ref=e4726]:
+                  - generic [ref=e4727]:
+                    - generic [ref=e4729]: BO
+                    - generic [ref=e4730]: Board
+                  - generic [ref=e4731]: agent hire created
+                - generic [ref=e4732]: 4d ago
+            - generic [ref=e4734]:
+              - paragraph [ref=e4735]:
+                - generic [ref=e4736]:
+                  - generic [ref=e4738]: BO
+                  - generic [ref=e4739]: Board
+                - generic [ref=e4740]: company skill created
+              - generic [ref=e4741]: 4d ago
+            - link "BO Board paused 4d ago" [ref=e4742] [cursor=pointer]:
+              - /url: /DIRA/agents/433f3415-71cd-4438-878a-c3d8be50cb77
+              - generic [ref=e4743]:
+                - paragraph [ref=e4744]:
+                  - generic [ref=e4745]:
+                    - generic [ref=e4747]: BO
+                    - generic [ref=e4748]: Board
+                  - generic [ref=e4749]: paused
+                - generic [ref=e4750]: 4d ago
+            - link "BO Board paused 4d ago" [ref=e4751] [cursor=pointer]:
+              - /url: /DIRA/agents/84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+              - generic [ref=e4752]:
+                - paragraph [ref=e4753]:
+                  - generic [ref=e4754]:
+                    - generic [ref=e4756]: BO
+                    - generic [ref=e4757]: Board
+                  - generic [ref=e4758]: paused
+                - generic [ref=e4759]: 4d ago
+            - link "BO Board paused 4d ago" [ref=e4760] [cursor=pointer]:
+              - /url: /DIRA/agents/bb135eea-c58b-4d3a-bac2-88bc66ff7461
+              - generic [ref=e4761]:
+                - paragraph [ref=e4762]:
+                  - generic [ref=e4763]:
+                    - generic [ref=e4765]: BO
+                    - generic [ref=e4766]: Board
+                  - generic [ref=e4767]: paused
+                - generic [ref=e4768]: 4d ago
+            - link "BO Board paused 4d ago" [ref=e4769] [cursor=pointer]:
+              - /url: /DIRA/agents/1c49c43c-d81f-47a5-9711-87a240054835
+              - generic [ref=e4770]:
+                - paragraph [ref=e4771]:
+                  - generic [ref=e4772]:
+                    - generic [ref=e4774]: BO
+                    - generic [ref=e4775]: Board
+                  - generic [ref=e4776]: paused
+                - generic [ref=e4777]: 4d ago
+            - link "BB bb135eea-c58b-4d3a-bac2-88bc66ff7461 changed status from todo to done on DIRA-35— Create road junctions for Burning Rock 4d ago" [ref=e4778] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-35
+              - generic [ref=e4779]:
+                - paragraph [ref=e4780]:
+                  - generic [ref=e4781]:
+                    - generic [ref=e4783]: BB
+                    - generic [ref=e4784]: bb135eea-c58b-4d3a-bac2-88bc66ff7461
+                  - generic [ref=e4785]: changed status from todo to done on
+                  - text: DIRA-35
+                  - generic [ref=e4786]: — Create road junctions for Burning Rock
+                - generic [ref=e4787]: 4d ago
+            - link "BB bb135eea-c58b-4d3a-bac2-88bc66ff7461 commented on DIRA-35— Create road junctions for Burning Rock 4d ago" [ref=e4788] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-35
+              - generic [ref=e4789]:
+                - paragraph [ref=e4790]:
+                  - generic [ref=e4791]:
+                    - generic [ref=e4793]: BB
+                    - generic [ref=e4794]: bb135eea-c58b-4d3a-bac2-88bc66ff7461
+                  - generic [ref=e4795]: commented on
+                  - text: DIRA-35
+                  - generic [ref=e4796]: — Create road junctions for Burning Rock
+                - generic [ref=e4797]: 4d ago
+            - link "BO Board issue read marked DIRA-34— Detect intersections for Burning Rock 4d ago" [ref=e4798] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-34
+              - generic [ref=e4799]:
+                - paragraph [ref=e4800]:
+                  - generic [ref=e4801]:
+                    - generic [ref=e4803]: BO
+                    - generic [ref=e4804]: Board
+                  - generic [ref=e4805]: issue read marked
+                  - text: DIRA-34
+                  - generic [ref=e4806]: — Detect intersections for Burning Rock
+                - generic [ref=e4807]: 4d ago
+            - link "BO Board issue read marked DIRA-35— Create road junctions for Burning Rock 4d ago" [ref=e4808] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-35
+              - generic [ref=e4809]:
+                - paragraph [ref=e4810]:
+                  - generic [ref=e4811]:
+                    - generic [ref=e4813]: BO
+                    - generic [ref=e4814]: Board
+                  - generic [ref=e4815]: issue read marked
+                  - text: DIRA-35
+                  - generic [ref=e4816]: — Create road junctions for Burning Rock
+                - generic [ref=e4817]: 4d ago
+            - link "BO Board terminated 4d ago" [ref=e4818] [cursor=pointer]:
+              - /url: /DIRA/agents/a4b78a15-dce7-4c6f-9f27-0e4bef1e4723
+              - generic [ref=e4819]:
+                - paragraph [ref=e4820]:
+                  - generic [ref=e4821]:
+                    - generic [ref=e4823]: BO
+                    - generic [ref=e4824]: Board
+                  - generic [ref=e4825]: terminated
+                - generic [ref=e4826]: 4d ago
+            - link "1C 1c49c43c-d81f-47a5-9711-87a240054835 changed status from in progress to done on DIRA-37— Audit geometry for Burning Rock 4d ago" [ref=e4827] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-37
+              - generic [ref=e4828]:
+                - paragraph [ref=e4829]:
+                  - generic [ref=e4830]:
+                    - generic [ref=e4832]: 1C
+                    - generic [ref=e4833]: 1c49c43c-d81f-47a5-9711-87a240054835
+                  - generic [ref=e4834]: changed status from in progress to done on
+                  - text: DIRA-37
+                  - generic [ref=e4835]: — Audit geometry for Burning Rock
+                - generic [ref=e4836]: 4d ago
+            - link "BO Board changed status from in progress to done on DIRA-36— Seed POIs for Burning Rock 4d ago" [ref=e4837] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-36
+              - generic [ref=e4838]:
+                - paragraph [ref=e4839]:
+                  - generic [ref=e4840]:
+                    - generic [ref=e4842]: BO
+                    - generic [ref=e4843]: Board
+                  - generic [ref=e4844]: changed status from in progress to done on
+                  - text: DIRA-36
+                  - generic [ref=e4845]: — Seed POIs for Burning Rock
+                - generic [ref=e4846]: 4d ago
+            - link "1C 1c49c43c-d81f-47a5-9711-87a240054835 commented on DIRA-37— Audit geometry for Burning Rock 4d ago" [ref=e4847] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-37
+              - generic [ref=e4848]:
+                - paragraph [ref=e4849]:
+                  - generic [ref=e4850]:
+                    - generic [ref=e4852]: 1C
+                    - generic [ref=e4853]: 1c49c43c-d81f-47a5-9711-87a240054835
+                  - generic [ref=e4854]: commented on
+                  - text: DIRA-37
+                  - generic [ref=e4855]: — Audit geometry for Burning Rock
+                - generic [ref=e4856]: 4d ago
+            - link "1C 1c49c43c-d81f-47a5-9711-87a240054835 checked out DIRA-37— Audit geometry for Burning Rock 4d ago" [ref=e4857] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-37
+              - generic [ref=e4858]:
+                - paragraph [ref=e4859]:
+                  - generic [ref=e4860]:
+                    - generic [ref=e4862]: 1C
+                    - generic [ref=e4863]: 1c49c43c-d81f-47a5-9711-87a240054835
+                  - generic [ref=e4864]: checked out
+                  - text: DIRA-37
+                  - generic [ref=e4865]: — Audit geometry for Burning Rock
+                - generic [ref=e4866]: 4d ago
+            - link "1C 1c49c43c-d81f-47a5-9711-87a240054835 changed status from todo to in progress on DIRA-37— Audit geometry for Burning Rock 4d ago" [ref=e4867] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-37
+              - generic [ref=e4868]:
+                - paragraph [ref=e4869]:
+                  - generic [ref=e4870]:
+                    - generic [ref=e4872]: 1C
+                    - generic [ref=e4873]: 1c49c43c-d81f-47a5-9711-87a240054835
+                  - generic [ref=e4874]: changed status from todo to in progress on
+                  - text: DIRA-37
+                  - generic [ref=e4875]: — Audit geometry for Burning Rock
+                - generic [ref=e4876]: 4d ago
+            - link "43 433f3415-71cd-4438-878a-c3d8be50cb77 changed status from in progress to done on DIRA-34— Detect intersections for Burning Rock 4d ago" [ref=e4877] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-34
+              - generic [ref=e4878]:
+                - paragraph [ref=e4879]:
+                  - generic [ref=e4880]:
+                    - generic [ref=e4882]: "43"
+                    - generic [ref=e4883]: 433f3415-71cd-4438-878a-c3d8be50cb77
+                  - generic [ref=e4884]: changed status from in progress to done on
+                  - text: DIRA-34
+                  - generic [ref=e4885]: — Detect intersections for Burning Rock
+                - generic [ref=e4886]: 4d ago
+            - link "43 433f3415-71cd-4438-878a-c3d8be50cb77 commented on DIRA-34— Detect intersections for Burning Rock 4d ago" [ref=e4887] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-34
+              - generic [ref=e4888]:
+                - paragraph [ref=e4889]:
+                  - generic [ref=e4890]:
+                    - generic [ref=e4892]: "43"
+                    - generic [ref=e4893]: 433f3415-71cd-4438-878a-c3d8be50cb77
+                  - generic [ref=e4894]: commented on
+                  - text: DIRA-34
+                  - generic [ref=e4895]: — Detect intersections for Burning Rock
+                - generic [ref=e4896]: 4d ago
+            - link "BO Board changed status from todo to in progress on DIRA-36— Seed POIs for Burning Rock 4d ago" [ref=e4897] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-36
+              - generic [ref=e4898]:
+                - paragraph [ref=e4899]:
+                  - generic [ref=e4900]:
+                    - generic [ref=e4902]: BO
+                    - generic [ref=e4903]: Board
+                  - generic [ref=e4904]: changed status from todo to in progress on
+                  - text: DIRA-36
+                  - generic [ref=e4905]: — Seed POIs for Burning Rock
+                - generic [ref=e4906]: 4d ago
+            - link "43 433f3415-71cd-4438-878a-c3d8be50cb77 checked out DIRA-34— Detect intersections for Burning Rock 4d ago" [ref=e4907] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-34
+              - generic [ref=e4908]:
+                - paragraph [ref=e4909]:
+                  - generic [ref=e4910]:
+                    - generic [ref=e4912]: "43"
+                    - generic [ref=e4913]: 433f3415-71cd-4438-878a-c3d8be50cb77
+                  - generic [ref=e4914]: checked out
+                  - text: DIRA-34
+                  - generic [ref=e4915]: — Detect intersections for Burning Rock
+                - generic [ref=e4916]: 4d ago
+            - link "BO Board created DIRA-37— Audit geometry for Burning Rock 4d ago" [ref=e4917] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-37
+              - generic [ref=e4918]:
+                - paragraph [ref=e4919]:
+                  - generic [ref=e4920]:
+                    - generic [ref=e4922]: BO
+                    - generic [ref=e4923]: Board
+                  - generic [ref=e4924]: created
+                  - text: DIRA-37
+                  - generic [ref=e4925]: — Audit geometry for Burning Rock
+                - generic [ref=e4926]: 4d ago
+            - link "BO Board created DIRA-36— Seed POIs for Burning Rock 4d ago" [ref=e4927] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-36
+              - generic [ref=e4928]:
+                - paragraph [ref=e4929]:
+                  - generic [ref=e4930]:
+                    - generic [ref=e4932]: BO
+                    - generic [ref=e4933]: Board
+                  - generic [ref=e4934]: created
+                  - text: DIRA-36
+                  - generic [ref=e4935]: — Seed POIs for Burning Rock
+                - generic [ref=e4936]: 4d ago
+            - link "BO Board created DIRA-35— Create road junctions for Burning Rock 4d ago" [ref=e4937] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-35
+              - generic [ref=e4938]:
+                - paragraph [ref=e4939]:
+                  - generic [ref=e4940]:
+                    - generic [ref=e4942]: BO
+                    - generic [ref=e4943]: Board
+                  - generic [ref=e4944]: created
+                  - text: DIRA-35
+                  - generic [ref=e4945]: — Create road junctions for Burning Rock
+                - generic [ref=e4946]: 4d ago
+            - link "BO Board created DIRA-34— Detect intersections for Burning Rock 4d ago" [ref=e4947] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-34
+              - generic [ref=e4948]:
+                - paragraph [ref=e4949]:
+                  - generic [ref=e4950]:
+                    - generic [ref=e4952]: BO
+                    - generic [ref=e4953]: Board
+                  - generic [ref=e4954]: created
+                  - text: DIRA-34
+                  - generic [ref=e4955]: — Detect intersections for Burning Rock
+                - generic [ref=e4956]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e4957] [cursor=pointer]:
+              - /url: /DIRA/agents/a4b78a15-dce7-4c6f-9f27-0e4bef1e4723
+              - generic [ref=e4958]:
+                - paragraph [ref=e4959]:
+                  - generic [ref=e4960]:
+                    - generic [ref=e4962]: BO
+                    - generic [ref=e4963]: Board
+                  - generic [ref=e4964]: updated
+                - generic [ref=e4965]: 4d ago
+            - link "BO Board approved 4d ago" [ref=e4966] [cursor=pointer]:
+              - /url: /DIRA/approvals/c4722af5-3565-48db-ad48-e0ef3154dd7f
+              - generic [ref=e4967]:
+                - paragraph [ref=e4968]:
+                  - generic [ref=e4969]:
+                    - generic [ref=e4971]: BO
+                    - generic [ref=e4972]: Board
+                  - generic [ref=e4973]: approved
+                - generic [ref=e4974]: 4d ago
+            - generic [ref=e4976]:
+              - paragraph [ref=e4977]:
+                - generic [ref=e4978]:
+                  - generic [ref=e4980]: BO
+                  - generic [ref=e4981]: Board
+                - generic [ref=e4982]: budget policy upserted
+              - generic [ref=e4983]: 4d ago
+            - link "BO Board approved 4d ago" [ref=e4984] [cursor=pointer]:
+              - /url: /DIRA/approvals/94e4ea18-20a4-4ee7-a1b2-0768d37691dd
+              - generic [ref=e4985]:
+                - paragraph [ref=e4986]:
+                  - generic [ref=e4987]:
+                    - generic [ref=e4989]: BO
+                    - generic [ref=e4990]: Board
+                  - generic [ref=e4991]: approved
+                - generic [ref=e4992]: 4d ago
+            - generic [ref=e4994]:
+              - paragraph [ref=e4995]:
+                - generic [ref=e4996]:
+                  - generic [ref=e4998]: BO
+                  - generic [ref=e4999]: Board
+                - generic [ref=e5000]: budget policy upserted
+              - generic [ref=e5001]: 4d ago
+            - link "BO Board approved 4d ago" [ref=e5002] [cursor=pointer]:
+              - /url: /DIRA/approvals/44ad1eda-bd84-481d-b623-add7bd33cdb9
+              - generic [ref=e5003]:
+                - paragraph [ref=e5004]:
+                  - generic [ref=e5005]:
+                    - generic [ref=e5007]: BO
+                    - generic [ref=e5008]: Board
+                  - generic [ref=e5009]: approved
+                - generic [ref=e5010]: 4d ago
+            - generic [ref=e5012]:
+              - paragraph [ref=e5013]:
+                - generic [ref=e5014]:
+                  - generic [ref=e5016]: BO
+                  - generic [ref=e5017]: Board
+                - generic [ref=e5018]: budget policy upserted
+              - generic [ref=e5019]: 4d ago
+            - link "BO Board approved 4d ago" [ref=e5020] [cursor=pointer]:
+              - /url: /DIRA/approvals/51141cca-fdd7-48b6-949c-5a1990d5a959
+              - generic [ref=e5021]:
+                - paragraph [ref=e5022]:
+                  - generic [ref=e5023]:
+                    - generic [ref=e5025]: BO
+                    - generic [ref=e5026]: Board
+                  - generic [ref=e5027]: approved
+                - generic [ref=e5028]: 4d ago
+            - generic [ref=e5030]:
+              - paragraph [ref=e5031]:
+                - generic [ref=e5032]:
+                  - generic [ref=e5034]: BO
+                  - generic [ref=e5035]: Board
+                - generic [ref=e5036]: budget policy upserted
+              - generic [ref=e5037]: 4d ago
+            - link "BO Board approved 4d ago" [ref=e5038] [cursor=pointer]:
+              - /url: /DIRA/approvals/8713d988-2989-4730-8e71-152be17f5425
+              - generic [ref=e5039]:
+                - paragraph [ref=e5040]:
+                  - generic [ref=e5041]:
+                    - generic [ref=e5043]: BO
+                    - generic [ref=e5044]: Board
+                  - generic [ref=e5045]: approved
+                - generic [ref=e5046]: 4d ago
+            - generic [ref=e5048]:
+              - paragraph [ref=e5049]:
+                - generic [ref=e5050]:
+                  - generic [ref=e5052]: BO
+                  - generic [ref=e5053]: Board
+                - generic [ref=e5054]: budget policy upserted
+              - generic [ref=e5055]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5056] [cursor=pointer]:
+              - /url: /DIRA/agents/1c49c43c-d81f-47a5-9711-87a240054835
+              - generic [ref=e5057]:
+                - paragraph [ref=e5058]:
+                  - generic [ref=e5059]:
+                    - generic [ref=e5061]: BO
+                    - generic [ref=e5062]: Board
+                  - generic [ref=e5063]: agent skills synced
+                - generic [ref=e5064]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5065] [cursor=pointer]:
+              - /url: /DIRA/agents/84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+              - generic [ref=e5066]:
+                - paragraph [ref=e5067]:
+                  - generic [ref=e5068]:
+                    - generic [ref=e5070]: BO
+                    - generic [ref=e5071]: Board
+                  - generic [ref=e5072]: agent skills synced
+                - generic [ref=e5073]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5074] [cursor=pointer]:
+              - /url: /DIRA/agents/bb135eea-c58b-4d3a-bac2-88bc66ff7461
+              - generic [ref=e5075]:
+                - paragraph [ref=e5076]:
+                  - generic [ref=e5077]:
+                    - generic [ref=e5079]: BO
+                    - generic [ref=e5080]: Board
+                  - generic [ref=e5081]: agent skills synced
+                - generic [ref=e5082]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5083] [cursor=pointer]:
+              - /url: /DIRA/agents/433f3415-71cd-4438-878a-c3d8be50cb77
+              - generic [ref=e5084]:
+                - paragraph [ref=e5085]:
+                  - generic [ref=e5086]:
+                    - generic [ref=e5088]: BO
+                    - generic [ref=e5089]: Board
+                  - generic [ref=e5090]: agent skills synced
+                - generic [ref=e5091]: 4d ago
+            - link "BO Board requested approval 4d ago" [ref=e5092] [cursor=pointer]:
+              - /url: /DIRA/approvals/51141cca-fdd7-48b6-949c-5a1990d5a959
+              - generic [ref=e5093]:
+                - paragraph [ref=e5094]:
+                  - generic [ref=e5095]:
+                    - generic [ref=e5097]: BO
+                    - generic [ref=e5098]: Board
+                  - generic [ref=e5099]: requested approval
+                - generic [ref=e5100]: 4d ago
+            - link "BO Board agent hire created 4d ago" [ref=e5101] [cursor=pointer]:
+              - /url: /DIRA/agents/a4b78a15-dce7-4c6f-9f27-0e4bef1e4723
+              - generic [ref=e5102]:
+                - paragraph [ref=e5103]:
+                  - generic [ref=e5104]:
+                    - generic [ref=e5106]: BO
+                    - generic [ref=e5107]: Board
+                  - generic [ref=e5108]: agent hire created
+                - generic [ref=e5109]: 4d ago
+            - link "BO Board requested approval 4d ago" [ref=e5110] [cursor=pointer]:
+              - /url: /DIRA/approvals/44ad1eda-bd84-481d-b623-add7bd33cdb9
+              - generic [ref=e5111]:
+                - paragraph [ref=e5112]:
+                  - generic [ref=e5113]:
+                    - generic [ref=e5115]: BO
+                    - generic [ref=e5116]: Board
+                  - generic [ref=e5117]: requested approval
+                - generic [ref=e5118]: 4d ago
+            - link "BO Board agent hire created 4d ago" [ref=e5119] [cursor=pointer]:
+              - /url: /DIRA/agents/1c49c43c-d81f-47a5-9711-87a240054835
+              - generic [ref=e5120]:
+                - paragraph [ref=e5121]:
+                  - generic [ref=e5122]:
+                    - generic [ref=e5124]: BO
+                    - generic [ref=e5125]: Board
+                  - generic [ref=e5126]: agent hire created
+                - generic [ref=e5127]: 4d ago
+            - link "BO Board requested approval 4d ago" [ref=e5128] [cursor=pointer]:
+              - /url: /DIRA/approvals/94e4ea18-20a4-4ee7-a1b2-0768d37691dd
+              - generic [ref=e5129]:
+                - paragraph [ref=e5130]:
+                  - generic [ref=e5131]:
+                    - generic [ref=e5133]: BO
+                    - generic [ref=e5134]: Board
+                  - generic [ref=e5135]: requested approval
+                - generic [ref=e5136]: 4d ago
+            - link "BO Board agent hire created 4d ago" [ref=e5137] [cursor=pointer]:
+              - /url: /DIRA/agents/84d024d0-c9d1-404e-bafa-cb89d7fc6aaf
+              - generic [ref=e5138]:
+                - paragraph [ref=e5139]:
+                  - generic [ref=e5140]:
+                    - generic [ref=e5142]: BO
+                    - generic [ref=e5143]: Board
+                  - generic [ref=e5144]: agent hire created
+                - generic [ref=e5145]: 4d ago
+            - link "BO Board requested approval 4d ago" [ref=e5146] [cursor=pointer]:
+              - /url: /DIRA/approvals/c4722af5-3565-48db-ad48-e0ef3154dd7f
+              - generic [ref=e5147]:
+                - paragraph [ref=e5148]:
+                  - generic [ref=e5149]:
+                    - generic [ref=e5151]: BO
+                    - generic [ref=e5152]: Board
+                  - generic [ref=e5153]: requested approval
+                - generic [ref=e5154]: 4d ago
+            - link "BO Board agent hire created 4d ago" [ref=e5155] [cursor=pointer]:
+              - /url: /DIRA/agents/bb135eea-c58b-4d3a-bac2-88bc66ff7461
+              - generic [ref=e5156]:
+                - paragraph [ref=e5157]:
+                  - generic [ref=e5158]:
+                    - generic [ref=e5160]: BO
+                    - generic [ref=e5161]: Board
+                  - generic [ref=e5162]: agent hire created
+                - generic [ref=e5163]: 4d ago
+            - link "BO Board requested approval 4d ago" [ref=e5164] [cursor=pointer]:
+              - /url: /DIRA/approvals/8713d988-2989-4730-8e71-152be17f5425
+              - generic [ref=e5165]:
+                - paragraph [ref=e5166]:
+                  - generic [ref=e5167]:
+                    - generic [ref=e5169]: BO
+                    - generic [ref=e5170]: Board
+                  - generic [ref=e5171]: requested approval
+                - generic [ref=e5172]: 4d ago
+            - link "BO Board agent hire created 4d ago" [ref=e5173] [cursor=pointer]:
+              - /url: /DIRA/agents/433f3415-71cd-4438-878a-c3d8be50cb77
+              - generic [ref=e5174]:
+                - paragraph [ref=e5175]:
+                  - generic [ref=e5176]:
+                    - generic [ref=e5178]: BO
+                    - generic [ref=e5179]: Board
+                  - generic [ref=e5180]: agent hire created
+                - generic [ref=e5181]: 4d ago
+            - generic [ref=e5183]:
+              - paragraph [ref=e5184]:
+                - generic [ref=e5185]:
+                  - generic [ref=e5187]: BO
+                  - generic [ref=e5188]: Board
+                - generic [ref=e5189]: company skill created
+              - generic [ref=e5190]: 4d ago
+            - generic [ref=e5192]:
+              - paragraph [ref=e5193]:
+                - generic [ref=e5194]:
+                  - generic [ref=e5196]: BO
+                  - generic [ref=e5197]: Board
+                - generic [ref=e5198]: company skill created
+              - generic [ref=e5199]: 4d ago
+            - generic [ref=e5201]:
+              - paragraph [ref=e5202]:
+                - generic [ref=e5203]:
+                  - generic [ref=e5205]: BO
+                  - generic [ref=e5206]: Board
+                - generic [ref=e5207]: company skill created
+              - generic [ref=e5208]: 4d ago
+            - generic [ref=e5210]:
+              - paragraph [ref=e5211]:
+                - generic [ref=e5212]:
+                  - generic [ref=e5214]: BO
+                  - generic [ref=e5215]: Board
+                - generic [ref=e5216]: company skill created
+              - generic [ref=e5217]: 4d ago
+            - generic [ref=e5219]:
+              - paragraph [ref=e5220]:
+                - generic [ref=e5221]:
+                  - generic [ref=e5223]: BO
+                  - generic [ref=e5224]: Board
+                - generic [ref=e5225]: company skill created
+              - generic [ref=e5226]: 4d ago
+            - generic [ref=e5228]:
+              - paragraph [ref=e5229]:
+                - generic [ref=e5230]:
+                  - generic [ref=e5232]: BO
+                  - generic [ref=e5233]: Board
+                - generic [ref=e5234]: company skill created
+              - generic [ref=e5235]: 4d ago
+            - generic [ref=e5237]:
+              - paragraph [ref=e5238]:
+                - generic [ref=e5239]:
+                  - generic [ref=e5241]: BO
+                  - generic [ref=e5242]: Board
+                - generic [ref=e5243]: company skill created
+              - generic [ref=e5244]: 4d ago
+            - generic [ref=e5246]:
+              - paragraph [ref=e5247]:
+                - generic [ref=e5248]:
+                  - generic [ref=e5250]: BO
+                  - generic [ref=e5251]: Board
+                - generic [ref=e5252]: company skill created
+              - generic [ref=e5253]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5254] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e5255]:
+                - paragraph [ref=e5256]:
+                  - generic [ref=e5257]:
+                    - generic [ref=e5259]: BO
+                    - generic [ref=e5260]: Board
+                  - generic [ref=e5261]: updated
+                - generic [ref=e5262]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5263] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e5264]:
+                - paragraph [ref=e5265]:
+                  - generic [ref=e5266]:
+                    - generic [ref=e5268]: BO
+                    - generic [ref=e5269]: Board
+                  - generic [ref=e5270]: updated
+                - generic [ref=e5271]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5272] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e5273]:
+                - paragraph [ref=e5274]:
+                  - generic [ref=e5275]:
+                    - generic [ref=e5277]: BO
+                    - generic [ref=e5278]: Board
+                  - generic [ref=e5279]: updated
+                - generic [ref=e5280]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5281] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e5282]:
+                - paragraph [ref=e5283]:
+                  - generic [ref=e5284]:
+                    - generic [ref=e5286]: BO
+                    - generic [ref=e5287]: Board
+                  - generic [ref=e5288]: updated
+                - generic [ref=e5289]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5290] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e5291]:
+                - paragraph [ref=e5292]:
+                  - generic [ref=e5293]:
+                    - generic [ref=e5295]: BO
+                    - generic [ref=e5296]: Board
+                  - generic [ref=e5297]: updated
+                - generic [ref=e5298]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5299] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5300]:
+                - paragraph [ref=e5301]:
+                  - generic [ref=e5302]:
+                    - generic [ref=e5304]: BO
+                    - generic [ref=e5305]: Board
+                  - generic [ref=e5306]: updated
+                - generic [ref=e5307]: 4d ago
+            - link "86 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e changed status from todo to in review on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5308] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5309]:
+                - paragraph [ref=e5310]:
+                  - generic [ref=e5311]:
+                    - generic [ref=e5313]: "86"
+                    - generic [ref=e5314]: 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+                  - generic [ref=e5315]: changed status from todo to in review on
+                  - text: DIRA-25
+                  - generic [ref=e5316]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5317]: 4d ago
+            - link "86 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e commented on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5318] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5319]:
+                - paragraph [ref=e5320]:
+                  - generic [ref=e5321]:
+                    - generic [ref=e5323]: "86"
+                    - generic [ref=e5324]: 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+                  - generic [ref=e5325]: commented on
+                  - text: DIRA-25
+                  - generic [ref=e5326]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5327]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5328] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e5329]:
+                - paragraph [ref=e5330]:
+                  - generic [ref=e5331]:
+                    - generic [ref=e5333]: BO
+                    - generic [ref=e5334]: Board
+                  - generic [ref=e5335]: updated
+                - generic [ref=e5336]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5337] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e5338]:
+                - paragraph [ref=e5339]:
+                  - generic [ref=e5340]:
+                    - generic [ref=e5342]: BO
+                    - generic [ref=e5343]: Board
+                  - generic [ref=e5344]: updated
+                - generic [ref=e5345]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5346] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e5347]:
+                - paragraph [ref=e5348]:
+                  - generic [ref=e5349]:
+                    - generic [ref=e5351]: BO
+                    - generic [ref=e5352]: Board
+                  - generic [ref=e5353]: updated
+                - generic [ref=e5354]: 4d ago
+            - 'link "BO Board created DIRA-33— QA: Verify Add-a-Stop buttons on branch feat/dira-23-add-a-stop 4d ago" [ref=e5355] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-33
+              - generic [ref=e5356]:
+                - paragraph [ref=e5357]:
+                  - generic [ref=e5358]:
+                    - generic [ref=e5360]: BO
+                    - generic [ref=e5361]: Board
+                  - generic [ref=e5362]: created
+                  - text: DIRA-33
+                  - generic [ref=e5363]: "— QA: Verify Add-a-Stop buttons on branch feat/dira-23-add-a-stop"
+                - generic [ref=e5364]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5365] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e5366]:
+                - paragraph [ref=e5367]:
+                  - generic [ref=e5368]:
+                    - generic [ref=e5370]: BO
+                    - generic [ref=e5371]: Board
+                  - generic [ref=e5372]: agent skills synced
+                - generic [ref=e5373]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5374] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e5375]:
+                - paragraph [ref=e5376]:
+                  - generic [ref=e5377]:
+                    - generic [ref=e5379]: BO
+                    - generic [ref=e5380]: Board
+                  - generic [ref=e5381]: agent skills synced
+                - generic [ref=e5382]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5383] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e5384]:
+                - paragraph [ref=e5385]:
+                  - generic [ref=e5386]:
+                    - generic [ref=e5388]: BO
+                    - generic [ref=e5389]: Board
+                  - generic [ref=e5390]: agent skills synced
+                - generic [ref=e5391]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5392] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e5393]:
+                - paragraph [ref=e5394]:
+                  - generic [ref=e5395]:
+                    - generic [ref=e5397]: BO
+                    - generic [ref=e5398]: Board
+                  - generic [ref=e5399]: agent skills synced
+                - generic [ref=e5400]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5401] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e5402]:
+                - paragraph [ref=e5403]:
+                  - generic [ref=e5404]:
+                    - generic [ref=e5406]: BO
+                    - generic [ref=e5407]: Board
+                  - generic [ref=e5408]: agent skills synced
+                - generic [ref=e5409]: 4d ago
+            - link "BO Board agent skills synced 4d ago" [ref=e5410] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5411]:
+                - paragraph [ref=e5412]:
+                  - generic [ref=e5413]:
+                    - generic [ref=e5415]: BO
+                    - generic [ref=e5416]: Board
+                  - generic [ref=e5417]: agent skills synced
+                - generic [ref=e5418]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5419] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e5420]:
+                - paragraph [ref=e5421]:
+                  - generic [ref=e5422]:
+                    - generic [ref=e5424]: BO
+                    - generic [ref=e5425]: Board
+                  - generic [ref=e5426]: updated
+                - generic [ref=e5427]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5428] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e5429]:
+                - paragraph [ref=e5430]:
+                  - generic [ref=e5431]:
+                    - generic [ref=e5433]: BO
+                    - generic [ref=e5434]: Board
+                  - generic [ref=e5435]: updated
+                - generic [ref=e5436]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5437] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e5438]:
+                - paragraph [ref=e5439]:
+                  - generic [ref=e5440]:
+                    - generic [ref=e5442]: BO
+                    - generic [ref=e5443]: Board
+                  - generic [ref=e5444]: updated
+                - generic [ref=e5445]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5446] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5447]:
+                - paragraph [ref=e5448]:
+                  - generic [ref=e5449]:
+                    - generic [ref=e5451]: BO
+                    - generic [ref=e5452]: Board
+                  - generic [ref=e5453]: updated
+                - generic [ref=e5454]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5455] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5456]:
+                - paragraph [ref=e5457]:
+                  - generic [ref=e5458]:
+                    - generic [ref=e5460]: BO
+                    - generic [ref=e5461]: Board
+                  - generic [ref=e5462]: updated
+                - generic [ref=e5463]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5464] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5465]:
+                - paragraph [ref=e5466]:
+                  - generic [ref=e5467]:
+                    - generic [ref=e5469]: BO
+                    - generic [ref=e5470]: Board
+                  - generic [ref=e5471]: updated
+                - generic [ref=e5472]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5473] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5474]:
+                - paragraph [ref=e5475]:
+                  - generic [ref=e5476]:
+                    - generic [ref=e5478]: BO
+                    - generic [ref=e5479]: Board
+                  - generic [ref=e5480]: updated
+                - generic [ref=e5481]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5482] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e5483]:
+                - paragraph [ref=e5484]:
+                  - generic [ref=e5485]:
+                    - generic [ref=e5487]: BO
+                    - generic [ref=e5488]: Board
+                  - generic [ref=e5489]: updated
+                - generic [ref=e5490]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5491] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e5492]:
+                - paragraph [ref=e5493]:
+                  - generic [ref=e5494]:
+                    - generic [ref=e5496]: BO
+                    - generic [ref=e5497]: Board
+                  - generic [ref=e5498]: updated
+                - generic [ref=e5499]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5500] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e5501]:
+                - paragraph [ref=e5502]:
+                  - generic [ref=e5503]:
+                    - generic [ref=e5505]: BO
+                    - generic [ref=e5506]: Board
+                  - generic [ref=e5507]: updated
+                - generic [ref=e5508]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5509] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5510]:
+                - paragraph [ref=e5511]:
+                  - generic [ref=e5512]:
+                    - generic [ref=e5514]: BO
+                    - generic [ref=e5515]: Board
+                  - generic [ref=e5516]: updated
+                - generic [ref=e5517]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5518] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e5519]:
+                - paragraph [ref=e5520]:
+                  - generic [ref=e5521]:
+                    - generic [ref=e5523]: BO
+                    - generic [ref=e5524]: Board
+                  - generic [ref=e5525]: updated
+                - generic [ref=e5526]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5527] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e5528]:
+                - paragraph [ref=e5529]:
+                  - generic [ref=e5530]:
+                    - generic [ref=e5532]: BO
+                    - generic [ref=e5533]: Board
+                  - generic [ref=e5534]: updated
+                - generic [ref=e5535]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status from in progress to in review on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 4d ago" [ref=e5536] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e5537]:
+                - paragraph [ref=e5538]:
+                  - generic [ref=e5539]:
+                    - generic [ref=e5541]: "12"
+                    - generic [ref=e5542]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5543]: changed status from in progress to in review on
+                  - text: DIRA-20
+                  - generic [ref=e5544]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e5545]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 4d ago" [ref=e5546] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e5547]:
+                - paragraph [ref=e5548]:
+                  - generic [ref=e5549]:
+                    - generic [ref=e5551]: "12"
+                    - generic [ref=e5552]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5553]: commented on
+                  - text: DIRA-20
+                  - generic [ref=e5554]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e5555]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-20— Redesign Navigation HUD — start from Steve's requirements 4d ago" [ref=e5556] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e5557]:
+                - paragraph [ref=e5558]:
+                  - generic [ref=e5559]:
+                    - generic [ref=e5561]: "12"
+                    - generic [ref=e5562]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5563]: checked out
+                  - text: DIRA-20
+                  - generic [ref=e5564]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e5565]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-32— Hire Onboarding Specialist — every new agent passes 10/10 before going active 4d ago" [ref=e5566] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-32
+              - generic [ref=e5567]:
+                - paragraph [ref=e5568]:
+                  - generic [ref=e5569]:
+                    - generic [ref=e5571]: "12"
+                    - generic [ref=e5572]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5573]: commented on
+                  - text: DIRA-32
+                  - generic [ref=e5574]: — Hire Onboarding Specialist — every new agent passes 10/10 before going active
+                - generic [ref=e5575]: 4d ago
+            - 'link "86 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e changed status from todo to in review on DIRA-31— PR: feat/dira-20-hud-trail-header → master (trail name header) 4d ago" [ref=e5576] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-31
+              - generic [ref=e5577]:
+                - paragraph [ref=e5578]:
+                  - generic [ref=e5579]:
+                    - generic [ref=e5581]: "86"
+                    - generic [ref=e5582]: 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+                  - generic [ref=e5583]: changed status from todo to in review on
+                  - text: DIRA-31
+                  - generic [ref=e5584]: "— PR: feat/dira-20-hud-trail-header → master (trail name header)"
+                - generic [ref=e5585]: 4d ago
+            - 'link "86 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e commented on DIRA-31— PR: feat/dira-20-hud-trail-header → master (trail name header) 4d ago" [ref=e5586] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-31
+              - generic [ref=e5587]:
+                - paragraph [ref=e5588]:
+                  - generic [ref=e5589]:
+                    - generic [ref=e5591]: "86"
+                    - generic [ref=e5592]: 86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+                  - generic [ref=e5593]: commented on
+                  - text: DIRA-31
+                  - generic [ref=e5594]: "— PR: feat/dira-20-hud-trail-header → master (trail name header)"
+                - generic [ref=e5595]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-32— Hire Onboarding Specialist — every new agent passes 10/10 before going active 4d ago" [ref=e5596] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-32
+              - generic [ref=e5597]:
+                - paragraph [ref=e5598]:
+                  - generic [ref=e5599]:
+                    - generic [ref=e5601]: "12"
+                    - generic [ref=e5602]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5603]: checked out
+                  - text: DIRA-32
+                  - generic [ref=e5604]: — Hire Onboarding Specialist — every new agent passes 10/10 before going active
+                - generic [ref=e5605]: 4d ago
+            - link "BO Board created DIRA-32— Hire Onboarding Specialist — every new agent passes 10/10 before going active 4d ago" [ref=e5606] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-32
+              - generic [ref=e5607]:
+                - paragraph [ref=e5608]:
+                  - generic [ref=e5609]:
+                    - generic [ref=e5611]: BO
+                    - generic [ref=e5612]: Board
+                  - generic [ref=e5613]: created
+                  - text: DIRA-32
+                  - generic [ref=e5614]: — Hire Onboarding Specialist — every new agent passes 10/10 before going active
+                - generic [ref=e5615]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 4d ago" [ref=e5616] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e5617]:
+                - paragraph [ref=e5618]:
+                  - generic [ref=e5619]:
+                    - generic [ref=e5621]: "12"
+                    - generic [ref=e5622]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5623]: commented on
+                  - text: DIRA-18
+                  - generic [ref=e5624]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e5625]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 4d ago" [ref=e5626] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e5627]:
+                - paragraph [ref=e5628]:
+                  - generic [ref=e5629]:
+                    - generic [ref=e5631]: "12"
+                    - generic [ref=e5632]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5633]: issue checkout lock adopted
+                  - text: DIRA-18
+                  - generic [ref=e5634]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e5635]: 4d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 created DIRA-31— PR: feat/dira-20-hud-trail-header → master (trail name header) 4d ago" [ref=e5636] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-31
+              - generic [ref=e5637]:
+                - paragraph [ref=e5638]:
+                  - generic [ref=e5639]:
+                    - generic [ref=e5641]: "12"
+                    - generic [ref=e5642]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5643]: created
+                  - text: DIRA-31
+                  - generic [ref=e5644]: "— PR: feat/dira-20-hud-trail-header → master (trail name header)"
+                - generic [ref=e5645]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 4d ago" [ref=e5646] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e5647]:
+                - paragraph [ref=e5648]:
+                  - generic [ref=e5649]:
+                    - generic [ref=e5651]: "12"
+                    - generic [ref=e5652]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5653]: commented on
+                  - text: DIRA-20
+                  - generic [ref=e5654]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e5655]: 4d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-20— Redesign Navigation HUD — start from Steve's requirements 4d ago" [ref=e5656] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e5657]:
+                - paragraph [ref=e5658]:
+                  - generic [ref=e5659]:
+                    - generic [ref=e5661]: "12"
+                    - generic [ref=e5662]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e5663]: issue checkout lock adopted
+                  - text: DIRA-20
+                  - generic [ref=e5664]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e5665]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 4d ago" [ref=e5666] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e5667]:
+                - paragraph [ref=e5668]:
+                  - generic [ref=e5669]:
+                    - generic [ref=e5671]: "03"
+                    - generic [ref=e5672]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e5673]: commented on
+                  - text: DIRA-20
+                  - generic [ref=e5674]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e5675]: 4d ago
+            - link "BO Board issue read marked DIRA-30— Hire Pipeline Manager — enforce flow order and catch skipped steps 4d ago" [ref=e5676] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-30
+              - generic [ref=e5677]:
+                - paragraph [ref=e5678]:
+                  - generic [ref=e5679]:
+                    - generic [ref=e5681]: BO
+                    - generic [ref=e5682]: Board
+                  - generic [ref=e5683]: issue read marked
+                  - text: DIRA-30
+                  - generic [ref=e5684]: — Hire Pipeline Manager — enforce flow order and catch skipped steps
+                - generic [ref=e5685]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e5686] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e5687]:
+                - paragraph [ref=e5688]:
+                  - generic [ref=e5689]:
+                    - generic [ref=e5691]: BO
+                    - generic [ref=e5692]: Board
+                  - generic [ref=e5693]: updated
+                - generic [ref=e5694]: 4d ago
+            - link "BO Board created DIRA-30— Hire Pipeline Manager — enforce flow order and catch skipped steps 4d ago" [ref=e5695] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-30
+              - generic [ref=e5696]:
+                - paragraph [ref=e5697]:
+                  - generic [ref=e5698]:
+                    - generic [ref=e5700]: BO
+                    - generic [ref=e5701]: Board
+                  - generic [ref=e5702]: created
+                  - text: DIRA-30
+                  - generic [ref=e5703]: — Hire Pipeline Manager — enforce flow order and catch skipped steps
+                - generic [ref=e5704]: 4d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-28— QA: Visual verification of Add-a-Stop feature — DIRA-25 4d ago" [ref=e5705] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-28
+              - generic [ref=e5706]:
+                - paragraph [ref=e5707]:
+                  - generic [ref=e5708]:
+                    - generic [ref=e5710]: "73"
+                    - generic [ref=e5711]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e5712]: checked out
+                  - text: DIRA-28
+                  - generic [ref=e5713]: "— QA: Visual verification of Add-a-Stop feature — DIRA-25"
+                - generic [ref=e5714]: 4d ago
+            - 'link "BO Board issue read marked DIRA-24— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data 4d ago" [ref=e5715] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-24
+              - generic [ref=e5716]:
+                - paragraph [ref=e5717]:
+                  - generic [ref=e5718]:
+                    - generic [ref=e5720]: BO
+                    - generic [ref=e5721]: Board
+                  - generic [ref=e5722]: issue read marked
+                  - text: DIRA-24
+                  - generic [ref=e5723]: "— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data"
+                - generic [ref=e5724]: 4d ago
+            - link "BO Board issue read marked DIRA-27— Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills 4d ago" [ref=e5725] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-27
+              - generic [ref=e5726]:
+                - paragraph [ref=e5727]:
+                  - generic [ref=e5728]:
+                    - generic [ref=e5730]: BO
+                    - generic [ref=e5731]: Board
+                  - generic [ref=e5732]: issue read marked
+                  - text: DIRA-27
+                  - generic [ref=e5733]: — Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills
+                - generic [ref=e5734]: 4d ago
+            - link "BO Board commented on DIRA-27— Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills 4d ago" [ref=e5735] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-27
+              - generic [ref=e5736]:
+                - paragraph [ref=e5737]:
+                  - generic [ref=e5738]:
+                    - generic [ref=e5740]: BO
+                    - generic [ref=e5741]: Board
+                  - generic [ref=e5742]: commented on
+                  - text: DIRA-27
+                  - generic [ref=e5743]: — Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills
+                - generic [ref=e5744]: 4d ago
+            - link "BO Board commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 4d ago" [ref=e5745] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e5746]:
+                - paragraph [ref=e5747]:
+                  - generic [ref=e5748]:
+                    - generic [ref=e5750]: BO
+                    - generic [ref=e5751]: Board
+                  - generic [ref=e5752]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e5753]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e5754]: 4d ago
+            - link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 commented on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5755] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5756]:
+                - paragraph [ref=e5757]:
+                  - generic [ref=e5758]:
+                    - generic [ref=e5760]: 3F
+                    - generic [ref=e5761]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e5762]: commented on
+                  - text: DIRA-25
+                  - generic [ref=e5763]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5764]: 4d ago
+            - link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 changed status from in review to todo on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5765] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5766]:
+                - paragraph [ref=e5767]:
+                  - generic [ref=e5768]:
+                    - generic [ref=e5770]: 3F
+                    - generic [ref=e5771]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e5772]: changed status from in review to todo on
+                  - text: DIRA-25
+                  - generic [ref=e5773]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5774]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 commented on DIRA-29— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval) 4d ago" [ref=e5775] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-29
+              - generic [ref=e5776]:
+                - paragraph [ref=e5777]:
+                  - generic [ref=e5778]:
+                    - generic [ref=e5780]: 3F
+                    - generic [ref=e5781]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e5782]: commented on
+                  - text: DIRA-29
+                  - generic [ref=e5783]: "— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval)"
+                - generic [ref=e5784]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 changed status from in progress to done on DIRA-29— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval) 4d ago" [ref=e5785] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-29
+              - generic [ref=e5786]:
+                - paragraph [ref=e5787]:
+                  - generic [ref=e5788]:
+                    - generic [ref=e5790]: 3F
+                    - generic [ref=e5791]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e5792]: changed status from in progress to done on
+                  - text: DIRA-29
+                  - generic [ref=e5793]: "— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval)"
+                - generic [ref=e5794]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 checked out DIRA-29— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval) 4d ago" [ref=e5795] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-29
+              - generic [ref=e5796]:
+                - paragraph [ref=e5797]:
+                  - generic [ref=e5798]:
+                    - generic [ref=e5800]: 3F
+                    - generic [ref=e5801]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e5802]: checked out
+                  - text: DIRA-29
+                  - generic [ref=e5803]: "— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval)"
+                - generic [ref=e5804]: 4d ago
+            - link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 4d ago" [ref=e5805] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e5806]:
+                - paragraph [ref=e5807]:
+                  - generic [ref=e5808]:
+                    - generic [ref=e5810]: "67"
+                    - generic [ref=e5811]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5812]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e5813]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e5814]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 commented on DIRA-24— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data 4d ago" [ref=e5815] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-24
+              - generic [ref=e5816]:
+                - paragraph [ref=e5817]:
+                  - generic [ref=e5818]:
+                    - generic [ref=e5820]: "67"
+                    - generic [ref=e5821]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5822]: commented on
+                  - text: DIRA-24
+                  - generic [ref=e5823]: "— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data"
+                - generic [ref=e5824]: 4d ago
+            - link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 commented on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5825] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5826]:
+                - paragraph [ref=e5827]:
+                  - generic [ref=e5828]:
+                    - generic [ref=e5830]: "67"
+                    - generic [ref=e5831]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5832]: commented on
+                  - text: DIRA-25
+                  - generic [ref=e5833]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5834]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 created DIRA-29— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval) 4d ago" [ref=e5835] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-29
+              - generic [ref=e5836]:
+                - paragraph [ref=e5837]:
+                  - generic [ref=e5838]:
+                    - generic [ref=e5840]: "67"
+                    - generic [ref=e5841]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5842]: created
+                  - text: DIRA-29
+                  - generic [ref=e5843]: "— Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval)"
+                - generic [ref=e5844]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 created DIRA-28— QA: Visual verification of Add-a-Stop feature — DIRA-25 4d ago" [ref=e5845] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-28
+              - generic [ref=e5846]:
+                - paragraph [ref=e5847]:
+                  - generic [ref=e5848]:
+                    - generic [ref=e5850]: "67"
+                    - generic [ref=e5851]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5852]: created
+                  - text: DIRA-28
+                  - generic [ref=e5853]: "— QA: Visual verification of Add-a-Stop feature — DIRA-25"
+                - generic [ref=e5854]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 4d ago" [ref=e5855] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e5856]:
+                - paragraph [ref=e5857]:
+                  - generic [ref=e5858]:
+                    - generic [ref=e5860]: "03"
+                    - generic [ref=e5861]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e5862]: commented on
+                  - text: DIRA-20
+                  - generic [ref=e5863]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e5864]: 4d ago
+            - link "BO Board commented on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e5865] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e5866]:
+                - paragraph [ref=e5867]:
+                  - generic [ref=e5868]:
+                    - generic [ref=e5870]: BO
+                    - generic [ref=e5871]: Board
+                  - generic [ref=e5872]: commented on
+                  - text: DIRA-22
+                  - generic [ref=e5873]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e5874]: 4d ago
+            - link "BO Board changed status from done to in review on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5875] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5876]:
+                - paragraph [ref=e5877]:
+                  - generic [ref=e5878]:
+                    - generic [ref=e5880]: BO
+                    - generic [ref=e5881]: Board
+                  - generic [ref=e5882]: changed status from done to in review on
+                  - text: DIRA-25
+                  - generic [ref=e5883]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5884]: 4d ago
+            - link "BO Board changed status from in progress to done on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e5885] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e5886]:
+                - paragraph [ref=e5887]:
+                  - generic [ref=e5888]:
+                    - generic [ref=e5890]: BO
+                    - generic [ref=e5891]: Board
+                  - generic [ref=e5892]: changed status from in progress to done on
+                  - text: DIRA-22
+                  - generic [ref=e5893]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e5894]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e5895] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e5896]:
+                - paragraph [ref=e5897]:
+                  - generic [ref=e5898]:
+                    - generic [ref=e5900]: "03"
+                    - generic [ref=e5901]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e5902]: commented on
+                  - text: DIRA-22
+                  - generic [ref=e5903]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e5904]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e5905] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e5906]:
+                - paragraph [ref=e5907]:
+                  - generic [ref=e5908]:
+                    - generic [ref=e5910]: "03"
+                    - generic [ref=e5911]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e5912]: commented on
+                  - text: DIRA-22
+                  - generic [ref=e5913]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e5914]: 4d ago
+            - link "BO Board created DIRA-27— Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills 4d ago" [ref=e5915] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-27
+              - generic [ref=e5916]:
+                - paragraph [ref=e5917]:
+                  - generic [ref=e5918]:
+                    - generic [ref=e5920]: BO
+                    - generic [ref=e5921]: Board
+                  - generic [ref=e5922]: created
+                  - text: DIRA-27
+                  - generic [ref=e5923]: — Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills
+                - generic [ref=e5924]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 changed status from in review to done on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e5925] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e5926]:
+                - paragraph [ref=e5927]:
+                  - generic [ref=e5928]:
+                    - generic [ref=e5930]: "67"
+                    - generic [ref=e5931]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5932]: changed status from in review to done on
+                  - text: DIRA-14
+                  - generic [ref=e5933]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e5934]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e5935] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e5936]:
+                - paragraph [ref=e5937]:
+                  - generic [ref=e5938]:
+                    - generic [ref=e5940]: "67"
+                    - generic [ref=e5941]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5942]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e5943]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e5944]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e5945] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e5946]:
+                - paragraph [ref=e5947]:
+                  - generic [ref=e5948]:
+                    - generic [ref=e5950]: 3F
+                    - generic [ref=e5951]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e5952]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e5953]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e5954]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 changed status from in progress to in review on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e5955] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e5956]:
+                - paragraph [ref=e5957]:
+                  - generic [ref=e5958]:
+                    - generic [ref=e5960]: 3F
+                    - generic [ref=e5961]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e5962]: changed status from in progress to in review on
+                  - text: DIRA-14
+                  - generic [ref=e5963]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e5964]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 checked out DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e5965] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e5966]:
+                - paragraph [ref=e5967]:
+                  - generic [ref=e5968]:
+                    - generic [ref=e5970]: "67"
+                    - generic [ref=e5971]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e5972]: checked out
+                  - text: DIRA-14
+                  - generic [ref=e5973]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e5974]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from todo to done on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5975] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5976]:
+                - paragraph [ref=e5977]:
+                  - generic [ref=e5978]:
+                    - generic [ref=e5980]: "03"
+                    - generic [ref=e5981]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e5982]: changed status from todo to done on
+                  - text: DIRA-25
+                  - generic [ref=e5983]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5984]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e5985] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e5986]:
+                - paragraph [ref=e5987]:
+                  - generic [ref=e5988]:
+                    - generic [ref=e5990]: "03"
+                    - generic [ref=e5991]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e5992]: commented on
+                  - text: DIRA-25
+                  - generic [ref=e5993]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e5994]: 4d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from todo to done on DIRA-26— Fix: RideStatsBarView missing .allowsHitTesting(false) in navigation overlay 4d ago" [ref=e5995] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-26
+              - generic [ref=e5996]:
+                - paragraph [ref=e5997]:
+                  - generic [ref=e5998]:
+                    - generic [ref=e6000]: "03"
+                    - generic [ref=e6001]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6002]: changed status from todo to done on
+                  - text: DIRA-26
+                  - generic [ref=e6003]: "— Fix: RideStatsBarView missing .allowsHitTesting(false) in navigation overlay"
+                - generic [ref=e6004]: 4d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e6005] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6006]:
+                - paragraph [ref=e6007]:
+                  - generic [ref=e6008]:
+                    - generic [ref=e6010]: "03"
+                    - generic [ref=e6011]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6012]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6013]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6014]: 4d ago
+            - link "BO Board commented on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e6015] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e6016]:
+                - paragraph [ref=e6017]:
+                  - generic [ref=e6018]:
+                    - generic [ref=e6020]: BO
+                    - generic [ref=e6021]: Board
+                  - generic [ref=e6022]: commented on
+                  - text: DIRA-22
+                  - generic [ref=e6023]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e6024]: 4d ago
+            - link "BO Board updated DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e6025] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e6026]:
+                - paragraph [ref=e6027]:
+                  - generic [ref=e6028]:
+                    - generic [ref=e6030]: BO
+                    - generic [ref=e6031]: Board
+                  - generic [ref=e6032]: updated
+                  - text: DIRA-22
+                  - generic [ref=e6033]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e6034]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e6035] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6036]:
+                - paragraph [ref=e6037]:
+                  - generic [ref=e6038]:
+                    - generic [ref=e6040]: "67"
+                    - generic [ref=e6041]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e6042]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6043]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6044]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 created DIRA-26— Fix: RideStatsBarView missing .allowsHitTesting(false) in navigation overlay 4d ago" [ref=e6045] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-26
+              - generic [ref=e6046]:
+                - paragraph [ref=e6047]:
+                  - generic [ref=e6048]:
+                    - generic [ref=e6050]: "67"
+                    - generic [ref=e6051]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e6052]: created
+                  - text: DIRA-26
+                  - generic [ref=e6053]: "— Fix: RideStatsBarView missing .allowsHitTesting(false) in navigation overlay"
+                - generic [ref=e6054]: 4d ago
+            - link "BO Board created DIRA-25— Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet 4d ago" [ref=e6055] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e6056]:
+                - paragraph [ref=e6057]:
+                  - generic [ref=e6058]:
+                    - generic [ref=e6060]: BO
+                    - generic [ref=e6061]: Board
+                  - generic [ref=e6062]: created
+                  - text: DIRA-25
+                  - generic [ref=e6063]: — Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e6064]: 4d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-24— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data 4d ago" [ref=e6065] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-24
+              - generic [ref=e6066]:
+                - paragraph [ref=e6067]:
+                  - generic [ref=e6068]:
+                    - generic [ref=e6070]: "73"
+                    - generic [ref=e6071]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6072]: checked out
+                  - text: DIRA-24
+                  - generic [ref=e6073]: "— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data"
+                - generic [ref=e6074]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6075] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e6076]:
+                - paragraph [ref=e6077]:
+                  - generic [ref=e6078]:
+                    - generic [ref=e6080]: BO
+                    - generic [ref=e6081]: Board
+                  - generic [ref=e6082]: updated
+                - generic [ref=e6083]: 4d ago
+            - generic [ref=e6085]:
+              - paragraph [ref=e6086]:
+                - generic [ref=e6087]:
+                  - generic [ref=e6089]: BO
+                  - generic [ref=e6090]: Board
+                - generic [ref=e6091]: company skill created
+              - generic [ref=e6092]: 4d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 created DIRA-24— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data 4d ago" [ref=e6093] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-24
+              - generic [ref=e6094]:
+                - paragraph [ref=e6095]:
+                  - generic [ref=e6096]:
+                    - generic [ref=e6098]: "67"
+                    - generic [ref=e6099]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e6100]: created
+                  - text: DIRA-24
+                  - generic [ref=e6101]: "— QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data"
+                - generic [ref=e6102]: 4d ago
+            - link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 commented on DIRA-23— Generate Burning Rock GPX files from Supabase trail data 4d ago" [ref=e6103] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e6104]:
+                - paragraph [ref=e6105]:
+                  - generic [ref=e6106]:
+                    - generic [ref=e6108]: "67"
+                    - generic [ref=e6109]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e6110]: commented on
+                  - text: DIRA-23
+                  - generic [ref=e6111]: — Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e6112]: 4d ago
+            - link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 changed status to done on DIRA-23— Generate Burning Rock GPX files from Supabase trail data 4d ago" [ref=e6113] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e6114]:
+                - paragraph [ref=e6115]:
+                  - generic [ref=e6116]:
+                    - generic [ref=e6118]: "67"
+                    - generic [ref=e6119]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e6120]: changed status to done on
+                  - text: DIRA-23
+                  - generic [ref=e6121]: — Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e6122]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e6123] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6124]:
+                - paragraph [ref=e6125]:
+                  - generic [ref=e6126]:
+                    - generic [ref=e6128]: 3F
+                    - generic [ref=e6129]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6130]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6131]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6132]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 changed status from in progress to todo on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e6133] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6134]:
+                - paragraph [ref=e6135]:
+                  - generic [ref=e6136]:
+                    - generic [ref=e6138]: 3F
+                    - generic [ref=e6139]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6140]: changed status from in progress to todo on
+                  - text: DIRA-14
+                  - generic [ref=e6141]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6142]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from in progress to done on DIRA-23— Generate Burning Rock GPX files from Supabase trail data 4d ago" [ref=e6143] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e6144]:
+                - paragraph [ref=e6145]:
+                  - generic [ref=e6146]:
+                    - generic [ref=e6148]: "03"
+                    - generic [ref=e6149]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6150]: changed status from in progress to done on
+                  - text: DIRA-23
+                  - generic [ref=e6151]: — Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e6152]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-23— Generate Burning Rock GPX files from Supabase trail data 4d ago" [ref=e6153] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e6154]:
+                - paragraph [ref=e6155]:
+                  - generic [ref=e6156]:
+                    - generic [ref=e6158]: "03"
+                    - generic [ref=e6159]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6160]: commented on
+                  - text: DIRA-23
+                  - generic [ref=e6161]: — Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e6162]: 4d ago
+            - link "73 739df96f-bb7e-4903-afd3-a5b660467e30 commented on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e6163] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e6164]:
+                - paragraph [ref=e6165]:
+                  - generic [ref=e6166]:
+                    - generic [ref=e6168]: "73"
+                    - generic [ref=e6169]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6170]: commented on
+                  - text: DIRA-22
+                  - generic [ref=e6171]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e6172]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 checked out DIRA-23— Generate Burning Rock GPX files from Supabase trail data 4d ago" [ref=e6173] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e6174]:
+                - paragraph [ref=e6175]:
+                  - generic [ref=e6176]:
+                    - generic [ref=e6178]: "03"
+                    - generic [ref=e6179]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6180]: checked out
+                  - text: DIRA-23
+                  - generic [ref=e6181]: — Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e6182]: 4d ago
+            - link "BO Board commented on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e6183] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e6184]:
+                - paragraph [ref=e6185]:
+                  - generic [ref=e6186]:
+                    - generic [ref=e6188]: BO
+                    - generic [ref=e6189]: Board
+                  - generic [ref=e6190]: commented on
+                  - text: DIRA-22
+                  - generic [ref=e6191]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e6192]: 4d ago
+            - link "BO Board created DIRA-23— Generate Burning Rock GPX files from Supabase trail data 4d ago" [ref=e6193] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e6194]:
+                - paragraph [ref=e6195]:
+                  - generic [ref=e6196]:
+                    - generic [ref=e6198]: BO
+                    - generic [ref=e6199]: Board
+                  - generic [ref=e6200]: created
+                  - text: DIRA-23
+                  - generic [ref=e6201]: — Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e6202]: 4d ago
+            - link "BO Board created document for DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e6203] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e6204]:
+                - paragraph [ref=e6205]:
+                  - generic [ref=e6206]:
+                    - generic [ref=e6208]: BO
+                    - generic [ref=e6209]: Board
+                  - generic [ref=e6210]: created document for
+                  - text: DIRA-22
+                  - generic [ref=e6211]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e6212]: 4d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 4d ago" [ref=e6213] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e6214]:
+                - paragraph [ref=e6215]:
+                  - generic [ref=e6216]:
+                    - generic [ref=e6218]: "03"
+                    - generic [ref=e6219]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6220]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e6221]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e6222]: 4d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 checked out DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e6223] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6224]:
+                - paragraph [ref=e6225]:
+                  - generic [ref=e6226]:
+                    - generic [ref=e6228]: 3F
+                    - generic [ref=e6229]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6230]: checked out
+                  - text: DIRA-14
+                  - generic [ref=e6231]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6232]: 4d ago
+            - link "BO Board changed status from todo to in progress on DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e6233] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e6234]:
+                - paragraph [ref=e6235]:
+                  - generic [ref=e6236]:
+                    - generic [ref=e6238]: BO
+                    - generic [ref=e6239]: Board
+                  - generic [ref=e6240]: changed status from todo to in progress on
+                  - text: DIRA-22
+                  - generic [ref=e6241]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e6242]: 4d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 changed status from in progress to todo on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e6243] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6244]:
+                - paragraph [ref=e6245]:
+                  - generic [ref=e6246]:
+                    - generic [ref=e6248]: "73"
+                    - generic [ref=e6249]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6250]: changed status from in progress to todo on
+                  - text: DIRA-14
+                  - generic [ref=e6251]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6252]: 4d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 4d ago" [ref=e6253] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6254]:
+                - paragraph [ref=e6255]:
+                  - generic [ref=e6256]:
+                    - generic [ref=e6258]: "73"
+                    - generic [ref=e6259]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6260]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6261]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6262]: 4d ago
+            - link "73 739df96f-bb7e-4903-afd3-a5b660467e30 changed status from todo to done on DIRA-19— Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent 4d ago" [ref=e6263] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-19
+              - generic [ref=e6264]:
+                - paragraph [ref=e6265]:
+                  - generic [ref=e6266]:
+                    - generic [ref=e6268]: "73"
+                    - generic [ref=e6269]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6270]: changed status from todo to done on
+                  - text: DIRA-19
+                  - generic [ref=e6271]: — Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent
+                - generic [ref=e6272]: 4d ago
+            - link "73 739df96f-bb7e-4903-afd3-a5b660467e30 commented on DIRA-19— Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent 4d ago" [ref=e6273] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-19
+              - generic [ref=e6274]:
+                - paragraph [ref=e6275]:
+                  - generic [ref=e6276]:
+                    - generic [ref=e6278]: "73"
+                    - generic [ref=e6279]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6280]: commented on
+                  - text: DIRA-19
+                  - generic [ref=e6281]: — Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent
+                - generic [ref=e6282]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6283] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e6284]:
+                - paragraph [ref=e6285]:
+                  - generic [ref=e6286]:
+                    - generic [ref=e6288]: BO
+                    - generic [ref=e6289]: Board
+                  - generic [ref=e6290]: updated
+                - generic [ref=e6291]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6292] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e6293]:
+                - paragraph [ref=e6294]:
+                  - generic [ref=e6295]:
+                    - generic [ref=e6297]: BO
+                    - generic [ref=e6298]: Board
+                  - generic [ref=e6299]: updated
+                - generic [ref=e6300]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6301] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e6302]:
+                - paragraph [ref=e6303]:
+                  - generic [ref=e6304]:
+                    - generic [ref=e6306]: BO
+                    - generic [ref=e6307]: Board
+                  - generic [ref=e6308]: updated
+                - generic [ref=e6309]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6310] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e6311]:
+                - paragraph [ref=e6312]:
+                  - generic [ref=e6313]:
+                    - generic [ref=e6315]: BO
+                    - generic [ref=e6316]: Board
+                  - generic [ref=e6317]: updated
+                - generic [ref=e6318]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6319] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e6320]:
+                - paragraph [ref=e6321]:
+                  - generic [ref=e6322]:
+                    - generic [ref=e6324]: BO
+                    - generic [ref=e6325]: Board
+                  - generic [ref=e6326]: updated
+                - generic [ref=e6327]: 4d ago
+            - link "BO Board created DIRA-22— Build Burning Rock GPX test tracks from production trail data 4d ago" [ref=e6328] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e6329]:
+                - paragraph [ref=e6330]:
+                  - generic [ref=e6331]:
+                    - generic [ref=e6333]: BO
+                    - generic [ref=e6334]: Board
+                  - generic [ref=e6335]: created
+                  - text: DIRA-22
+                  - generic [ref=e6336]: — Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e6337]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6338] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e6339]:
+                - paragraph [ref=e6340]:
+                  - generic [ref=e6341]:
+                    - generic [ref=e6343]: BO
+                    - generic [ref=e6344]: Board
+                  - generic [ref=e6345]: updated
+                - generic [ref=e6346]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6347] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e6348]:
+                - paragraph [ref=e6349]:
+                  - generic [ref=e6350]:
+                    - generic [ref=e6352]: BO
+                    - generic [ref=e6353]: Board
+                  - generic [ref=e6354]: updated
+                - generic [ref=e6355]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6356] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e6357]:
+                - paragraph [ref=e6358]:
+                  - generic [ref=e6359]:
+                    - generic [ref=e6361]: BO
+                    - generic [ref=e6362]: Board
+                  - generic [ref=e6363]: updated
+                - generic [ref=e6364]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6365] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e6366]:
+                - paragraph [ref=e6367]:
+                  - generic [ref=e6368]:
+                    - generic [ref=e6370]: BO
+                    - generic [ref=e6371]: Board
+                  - generic [ref=e6372]: updated
+                - generic [ref=e6373]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6374] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e6375]:
+                - paragraph [ref=e6376]:
+                  - generic [ref=e6377]:
+                    - generic [ref=e6379]: BO
+                    - generic [ref=e6380]: Board
+                  - generic [ref=e6381]: updated
+                - generic [ref=e6382]: 4d ago
+            - link "BO Board updated 4d ago" [ref=e6383] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e6384]:
+                - paragraph [ref=e6385]:
+                  - generic [ref=e6386]:
+                    - generic [ref=e6388]: BO
+                    - generic [ref=e6389]: Board
+                  - generic [ref=e6390]: updated
+                - generic [ref=e6391]: 4d ago
+            - link "BO Board issue read marked DIRA-21— Validate GPX test tracks — record video of HUD navigating routes 4d ago" [ref=e6392] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-21
+              - generic [ref=e6393]:
+                - paragraph [ref=e6394]:
+                  - generic [ref=e6395]:
+                    - generic [ref=e6397]: BO
+                    - generic [ref=e6398]: Board
+                  - generic [ref=e6399]: issue read marked
+                  - text: DIRA-21
+                  - generic [ref=e6400]: — Validate GPX test tracks — record video of HUD navigating routes
+                - generic [ref=e6401]: 4d ago
+            - link "73 739df96f-bb7e-4903-afd3-a5b660467e30 commented on DIRA-21— Validate GPX test tracks — record video of HUD navigating routes 5d ago" [ref=e6402] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-21
+              - generic [ref=e6403]:
+                - paragraph [ref=e6404]:
+                  - generic [ref=e6405]:
+                    - generic [ref=e6407]: "73"
+                    - generic [ref=e6408]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6409]: commented on
+                  - text: DIRA-21
+                  - generic [ref=e6410]: — Validate GPX test tracks — record video of HUD navigating routes
+                - generic [ref=e6411]: 5d ago
+            - link "73 739df96f-bb7e-4903-afd3-a5b660467e30 changed status from in progress to done on DIRA-21— Validate GPX test tracks — record video of HUD navigating routes 5d ago" [ref=e6412] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-21
+              - generic [ref=e6413]:
+                - paragraph [ref=e6414]:
+                  - generic [ref=e6415]:
+                    - generic [ref=e6417]: "73"
+                    - generic [ref=e6418]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6419]: changed status from in progress to done on
+                  - text: DIRA-21
+                  - generic [ref=e6420]: — Validate GPX test tracks — record video of HUD navigating routes
+                - generic [ref=e6421]: 5d ago
+            - link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-21— Validate GPX test tracks — record video of HUD navigating routes 5d ago" [ref=e6422] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-21
+              - generic [ref=e6423]:
+                - paragraph [ref=e6424]:
+                  - generic [ref=e6425]:
+                    - generic [ref=e6427]: "73"
+                    - generic [ref=e6428]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e6429]: checked out
+                  - text: DIRA-21
+                  - generic [ref=e6430]: — Validate GPX test tracks — record video of HUD navigating routes
+                - generic [ref=e6431]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6432] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e6433]:
+                - paragraph [ref=e6434]:
+                  - generic [ref=e6435]:
+                    - generic [ref=e6437]: BO
+                    - generic [ref=e6438]: Board
+                  - generic [ref=e6439]: updated
+                - generic [ref=e6440]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6441] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e6442]:
+                - paragraph [ref=e6443]:
+                  - generic [ref=e6444]:
+                    - generic [ref=e6446]: BO
+                    - generic [ref=e6447]: Board
+                  - generic [ref=e6448]: updated
+                - generic [ref=e6449]: 5d ago
+            - link "BO Board created DIRA-21— Validate GPX test tracks — record video of HUD navigating routes 5d ago" [ref=e6450] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-21
+              - generic [ref=e6451]:
+                - paragraph [ref=e6452]:
+                  - generic [ref=e6453]:
+                    - generic [ref=e6455]: BO
+                    - generic [ref=e6456]: Board
+                  - generic [ref=e6457]: created
+                  - text: DIRA-21
+                  - generic [ref=e6458]: — Validate GPX test tracks — record video of HUD navigating routes
+                - generic [ref=e6459]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6460] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6461]:
+                - paragraph [ref=e6462]:
+                  - generic [ref=e6463]:
+                    - generic [ref=e6465]: "12"
+                    - generic [ref=e6466]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6467]: commented on
+                  - text: DIRA-20
+                  - generic [ref=e6468]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6469]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6470] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6471]:
+                - paragraph [ref=e6472]:
+                  - generic [ref=e6473]:
+                    - generic [ref=e6475]: "12"
+                    - generic [ref=e6476]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6477]: issue checkout lock adopted
+                  - text: DIRA-20
+                  - generic [ref=e6478]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6479]: 5d ago
+            - link "BO Board commented on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6480] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6481]:
+                - paragraph [ref=e6482]:
+                  - generic [ref=e6483]:
+                    - generic [ref=e6485]: BO
+                    - generic [ref=e6486]: Board
+                  - generic [ref=e6487]: commented on
+                  - text: DIRA-20
+                  - generic [ref=e6488]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6489]: 5d ago
+            - link "BO Board updated DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6490] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6491]:
+                - paragraph [ref=e6492]:
+                  - generic [ref=e6493]:
+                    - generic [ref=e6495]: BO
+                    - generic [ref=e6496]: Board
+                  - generic [ref=e6497]: updated
+                  - text: DIRA-20
+                  - generic [ref=e6498]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6499]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6500] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6501]:
+                - paragraph [ref=e6502]:
+                  - generic [ref=e6503]:
+                    - generic [ref=e6505]: "12"
+                    - generic [ref=e6506]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6507]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6508]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6509]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6510] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6511]:
+                - paragraph [ref=e6512]:
+                  - generic [ref=e6513]:
+                    - generic [ref=e6515]: "12"
+                    - generic [ref=e6516]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6517]: issue checkout lock adopted
+                  - text: DIRA-14
+                  - generic [ref=e6518]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6519]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6520] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6521]:
+                - paragraph [ref=e6522]:
+                  - generic [ref=e6523]:
+                    - generic [ref=e6525]: "12"
+                    - generic [ref=e6526]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6527]: commented on
+                  - text: DIRA-18
+                  - generic [ref=e6528]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6529]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6530] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6531]:
+                - paragraph [ref=e6532]:
+                  - generic [ref=e6533]:
+                    - generic [ref=e6535]: "12"
+                    - generic [ref=e6536]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6537]: issue checkout lock adopted
+                  - text: DIRA-18
+                  - generic [ref=e6538]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6539]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6540] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6541]:
+                - paragraph [ref=e6542]:
+                  - generic [ref=e6543]:
+                    - generic [ref=e6545]: "12"
+                    - generic [ref=e6546]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6547]: commented on
+                  - text: DIRA-20
+                  - generic [ref=e6548]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6549]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6550] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6551]:
+                - paragraph [ref=e6552]:
+                  - generic [ref=e6553]:
+                    - generic [ref=e6555]: "12"
+                    - generic [ref=e6556]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6557]: checked out
+                  - text: DIRA-20
+                  - generic [ref=e6558]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6559]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6560] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e6561]:
+                - paragraph [ref=e6562]:
+                  - generic [ref=e6563]:
+                    - generic [ref=e6565]: BO
+                    - generic [ref=e6566]: Board
+                  - generic [ref=e6567]: updated
+                - generic [ref=e6568]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6569] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6570]:
+                - paragraph [ref=e6571]:
+                  - generic [ref=e6572]:
+                    - generic [ref=e6574]: "12"
+                    - generic [ref=e6575]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6576]: checked out
+                  - text: DIRA-20
+                  - generic [ref=e6577]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6578]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6579] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e6580]:
+                - paragraph [ref=e6581]:
+                  - generic [ref=e6582]:
+                    - generic [ref=e6584]: BO
+                    - generic [ref=e6585]: Board
+                  - generic [ref=e6586]: updated
+                - generic [ref=e6587]: 5d ago
+            - link "BO Board created DIRA-20— Redesign Navigation HUD — start from Steve's requirements 5d ago" [ref=e6588] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e6589]:
+                - paragraph [ref=e6590]:
+                  - generic [ref=e6591]:
+                    - generic [ref=e6593]: BO
+                    - generic [ref=e6594]: Board
+                  - generic [ref=e6595]: created
+                  - text: DIRA-20
+                  - generic [ref=e6596]: — Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e6597]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6598] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e6599]:
+                - paragraph [ref=e6600]:
+                  - generic [ref=e6601]:
+                    - generic [ref=e6603]: BO
+                    - generic [ref=e6604]: Board
+                  - generic [ref=e6605]: updated
+                - generic [ref=e6606]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6607] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6608]:
+                - paragraph [ref=e6609]:
+                  - generic [ref=e6610]:
+                    - generic [ref=e6612]: "12"
+                    - generic [ref=e6613]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6614]: commented on
+                  - text: DIRA-18
+                  - generic [ref=e6615]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6616]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6617] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6618]:
+                - paragraph [ref=e6619]:
+                  - generic [ref=e6620]:
+                    - generic [ref=e6622]: "12"
+                    - generic [ref=e6623]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6624]: issue checkout lock adopted
+                  - text: DIRA-18
+                  - generic [ref=e6625]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6626]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6627] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6628]:
+                - paragraph [ref=e6629]:
+                  - generic [ref=e6630]:
+                    - generic [ref=e6632]: "12"
+                    - generic [ref=e6633]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6634]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6635]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6636]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6637] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6638]:
+                - paragraph [ref=e6639]:
+                  - generic [ref=e6640]:
+                    - generic [ref=e6642]: "12"
+                    - generic [ref=e6643]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6644]: issue checkout lock adopted
+                  - text: DIRA-14
+                  - generic [ref=e6645]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6646]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status to in progress on DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6647] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6648]:
+                - paragraph [ref=e6649]:
+                  - generic [ref=e6650]:
+                    - generic [ref=e6652]: "12"
+                    - generic [ref=e6653]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6654]: changed status to in progress on
+                  - text: DIRA-14
+                  - generic [ref=e6655]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6656]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6657] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6658]:
+                - paragraph [ref=e6659]:
+                  - generic [ref=e6660]:
+                    - generic [ref=e6662]: "12"
+                    - generic [ref=e6663]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6664]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6665]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6666]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 created DIRA-19— Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent 5d ago" [ref=e6667] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-19
+              - generic [ref=e6668]:
+                - paragraph [ref=e6669]:
+                  - generic [ref=e6670]:
+                    - generic [ref=e6672]: "12"
+                    - generic [ref=e6673]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6674]: created
+                  - text: DIRA-19
+                  - generic [ref=e6675]: — Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent
+                - generic [ref=e6676]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6677] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6678]:
+                - paragraph [ref=e6679]:
+                  - generic [ref=e6680]:
+                    - generic [ref=e6682]: "12"
+                    - generic [ref=e6683]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6684]: checked out
+                  - text: DIRA-14
+                  - generic [ref=e6685]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6686]: 5d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 changed status from in progress to todo on DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6687] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6688]:
+                - paragraph [ref=e6689]:
+                  - generic [ref=e6690]:
+                    - generic [ref=e6692]: 3F
+                    - generic [ref=e6693]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6694]: changed status from in progress to todo on
+                  - text: DIRA-14
+                  - generic [ref=e6695]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6696]: 5d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 commented on DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6697] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6698]:
+                - paragraph [ref=e6699]:
+                  - generic [ref=e6700]:
+                    - generic [ref=e6702]: 3F
+                    - generic [ref=e6703]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6704]: commented on
+                  - text: DIRA-14
+                  - generic [ref=e6705]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6706]: 5d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 updated DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6707] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6708]:
+                - paragraph [ref=e6709]:
+                  - generic [ref=e6710]:
+                    - generic [ref=e6712]: 3F
+                    - generic [ref=e6713]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6714]: updated
+                  - text: DIRA-14
+                  - generic [ref=e6715]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6716]: 5d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 issue checkout lock adopted DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6717] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6718]:
+                - paragraph [ref=e6719]:
+                  - generic [ref=e6720]:
+                    - generic [ref=e6722]: 3F
+                    - generic [ref=e6723]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6724]: issue checkout lock adopted
+                  - text: DIRA-14
+                  - generic [ref=e6725]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6726]: 5d ago
+            - link "BO Board commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e6727] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e6728]:
+                - paragraph [ref=e6729]:
+                  - generic [ref=e6730]:
+                    - generic [ref=e6732]: BO
+                    - generic [ref=e6733]: Board
+                  - generic [ref=e6734]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e6735]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e6736]: 5d ago
+            - link "BO Board updated DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e6737] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e6738]:
+                - paragraph [ref=e6739]:
+                  - generic [ref=e6740]:
+                    - generic [ref=e6742]: BO
+                    - generic [ref=e6743]: Board
+                  - generic [ref=e6744]: updated
+                  - text: DIRA-1
+                  - generic [ref=e6745]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e6746]: 5d ago
+            - 'link "3F 3f83dfa8-6813-4ce3-92c1-be03511e6715 checked out DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e6747] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e6748]:
+                - paragraph [ref=e6749]:
+                  - generic [ref=e6750]:
+                    - generic [ref=e6752]: 3F
+                    - generic [ref=e6753]: 3f83dfa8-6813-4ce3-92c1-be03511e6715
+                  - generic [ref=e6754]: checked out
+                  - text: DIRA-14
+                  - generic [ref=e6755]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e6756]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6757] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6758]:
+                - paragraph [ref=e6759]:
+                  - generic [ref=e6760]:
+                    - generic [ref=e6762]: "12"
+                    - generic [ref=e6763]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6764]: commented on
+                  - text: DIRA-18
+                  - generic [ref=e6765]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6766]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6767] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6768]:
+                - paragraph [ref=e6769]:
+                  - generic [ref=e6770]:
+                    - generic [ref=e6772]: "12"
+                    - generic [ref=e6773]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6774]: checked out
+                  - text: DIRA-18
+                  - generic [ref=e6775]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6776]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status to in progress on DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6777] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6778]:
+                - paragraph [ref=e6779]:
+                  - generic [ref=e6780]:
+                    - generic [ref=e6782]: "12"
+                    - generic [ref=e6783]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6784]: changed status to in progress on
+                  - text: DIRA-18
+                  - generic [ref=e6785]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6786]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6787] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6788]:
+                - paragraph [ref=e6789]:
+                  - generic [ref=e6790]:
+                    - generic [ref=e6792]: "12"
+                    - generic [ref=e6793]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6794]: commented on
+                  - text: DIRA-18
+                  - generic [ref=e6795]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6796]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6797] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6798]:
+                - paragraph [ref=e6799]:
+                  - generic [ref=e6800]:
+                    - generic [ref=e6802]: "12"
+                    - generic [ref=e6803]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6804]: checked out
+                  - text: DIRA-18
+                  - generic [ref=e6805]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6806]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6807] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e6808]:
+                - paragraph [ref=e6809]:
+                  - generic [ref=e6810]:
+                    - generic [ref=e6812]: BO
+                    - generic [ref=e6813]: Board
+                  - generic [ref=e6814]: updated
+                - generic [ref=e6815]: 5d ago
+            - link "BO Board created DIRA-18— Design the ride completion screen — what does the rider see when they finish a trail? 5d ago" [ref=e6816] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e6817]:
+                - paragraph [ref=e6818]:
+                  - generic [ref=e6819]:
+                    - generic [ref=e6821]: BO
+                    - generic [ref=e6822]: Board
+                  - generic [ref=e6823]: created
+                  - text: DIRA-18
+                  - generic [ref=e6824]: — Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e6825]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e6826] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e6827]:
+                - paragraph [ref=e6828]:
+                  - generic [ref=e6829]:
+                    - generic [ref=e6831]: "12"
+                    - generic [ref=e6832]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6833]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e6834]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e6835]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6836] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e6837]:
+                - paragraph [ref=e6838]:
+                  - generic [ref=e6839]:
+                    - generic [ref=e6841]: BO
+                    - generic [ref=e6842]: Board
+                  - generic [ref=e6843]: updated
+                - generic [ref=e6844]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status from todo to done on DIRA-13— QA re-verify: HUD glanceability fixes (DIRA-10) 5d ago" [ref=e6845] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e6846]:
+                - paragraph [ref=e6847]:
+                  - generic [ref=e6848]:
+                    - generic [ref=e6850]: "12"
+                    - generic [ref=e6851]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6852]: changed status from todo to done on
+                  - text: DIRA-13
+                  - generic [ref=e6853]: "— QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e6854]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e6855] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e6856]:
+                - paragraph [ref=e6857]:
+                  - generic [ref=e6858]:
+                    - generic [ref=e6860]: "12"
+                    - generic [ref=e6861]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6862]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e6863]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e6864]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-13— QA re-verify: HUD glanceability fixes (DIRA-10) 5d ago" [ref=e6865] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e6866]:
+                - paragraph [ref=e6867]:
+                  - generic [ref=e6868]:
+                    - generic [ref=e6870]: "12"
+                    - generic [ref=e6871]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6872]: updated
+                  - text: DIRA-13
+                  - generic [ref=e6873]: "— QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e6874]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status from in progress to done on DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e6875] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e6876]:
+                - paragraph [ref=e6877]:
+                  - generic [ref=e6878]:
+                    - generic [ref=e6880]: "12"
+                    - generic [ref=e6881]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6882]: changed status from in progress to done on
+                  - text: DIRA-11
+                  - generic [ref=e6883]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e6884]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status from todo to done on DIRA-17— Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11 5d ago" [ref=e6885] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-17
+              - generic [ref=e6886]:
+                - paragraph [ref=e6887]:
+                  - generic [ref=e6888]:
+                    - generic [ref=e6890]: "12"
+                    - generic [ref=e6891]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6892]: changed status from todo to done on
+                  - text: DIRA-17
+                  - generic [ref=e6893]: — Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11
+                - generic [ref=e6894]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status from in progress to done on DIRA-16— Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks 5d ago" [ref=e6895] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e6896]:
+                - paragraph [ref=e6897]:
+                  - generic [ref=e6898]:
+                    - generic [ref=e6900]: "12"
+                    - generic [ref=e6901]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6902]: changed status from in progress to done on
+                  - text: DIRA-16
+                  - generic [ref=e6903]: — Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e6904]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e6905] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e6906]:
+                - paragraph [ref=e6907]:
+                  - generic [ref=e6908]:
+                    - generic [ref=e6910]: "12"
+                    - generic [ref=e6911]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6912]: commented on
+                  - text: DIRA-11
+                  - generic [ref=e6913]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e6914]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e6915] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e6916]:
+                - paragraph [ref=e6917]:
+                  - generic [ref=e6918]:
+                    - generic [ref=e6920]: "12"
+                    - generic [ref=e6921]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6922]: issue checkout lock adopted
+                  - text: DIRA-11
+                  - generic [ref=e6923]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e6924]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e6925] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e6926]:
+                - paragraph [ref=e6927]:
+                  - generic [ref=e6928]:
+                    - generic [ref=e6930]: BO
+                    - generic [ref=e6931]: Board
+                  - generic [ref=e6932]: updated
+                - generic [ref=e6933]: 5d ago
+            - link "BO Board commented on DIRA-16— Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks 5d ago" [ref=e6934] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e6935]:
+                - paragraph [ref=e6936]:
+                  - generic [ref=e6937]:
+                    - generic [ref=e6939]: BO
+                    - generic [ref=e6940]: Board
+                  - generic [ref=e6941]: commented on
+                  - text: DIRA-16
+                  - generic [ref=e6942]: — Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e6943]: 5d ago
+            - link "BO Board checked out DIRA-16— Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks 5d ago" [ref=e6944] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e6945]:
+                - paragraph [ref=e6946]:
+                  - generic [ref=e6947]:
+                    - generic [ref=e6949]: BO
+                    - generic [ref=e6950]: Board
+                  - generic [ref=e6951]: checked out
+                  - text: DIRA-16
+                  - generic [ref=e6952]: — Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e6953]: 5d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-15— Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios 5d ago" [ref=e6954] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e6955]:
+                - paragraph [ref=e6956]:
+                  - generic [ref=e6957]:
+                    - generic [ref=e6959]: "03"
+                    - generic [ref=e6960]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6961]: commented on
+                  - text: DIRA-15
+                  - generic [ref=e6962]: — Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e6963]: 5d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from in progress to done on DIRA-15— Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios 5d ago" [ref=e6964] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e6965]:
+                - paragraph [ref=e6966]:
+                  - generic [ref=e6967]:
+                    - generic [ref=e6969]: "03"
+                    - generic [ref=e6970]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e6971]: changed status from in progress to done on
+                  - text: DIRA-15
+                  - generic [ref=e6972]: — Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e6973]: 5d ago
+            - link "BO Board issue read marked DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e6974] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e6975]:
+                - paragraph [ref=e6976]:
+                  - generic [ref=e6977]:
+                    - generic [ref=e6979]: BO
+                    - generic [ref=e6980]: Board
+                  - generic [ref=e6981]: issue read marked
+                  - text: DIRA-11
+                  - generic [ref=e6982]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e6983]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e6984] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e6985]:
+                - paragraph [ref=e6986]:
+                  - generic [ref=e6987]:
+                    - generic [ref=e6989]: "12"
+                    - generic [ref=e6990]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e6991]: commented on
+                  - text: DIRA-11
+                  - generic [ref=e6992]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e6993]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e6994] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e6995]:
+                - paragraph [ref=e6996]:
+                  - generic [ref=e6997]:
+                    - generic [ref=e6999]: "12"
+                    - generic [ref=e7000]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7001]: updated
+                  - text: DIRA-11
+                  - generic [ref=e7002]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7003]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7004] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7005]:
+                - paragraph [ref=e7006]:
+                  - generic [ref=e7007]:
+                    - generic [ref=e7009]: "12"
+                    - generic [ref=e7010]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7011]: issue checkout lock adopted
+                  - text: DIRA-11
+                  - generic [ref=e7012]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7013]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 changed status from done to todo on DIRA-13— QA re-verify: HUD glanceability fixes (DIRA-10) 5d ago" [ref=e7014] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e7015]:
+                - paragraph [ref=e7016]:
+                  - generic [ref=e7017]:
+                    - generic [ref=e7019]: "73"
+                    - generic [ref=e7020]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7021]: changed status from done to todo on
+                  - text: DIRA-13
+                  - generic [ref=e7022]: "— QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e7023]: 5d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 checked out DIRA-15— Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios 5d ago" [ref=e7024] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e7025]:
+                - paragraph [ref=e7026]:
+                  - generic [ref=e7027]:
+                    - generic [ref=e7029]: "03"
+                    - generic [ref=e7030]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7031]: checked out
+                  - text: DIRA-15
+                  - generic [ref=e7032]: — Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e7033]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 commented on DIRA-13— QA re-verify: HUD glanceability fixes (DIRA-10) 5d ago" [ref=e7034] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e7035]:
+                - paragraph [ref=e7036]:
+                  - generic [ref=e7037]:
+                    - generic [ref=e7039]: "73"
+                    - generic [ref=e7040]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7041]: commented on
+                  - text: DIRA-13
+                  - generic [ref=e7042]: "— QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e7043]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 changed status from in progress to done on DIRA-13— QA re-verify: HUD glanceability fixes (DIRA-10) 5d ago" [ref=e7044] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e7045]:
+                - paragraph [ref=e7046]:
+                  - generic [ref=e7047]:
+                    - generic [ref=e7049]: "73"
+                    - generic [ref=e7050]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7051]: changed status from in progress to done on
+                  - text: DIRA-13
+                  - generic [ref=e7052]: "— QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e7053]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-17— Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11 5d ago" [ref=e7054] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-17
+              - generic [ref=e7055]:
+                - paragraph [ref=e7056]:
+                  - generic [ref=e7057]:
+                    - generic [ref=e7059]: "12"
+                    - generic [ref=e7060]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7061]: commented on
+                  - text: DIRA-17
+                  - generic [ref=e7062]: — Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11
+                - generic [ref=e7063]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-17— Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11 5d ago" [ref=e7064] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-17
+              - generic [ref=e7065]:
+                - paragraph [ref=e7066]:
+                  - generic [ref=e7067]:
+                    - generic [ref=e7069]: "12"
+                    - generic [ref=e7070]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7071]: updated
+                  - text: DIRA-17
+                  - generic [ref=e7072]: — Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11
+                - generic [ref=e7073]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7074] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e7075]:
+                - paragraph [ref=e7076]:
+                  - generic [ref=e7077]:
+                    - generic [ref=e7079]: BO
+                    - generic [ref=e7080]: Board
+                  - generic [ref=e7081]: updated
+                - generic [ref=e7082]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7083] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e7084]:
+                - paragraph [ref=e7085]:
+                  - generic [ref=e7086]:
+                    - generic [ref=e7088]: BO
+                    - generic [ref=e7089]: Board
+                  - generic [ref=e7090]: updated
+                - generic [ref=e7091]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7092] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e7093]:
+                - paragraph [ref=e7094]:
+                  - generic [ref=e7095]:
+                    - generic [ref=e7097]: BO
+                    - generic [ref=e7098]: Board
+                  - generic [ref=e7099]: updated
+                - generic [ref=e7100]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7101] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e7102]:
+                - paragraph [ref=e7103]:
+                  - generic [ref=e7104]:
+                    - generic [ref=e7106]: BO
+                    - generic [ref=e7107]: Board
+                  - generic [ref=e7108]: updated
+                - generic [ref=e7109]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7110] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e7111]:
+                - paragraph [ref=e7112]:
+                  - generic [ref=e7113]:
+                    - generic [ref=e7115]: BO
+                    - generic [ref=e7116]: Board
+                  - generic [ref=e7117]: updated
+                - generic [ref=e7118]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7119] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e7120]:
+                - paragraph [ref=e7121]:
+                  - generic [ref=e7122]:
+                    - generic [ref=e7124]: BO
+                    - generic [ref=e7125]: Board
+                  - generic [ref=e7126]: updated
+                - generic [ref=e7127]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7128] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7129]:
+                - paragraph [ref=e7130]:
+                  - generic [ref=e7131]:
+                    - generic [ref=e7133]: "12"
+                    - generic [ref=e7134]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7135]: commented on
+                  - text: DIRA-11
+                  - generic [ref=e7136]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7137]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 changed status to in progress on DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7138] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7139]:
+                - paragraph [ref=e7140]:
+                  - generic [ref=e7141]:
+                    - generic [ref=e7143]: "12"
+                    - generic [ref=e7144]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7145]: changed status to in progress on
+                  - text: DIRA-11
+                  - generic [ref=e7146]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7147]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 issue checkout lock adopted DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7148] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7149]:
+                - paragraph [ref=e7150]:
+                  - generic [ref=e7151]:
+                    - generic [ref=e7153]: "12"
+                    - generic [ref=e7154]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7155]: issue checkout lock adopted
+                  - text: DIRA-11
+                  - generic [ref=e7156]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7157]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-16— Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks 5d ago" [ref=e7158] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e7159]:
+                - paragraph [ref=e7160]:
+                  - generic [ref=e7161]:
+                    - generic [ref=e7163]: "12"
+                    - generic [ref=e7164]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7165]: commented on
+                  - text: DIRA-16
+                  - generic [ref=e7166]: — Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e7167]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-16— Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks 5d ago" [ref=e7168] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e7169]:
+                - paragraph [ref=e7170]:
+                  - generic [ref=e7171]:
+                    - generic [ref=e7173]: "12"
+                    - generic [ref=e7174]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7175]: updated
+                  - text: DIRA-16
+                  - generic [ref=e7176]: — Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e7177]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-15— Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios 5d ago" [ref=e7178] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e7179]:
+                - paragraph [ref=e7180]:
+                  - generic [ref=e7181]:
+                    - generic [ref=e7183]: "12"
+                    - generic [ref=e7184]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7185]: commented on
+                  - text: DIRA-15
+                  - generic [ref=e7186]: — Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e7187]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-15— Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios 5d ago" [ref=e7188] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e7189]:
+                - paragraph [ref=e7190]:
+                  - generic [ref=e7191]:
+                    - generic [ref=e7193]: "12"
+                    - generic [ref=e7194]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7195]: updated
+                  - text: DIRA-15
+                  - generic [ref=e7196]: — Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e7197]: 5d ago
+            - 'link "BO Board changed status from in progress to done on DIRA-12— Technical plan: GPX test tracks for HUD QA verification 5d ago" [ref=e7198] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-12
+              - generic [ref=e7199]:
+                - paragraph [ref=e7200]:
+                  - generic [ref=e7201]:
+                    - generic [ref=e7203]: BO
+                    - generic [ref=e7204]: Board
+                  - generic [ref=e7205]: changed status from in progress to done on
+                  - text: DIRA-12
+                  - generic [ref=e7206]: "— Technical plan: GPX test tracks for HUD QA verification"
+                - generic [ref=e7207]: 5d ago
+            - 'link "BO Board commented on DIRA-12— Technical plan: GPX test tracks for HUD QA verification 5d ago" [ref=e7208] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-12
+              - generic [ref=e7209]:
+                - paragraph [ref=e7210]:
+                  - generic [ref=e7211]:
+                    - generic [ref=e7213]: BO
+                    - generic [ref=e7214]: Board
+                  - generic [ref=e7215]: commented on
+                  - text: DIRA-12
+                  - generic [ref=e7216]: "— Technical plan: GPX test tracks for HUD QA verification"
+                - generic [ref=e7217]: 5d ago
+            - link "BO Board created DIRA-17— Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11 5d ago" [ref=e7218] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-17
+              - generic [ref=e7219]:
+                - paragraph [ref=e7220]:
+                  - generic [ref=e7221]:
+                    - generic [ref=e7223]: BO
+                    - generic [ref=e7224]: Board
+                  - generic [ref=e7225]: created
+                  - text: DIRA-17
+                  - generic [ref=e7226]: — Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11
+                - generic [ref=e7227]: 5d ago
+            - link "BO Board created DIRA-16— Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks 5d ago" [ref=e7228] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e7229]:
+                - paragraph [ref=e7230]:
+                  - generic [ref=e7231]:
+                    - generic [ref=e7233]: BO
+                    - generic [ref=e7234]: Board
+                  - generic [ref=e7235]: created
+                  - text: DIRA-16
+                  - generic [ref=e7236]: — Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e7237]: 5d ago
+            - link "BO Board created DIRA-15— Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios 5d ago" [ref=e7238] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e7239]:
+                - paragraph [ref=e7240]:
+                  - generic [ref=e7241]:
+                    - generic [ref=e7243]: BO
+                    - generic [ref=e7244]: Board
+                  - generic [ref=e7245]: created
+                  - text: DIRA-15
+                  - generic [ref=e7246]: — Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e7247]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-13— QA re-verify: HUD glanceability fixes (DIRA-10) 5d ago" [ref=e7248] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e7249]:
+                - paragraph [ref=e7250]:
+                  - generic [ref=e7251]:
+                    - generic [ref=e7253]: "73"
+                    - generic [ref=e7254]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7255]: checked out
+                  - text: DIRA-13
+                  - generic [ref=e7256]: "— QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e7257]: 5d ago
+            - 'link "BO Board created document for DIRA-12— Technical plan: GPX test tracks for HUD QA verification 5d ago" [ref=e7258] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-12
+              - generic [ref=e7259]:
+                - paragraph [ref=e7260]:
+                  - generic [ref=e7261]:
+                    - generic [ref=e7263]: BO
+                    - generic [ref=e7264]: Board
+                  - generic [ref=e7265]: created document for
+                  - text: DIRA-12
+                  - generic [ref=e7266]: "— Technical plan: GPX test tracks for HUD QA verification"
+                - generic [ref=e7267]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 created DIRA-14— Code Review: HUD glanceability redesign — QA approved 5d ago" [ref=e7268] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e7269]:
+                - paragraph [ref=e7270]:
+                  - generic [ref=e7271]:
+                    - generic [ref=e7273]: "73"
+                    - generic [ref=e7274]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7275]: created
+                  - text: DIRA-14
+                  - generic [ref=e7276]: "— Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e7277]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status to done on DIRA-10— Fix: HUD glanceability — 4 touch target and typography failures 5d ago" [ref=e7278] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-10
+              - generic [ref=e7279]:
+                - paragraph [ref=e7280]:
+                  - generic [ref=e7281]:
+                    - generic [ref=e7283]: "03"
+                    - generic [ref=e7284]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7285]: changed status to done on
+                  - text: DIRA-10
+                  - generic [ref=e7286]: "— Fix: HUD glanceability — 4 touch target and typography failures"
+                - generic [ref=e7287]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-10— Fix: HUD glanceability — 4 touch target and typography failures 5d ago" [ref=e7288] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-10
+              - generic [ref=e7289]:
+                - paragraph [ref=e7290]:
+                  - generic [ref=e7291]:
+                    - generic [ref=e7293]: "03"
+                    - generic [ref=e7294]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7295]: commented on
+                  - text: DIRA-10
+                  - generic [ref=e7296]: "— Fix: HUD glanceability — 4 touch target and typography failures"
+                - generic [ref=e7297]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 commented on DIRA-10— Fix: HUD glanceability — 4 touch target and typography failures 5d ago" [ref=e7298] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-10
+              - generic [ref=e7299]:
+                - paragraph [ref=e7300]:
+                  - generic [ref=e7301]:
+                    - generic [ref=e7303]: "73"
+                    - generic [ref=e7304]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7305]: commented on
+                  - text: DIRA-10
+                  - generic [ref=e7306]: "— Fix: HUD glanceability — 4 touch target and typography failures"
+                - generic [ref=e7307]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 changed status from in progress to done on DIRA-10— Fix: HUD glanceability — 4 touch target and typography failures 5d ago" [ref=e7308] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-10
+              - generic [ref=e7309]:
+                - paragraph [ref=e7310]:
+                  - generic [ref=e7311]:
+                    - generic [ref=e7313]: "73"
+                    - generic [ref=e7314]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7315]: changed status from in progress to done on
+                  - text: DIRA-10
+                  - generic [ref=e7316]: "— Fix: HUD glanceability — 4 touch target and typography failures"
+                - generic [ref=e7317]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 created DIRA-13— QA re-verify: HUD glanceability fixes (DIRA-10) 5d ago" [ref=e7318] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e7319]:
+                - paragraph [ref=e7320]:
+                  - generic [ref=e7321]:
+                    - generic [ref=e7323]: "03"
+                    - generic [ref=e7324]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7325]: created
+                  - text: DIRA-13
+                  - generic [ref=e7326]: "— QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e7327]: 5d ago
+            - 'link "BO Board changed status from todo to in progress on DIRA-12— Technical plan: GPX test tracks for HUD QA verification 5d ago" [ref=e7328] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-12
+              - generic [ref=e7329]:
+                - paragraph [ref=e7330]:
+                  - generic [ref=e7331]:
+                    - generic [ref=e7333]: BO
+                    - generic [ref=e7334]: Board
+                  - generic [ref=e7335]: changed status from todo to in progress on
+                  - text: DIRA-12
+                  - generic [ref=e7336]: "— Technical plan: GPX test tracks for HUD QA verification"
+                - generic [ref=e7337]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 checked out DIRA-10— Fix: HUD glanceability — 4 touch target and typography failures 5d ago" [ref=e7338] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-10
+              - generic [ref=e7339]:
+                - paragraph [ref=e7340]:
+                  - generic [ref=e7341]:
+                    - generic [ref=e7343]: "03"
+                    - generic [ref=e7344]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7345]: checked out
+                  - text: DIRA-10
+                  - generic [ref=e7346]: "— Fix: HUD glanceability — 4 touch target and typography failures"
+                - generic [ref=e7347]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e7348] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e7349]:
+                - paragraph [ref=e7350]:
+                  - generic [ref=e7351]:
+                    - generic [ref=e7353]: "12"
+                    - generic [ref=e7354]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7355]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e7356]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e7357]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e7358] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e7359]:
+                - paragraph [ref=e7360]:
+                  - generic [ref=e7361]:
+                    - generic [ref=e7363]: "12"
+                    - generic [ref=e7364]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7365]: updated
+                  - text: DIRA-1
+                  - generic [ref=e7366]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e7367]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 created DIRA-12— Technical plan: GPX test tracks for HUD QA verification 5d ago" [ref=e7368] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-12
+              - generic [ref=e7369]:
+                - paragraph [ref=e7370]:
+                  - generic [ref=e7371]:
+                    - generic [ref=e7373]: "12"
+                    - generic [ref=e7374]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7375]: created
+                  - text: DIRA-12
+                  - generic [ref=e7376]: "— Technical plan: GPX test tracks for HUD QA verification"
+                - generic [ref=e7377]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7378] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7379]:
+                - paragraph [ref=e7380]:
+                  - generic [ref=e7381]:
+                    - generic [ref=e7383]: "12"
+                    - generic [ref=e7384]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7385]: commented on
+                  - text: DIRA-11
+                  - generic [ref=e7386]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7387]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7388] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7389]:
+                - paragraph [ref=e7390]:
+                  - generic [ref=e7391]:
+                    - generic [ref=e7393]: "12"
+                    - generic [ref=e7394]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7395]: updated
+                  - text: DIRA-11
+                  - generic [ref=e7396]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7397]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7398] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7399]:
+                - paragraph [ref=e7400]:
+                  - generic [ref=e7401]:
+                    - generic [ref=e7403]: "12"
+                    - generic [ref=e7404]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e7405]: checked out
+                  - text: DIRA-11
+                  - generic [ref=e7406]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7407]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7408] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e7409]:
+                - paragraph [ref=e7410]:
+                  - generic [ref=e7411]:
+                    - generic [ref=e7413]: BO
+                    - generic [ref=e7414]: Board
+                  - generic [ref=e7415]: updated
+                - generic [ref=e7416]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7417] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e7418]:
+                - paragraph [ref=e7419]:
+                  - generic [ref=e7420]:
+                    - generic [ref=e7422]: BO
+                    - generic [ref=e7423]: Board
+                  - generic [ref=e7424]: updated
+                - generic [ref=e7425]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7426] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7427]:
+                - paragraph [ref=e7428]:
+                  - generic [ref=e7429]:
+                    - generic [ref=e7431]: "03"
+                    - generic [ref=e7432]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7433]: commented on
+                  - text: DIRA-8
+                  - generic [ref=e7434]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7435]: 5d ago
+            - link "BO Board created DIRA-11— QA cannot verify HUD — need .gpx test tracks that simulate rider movement 5d ago" [ref=e7436] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e7437]:
+                - paragraph [ref=e7438]:
+                  - generic [ref=e7439]:
+                    - generic [ref=e7441]: BO
+                    - generic [ref=e7442]: Board
+                  - generic [ref=e7443]: created
+                  - text: DIRA-11
+                  - generic [ref=e7444]: — QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e7445]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 created DIRA-10— Fix: HUD glanceability — 4 touch target and typography failures 5d ago" [ref=e7446] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-10
+              - generic [ref=e7447]:
+                - paragraph [ref=e7448]:
+                  - generic [ref=e7449]:
+                    - generic [ref=e7451]: "73"
+                    - generic [ref=e7452]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7453]: created
+                  - text: DIRA-10
+                  - generic [ref=e7454]: "— Fix: HUD glanceability — 4 touch target and typography failures"
+                - generic [ref=e7455]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 commented on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7456] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7457]:
+                - paragraph [ref=e7458]:
+                  - generic [ref=e7459]:
+                    - generic [ref=e7461]: "73"
+                    - generic [ref=e7462]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7463]: commented on
+                  - text: DIRA-8
+                  - generic [ref=e7464]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7465]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 changed status from in progress to done on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7466] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7467]:
+                - paragraph [ref=e7468]:
+                  - generic [ref=e7469]:
+                    - generic [ref=e7471]: "73"
+                    - generic [ref=e7472]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7473]: changed status from in progress to done on
+                  - text: DIRA-8
+                  - generic [ref=e7474]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7475]: 5d ago
+            - link "BO Board changed status from in progress to in review on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e7476] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e7477]:
+                - paragraph [ref=e7478]:
+                  - generic [ref=e7479]:
+                    - generic [ref=e7481]: BO
+                    - generic [ref=e7482]: Board
+                  - generic [ref=e7483]: changed status from in progress to in review on
+                  - text: DIRA-1
+                  - generic [ref=e7484]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e7485]: 5d ago
+            - link "BO Board commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e7486] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e7487]:
+                - paragraph [ref=e7488]:
+                  - generic [ref=e7489]:
+                    - generic [ref=e7491]: BO
+                    - generic [ref=e7492]: Board
+                  - generic [ref=e7493]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e7494]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e7495]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7496] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7497]:
+                - paragraph [ref=e7498]:
+                  - generic [ref=e7499]:
+                    - generic [ref=e7501]: "73"
+                    - generic [ref=e7502]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7503]: checked out
+                  - text: DIRA-8
+                  - generic [ref=e7504]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7505]: 5d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from todo to done on DIRA-9— Enable AppConfig.navigationEnabled for HUD testing 5d ago" [ref=e7506] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-9
+              - generic [ref=e7507]:
+                - paragraph [ref=e7508]:
+                  - generic [ref=e7509]:
+                    - generic [ref=e7511]: "03"
+                    - generic [ref=e7512]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7513]: changed status from todo to done on
+                  - text: DIRA-9
+                  - generic [ref=e7514]: — Enable AppConfig.navigationEnabled for HUD testing
+                - generic [ref=e7515]: 5d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-9— Enable AppConfig.navigationEnabled for HUD testing 5d ago" [ref=e7516] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-9
+              - generic [ref=e7517]:
+                - paragraph [ref=e7518]:
+                  - generic [ref=e7519]:
+                    - generic [ref=e7521]: "03"
+                    - generic [ref=e7522]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7523]: commented on
+                  - text: DIRA-9
+                  - generic [ref=e7524]: — Enable AppConfig.navigationEnabled for HUD testing
+                - generic [ref=e7525]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7526] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e7527]:
+                - paragraph [ref=e7528]:
+                  - generic [ref=e7529]:
+                    - generic [ref=e7531]: BO
+                    - generic [ref=e7532]: Board
+                  - generic [ref=e7533]: updated
+                - generic [ref=e7534]: 5d ago
+            - 'link "BO Board commented on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7535] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7536]:
+                - paragraph [ref=e7537]:
+                  - generic [ref=e7538]:
+                    - generic [ref=e7540]: BO
+                    - generic [ref=e7541]: Board
+                  - generic [ref=e7542]: commented on
+                  - text: DIRA-8
+                  - generic [ref=e7543]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7544]: 5d ago
+            - 'link "BO Board changed status from in progress to todo on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7545] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7546]:
+                - paragraph [ref=e7547]:
+                  - generic [ref=e7548]:
+                    - generic [ref=e7550]: BO
+                    - generic [ref=e7551]: Board
+                  - generic [ref=e7552]: changed status from in progress to todo on
+                  - text: DIRA-8
+                  - generic [ref=e7553]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7554]: 5d ago
+            - link "BO Board created DIRA-9— Enable AppConfig.navigationEnabled for HUD testing 5d ago" [ref=e7555] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-9
+              - generic [ref=e7556]:
+                - paragraph [ref=e7557]:
+                  - generic [ref=e7558]:
+                    - generic [ref=e7560]: BO
+                    - generic [ref=e7561]: Board
+                  - generic [ref=e7562]: created
+                  - text: DIRA-9
+                  - generic [ref=e7563]: — Enable AppConfig.navigationEnabled for HUD testing
+                - generic [ref=e7564]: 5d ago
+            - 'link "BO Board issue read marked DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7565] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7566]:
+                - paragraph [ref=e7567]:
+                  - generic [ref=e7568]:
+                    - generic [ref=e7570]: BO
+                    - generic [ref=e7571]: Board
+                  - generic [ref=e7572]: issue read marked
+                  - text: DIRA-8
+                  - generic [ref=e7573]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7574]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7575] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7576]:
+                - paragraph [ref=e7577]:
+                  - generic [ref=e7578]:
+                    - generic [ref=e7580]: "73"
+                    - generic [ref=e7581]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7582]: checked out
+                  - text: DIRA-8
+                  - generic [ref=e7583]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7584]: 5d ago
+            - 'link "BO Board commented on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7585] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7586]:
+                - paragraph [ref=e7587]:
+                  - generic [ref=e7588]:
+                    - generic [ref=e7590]: BO
+                    - generic [ref=e7591]: Board
+                  - generic [ref=e7592]: commented on
+                  - text: DIRA-8
+                  - generic [ref=e7593]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7594]: 5d ago
+            - 'link "BO Board changed status from in progress to todo on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7595] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7596]:
+                - paragraph [ref=e7597]:
+                  - generic [ref=e7598]:
+                    - generic [ref=e7600]: BO
+                    - generic [ref=e7601]: Board
+                  - generic [ref=e7602]: changed status from in progress to todo on
+                  - text: DIRA-8
+                  - generic [ref=e7603]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7604]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from in progress to done on DIRA-7— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) 5d ago" [ref=e7605] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e7606]:
+                - paragraph [ref=e7607]:
+                  - generic [ref=e7608]:
+                    - generic [ref=e7610]: "03"
+                    - generic [ref=e7611]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7612]: changed status from in progress to done on
+                  - text: DIRA-7
+                  - generic [ref=e7613]: "— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e7614]: 5d ago
+            - link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e7615] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e7616]:
+                - paragraph [ref=e7617]:
+                  - generic [ref=e7618]:
+                    - generic [ref=e7620]: "03"
+                    - generic [ref=e7621]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7622]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e7623]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e7624]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-7— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) 5d ago" [ref=e7625] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e7626]:
+                - paragraph [ref=e7627]:
+                  - generic [ref=e7628]:
+                    - generic [ref=e7630]: "03"
+                    - generic [ref=e7631]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7632]: commented on
+                  - text: DIRA-7
+                  - generic [ref=e7633]: "— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e7634]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 checked out DIRA-7— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) 5d ago" [ref=e7635] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e7636]:
+                - paragraph [ref=e7637]:
+                  - generic [ref=e7638]:
+                    - generic [ref=e7640]: "03"
+                    - generic [ref=e7641]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7642]: checked out
+                  - text: DIRA-7
+                  - generic [ref=e7643]: "— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e7644]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7645] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7646]:
+                - paragraph [ref=e7647]:
+                  - generic [ref=e7648]:
+                    - generic [ref=e7650]: "73"
+                    - generic [ref=e7651]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7652]: checked out
+                  - text: DIRA-8
+                  - generic [ref=e7653]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7654]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7655] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e7656]:
+                - paragraph [ref=e7657]:
+                  - generic [ref=e7658]:
+                    - generic [ref=e7660]: BO
+                    - generic [ref=e7661]: Board
+                  - generic [ref=e7662]: updated
+                - generic [ref=e7663]: 5d ago
+            - 'link "BO Board commented on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7664] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7665]:
+                - paragraph [ref=e7666]:
+                  - generic [ref=e7667]:
+                    - generic [ref=e7669]: BO
+                    - generic [ref=e7670]: Board
+                  - generic [ref=e7671]: commented on
+                  - text: DIRA-8
+                  - generic [ref=e7672]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7673]: 5d ago
+            - 'link "BO Board changed status from in progress to todo on DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7674] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7675]:
+                - paragraph [ref=e7676]:
+                  - generic [ref=e7677]:
+                    - generic [ref=e7679]: BO
+                    - generic [ref=e7680]: Board
+                  - generic [ref=e7681]: changed status from in progress to todo on
+                  - text: DIRA-8
+                  - generic [ref=e7682]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7683]: 5d ago
+            - 'link "BO Board issue read marked DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7684] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7685]:
+                - paragraph [ref=e7686]:
+                  - generic [ref=e7687]:
+                    - generic [ref=e7689]: BO
+                    - generic [ref=e7690]: Board
+                  - generic [ref=e7691]: issue read marked
+                  - text: DIRA-8
+                  - generic [ref=e7692]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7693]: 5d ago
+            - 'link "BO Board changed status to todo on DIRA-7— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) 5d ago" [ref=e7694] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e7695]:
+                - paragraph [ref=e7696]:
+                  - generic [ref=e7697]:
+                    - generic [ref=e7699]: BO
+                    - generic [ref=e7700]: Board
+                  - generic [ref=e7701]: changed status to todo on
+                  - text: DIRA-7
+                  - generic [ref=e7702]: "— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e7703]: 5d ago
+            - 'link "BO Board commented on DIRA-7— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) 5d ago" [ref=e7704] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e7705]:
+                - paragraph [ref=e7706]:
+                  - generic [ref=e7707]:
+                    - generic [ref=e7709]: BO
+                    - generic [ref=e7710]: Board
+                  - generic [ref=e7711]: commented on
+                  - text: DIRA-7
+                  - generic [ref=e7712]: "— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e7713]: 5d ago
+            - 'link "73 739df96f-bb7e-4903-afd3-a5b660467e30 checked out DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7714] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7715]:
+                - paragraph [ref=e7716]:
+                  - generic [ref=e7717]:
+                    - generic [ref=e7719]: "73"
+                    - generic [ref=e7720]: 739df96f-bb7e-4903-afd3-a5b660467e30
+                  - generic [ref=e7721]: checked out
+                  - text: DIRA-8
+                  - generic [ref=e7722]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7723]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7724] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e7725]:
+                - paragraph [ref=e7726]:
+                  - generic [ref=e7727]:
+                    - generic [ref=e7729]: BO
+                    - generic [ref=e7730]: Board
+                  - generic [ref=e7731]: updated
+                - generic [ref=e7732]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7733] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e7734]:
+                - paragraph [ref=e7735]:
+                  - generic [ref=e7736]:
+                    - generic [ref=e7738]: BO
+                    - generic [ref=e7739]: Board
+                  - generic [ref=e7740]: updated
+                - generic [ref=e7741]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7742] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e7743]:
+                - paragraph [ref=e7744]:
+                  - generic [ref=e7745]:
+                    - generic [ref=e7747]: BO
+                    - generic [ref=e7748]: Board
+                  - generic [ref=e7749]: updated
+                - generic [ref=e7750]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7751] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e7752]:
+                - paragraph [ref=e7753]:
+                  - generic [ref=e7754]:
+                    - generic [ref=e7756]: BO
+                    - generic [ref=e7757]: Board
+                  - generic [ref=e7758]: updated
+                - generic [ref=e7759]: 5d ago
+            - 'link "BO Board issue read marked DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7760] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7761]:
+                - paragraph [ref=e7762]:
+                  - generic [ref=e7763]:
+                    - generic [ref=e7765]: BO
+                    - generic [ref=e7766]: Board
+                  - generic [ref=e7767]: issue read marked
+                  - text: DIRA-8
+                  - generic [ref=e7768]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7769]: 5d ago
+            - 'link "BO Board created DIRA-8— QA: Visual verification of HUD glanceability redesign 5d ago" [ref=e7770] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e7771]:
+                - paragraph [ref=e7772]:
+                  - generic [ref=e7773]:
+                    - generic [ref=e7775]: BO
+                    - generic [ref=e7776]: Board
+                  - generic [ref=e7777]: created
+                  - text: DIRA-8
+                  - generic [ref=e7778]: "— QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e7779]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7780] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e7781]:
+                - paragraph [ref=e7782]:
+                  - generic [ref=e7783]:
+                    - generic [ref=e7785]: BO
+                    - generic [ref=e7786]: Board
+                  - generic [ref=e7787]: updated
+                - generic [ref=e7788]: 5d ago
+            - generic [ref=e7790]:
+              - paragraph [ref=e7791]:
+                - generic [ref=e7792]:
+                  - generic [ref=e7794]: BO
+                  - generic [ref=e7795]: Board
+                - generic [ref=e7796]: company skill created
+              - generic [ref=e7797]: 5d ago
+            - generic [ref=e7799]:
+              - paragraph [ref=e7800]:
+                - generic [ref=e7801]:
+                  - generic [ref=e7803]: BO
+                  - generic [ref=e7804]: Board
+                - generic [ref=e7805]: budget policy upserted
+              - generic [ref=e7806]: 5d ago
+            - link "BO Board created 5d ago" [ref=e7807] [cursor=pointer]:
+              - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30
+              - generic [ref=e7808]:
+                - paragraph [ref=e7809]:
+                  - generic [ref=e7810]:
+                    - generic [ref=e7812]: BO
+                    - generic [ref=e7813]: Board
+                  - generic [ref=e7814]: created
+                - generic [ref=e7815]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7816] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e7817]:
+                - paragraph [ref=e7818]:
+                  - generic [ref=e7819]:
+                    - generic [ref=e7821]: BO
+                    - generic [ref=e7822]: Board
+                  - generic [ref=e7823]: updated
+                - generic [ref=e7824]: 5d ago
+            - generic [ref=e7826]:
+              - paragraph [ref=e7827]:
+                - generic [ref=e7828]:
+                  - generic [ref=e7830]: BO
+                  - generic [ref=e7831]: Board
+                - generic [ref=e7832]: company skill created
+              - generic [ref=e7833]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7834] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e7835]:
+                - paragraph [ref=e7836]:
+                  - generic [ref=e7837]:
+                    - generic [ref=e7839]: BO
+                    - generic [ref=e7840]: Board
+                  - generic [ref=e7841]: updated
+                - generic [ref=e7842]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7843] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e7844]:
+                - paragraph [ref=e7845]:
+                  - generic [ref=e7846]:
+                    - generic [ref=e7848]: BO
+                    - generic [ref=e7849]: Board
+                  - generic [ref=e7850]: updated
+                - generic [ref=e7851]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7852] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e7853]:
+                - paragraph [ref=e7854]:
+                  - generic [ref=e7855]:
+                    - generic [ref=e7857]: BO
+                    - generic [ref=e7858]: Board
+                  - generic [ref=e7859]: updated
+                - generic [ref=e7860]: 5d ago
+            - link "BO Board paused 5d ago" [ref=e7861] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e7862]:
+                - paragraph [ref=e7863]:
+                  - generic [ref=e7864]:
+                    - generic [ref=e7866]: BO
+                    - generic [ref=e7867]: Board
+                  - generic [ref=e7868]: paused
+                - generic [ref=e7869]: 5d ago
+            - link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e7870] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e7871]:
+                - paragraph [ref=e7872]:
+                  - generic [ref=e7873]:
+                    - generic [ref=e7875]: "67"
+                    - generic [ref=e7876]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e7877]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e7878]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e7879]: 5d ago
+            - 'link "67 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70 created DIRA-7— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) 5d ago" [ref=e7880] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e7881]:
+                - paragraph [ref=e7882]:
+                  - generic [ref=e7883]:
+                    - generic [ref=e7885]: "67"
+                    - generic [ref=e7886]: 673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+                  - generic [ref=e7887]: created
+                  - text: DIRA-7
+                  - generic [ref=e7888]: "— Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e7889]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7890] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e7891]:
+                - paragraph [ref=e7892]:
+                  - generic [ref=e7893]:
+                    - generic [ref=e7895]: BO
+                    - generic [ref=e7896]: Board
+                  - generic [ref=e7897]: updated
+                - generic [ref=e7898]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7899] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e7900]:
+                - paragraph [ref=e7901]:
+                  - generic [ref=e7902]:
+                    - generic [ref=e7904]: BO
+                    - generic [ref=e7905]: Board
+                  - generic [ref=e7906]: updated
+                - generic [ref=e7907]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7908] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e7909]:
+                - paragraph [ref=e7910]:
+                  - generic [ref=e7911]:
+                    - generic [ref=e7913]: BO
+                    - generic [ref=e7914]: Board
+                  - generic [ref=e7915]: updated
+                - generic [ref=e7916]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7917] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e7918]:
+                - paragraph [ref=e7919]:
+                  - generic [ref=e7920]:
+                    - generic [ref=e7922]: BO
+                    - generic [ref=e7923]: Board
+                  - generic [ref=e7924]: updated
+                - generic [ref=e7925]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e7926] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e7927]:
+                - paragraph [ref=e7928]:
+                  - generic [ref=e7929]:
+                    - generic [ref=e7931]: BO
+                    - generic [ref=e7932]: Board
+                  - generic [ref=e7933]: updated
+                - generic [ref=e7934]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from todo to done on DIRA-6— MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording 5d ago" [ref=e7935] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-6
+              - generic [ref=e7936]:
+                - paragraph [ref=e7937]:
+                  - generic [ref=e7938]:
+                    - generic [ref=e7940]: "03"
+                    - generic [ref=e7941]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7942]: changed status from todo to done on
+                  - text: DIRA-6
+                  - generic [ref=e7943]: "— MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording"
+                - generic [ref=e7944]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from todo to done on DIRA-5— MapOverlayStack: add floating SpeedBadge during Ferrostar navigation 5d ago" [ref=e7945] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-5
+              - generic [ref=e7946]:
+                - paragraph [ref=e7947]:
+                  - generic [ref=e7948]:
+                    - generic [ref=e7950]: "03"
+                    - generic [ref=e7951]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7952]: changed status from todo to done on
+                  - text: DIRA-5
+                  - generic [ref=e7953]: "— MapOverlayStack: add floating SpeedBadge during Ferrostar navigation"
+                - generic [ref=e7954]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 changed status from todo to done on DIRA-4— WazeNavBottomBar: show ETA (arrival time) instead of remaining time 5d ago" [ref=e7955] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-4
+              - generic [ref=e7956]:
+                - paragraph [ref=e7957]:
+                  - generic [ref=e7958]:
+                    - generic [ref=e7960]: "03"
+                    - generic [ref=e7961]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7962]: changed status from todo to done on
+                  - text: DIRA-4
+                  - generic [ref=e7963]: "— WazeNavBottomBar: show ETA (arrival time) instead of remaining time"
+                - generic [ref=e7964]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-6— MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording 5d ago" [ref=e7965] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-6
+              - generic [ref=e7966]:
+                - paragraph [ref=e7967]:
+                  - generic [ref=e7968]:
+                    - generic [ref=e7970]: "03"
+                    - generic [ref=e7971]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7972]: commented on
+                  - text: DIRA-6
+                  - generic [ref=e7973]: "— MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording"
+                - generic [ref=e7974]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-5— MapOverlayStack: add floating SpeedBadge during Ferrostar navigation 5d ago" [ref=e7975] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-5
+              - generic [ref=e7976]:
+                - paragraph [ref=e7977]:
+                  - generic [ref=e7978]:
+                    - generic [ref=e7980]: "03"
+                    - generic [ref=e7981]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7982]: commented on
+                  - text: DIRA-5
+                  - generic [ref=e7983]: "— MapOverlayStack: add floating SpeedBadge during Ferrostar navigation"
+                - generic [ref=e7984]: 5d ago
+            - 'link "03 03f203d7-3d23-4d3c-9c88-a69c7150ba74 commented on DIRA-4— WazeNavBottomBar: show ETA (arrival time) instead of remaining time 5d ago" [ref=e7985] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-4
+              - generic [ref=e7986]:
+                - paragraph [ref=e7987]:
+                  - generic [ref=e7988]:
+                    - generic [ref=e7990]: "03"
+                    - generic [ref=e7991]: 03f203d7-3d23-4d3c-9c88-a69c7150ba74
+                  - generic [ref=e7992]: commented on
+                  - text: DIRA-4
+                  - generic [ref=e7993]: "— WazeNavBottomBar: show ETA (arrival time) instead of remaining time"
+                - generic [ref=e7994]: 5d ago
+            - link "BO Board agent skills synced 5d ago" [ref=e7995] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e7996]:
+                - paragraph [ref=e7997]:
+                  - generic [ref=e7998]:
+                    - generic [ref=e8000]: BO
+                    - generic [ref=e8001]: Board
+                  - generic [ref=e8002]: agent skills synced
+                - generic [ref=e8003]: 5d ago
+            - link "BO Board agent skills synced 5d ago" [ref=e8004] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e8005]:
+                - paragraph [ref=e8006]:
+                  - generic [ref=e8007]:
+                    - generic [ref=e8009]: BO
+                    - generic [ref=e8010]: Board
+                  - generic [ref=e8011]: agent skills synced
+                - generic [ref=e8012]: 5d ago
+            - link "BO Board agent skills synced 5d ago" [ref=e8013] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e8014]:
+                - paragraph [ref=e8015]:
+                  - generic [ref=e8016]:
+                    - generic [ref=e8018]: BO
+                    - generic [ref=e8019]: Board
+                  - generic [ref=e8020]: agent skills synced
+                - generic [ref=e8021]: 5d ago
+            - link "BO Board agent skills synced 5d ago" [ref=e8022] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e8023]:
+                - paragraph [ref=e8024]:
+                  - generic [ref=e8025]:
+                    - generic [ref=e8027]: BO
+                    - generic [ref=e8028]: Board
+                  - generic [ref=e8029]: agent skills synced
+                - generic [ref=e8030]: 5d ago
+            - 'link "BO Board changed status from todo to done on DIRA-2— Technical plan: HUD layout restructure for 80%+ map coverage 5d ago" [ref=e8031] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-2
+              - generic [ref=e8032]:
+                - paragraph [ref=e8033]:
+                  - generic [ref=e8034]:
+                    - generic [ref=e8036]: BO
+                    - generic [ref=e8037]: Board
+                  - generic [ref=e8038]: changed status from todo to done on
+                  - text: DIRA-2
+                  - generic [ref=e8039]: "— Technical plan: HUD layout restructure for 80%+ map coverage"
+                - generic [ref=e8040]: 5d ago
+            - 'link "BO Board commented on DIRA-2— Technical plan: HUD layout restructure for 80%+ map coverage 5d ago" [ref=e8041] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-2
+              - generic [ref=e8042]:
+                - paragraph [ref=e8043]:
+                  - generic [ref=e8044]:
+                    - generic [ref=e8046]: BO
+                    - generic [ref=e8047]: Board
+                  - generic [ref=e8048]: commented on
+                  - text: DIRA-2
+                  - generic [ref=e8049]: "— Technical plan: HUD layout restructure for 80%+ map coverage"
+                - generic [ref=e8050]: 5d ago
+            - 'link "BO Board changed status from in progress to done on DIRA-3— Technical plan: HUD redesign for glanceability 5d ago" [ref=e8051] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-3
+              - generic [ref=e8052]:
+                - paragraph [ref=e8053]:
+                  - generic [ref=e8054]:
+                    - generic [ref=e8056]: BO
+                    - generic [ref=e8057]: Board
+                  - generic [ref=e8058]: changed status from in progress to done on
+                  - text: DIRA-3
+                  - generic [ref=e8059]: "— Technical plan: HUD redesign for glanceability"
+                - generic [ref=e8060]: 5d ago
+            - 'link "BO Board commented on DIRA-3— Technical plan: HUD redesign for glanceability 5d ago" [ref=e8061] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-3
+              - generic [ref=e8062]:
+                - paragraph [ref=e8063]:
+                  - generic [ref=e8064]:
+                    - generic [ref=e8066]: BO
+                    - generic [ref=e8067]: Board
+                  - generic [ref=e8068]: commented on
+                  - text: DIRA-3
+                  - generic [ref=e8069]: "— Technical plan: HUD redesign for glanceability"
+                - generic [ref=e8070]: 5d ago
+            - 'link "BO Board created DIRA-6— MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording 5d ago" [ref=e8071] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-6
+              - generic [ref=e8072]:
+                - paragraph [ref=e8073]:
+                  - generic [ref=e8074]:
+                    - generic [ref=e8076]: BO
+                    - generic [ref=e8077]: Board
+                  - generic [ref=e8078]: created
+                  - text: DIRA-6
+                  - generic [ref=e8079]: "— MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording"
+                - generic [ref=e8080]: 5d ago
+            - 'link "BO Board created DIRA-5— MapOverlayStack: add floating SpeedBadge during Ferrostar navigation 5d ago" [ref=e8081] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-5
+              - generic [ref=e8082]:
+                - paragraph [ref=e8083]:
+                  - generic [ref=e8084]:
+                    - generic [ref=e8086]: BO
+                    - generic [ref=e8087]: Board
+                  - generic [ref=e8088]: created
+                  - text: DIRA-5
+                  - generic [ref=e8089]: "— MapOverlayStack: add floating SpeedBadge during Ferrostar navigation"
+                - generic [ref=e8090]: 5d ago
+            - 'link "BO Board created DIRA-4— WazeNavBottomBar: show ETA (arrival time) instead of remaining time 5d ago" [ref=e8091] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-4
+              - generic [ref=e8092]:
+                - paragraph [ref=e8093]:
+                  - generic [ref=e8094]:
+                    - generic [ref=e8096]: BO
+                    - generic [ref=e8097]: Board
+                  - generic [ref=e8098]: created
+                  - text: DIRA-4
+                  - generic [ref=e8099]: "— WazeNavBottomBar: show ETA (arrival time) instead of remaining time"
+                - generic [ref=e8100]: 5d ago
+            - 'link "BO Board created document for DIRA-3— Technical plan: HUD redesign for glanceability 5d ago" [ref=e8101] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-3
+              - generic [ref=e8102]:
+                - paragraph [ref=e8103]:
+                  - generic [ref=e8104]:
+                    - generic [ref=e8106]: BO
+                    - generic [ref=e8107]: Board
+                  - generic [ref=e8108]: created document for
+                  - text: DIRA-3
+                  - generic [ref=e8109]: "— Technical plan: HUD redesign for glanceability"
+                - generic [ref=e8110]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8111] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e8112]:
+                - paragraph [ref=e8113]:
+                  - generic [ref=e8114]:
+                    - generic [ref=e8116]: BO
+                    - generic [ref=e8117]: Board
+                  - generic [ref=e8118]: updated
+                - generic [ref=e8119]: 5d ago
+            - link "BO Board approved 5d ago" [ref=e8120] [cursor=pointer]:
+              - /url: /DIRA/approvals/8c263465-85c1-4f87-9f47-4c65f232e866
+              - generic [ref=e8121]:
+                - paragraph [ref=e8122]:
+                  - generic [ref=e8123]:
+                    - generic [ref=e8125]: BO
+                    - generic [ref=e8126]: Board
+                  - generic [ref=e8127]: approved
+                - generic [ref=e8128]: 5d ago
+            - 'link "BO Board changed status from todo to in progress on DIRA-3— Technical plan: HUD redesign for glanceability 5d ago" [ref=e8129] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-3
+              - generic [ref=e8130]:
+                - paragraph [ref=e8131]:
+                  - generic [ref=e8132]:
+                    - generic [ref=e8134]: BO
+                    - generic [ref=e8135]: Board
+                  - generic [ref=e8136]: changed status from todo to in progress on
+                  - text: DIRA-3
+                  - generic [ref=e8137]: "— Technical plan: HUD redesign for glanceability"
+                - generic [ref=e8138]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8139] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8140]:
+                - paragraph [ref=e8141]:
+                  - generic [ref=e8142]:
+                    - generic [ref=e8144]: "12"
+                    - generic [ref=e8145]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e8146]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e8147]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8148]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8149] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8150]:
+                - paragraph [ref=e8151]:
+                  - generic [ref=e8152]:
+                    - generic [ref=e8154]: "12"
+                    - generic [ref=e8155]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e8156]: updated
+                  - text: DIRA-1
+                  - generic [ref=e8157]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8158]: 5d ago
+            - 'link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 created DIRA-3— Technical plan: HUD redesign for glanceability 5d ago" [ref=e8159] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-3
+              - generic [ref=e8160]:
+                - paragraph [ref=e8161]:
+                  - generic [ref=e8162]:
+                    - generic [ref=e8164]: "12"
+                    - generic [ref=e8165]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e8166]: created
+                  - text: DIRA-3
+                  - generic [ref=e8167]: "— Technical plan: HUD redesign for glanceability"
+                - generic [ref=e8168]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 commented on DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8169] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8170]:
+                - paragraph [ref=e8171]:
+                  - generic [ref=e8172]:
+                    - generic [ref=e8174]: "12"
+                    - generic [ref=e8175]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e8176]: commented on
+                  - text: DIRA-1
+                  - generic [ref=e8177]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8178]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 updated DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8179] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8180]:
+                - paragraph [ref=e8181]:
+                  - generic [ref=e8182]:
+                    - generic [ref=e8184]: "12"
+                    - generic [ref=e8185]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e8186]: updated
+                  - text: DIRA-1
+                  - generic [ref=e8187]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8188]: 5d ago
+            - link "12 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02 checked out DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8189] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8190]:
+                - paragraph [ref=e8191]:
+                  - generic [ref=e8192]:
+                    - generic [ref=e8194]: "12"
+                    - generic [ref=e8195]: 1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+                  - generic [ref=e8196]: checked out
+                  - text: DIRA-1
+                  - generic [ref=e8197]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8198]: 5d ago
+            - link "BO Board invoked heartbeat for 5d ago" [ref=e8199] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02/runs/14595e67-0e8e-4a2e-ad80-8c97ae38c70f
+              - generic [ref=e8200]:
+                - paragraph [ref=e8201]:
+                  - generic [ref=e8202]:
+                    - generic [ref=e8204]: BO
+                    - generic [ref=e8205]: Board
+                  - generic [ref=e8206]: invoked heartbeat for
+                - generic [ref=e8207]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8208] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e8209]:
+                - paragraph [ref=e8210]:
+                  - generic [ref=e8211]:
+                    - generic [ref=e8213]: BO
+                    - generic [ref=e8214]: Board
+                  - generic [ref=e8215]: updated
+                - generic [ref=e8216]: 5d ago
+            - 'link "BO Board created DIRA-2— Technical plan: HUD layout restructure for 80%+ map coverage 5d ago" [ref=e8217] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-2
+              - generic [ref=e8218]:
+                - paragraph [ref=e8219]:
+                  - generic [ref=e8220]:
+                    - generic [ref=e8222]: BO
+                    - generic [ref=e8223]: Board
+                  - generic [ref=e8224]: created
+                  - text: DIRA-2
+                  - generic [ref=e8225]: "— Technical plan: HUD layout restructure for 80%+ map coverage"
+                - generic [ref=e8226]: 5d ago
+            - link "BO Board requested approval 5d ago" [ref=e8227] [cursor=pointer]:
+              - /url: /DIRA/approvals/8c263465-85c1-4f87-9f47-4c65f232e866
+              - generic [ref=e8228]:
+                - paragraph [ref=e8229]:
+                  - generic [ref=e8230]:
+                    - generic [ref=e8232]: BO
+                    - generic [ref=e8233]: Board
+                  - generic [ref=e8234]: requested approval
+                - generic [ref=e8235]: 5d ago
+            - link "BO Board agent hire created 5d ago" [ref=e8236] [cursor=pointer]:
+              - /url: /DIRA/agents/03f203d7-3d23-4d3c-9c88-a69c7150ba74
+              - generic [ref=e8237]:
+                - paragraph [ref=e8238]:
+                  - generic [ref=e8239]:
+                    - generic [ref=e8241]: BO
+                    - generic [ref=e8242]: Board
+                  - generic [ref=e8243]: agent hire created
+                - generic [ref=e8244]: 5d ago
+            - link "BO Board issue read marked DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8245] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8246]:
+                - paragraph [ref=e8247]:
+                  - generic [ref=e8248]:
+                    - generic [ref=e8250]: BO
+                    - generic [ref=e8251]: Board
+                  - generic [ref=e8252]: issue read marked
+                  - text: DIRA-1
+                  - generic [ref=e8253]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8254]: 5d ago
+            - link "BO Board issue read marked DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8255] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8256]:
+                - paragraph [ref=e8257]:
+                  - generic [ref=e8258]:
+                    - generic [ref=e8260]: BO
+                    - generic [ref=e8261]: Board
+                  - generic [ref=e8262]: issue read marked
+                  - text: DIRA-1
+                  - generic [ref=e8263]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8264]: 5d ago
+            - link "BO Board checked out DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8265] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8266]:
+                - paragraph [ref=e8267]:
+                  - generic [ref=e8268]:
+                    - generic [ref=e8270]: BO
+                    - generic [ref=e8271]: Board
+                  - generic [ref=e8272]: checked out
+                  - text: DIRA-1
+                  - generic [ref=e8273]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8274]: 5d ago
+            - link "BO Board issue read marked DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8275] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8276]:
+                - paragraph [ref=e8277]:
+                  - generic [ref=e8278]:
+                    - generic [ref=e8280]: BO
+                    - generic [ref=e8281]: Board
+                  - generic [ref=e8282]: issue read marked
+                  - text: DIRA-1
+                  - generic [ref=e8283]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8284]: 5d ago
+            - link "BO Board invoked heartbeat for 5d ago" [ref=e8285] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02/runs/e3c4bbfe-3e0f-4227-a1af-8d1431d2d1d6
+              - generic [ref=e8286]:
+                - paragraph [ref=e8287]:
+                  - generic [ref=e8288]:
+                    - generic [ref=e8290]: BO
+                    - generic [ref=e8291]: Board
+                  - generic [ref=e8292]: invoked heartbeat for
+                - generic [ref=e8293]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8294] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e8295]:
+                - paragraph [ref=e8296]:
+                  - generic [ref=e8297]:
+                    - generic [ref=e8299]: BO
+                    - generic [ref=e8300]: Board
+                  - generic [ref=e8301]: updated
+                - generic [ref=e8302]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8303] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e8304]:
+                - paragraph [ref=e8305]:
+                  - generic [ref=e8306]:
+                    - generic [ref=e8308]: BO
+                    - generic [ref=e8309]: Board
+                  - generic [ref=e8310]: updated
+                - generic [ref=e8311]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8312] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e8313]:
+                - paragraph [ref=e8314]:
+                  - generic [ref=e8315]:
+                    - generic [ref=e8317]: BO
+                    - generic [ref=e8318]: Board
+                  - generic [ref=e8319]: updated
+                - generic [ref=e8320]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8321] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e8322]:
+                - paragraph [ref=e8323]:
+                  - generic [ref=e8324]:
+                    - generic [ref=e8326]: BO
+                    - generic [ref=e8327]: Board
+                  - generic [ref=e8328]: updated
+                - generic [ref=e8329]: 5d ago
+            - link "BO Board invoked heartbeat for 5d ago" [ref=e8330] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02/runs/2730ddf9-efe2-4561-9496-faf4cba2dd2c
+              - generic [ref=e8331]:
+                - paragraph [ref=e8332]:
+                  - generic [ref=e8333]:
+                    - generic [ref=e8335]: BO
+                    - generic [ref=e8336]: Board
+                  - generic [ref=e8337]: invoked heartbeat for
+                - generic [ref=e8338]: 5d ago
+            - link "BO Board invoked heartbeat for 5d ago" [ref=e8339] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02/runs/aea07dbf-4ab7-4991-a121-a69c19227df4
+              - generic [ref=e8340]:
+                - paragraph [ref=e8341]:
+                  - generic [ref=e8342]:
+                    - generic [ref=e8344]: BO
+                    - generic [ref=e8345]: Board
+                  - generic [ref=e8346]: invoked heartbeat for
+                - generic [ref=e8347]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8348] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e8349]:
+                - paragraph [ref=e8350]:
+                  - generic [ref=e8351]:
+                    - generic [ref=e8353]: BO
+                    - generic [ref=e8354]: Board
+                  - generic [ref=e8355]: updated
+                - generic [ref=e8356]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8357] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e8358]:
+                - paragraph [ref=e8359]:
+                  - generic [ref=e8360]:
+                    - generic [ref=e8362]: BO
+                    - generic [ref=e8363]: Board
+                  - generic [ref=e8364]: updated
+                - generic [ref=e8365]: 5d ago
+            - link "BO Board created DIRA-1— Redesign Navigation HUD — beat Waze for glanceability at trail speed 5d ago" [ref=e8366] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e8367]:
+                - paragraph [ref=e8368]:
+                  - generic [ref=e8369]:
+                    - generic [ref=e8371]: BO
+                    - generic [ref=e8372]: Board
+                  - generic [ref=e8373]: created
+                  - text: DIRA-1
+                  - generic [ref=e8374]: — Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e8375]: 5d ago
+            - link "BO Board created Build best-in-class trail navigation HUD 5d ago" [ref=e8376] [cursor=pointer]:
+              - /url: /DIRA/goals/28643cd6-58c4-4e5a-a542-f4d490e592b8
+              - generic [ref=e8377]:
+                - paragraph [ref=e8378]:
+                  - generic [ref=e8379]:
+                    - generic [ref=e8381]: BO
+                    - generic [ref=e8382]: Board
+                  - generic [ref=e8383]: created
+                  - text: Build best-in-class trail navigation HUD
+                - generic [ref=e8384]: 5d ago
+            - link "BO Board created Launch DirtSync on App Store with 4.5+ rating 5d ago" [ref=e8385] [cursor=pointer]:
+              - /url: /DIRA/goals/e41cea9d-e704-4ac4-9f03-c634921cc8cf
+              - generic [ref=e8386]:
+                - paragraph [ref=e8387]:
+                  - generic [ref=e8388]:
+                    - generic [ref=e8390]: BO
+                    - generic [ref=e8391]: Board
+                  - generic [ref=e8392]: created
+                  - text: Launch DirtSync on App Store with 4.5+ rating
+                - generic [ref=e8393]: 5d ago
+            - link "BO Board created DirtSync iOS 5d ago" [ref=e8394] [cursor=pointer]:
+              - /url: /DIRA/projects/dirtsync-ios
+              - generic [ref=e8395]:
+                - paragraph [ref=e8396]:
+                  - generic [ref=e8397]:
+                    - generic [ref=e8399]: BO
+                    - generic [ref=e8400]: Board
+                  - generic [ref=e8401]: created
+                  - text: DirtSync iOS
+                - generic [ref=e8402]: 5d ago
+            - generic [ref=e8404]:
+              - paragraph [ref=e8405]:
+                - generic [ref=e8406]:
+                  - generic [ref=e8408]: BO
+                  - generic [ref=e8409]: Board
+                - generic [ref=e8410]: company skills imported
+              - generic [ref=e8411]: 5d ago
+            - generic [ref=e8413]:
+              - paragraph [ref=e8414]:
+                - generic [ref=e8415]:
+                  - generic [ref=e8417]: BO
+                  - generic [ref=e8418]: Board
+                - generic [ref=e8419]: company skills imported
+              - generic [ref=e8420]: 5d ago
+            - generic [ref=e8422]:
+              - paragraph [ref=e8423]:
+                - generic [ref=e8424]:
+                  - generic [ref=e8426]: BO
+                  - generic [ref=e8427]: Board
+                - generic [ref=e8428]: company skills imported
+              - generic [ref=e8429]: 5d ago
+            - generic [ref=e8431]:
+              - paragraph [ref=e8432]:
+                - generic [ref=e8433]:
+                  - generic [ref=e8435]: BO
+                  - generic [ref=e8436]: Board
+                - generic [ref=e8437]: company skills imported
+              - generic [ref=e8438]: 5d ago
+            - generic [ref=e8440]:
+              - paragraph [ref=e8441]:
+                - generic [ref=e8442]:
+                  - generic [ref=e8444]: BO
+                  - generic [ref=e8445]: Board
+                - generic [ref=e8446]: company skills imported
+              - generic [ref=e8447]: 5d ago
+            - generic [ref=e8449]:
+              - paragraph [ref=e8450]:
+                - generic [ref=e8451]:
+                  - generic [ref=e8453]: BO
+                  - generic [ref=e8454]: Board
+                - generic [ref=e8455]: company skills imported
+              - generic [ref=e8456]: 5d ago
+            - generic [ref=e8458]:
+              - paragraph [ref=e8459]:
+                - generic [ref=e8460]:
+                  - generic [ref=e8462]: BO
+                  - generic [ref=e8463]: Board
+                - generic [ref=e8464]: company skills imported
+              - generic [ref=e8465]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8466] [cursor=pointer]:
+              - /url: /DIRA/agents/86f0bc21-f2ad-4e3d-b7b5-4ecb6cd8202e
+              - generic [ref=e8467]:
+                - paragraph [ref=e8468]:
+                  - generic [ref=e8469]:
+                    - generic [ref=e8471]: BO
+                    - generic [ref=e8472]: Board
+                  - generic [ref=e8473]: updated
+                - generic [ref=e8474]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8475] [cursor=pointer]:
+              - /url: /DIRA/agents/3f83dfa8-6813-4ce3-92c1-be03511e6715
+              - generic [ref=e8476]:
+                - paragraph [ref=e8477]:
+                  - generic [ref=e8478]:
+                    - generic [ref=e8480]: BO
+                    - generic [ref=e8481]: Board
+                  - generic [ref=e8482]: updated
+                - generic [ref=e8483]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8484] [cursor=pointer]:
+              - /url: /DIRA/agents/1210ca06-5cf2-4ae7-a71a-fcdd5ae99c02
+              - generic [ref=e8485]:
+                - paragraph [ref=e8486]:
+                  - generic [ref=e8487]:
+                    - generic [ref=e8489]: BO
+                    - generic [ref=e8490]: Board
+                  - generic [ref=e8491]: updated
+                - generic [ref=e8492]: 5d ago
+            - generic [ref=e8494]:
+              - paragraph [ref=e8495]:
+                - generic [ref=e8496]:
+                  - generic [ref=e8498]: BO
+                  - generic [ref=e8499]: Board
+                - generic [ref=e8500]: updated company
+              - generic [ref=e8501]: 5d ago
+            - link "BO Board updated 5d ago" [ref=e8502] [cursor=pointer]:
+              - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70
+              - generic [ref=e8503]:
+                - paragraph [ref=e8504]:
+                  - generic [ref=e8505]:
+                    - generic [ref=e8507]: BO
+                    - generic [ref=e8508]: Board
+                  - generic [ref=e8509]: updated
+                - generic [ref=e8510]: 5d ago
+            - generic [ref=e8512]:
+              - paragraph [ref=e8513]:
+                - generic [ref=e8514]:
+                  - generic [ref=e8516]: BO
+                  - generic [ref=e8517]: Board
+                - generic [ref=e8518]: company imported
+              - generic [ref=e8519]: 5d ago
+  - generic [ref=e167]:
+    - heading "Command Palette" [level=2] [ref=e168]
+    - paragraph [ref=e169]: Search for a command to run...

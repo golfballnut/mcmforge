@@ -5,16 +5,14 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type SearchResult = {
-  type: "task" | "company" | "research" | "agent";
+  type: "issue" | "agent";
   title: string;
   subtitle: string;
   href: string;
 };
 
 const typeConfig: Record<string, { color: string; label: string }> = {
-  task: { color: "#fbbc04", label: "Task" },
-  company: { color: "#4285f4", label: "Company" },
-  research: { color: "#fa7b17", label: "Research" },
+  issue: { color: "#fbbc04", label: "Issue" },
   agent: { color: "#00bcd4", label: "Agent" },
 };
 
@@ -55,36 +53,22 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
     setLoading(true);
     const pattern = `%${q}%`;
 
-    const [tasks, companies, research, agents] = await Promise.all([
-      supabase.from("task_queue").select("id, title, status").ilike("title", pattern).limit(5),
-      supabase.from("company_registry").select("id, name, slug, domain").ilike("name", pattern).limit(5),
-      supabase.from("research_findings").select("id, topic, finding").ilike("topic", pattern).limit(5),
-      supabase.from("agent_roster").select("id, name, agent_type").ilike("name", pattern).limit(5),
+    const [issues, agents] = await Promise.all([
+      supabase.from("issues").select("id, title, status").ilike("title", pattern).limit(5),
+      supabase.from("agents").select("id, name, adapter_type").ilike("name", pattern).limit(5),
     ]);
 
     const items: SearchResult[] = [
-      ...(tasks.data || []).map((t) => ({
-        type: "task" as const,
+      ...(issues.data || []).map((t) => ({
+        type: "issue" as const,
         title: t.title,
         subtitle: t.status,
-        href: "/tasks",
-      })),
-      ...(companies.data || []).map((c) => ({
-        type: "company" as const,
-        title: c.name,
-        subtitle: c.domain || c.slug,
-        href: "/companies",
-      })),
-      ...(research.data || []).map((r) => ({
-        type: "research" as const,
-        title: r.topic,
-        subtitle: (r.finding || "").slice(0, 80),
-        href: "/research",
+        href: "/issues",
       })),
       ...(agents.data || []).map((a) => ({
         type: "agent" as const,
         title: a.name,
-        subtitle: a.agent_type,
+        subtitle: a.adapter_type,
         href: "/agents",
       })),
     ];
@@ -120,7 +104,7 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search tasks, companies, research, agents..."
+            placeholder="Search issues and agents..."
             className="flex-1 text-[#202124] text-base bg-transparent outline-none placeholder-[#5f6368]"
           />
           <kbd className="text-xs bg-[#f1f3f4] px-2 py-0.5 rounded border border-[#dadce0] text-[#5f6368]">

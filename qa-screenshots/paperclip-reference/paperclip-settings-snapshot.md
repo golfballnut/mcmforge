@@ -1,0 +1,75 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e16]:
+                  - img [ref=e17]
+                  - generic [ref=e18]: D
+            - status [ref=e19]
+          - button "Add company" [ref=e22]:
+            - img [ref=e23]
+        - complementary [ref=e25]:
+          - generic [ref=e26]:
+            - img [ref=e27]
+            - generic [ref=e30]: Instance Settings
+          - navigation [ref=e31]:
+            - generic [ref=e32]:
+              - link "General" [ref=e33] [cursor=pointer]:
+                - /url: /instance/settings/general
+                - img [ref=e35]
+                - generic [ref=e36]: General
+              - link "Heartbeats" [ref=e37] [cursor=pointer]:
+                - /url: /instance/settings/heartbeats
+                - img [ref=e39]
+                - generic [ref=e42]: Heartbeats
+              - link "Experimental" [ref=e43] [cursor=pointer]:
+                - /url: /instance/settings/experimental
+                - img [ref=e45]
+                - generic [ref=e47]: Experimental
+              - link "Plugins" [ref=e48] [cursor=pointer]:
+                - /url: /instance/settings/plugins
+                - img [ref=e50]
+                - generic [ref=e52]: Plugins
+      - generic [ref=e54]:
+        - link "Documentation" [ref=e55] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e56]
+          - generic [ref=e58]: Documentation
+        - generic [ref=e59]: v
+        - link "Instance settings" [ref=e60] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e61]:
+          - img
+    - generic [ref=e62]:
+      - navigation "breadcrumb" [ref=e66]:
+        - list [ref=e67]:
+          - listitem [ref=e68]:
+            - link "Instance Settings" [disabled] [ref=e69]
+          - listitem [ref=e70]:
+            - img [ref=e71]
+          - listitem [ref=e73]:
+            - link "General" [disabled] [ref=e74]
+      - main [ref=e76]:
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - img [ref=e80]
+              - heading "General" [level=1] [ref=e81]
+            - paragraph [ref=e82]: Configure instance-wide defaults that affect how operator-visible logs are displayed.
+          - generic [ref=e84]:
+            - generic [ref=e85]:
+              - heading "Censor username in logs" [level=2] [ref=e86]
+              - paragraph [ref=e87]: Hide the username segment in home-directory paths and similar operator-visible log output. Standalone username mentions outside of paths are not yet masked in the live transcript view. This is off by default.
+            - button "Toggle username log censoring" [ref=e88]
+  - generic [ref=e90]:
+    - heading "Command Palette" [level=2] [ref=e91]
+    - paragraph [ref=e92]: Search for a command to run...

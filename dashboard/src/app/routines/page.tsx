@@ -136,12 +136,15 @@ export default async function RoutinesPage() {
             </span>
           )}
         </div>
-        <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#00d4aa] text-[#0d1117] text-sm font-medium hover:bg-[#00bfaa] transition-colors cursor-not-allowed opacity-80">
+        <Link
+          href="/routines/new"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#00d4aa] text-[#0d1117] text-sm font-medium hover:bg-[#00bfaa] transition-colors"
+        >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           Create Routine
-        </button>
+        </Link>
       </div>
 
       {/* Table */}

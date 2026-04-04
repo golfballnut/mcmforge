@@ -53,6 +53,28 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
     return;
   }
 
+  // Increment company issue counter atomically
+  const { data: company } = await supabase
+    .from('companies')
+    .select('issue_prefix, issue_counter')
+    .eq('id', routine.company_id)
+    .single();
+
+  if (!company) {
+    logger.error({ routineId: routine.id }, 'Company not found for routine');
+    return;
+  }
+
+  const { data: updated } = await supabase
+    .from('companies')
+    .update({ issue_counter: company.issue_counter + 1 })
+    .eq('id', routine.company_id)
+    .select('issue_counter')
+    .single();
+
+  const issueNumber = updated?.issue_counter ?? company.issue_counter + 1;
+  const identifier = `${company.issue_prefix}-${issueNumber}`;
+
   // Concurrency check: if policy is 'skip_if_active', bail if agent is already running
   if (routine.concurrency_policy === 'skip_if_active') {
     const { data: agent } = await supabase
@@ -84,6 +106,8 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
       status: 'todo',
       origin_kind: 'routine',
       origin_id: routine.id,
+      issue_number: issueNumber,
+      identifier,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })

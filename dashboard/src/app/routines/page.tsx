@@ -83,19 +83,28 @@ function humanCron(expr: string): string {
     const n = min.match(/^\*\/(\d+)$/)![1];
     return `Every ${n} minutes`;
   }
+  // Every N hours (e.g. 0 */6 * * *)
+  if (/^\*\/(\d+)$/.test(hour) && dom === "*" && month === "*" && dow === "*") {
+    const n = hour.match(/^\*\/(\d+)$/)![1];
+    return `Every ${n} hours`;
+  }
   // Hourly
   if (min !== "*" && hour === "*" && dom === "*" && month === "*" && dow === "*") {
     return `Hourly at :${min.padStart(2, "0")}`;
   }
-  // Daily
-  if (dom === "*" && month === "*" && dow === "*") {
+  // Daily at midnight
+  if (min === "0" && hour === "0" && dom === "*" && month === "*" && dow === "*") {
+    return "Daily at midnight";
+  }
+  // Daily at specific hour (numeric hour only)
+  if (dom === "*" && month === "*" && dow === "*" && /^\d+$/.test(hour)) {
     const h = parseInt(hour, 10);
     const ampm = h >= 12 ? "PM" : "AM";
     const h12 = h % 12 === 0 ? 12 : h % 12;
     return `Daily at ${h12}:${min.padStart(2, "0")} ${ampm} UTC`;
   }
   // Weekly (single dow)
-  if (dom === "*" && month === "*" && /^\d$/.test(dow)) {
+  if (dom === "*" && month === "*" && /^\d$/.test(dow) && /^\d+$/.test(hour)) {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const h = parseInt(hour, 10);
     const ampm = h >= 12 ? "PM" : "AM";

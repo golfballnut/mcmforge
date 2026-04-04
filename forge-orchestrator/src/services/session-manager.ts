@@ -81,17 +81,17 @@ export async function rotateSession(
   logger.info({ agentId }, 'Session rotated — agent will start a new session on next run');
 }
 
-/** Count how many runs exist for the given agent + session in the agent_runs table. */
+/** Count how many runs exist for the given agent + session by matching session_id_before or session_id_after. */
 async function fetchSessionRunCount(
   supabase: SupabaseClient,
   agentId: string,
   sessionId: string,
 ): Promise<number> {
   const { count, error } = await supabase
-    .from('agent_runs')
+    .from('runs')
     .select('id', { count: 'exact', head: true })
     .eq('agent_id', agentId)
-    .eq('session_id', sessionId);
+    .or(`session_id_before.eq.${sessionId},session_id_after.eq.${sessionId}`);
 
   if (error) {
     logger.warn({ error, agentId, sessionId }, 'Failed to fetch session run count, defaulting to 0');

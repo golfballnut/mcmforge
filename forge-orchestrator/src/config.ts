@@ -10,6 +10,7 @@ export interface ForgeConfig {
   claudeCommand: string;
   geminiCommand: string;
   codexCommand: string;
+  dryRun: boolean;
 }
 
 export function loadConfig(): ForgeConfig {
@@ -39,5 +40,6 @@ export function loadConfig(): ForgeConfig {
     claudeCommand: optional('CLAUDE_COMMAND', 'claude'),
     geminiCommand: optional('GEMINI_COMMAND', 'gemini'),
     codexCommand: optional('CODEX_COMMAND', 'codex'),
+    dryRun: process.env.FORGE_DRY_RUN === 'true',
   };
 }

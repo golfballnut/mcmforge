@@ -5,6 +5,7 @@ import { startRunExecutor } from './loops/run-executor.js';
 import { startHeartbeatScheduler } from './loops/heartbeat-scheduler.js';
 import { startRoutineScheduler } from './loops/routine-scheduler.js';
 import { startOrphanReaper } from './loops/orphan-reaper.js';
+import { startMentionWatcher } from './loops/mention-watcher.js';
 import { logger } from './utils/logger.js';
 
 async function main() {
@@ -27,6 +28,7 @@ async function main() {
     startHeartbeatScheduler(supabase, config),
     startRoutineScheduler(supabase, config),
     startOrphanReaper(supabase, config),
+    startMentionWatcher(supabase, config),
   ]);
 
   logger.info('All loops running');

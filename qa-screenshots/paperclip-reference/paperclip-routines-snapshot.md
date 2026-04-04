@@ -1,0 +1,700 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 7 live" [ref=e37] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e49]: 7 live
+              - link "Inbox 15" [ref=e419] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e52]
+                - generic [ref=e55]: Inbox
+                - generic [ref=e421]: "15"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Work
+              - generic [ref=e58]:
+                - link "Issues" [ref=e59] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e61]
+                  - generic [ref=e64]: Issues
+                - link "Routines Beta" [ref=e65] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e67]
+                  - generic [ref=e72]: Routines
+                  - generic [ref=e73]: Beta
+                - link "Goals" [ref=e74] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e76]
+                  - generic [ref=e80]: Goals
+            - generic [ref=e81]:
+              - generic [ref=e83]:
+                - button "Projects" [expanded] [ref=e84]:
+                  - img [ref=e85]
+                  - generic [ref=e87]: Projects
+                - button "New project" [ref=e88]:
+                  - img [ref=e89]
+              - generic [ref=e422]:
+                - button "DirtSync iOS" [ref=e424]:
+                  - link "DirtSync iOS" [ref=e426] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e428]: DirtSync iOS
+                - status [ref=e90]
+            - generic [ref=e91]:
+              - generic [ref=e93]:
+                - button "Agents" [expanded] [ref=e94]:
+                  - img [ref=e95]
+                  - generic [ref=e97]: Agents
+                - button "New agent" [ref=e98]:
+                  - img [ref=e99]
+              - generic [ref=e101]:
+                - link "DirtSync COO" [ref=e102] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e103]
+                  - generic [ref=e105]: DirtSync COO
+                - link "Build & Test Agent" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e107]
+                  - generic [ref=e109]: Build & Test Agent
+                - link "Drive Publisher" [ref=e110] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e111]
+                  - generic [ref=e113]: Drive Publisher
+                - link "HUD Engineer" [ref=e114] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e115]
+                  - generic [ref=e118]: HUD Engineer
+                - link "Map View Engineer" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e120]
+                  - generic [ref=e123]: Map View Engineer
+                - link "Navigation Engineer" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e125]
+                  - generic [ref=e130]: Navigation Engineer
+                - link "QA Rider" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e132]
+                  - generic [ref=e136]: QA Rider
+                - link "Ride Recording Engineer" [ref=e137] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e138]
+                  - generic [ref=e141]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e142] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e143]
+                  - generic [ref=e154]: Routine Manager
+                - link "Ship Engineer" [ref=e155] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e156]
+                  - generic [ref=e161]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e162] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e163]
+                  - generic [ref=e166]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e167] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e168]
+                  - generic [ref=e175]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e176] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e177]
+                  - generic [ref=e180]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e181] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e182]
+                  - generic [ref=e185]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 4 live" [ref=e186] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e187]
+                  - generic [ref=e190]: Waze Search UI Expert
+                  - generic [ref=e195]: 4 live
+                - link "XCUITest Engineer" [ref=e196] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e197]
+                  - generic [ref=e200]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e201] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e202]
+                  - generic [ref=e204]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e205] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e206]
+                  - generic [ref=e214]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e215] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e216]
+                  - generic [ref=e219]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e220] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e221]
+                  - generic [ref=e230]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e231] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e232]
+                  - generic [ref=e241]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent 1 live" [ref=e242] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e243]
+                  - generic [ref=e248]: Doc Organizer Agent
+                  - generic [ref=e253]: 1 live
+                - link "Feature Usage Agent" [ref=e254] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e255]
+                  - generic [ref=e258]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e259] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e260]
+                  - generic [ref=e268]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e269] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e270]
+                  - generic [ref=e274]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e275] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e276]
+                  - generic [ref=e279]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e280] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e281]
+                  - generic [ref=e284]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e285] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e286]
+                  - generic [ref=e289]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e290] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e291]
+                  - generic [ref=e298]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e299] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e300]
+                  - generic [ref=e303]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e304] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e305]
+                  - generic [ref=e309]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e310] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e311]
+                  - generic [ref=e314]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e315] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e316]
+                  - generic [ref=e320]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e321] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e322]
+                  - generic [ref=e327]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e328] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e329]
+                  - generic [ref=e333]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e334] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e335]
+                  - generic [ref=e338]: Valhalla Health Agent
+            - generic [ref=e339]:
+              - generic [ref=e340]: Company
+              - generic [ref=e341]:
+                - link "Org" [ref=e342] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e344]
+                  - generic [ref=e349]: Org
+                - link "Skills" [ref=e350] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e352]
+                  - generic [ref=e362]: Skills
+                - link "Costs" [ref=e363] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e365]
+                  - generic [ref=e367]: Costs
+                - link "Activity" [ref=e368] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e370]
+                  - generic [ref=e374]: Activity
+                - link "Settings" [ref=e375] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e377]
+                  - generic [ref=e380]: Settings
+      - generic [ref=e382]:
+        - link "Documentation" [ref=e383] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e384]
+          - generic [ref=e386]: Documentation
+        - generic [ref=e387]: v
+        - link "Instance settings" [ref=e388] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e389]:
+          - img
+    - generic [ref=e390]:
+      - heading "Routines" [level=1] [ref=e394]
+      - main [ref=e396]:
+        - generic [ref=e429]:
+          - generic [ref=e430]:
+            - generic [ref=e431]:
+              - heading "Routines Beta" [level=1] [ref=e432]:
+                - text: Routines
+                - generic [ref=e433]: Beta
+              - paragraph [ref=e434]: Recurring work definitions that materialize into auditable execution issues.
+            - button "Create routine" [ref=e435]:
+              - img
+              - text: Create routine
+          - table [ref=e438]:
+            - rowgroup [ref=e439]:
+              - row "Name Project Agent Last run Enabled" [ref=e440]:
+                - columnheader "Name" [ref=e441]
+                - columnheader "Project" [ref=e442]
+                - columnheader "Agent" [ref=e443]
+                - columnheader "Last run" [ref=e444]
+                - columnheader "Enabled" [ref=e445]
+                - columnheader [ref=e446]
+            - rowgroup [ref=e447]:
+              - row "Doc Organizer — keep agent workspaces clean DirtSync iOS Doc Organizer Agent 4/3/2026, 8:30:17 PM coalesced Disable Doc Organizer — keep agent workspaces clean On More actions for Doc Organizer — keep agent workspaces clean" [ref=e448] [cursor=pointer]:
+                - cell "Doc Organizer — keep agent workspaces clean" [ref=e449]:
+                  - generic [ref=e450]: Doc Organizer — keep agent workspaces clean
+                - cell "DirtSync iOS" [ref=e451]:
+                  - generic [ref=e454]: DirtSync iOS
+                - cell "Doc Organizer Agent" [ref=e455]:
+                  - generic [ref=e456]:
+                    - img [ref=e457]
+                    - generic [ref=e462]: Doc Organizer Agent
+                - cell "4/3/2026, 8:30:17 PM coalesced" [ref=e463]:
+                  - generic [ref=e464]: 4/3/2026, 8:30:17 PM
+                  - generic [ref=e465]: coalesced
+                - cell "Disable Doc Organizer — keep agent workspaces clean On" [ref=e466]:
+                  - generic [ref=e467]:
+                    - switch "Disable Doc Organizer — keep agent workspaces clean" [checked] [ref=e468]
+                    - generic [ref=e470]: "On"
+                - cell "More actions for Doc Organizer — keep agent workspaces clean" [ref=e471]:
+                  - button "More actions for Doc Organizer — keep agent workspaces clean" [ref=e472]:
+                    - img
+              - row "Learning Extractor — lessons only happen once DirtSync iOS Learning Extractor Agent 4/3/2026, 8:00:17 PM coalesced Disable Learning Extractor — lessons only happen once On More actions for Learning Extractor — lessons only happen once" [ref=e473] [cursor=pointer]:
+                - cell "Learning Extractor — lessons only happen once" [ref=e474]:
+                  - generic [ref=e475]: Learning Extractor — lessons only happen once
+                - cell "DirtSync iOS" [ref=e476]:
+                  - generic [ref=e479]: DirtSync iOS
+                - cell "Learning Extractor Agent" [ref=e480]:
+                  - generic [ref=e481]:
+                    - img [ref=e482]
+                    - generic [ref=e490]: Learning Extractor Agent
+                - cell "4/3/2026, 8:00:17 PM coalesced" [ref=e491]:
+                  - generic [ref=e492]: 4/3/2026, 8:00:17 PM
+                  - generic [ref=e493]: coalesced
+                - cell "Disable Learning Extractor — lessons only happen once On" [ref=e494]:
+                  - generic [ref=e495]:
+                    - switch "Disable Learning Extractor — lessons only happen once" [checked] [ref=e496]
+                    - generic [ref=e498]: "On"
+                - cell "More actions for Learning Extractor — lessons only happen once" [ref=e499]:
+                  - button "More actions for Learning Extractor — lessons only happen once" [ref=e500]:
+                    - img
+              - row "Morning Agenda — overnight results to calendar DirtSync iOS Morning Agenda Agent 4/3/2026, 6:48:31 PM completed Disable Morning Agenda — overnight results to calendar On More actions for Morning Agenda — overnight results to calendar" [ref=e501] [cursor=pointer]:
+                - cell "Morning Agenda — overnight results to calendar" [ref=e502]:
+                  - generic [ref=e503]: Morning Agenda — overnight results to calendar
+                - cell "DirtSync iOS" [ref=e504]:
+                  - generic [ref=e507]: DirtSync iOS
+                - cell "Morning Agenda Agent" [ref=e508]:
+                  - generic [ref=e509]:
+                    - img [ref=e510]
+                    - generic [ref=e513]: Morning Agenda Agent
+                - cell "4/3/2026, 6:48:31 PM completed" [ref=e514]:
+                  - generic [ref=e515]: 4/3/2026, 6:48:31 PM
+                  - generic [ref=e516]: completed
+                - cell "Disable Morning Agenda — overnight results to calendar On" [ref=e517]:
+                  - generic [ref=e518]:
+                    - switch "Disable Morning Agenda — overnight results to calendar" [checked] [ref=e519]
+                    - generic [ref=e521]: "On"
+                - cell "More actions for Morning Agenda — overnight results to calendar" [ref=e522]:
+                  - button "More actions for Morning Agenda — overnight results to calendar" [ref=e523]:
+                    - img
+              - row "Trail Data Health Check DirtSync iOS Trail Data Health Agent 4/3/2026, 4:29:01 PM completed Disable Trail Data Health Check On More actions for Trail Data Health Check" [ref=e524] [cursor=pointer]:
+                - cell "Trail Data Health Check" [ref=e525]:
+                  - generic [ref=e526]: Trail Data Health Check
+                - cell "DirtSync iOS" [ref=e527]:
+                  - generic [ref=e530]: DirtSync iOS
+                - cell "Trail Data Health Agent" [ref=e531]:
+                  - generic [ref=e532]:
+                    - img [ref=e533]
+                    - generic [ref=e537]: Trail Data Health Agent
+                - cell "4/3/2026, 4:29:01 PM completed" [ref=e538]:
+                  - generic [ref=e539]: 4/3/2026, 4:29:01 PM
+                  - generic [ref=e540]: completed
+                - cell "Disable Trail Data Health Check On" [ref=e541]:
+                  - generic [ref=e542]:
+                    - switch "Disable Trail Data Health Check" [checked] [ref=e543]
+                    - generic [ref=e545]: "On"
+                - cell "More actions for Trail Data Health Check" [ref=e546]:
+                  - button "More actions for Trail Data Health Check" [ref=e547]:
+                    - img
+              - row "Crash and Error Monitor DirtSync iOS Crash Monitor Agent 4/3/2026, 9:06:14 AM issue created Disable Crash and Error Monitor On More actions for Crash and Error Monitor" [ref=e548] [cursor=pointer]:
+                - cell "Crash and Error Monitor" [ref=e549]:
+                  - generic [ref=e550]: Crash and Error Monitor
+                - cell "DirtSync iOS" [ref=e551]:
+                  - generic [ref=e554]: DirtSync iOS
+                - cell "Crash Monitor Agent" [ref=e555]:
+                  - generic [ref=e556]:
+                    - img [ref=e557]
+                    - generic [ref=e566]: Crash Monitor Agent
+                - cell "4/3/2026, 9:06:14 AM issue created" [ref=e567]:
+                  - generic [ref=e568]: 4/3/2026, 9:06:14 AM
+                  - generic [ref=e569]: issue created
+                - cell "Disable Crash and Error Monitor On" [ref=e570]:
+                  - generic [ref=e571]:
+                    - switch "Disable Crash and Error Monitor" [checked] [ref=e572]
+                    - generic [ref=e574]: "On"
+                - cell "More actions for Crash and Error Monitor" [ref=e575]:
+                  - button "More actions for Crash and Error Monitor" [ref=e576]:
+                    - img
+              - row "Revenue Opportunity Scanner DirtSync iOS Revenue Scanner Agent Never Disable Revenue Opportunity Scanner On More actions for Revenue Opportunity Scanner" [ref=e577] [cursor=pointer]:
+                - cell "Revenue Opportunity Scanner" [ref=e578]:
+                  - generic [ref=e579]: Revenue Opportunity Scanner
+                - cell "DirtSync iOS" [ref=e580]:
+                  - generic [ref=e583]: DirtSync iOS
+                - cell "Revenue Scanner Agent" [ref=e584]:
+                  - generic [ref=e585]:
+                    - img [ref=e586]
+                    - generic [ref=e589]: Revenue Scanner Agent
+                - cell "Never" [ref=e590]:
+                  - generic [ref=e591]: Never
+                - cell "Disable Revenue Opportunity Scanner On" [ref=e592]:
+                  - generic [ref=e593]:
+                    - switch "Disable Revenue Opportunity Scanner" [checked] [ref=e594]
+                    - generic [ref=e596]: "On"
+                - cell "More actions for Revenue Opportunity Scanner" [ref=e597]:
+                  - button "More actions for Revenue Opportunity Scanner" [ref=e598]:
+                    - img
+              - row "App Store Readiness Checklist DirtSync iOS App Store Readiness Agent Never Disable App Store Readiness Checklist On More actions for App Store Readiness Checklist" [ref=e599] [cursor=pointer]:
+                - cell "App Store Readiness Checklist" [ref=e600]:
+                  - generic [ref=e601]: App Store Readiness Checklist
+                - cell "DirtSync iOS" [ref=e602]:
+                  - generic [ref=e605]: DirtSync iOS
+                - cell "App Store Readiness Agent" [ref=e606]:
+                  - generic [ref=e607]:
+                    - img [ref=e608]
+                    - generic [ref=e610]: App Store Readiness Agent
+                - cell "Never" [ref=e611]:
+                  - generic [ref=e612]: Never
+                - cell "Disable App Store Readiness Checklist On" [ref=e613]:
+                  - generic [ref=e614]:
+                    - switch "Disable App Store Readiness Checklist" [checked] [ref=e615]
+                    - generic [ref=e617]: "On"
+                - cell "More actions for App Store Readiness Checklist" [ref=e618]:
+                  - button "More actions for App Store Readiness Checklist" [ref=e619]:
+                    - img
+              - row "Road Network Update DirtSync iOS Road Network Agent Never Disable Road Network Update On More actions for Road Network Update" [ref=e620] [cursor=pointer]:
+                - cell "Road Network Update" [ref=e621]:
+                  - generic [ref=e622]: Road Network Update
+                - cell "DirtSync iOS" [ref=e623]:
+                  - generic [ref=e626]: DirtSync iOS
+                - cell "Road Network Agent" [ref=e627]:
+                  - generic [ref=e628]:
+                    - img [ref=e629]
+                    - generic [ref=e632]: Road Network Agent
+                - cell "Never" [ref=e633]:
+                  - generic [ref=e634]: Never
+                - cell "Disable Road Network Update On" [ref=e635]:
+                  - generic [ref=e636]:
+                    - switch "Disable Road Network Update" [checked] [ref=e637]
+                    - generic [ref=e639]: "On"
+                - cell "More actions for Road Network Update" [ref=e640]:
+                  - button "More actions for Road Network Update" [ref=e641]:
+                    - img
+              - row "Trail Difficulty Calibration DirtSync iOS Difficulty Calibration Agent Never Disable Trail Difficulty Calibration On More actions for Trail Difficulty Calibration" [ref=e642] [cursor=pointer]:
+                - cell "Trail Difficulty Calibration" [ref=e643]:
+                  - generic [ref=e644]: Trail Difficulty Calibration
+                - cell "DirtSync iOS" [ref=e645]:
+                  - generic [ref=e648]: DirtSync iOS
+                - cell "Difficulty Calibration Agent" [ref=e649]:
+                  - generic [ref=e650]:
+                    - img [ref=e651]
+                    - generic [ref=e660]: Difficulty Calibration Agent
+                - cell "Never" [ref=e661]:
+                  - generic [ref=e662]: Never
+                - cell "Disable Trail Difficulty Calibration On" [ref=e663]:
+                  - generic [ref=e664]:
+                    - switch "Disable Trail Difficulty Calibration" [checked] [ref=e665]
+                    - generic [ref=e667]: "On"
+                - cell "More actions for Trail Difficulty Calibration" [ref=e668]:
+                  - button "More actions for Trail Difficulty Calibration" [ref=e669]:
+                    - img
+              - row "POI Freshness Check DirtSync iOS POI Freshness Agent Never Disable POI Freshness Check On More actions for POI Freshness Check" [ref=e670] [cursor=pointer]:
+                - cell "POI Freshness Check" [ref=e671]:
+                  - generic [ref=e672]: POI Freshness Check
+                - cell "DirtSync iOS" [ref=e673]:
+                  - generic [ref=e676]: DirtSync iOS
+                - cell "POI Freshness Agent" [ref=e677]:
+                  - generic [ref=e678]:
+                    - img [ref=e679]
+                    - generic [ref=e686]: POI Freshness Agent
+                - cell "Never" [ref=e687]:
+                  - generic [ref=e688]: Never
+                - cell "Disable POI Freshness Check On" [ref=e689]:
+                  - generic [ref=e690]:
+                    - switch "Disable POI Freshness Check" [checked] [ref=e691]
+                    - generic [ref=e693]: "On"
+                - cell "More actions for POI Freshness Check" [ref=e694]:
+                  - button "More actions for POI Freshness Check" [ref=e695]:
+                    - img
+              - row "New Trail System Scanner DirtSync iOS New Trail Scanner Agent Never Disable New Trail System Scanner On More actions for New Trail System Scanner" [ref=e696] [cursor=pointer]:
+                - cell "New Trail System Scanner" [ref=e697]:
+                  - generic [ref=e698]: New Trail System Scanner
+                - cell "DirtSync iOS" [ref=e699]:
+                  - generic [ref=e702]: DirtSync iOS
+                - cell "New Trail Scanner Agent" [ref=e703]:
+                  - generic [ref=e704]:
+                    - img [ref=e705]
+                    - generic [ref=e708]: New Trail Scanner Agent
+                - cell "Never" [ref=e709]:
+                  - generic [ref=e710]: Never
+                - cell "Disable New Trail System Scanner On" [ref=e711]:
+                  - generic [ref=e712]:
+                    - switch "Disable New Trail System Scanner" [checked] [ref=e713]
+                    - generic [ref=e715]: "On"
+                - cell "More actions for New Trail System Scanner" [ref=e716]:
+                  - button "More actions for New Trail System Scanner" [ref=e717]:
+                    - img
+              - row "Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase) DirtSync iOS SDK Releases Agent Never Disable Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase) On More actions for Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase)" [ref=e718] [cursor=pointer]:
+                - cell "Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase)" [ref=e719]:
+                  - generic [ref=e720]: Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase)
+                - cell "DirtSync iOS" [ref=e721]:
+                  - generic [ref=e724]: DirtSync iOS
+                - cell "SDK Releases Agent" [ref=e725]:
+                  - generic [ref=e726]:
+                    - img [ref=e727]
+                    - generic [ref=e731]: SDK Releases Agent
+                - cell "Never" [ref=e732]:
+                  - generic [ref=e733]: Never
+                - cell "Disable Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase) On" [ref=e734]:
+                  - generic [ref=e735]:
+                    - switch "Disable Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase)" [checked] [ref=e736]
+                    - generic [ref=e738]: "On"
+                - cell "More actions for Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase)" [ref=e739]:
+                  - button "More actions for Research SDK Releases (MapLibre, Valhalla, Ferrostar, Supabase)" [ref=e740]:
+                    - img
+              - row "Competitor Watch — onX, Polaris, Trail Tech DirtSync iOS Competitor Watch Agent Never Disable Competitor Watch — onX, Polaris, Trail Tech On More actions for Competitor Watch — onX, Polaris, Trail Tech" [ref=e741] [cursor=pointer]:
+                - cell "Competitor Watch — onX, Polaris, Trail Tech" [ref=e742]:
+                  - generic [ref=e743]: Competitor Watch — onX, Polaris, Trail Tech
+                - cell "DirtSync iOS" [ref=e744]:
+                  - generic [ref=e747]: DirtSync iOS
+                - cell "Competitor Watch Agent" [ref=e748]:
+                  - generic [ref=e749]:
+                    - img [ref=e750]
+                    - generic [ref=e753]: Competitor Watch Agent
+                - cell "Never" [ref=e754]:
+                  - generic [ref=e755]: Never
+                - cell "Disable Competitor Watch — onX, Polaris, Trail Tech On" [ref=e756]:
+                  - generic [ref=e757]:
+                    - switch "Disable Competitor Watch — onX, Polaris, Trail Tech" [checked] [ref=e758]
+                    - generic [ref=e760]: "On"
+                - cell "More actions for Competitor Watch — onX, Polaris, Trail Tech" [ref=e761]:
+                  - button "More actions for Competitor Watch — onX, Polaris, Trail Tech" [ref=e762]:
+                    - img
+              - row "Claude and AI Release Scanner DirtSync iOS Claude AI Scanner Agent Never Disable Claude and AI Release Scanner On More actions for Claude and AI Release Scanner" [ref=e763] [cursor=pointer]:
+                - cell "Claude and AI Release Scanner" [ref=e764]:
+                  - generic [ref=e765]: Claude and AI Release Scanner
+                - cell "DirtSync iOS" [ref=e766]:
+                  - generic [ref=e769]: DirtSync iOS
+                - cell "Claude AI Scanner Agent" [ref=e770]:
+                  - generic [ref=e771]:
+                    - img [ref=e772]
+                    - generic [ref=e780]: Claude AI Scanner Agent
+                - cell "Never" [ref=e781]:
+                  - generic [ref=e782]: Never
+                - cell "Disable Claude and AI Release Scanner On" [ref=e783]:
+                  - generic [ref=e784]:
+                    - switch "Disable Claude and AI Release Scanner" [checked] [ref=e785]
+                    - generic [ref=e787]: "On"
+                - cell "More actions for Claude and AI Release Scanner" [ref=e788]:
+                  - button "More actions for Claude and AI Release Scanner" [ref=e789]:
+                    - img
+              - row "TestFlight Build Monitor DirtSync iOS TestFlight Monitor Agent Never Disable TestFlight Build Monitor On More actions for TestFlight Build Monitor" [ref=e790] [cursor=pointer]:
+                - cell "TestFlight Build Monitor" [ref=e791]:
+                  - generic [ref=e792]: TestFlight Build Monitor
+                - cell "DirtSync iOS" [ref=e793]:
+                  - generic [ref=e796]: DirtSync iOS
+                - cell "TestFlight Monitor Agent" [ref=e797]:
+                  - generic [ref=e798]:
+                    - img [ref=e799]
+                    - generic [ref=e804]: TestFlight Monitor Agent
+                - cell "Never" [ref=e805]:
+                  - generic [ref=e806]: Never
+                - cell "Disable TestFlight Build Monitor On" [ref=e807]:
+                  - generic [ref=e808]:
+                    - switch "Disable TestFlight Build Monitor" [checked] [ref=e809]
+                    - generic [ref=e811]: "On"
+                - cell "More actions for TestFlight Build Monitor" [ref=e812]:
+                  - button "More actions for TestFlight Build Monitor" [ref=e813]:
+                    - img
+              - row "Feature Usage Tracker DirtSync iOS Feature Usage Agent Never Disable Feature Usage Tracker On More actions for Feature Usage Tracker" [ref=e814] [cursor=pointer]:
+                - cell "Feature Usage Tracker" [ref=e815]:
+                  - generic [ref=e816]: Feature Usage Tracker
+                - cell "DirtSync iOS" [ref=e817]:
+                  - generic [ref=e820]: DirtSync iOS
+                - cell "Feature Usage Agent" [ref=e821]:
+                  - generic [ref=e822]:
+                    - img [ref=e823]
+                    - generic [ref=e826]: Feature Usage Agent
+                - cell "Never" [ref=e827]:
+                  - generic [ref=e828]: Never
+                - cell "Disable Feature Usage Tracker On" [ref=e829]:
+                  - generic [ref=e830]:
+                    - switch "Disable Feature Usage Tracker" [checked] [ref=e831]
+                    - generic [ref=e833]: "On"
+                - cell "More actions for Feature Usage Tracker" [ref=e834]:
+                  - button "More actions for Feature Usage Tracker" [ref=e835]:
+                    - img
+              - row "OSM Change Monitor DirtSync iOS OSM Monitor Agent Never Disable OSM Change Monitor On More actions for OSM Change Monitor" [ref=e836] [cursor=pointer]:
+                - cell "OSM Change Monitor" [ref=e837]:
+                  - generic [ref=e838]: OSM Change Monitor
+                - cell "DirtSync iOS" [ref=e839]:
+                  - generic [ref=e842]: DirtSync iOS
+                - cell "OSM Monitor Agent" [ref=e843]:
+                  - generic [ref=e844]:
+                    - img [ref=e845]
+                    - generic [ref=e848]: OSM Monitor Agent
+                - cell "Never" [ref=e849]:
+                  - generic [ref=e850]: Never
+                - cell "Disable OSM Change Monitor On" [ref=e851]:
+                  - generic [ref=e852]:
+                    - switch "Disable OSM Change Monitor" [checked] [ref=e853]
+                    - generic [ref=e855]: "On"
+                - cell "More actions for OSM Change Monitor" [ref=e856]:
+                  - button "More actions for OSM Change Monitor" [ref=e857]:
+                    - img
+              - row "Valhalla Routing Health DirtSync iOS Valhalla Health Agent Never Disable Valhalla Routing Health On More actions for Valhalla Routing Health" [ref=e858] [cursor=pointer]:
+                - cell "Valhalla Routing Health" [ref=e859]:
+                  - generic [ref=e860]: Valhalla Routing Health
+                - cell "DirtSync iOS" [ref=e861]:
+                  - generic [ref=e864]: DirtSync iOS
+                - cell "Valhalla Health Agent" [ref=e865]:
+                  - generic [ref=e866]:
+                    - img [ref=e867]
+                    - generic [ref=e870]: Valhalla Health Agent
+                - cell "Never" [ref=e871]:
+                  - generic [ref=e872]: Never
+                - cell "Disable Valhalla Routing Health On" [ref=e873]:
+                  - generic [ref=e874]:
+                    - switch "Disable Valhalla Routing Health" [checked] [ref=e875]
+                    - generic [ref=e877]: "On"
+                - cell "More actions for Valhalla Routing Health" [ref=e878]:
+                  - button "More actions for Valhalla Routing Health" [ref=e879]:
+                    - img
+              - row "Ride Recording Audit DirtSync iOS Ride Audit Agent Never Disable Ride Recording Audit On More actions for Ride Recording Audit" [ref=e880] [cursor=pointer]:
+                - cell "Ride Recording Audit" [ref=e881]:
+                  - generic [ref=e882]: Ride Recording Audit
+                - cell "DirtSync iOS" [ref=e883]:
+                  - generic [ref=e886]: DirtSync iOS
+                - cell "Ride Audit Agent" [ref=e887]:
+                  - generic [ref=e888]:
+                    - img [ref=e889]
+                    - generic [ref=e893]: Ride Audit Agent
+                - cell "Never" [ref=e894]:
+                  - generic [ref=e895]: Never
+                - cell "Disable Ride Recording Audit On" [ref=e896]:
+                  - generic [ref=e897]:
+                    - switch "Disable Ride Recording Audit" [checked] [ref=e898]
+                    - generic [ref=e900]: "On"
+                - cell "More actions for Ride Recording Audit" [ref=e901]:
+                  - button "More actions for Ride Recording Audit" [ref=e902]:
+                    - img
+              - row "MBTiles Sync Verify DirtSync iOS MBTiles Sync Agent Never Disable MBTiles Sync Verify On More actions for MBTiles Sync Verify" [ref=e903] [cursor=pointer]:
+                - cell "MBTiles Sync Verify" [ref=e904]:
+                  - generic [ref=e905]: MBTiles Sync Verify
+                - cell "DirtSync iOS" [ref=e906]:
+                  - generic [ref=e909]: DirtSync iOS
+                - cell "MBTiles Sync Agent" [ref=e910]:
+                  - generic [ref=e911]:
+                    - img [ref=e912]
+                    - generic [ref=e916]: MBTiles Sync Agent
+                - cell "Never" [ref=e917]:
+                  - generic [ref=e918]: Never
+                - cell "Disable MBTiles Sync Verify On" [ref=e919]:
+                  - generic [ref=e920]:
+                    - switch "Disable MBTiles Sync Verify" [checked] [ref=e921]
+                    - generic [ref=e923]: "On"
+                - cell "More actions for MBTiles Sync Verify" [ref=e924]:
+                  - button "More actions for MBTiles Sync Verify" [ref=e925]:
+                    - img
+              - 'row "Ship Gate: No feature reaches Steve until 10/10 verified DirtSync iOS DirtSync COO Never Disable Ship Gate: No feature reaches Steve until 10/10 verified On More actions for Ship Gate: No feature reaches Steve until 10/10 verified" [ref=e926] [cursor=pointer]':
+                - 'cell "Ship Gate: No feature reaches Steve until 10/10 verified" [ref=e927]':
+                  - generic [ref=e928]: "Ship Gate: No feature reaches Steve until 10/10 verified"
+                - cell "DirtSync iOS" [ref=e929]:
+                  - generic [ref=e932]: DirtSync iOS
+                - cell "DirtSync COO" [ref=e933]:
+                  - generic [ref=e934]:
+                    - img [ref=e935]
+                    - generic [ref=e937]: DirtSync COO
+                - cell "Never" [ref=e938]:
+                  - generic [ref=e939]: Never
+                - 'cell "Disable Ship Gate: No feature reaches Steve until 10/10 verified On" [ref=e940]':
+                  - generic [ref=e941]:
+                    - 'switch "Disable Ship Gate: No feature reaches Steve until 10/10 verified" [checked] [ref=e942]'
+                    - generic [ref=e944]: "On"
+                - 'cell "More actions for Ship Gate: No feature reaches Steve until 10/10 verified" [ref=e945]':
+                  - 'button "More actions for Ship Gate: No feature reaches Steve until 10/10 verified" [ref=e946]':
+                    - img
+              - 'row "Skill Builder: Research official docs and update specialist skills DirtSync iOS Trail Data Expert Never Disable Skill Builder: Research official docs and update specialist skills On More actions for Skill Builder: Research official docs and update specialist skills" [ref=e947] [cursor=pointer]':
+                - 'cell "Skill Builder: Research official docs and update specialist skills" [ref=e948]':
+                  - generic [ref=e949]: "Skill Builder: Research official docs and update specialist skills"
+                - cell "DirtSync iOS" [ref=e950]:
+                  - generic [ref=e953]: DirtSync iOS
+                - cell "Trail Data Expert" [ref=e954]:
+                  - generic [ref=e955]:
+                    - img [ref=e956]
+                    - generic [ref=e963]: Trail Data Expert
+                - cell "Never" [ref=e964]:
+                  - generic [ref=e965]: Never
+                - 'cell "Disable Skill Builder: Research official docs and update specialist skills On" [ref=e966]':
+                  - generic [ref=e967]:
+                    - 'switch "Disable Skill Builder: Research official docs and update specialist skills" [checked] [ref=e968]'
+                    - generic [ref=e970]: "On"
+                - 'cell "More actions for Skill Builder: Research official docs and update specialist skills" [ref=e971]':
+                  - 'button "More actions for Skill Builder: Research official docs and update specialist skills" [ref=e972]':
+                    - img
+              - 'row "Quality Gate: Verify Free Rider HUD 10/10 DirtSync iOS QA Rider Never Disable Quality Gate: Verify Free Rider HUD 10/10 On More actions for Quality Gate: Verify Free Rider HUD 10/10" [ref=e973] [cursor=pointer]':
+                - 'cell "Quality Gate: Verify Free Rider HUD 10/10" [ref=e974]':
+                  - generic [ref=e975]: "Quality Gate: Verify Free Rider HUD 10/10"
+                - cell "DirtSync iOS" [ref=e976]:
+                  - generic [ref=e979]: DirtSync iOS
+                - cell "QA Rider" [ref=e980]:
+                  - generic [ref=e981]:
+                    - img [ref=e982]
+                    - generic [ref=e986]: QA Rider
+                - cell "Never" [ref=e987]:
+                  - generic [ref=e988]: Never
+                - 'cell "Disable Quality Gate: Verify Free Rider HUD 10/10 On" [ref=e989]':
+                  - generic [ref=e990]:
+                    - 'switch "Disable Quality Gate: Verify Free Rider HUD 10/10" [checked] [ref=e991]'
+                    - generic [ref=e993]: "On"
+                - 'cell "More actions for Quality Gate: Verify Free Rider HUD 10/10" [ref=e994]':
+                  - 'button "More actions for Quality Gate: Verify Free Rider HUD 10/10" [ref=e995]':
+                    - img
+  - generic [ref=e416]:
+    - heading "Command Palette" [level=2] [ref=e417]
+    - paragraph [ref=e418]: Search for a command to run...

@@ -1,0 +1,615 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 6 live" [ref=e37] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e49]: 6 live
+              - link "Inbox 15" [ref=e503] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e52]
+                - generic [ref=e55]: Inbox
+                - generic [ref=e505]: "15"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Work
+              - generic [ref=e58]:
+                - link "Issues" [ref=e59] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e61]
+                  - generic [ref=e64]: Issues
+                - link "Routines Beta" [ref=e65] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e67]
+                  - generic [ref=e72]: Routines
+                  - generic [ref=e73]: Beta
+                - link "Goals" [ref=e74] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e76]
+                  - generic [ref=e80]: Goals
+            - generic [ref=e81]:
+              - generic [ref=e83]:
+                - button "Projects" [expanded] [ref=e84]:
+                  - img [ref=e85]
+                  - generic [ref=e87]: Projects
+                - button "New project" [ref=e88]:
+                  - img [ref=e89]
+              - generic [ref=e506]:
+                - button "DirtSync iOS" [ref=e508]:
+                  - link "DirtSync iOS" [ref=e510] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e512]: DirtSync iOS
+                - status [ref=e90]
+            - generic [ref=e91]:
+              - generic [ref=e93]:
+                - button "Agents" [expanded] [ref=e94]:
+                  - img [ref=e95]
+                  - generic [ref=e97]: Agents
+                - button "New agent" [ref=e98]:
+                  - img [ref=e99]
+              - generic [ref=e101]:
+                - link "DirtSync COO" [ref=e102] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e103]
+                  - generic [ref=e105]: DirtSync COO
+                - link "Build & Test Agent" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e107]
+                  - generic [ref=e109]: Build & Test Agent
+                - link "Drive Publisher" [ref=e110] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e111]
+                  - generic [ref=e113]: Drive Publisher
+                - link "HUD Engineer" [ref=e114] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e115]
+                  - generic [ref=e118]: HUD Engineer
+                - link "Map View Engineer" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e120]
+                  - generic [ref=e123]: Map View Engineer
+                - link "Navigation Engineer" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e125]
+                  - generic [ref=e130]: Navigation Engineer
+                - link "QA Rider" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e132]
+                  - generic [ref=e136]: QA Rider
+                - link "Ride Recording Engineer" [ref=e137] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e138]
+                  - generic [ref=e141]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e142] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e143]
+                  - generic [ref=e154]: Routine Manager
+                - link "Ship Engineer" [ref=e155] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e156]
+                  - generic [ref=e161]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e162] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e163]
+                  - generic [ref=e166]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e167] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e168]
+                  - generic [ref=e175]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e176] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e177]
+                  - generic [ref=e180]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e181] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e182]
+                  - generic [ref=e185]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 4 live" [ref=e186] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e187]
+                  - generic [ref=e190]: Waze Search UI Expert
+                  - generic [ref=e195]: 4 live
+                - link "XCUITest Engineer" [ref=e196] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e197]
+                  - generic [ref=e200]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e201] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e202]
+                  - generic [ref=e204]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e205] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e206]
+                  - generic [ref=e214]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e215] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e216]
+                  - generic [ref=e219]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e220] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e221]
+                  - generic [ref=e230]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e231] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e232]
+                  - generic [ref=e241]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e242] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e243]
+                  - generic [ref=e248]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e249] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e250]
+                  - generic [ref=e253]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e254] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e255]
+                  - generic [ref=e263]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e264] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e265]
+                  - generic [ref=e269]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e270] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e271]
+                  - generic [ref=e274]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e275] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e276]
+                  - generic [ref=e279]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e280] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e281]
+                  - generic [ref=e284]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e285] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e286]
+                  - generic [ref=e293]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e294] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e295]
+                  - generic [ref=e298]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e299] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e300]
+                  - generic [ref=e304]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e305] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e306]
+                  - generic [ref=e309]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e310] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e311]
+                  - generic [ref=e315]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e316] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e317]
+                  - generic [ref=e322]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e323] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e324]
+                  - generic [ref=e328]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e329] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e330]
+                  - generic [ref=e333]: Valhalla Health Agent
+            - generic [ref=e334]:
+              - generic [ref=e335]: Company
+              - generic [ref=e336]:
+                - link "Org" [ref=e337] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e339]
+                  - generic [ref=e344]: Org
+                - link "Skills" [ref=e345] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e347]
+                  - generic [ref=e357]: Skills
+                - link "Costs" [ref=e358] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e360]
+                  - generic [ref=e362]: Costs
+                - link "Activity" [ref=e363] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e365]
+                  - generic [ref=e369]: Activity
+                - link "Settings" [ref=e370] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e372]
+                  - generic [ref=e375]: Settings
+      - generic [ref=e377]:
+        - link "Documentation" [ref=e378] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e379]
+          - generic [ref=e381]: Documentation
+        - generic [ref=e382]: v
+        - link "Instance settings" [ref=e383] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e384]:
+          - img
+    - generic [ref=e385]:
+      - heading "Inbox" [level=1] [ref=e389]
+      - main [ref=e391]:
+        - generic [ref=e392]:
+          - generic [ref=e394]:
+            - tablist [ref=e396]:
+              - tab "Recent" [selected] [ref=e397]
+              - tab "Unread" [ref=e398]
+              - tab "All" [ref=e399]
+            - button "Mark all as read" [ref=e513]
+          - generic [ref=e401]:
+            - link "[MAJOR] Add microphone icon to search bar; fix search bar background color DIRA-92 updated 2m ago" [ref=e514] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e515]:
+                - generic [ref=e516]: "[MAJOR] Add microphone icon to search bar; fix search bar background color"
+                - generic [ref=e521]: DIRA-92
+              - generic [ref=e523]: updated 2m ago
+            - link "[MAJOR] Remove trail name banner from search/home state (or reposition below search bar) DIRA-93 Live updated 3m ago" [ref=e526] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e527]:
+                - generic [ref=e528]: "[MAJOR] Remove trail name banner from search/home state (or reposition below search bar)"
+                - generic [ref=e529]:
+                  - generic [ref=e532]: DIRA-93
+                  - generic [ref=e537]: Live
+              - generic [ref=e539]: updated 3m ago
+            - link "[MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model DIRA-94 Live updated 3m ago" [ref=e542] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-94
+              - generic [ref=e543]:
+                - generic [ref=e544]: "[MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model"
+                - generic [ref=e545]:
+                  - generic [ref=e548]: DIRA-94
+                  - generic [ref=e553]: Live
+              - generic [ref=e555]: updated 3m ago
+            - link "[CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) DIRA-90 Live updated 18m ago" [ref=e558] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e559]:
+                - generic [ref=e560]: "[CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)"
+                - generic [ref=e561]:
+                  - generic [ref=e565]: DIRA-90
+                  - generic [ref=e570]: Live
+              - generic [ref=e572]: updated 18m ago
+            - link "[MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar DIRA-95 Live updated 19m ago" [ref=e575] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e576]:
+                - generic [ref=e577]: "[MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar"
+                - generic [ref=e578]:
+                  - generic [ref=e582]: DIRA-95
+                  - generic [ref=e587]: Live
+              - generic [ref=e589]: updated 19m ago
+            - 'link "DIRA-86: Write XCUITests for full Waze navigation flow DIRA-89 updated 31m ago" [ref=e592] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-89
+              - generic [ref=e593]:
+                - generic [ref=e594]: "DIRA-86: Write XCUITests for full Waze navigation flow"
+                - generic [ref=e599]: DIRA-89
+              - generic [ref=e601]: updated 31m ago
+            - 'link "DIRA-85: Full visual audit — screenshot every screen, compare to Waze DIRA-88 updated 33m ago" [ref=e604] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e605]:
+                - generic [ref=e606]: "DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                - generic [ref=e611]: DIRA-88
+              - generic [ref=e613]: updated 33m ago
+            - 'link "DIRA-82: Match Nav HUD to Waze active navigation DIRA-83 updated 51m ago" [ref=e616] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e617]:
+                - generic [ref=e618]: "DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e622]: DIRA-83
+              - generic [ref=e624]: updated 51m ago
+            - generic [ref=e628]:
+              - 'link "DIRA-83DIRA-82: Match Nav HUD to Waze active navigation failed Waze Nav HUD Expert {\"type\":\"error\",\"status\":400,\"error\":{\"type\":\"invalid_request_error\",\"message\":\"The ''sonnet'' model is not supported when using Codex with a ChatGPT account.\"}} 51m ago" [ref=e629] [cursor=pointer]':
+                - /url: /DIRA/agents/3399b9cb-dba1-49ff-bcf3-c653d4cb22b2/runs/1159f3a5-f79b-4f1a-9dbd-1e4990601843
+                - img [ref=e633]
+                - generic [ref=e637]:
+                  - generic [ref=e638]: "DIRA-83DIRA-82: Match Nav HUD to Waze active navigation"
+                  - generic [ref=e639]:
+                    - generic [ref=e640]: failed
+                    - generic [ref=e641]: Waze Nav HUD Expert
+                    - generic [ref=e642]: "{\"type\":\"error\",\"status\":400,\"error\":{\"type\":\"invalid_request_error\",\"message\":\"The 'sonnet' model is not supported when using Codex with a ChatGPT account.\"}}"
+                    - generic [ref=e643]: 51m ago
+              - generic [ref=e644]:
+                - button "Retry" [ref=e645]:
+                  - img
+                  - text: Retry
+                - button "Dismiss" [ref=e646]:
+                  - img [ref=e647]
+            - 'link "DIRA-81: Match RouteSelectionView to Waze route preview DIRA-82 updated 51m ago" [ref=e650] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e651]:
+                - generic [ref=e652]: "DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e657]: DIRA-82
+              - generic [ref=e659]: updated 51m ago
+            - 'link "DIRA-80: Match WhereToSheetView to Waze search screen DIRA-81 updated 57m ago" [ref=e662] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e663]:
+                - generic [ref=e664]: "DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e669]: DIRA-81
+              - generic [ref=e671]: updated 57m ago
+            - link "Audit and finalize 3 Waze UI Expert agents for production readiness DIRA-85 updated 1h ago" [ref=e674] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-85
+              - generic [ref=e675]:
+                - generic [ref=e676]: Audit and finalize 3 Waze UI Expert agents for production readiness
+                - generic [ref=e680]: DIRA-85
+              - generic [ref=e682]: updated 1h ago
+            - link "Hide End Ride button during Waze-model free riding DIRA-71 updated 5h ago" [ref=e685] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-71
+              - generic [ref=e686]:
+                - generic [ref=e687]: Hide End Ride button during Waze-model free riding
+                - generic [ref=e691]: DIRA-71
+              - generic [ref=e693]: updated 5h ago
+            - 'link "QA: Navigation State Machine — PR #341 DIRA-60 updated 7h ago" [ref=e696] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-60
+              - generic [ref=e697]:
+                - generic [ref=e698]: "QA: Navigation State Machine — PR #341"
+                - generic [ref=e703]: DIRA-60
+              - generic [ref=e705]: updated 7h ago
+            - 'link "QA: Fix background auto-save modal + GPS speed spike false starts DIRA-58 updated 8h ago" [ref=e708] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-58
+              - generic [ref=e709]:
+                - generic [ref=e710]: "QA: Fix background auto-save modal + GPS speed spike false starts"
+                - generic [ref=e715]: DIRA-58
+              - generic [ref=e717]: updated 8h ago
+            - link "Fix background auto-save modal + GPS speed spike false starts DIRA-57 updated 8h ago" [ref=e720] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-57
+              - generic [ref=e721]:
+                - generic [ref=e722]: Fix background auto-save modal + GPS speed spike false starts
+                - generic [ref=e726]: DIRA-57
+              - generic [ref=e728]: updated 8h ago
+            - 'link "QA: Verify DIRA-53 speed gate + suppress Ride Complete modal DIRA-54 updated 9h ago" [ref=e731] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-54
+              - generic [ref=e732]:
+                - generic [ref=e733]: "QA: Verify DIRA-53 speed gate + suppress Ride Complete modal"
+                - generic [ref=e738]: DIRA-54
+              - generic [ref=e740]: updated 9h ago
+            - 'link "Fix auto-record: speed gate + suppress Ride Complete modal in free riding DIRA-53 updated 9h ago" [ref=e743] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-53
+              - generic [ref=e744]:
+                - generic [ref=e745]: "Fix auto-record: speed gate + suppress Ride Complete modal in free riding"
+                - generic [ref=e750]: DIRA-53
+              - generic [ref=e752]: updated 9h ago
+            - 'link "POI Research: Burning Rock DIRA-41 commented 4d ago Mark as read" [ref=e755] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e756]:
+                - generic [ref=e757]: "POI Research: Burning Rock"
+                - generic [ref=e762]: DIRA-41
+              - generic [ref=e764]: commented 4d ago
+              - button "Mark as read" [ref=e766]
+            - link "Re-detect intersections for Burning Rock (bug fixed) DIRA-39 commented 4d ago Mark as read" [ref=e768] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-39
+              - generic [ref=e769]:
+                - generic [ref=e770]: Re-detect intersections for Burning Rock (bug fixed)
+                - generic [ref=e775]: DIRA-39
+              - generic [ref=e777]: commented 4d ago
+              - button "Mark as read" [ref=e779]
+            - 'link "Hire Agent: Duplicate Trail Detective approved updated 4d ago" [ref=e404] [cursor=pointer]':
+              - /url: /DIRA/approvals/6904c78c-08dc-4989-bce0-abeed2a4d57f
+              - img [ref=e408]
+              - generic [ref=e411]:
+                - generic [ref=e412]: "Hire Agent: Duplicate Trail Detective"
+                - generic [ref=e413]:
+                  - generic [ref=e414]: approved
+                  - generic [ref=e415]: updated 4d ago
+            - link "Create road junctions for Burning Rock DIRA-35 commented 4d ago Mark as read" [ref=e781] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-35
+              - generic [ref=e782]:
+                - generic [ref=e783]: Create road junctions for Burning Rock
+                - generic [ref=e788]: DIRA-35
+              - generic [ref=e790]: commented 4d ago
+              - button "Mark as read" [ref=e792]
+            - link "Seed POIs for Burning Rock DIRA-36 updated 4d ago" [ref=e794] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-36
+              - generic [ref=e795]:
+                - generic [ref=e796]: Seed POIs for Burning Rock
+                - generic [ref=e801]: DIRA-36
+              - generic [ref=e803]: updated 4d ago
+            - link "Audit geometry for Burning Rock DIRA-37 commented 4d ago Mark as read" [ref=e806] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-37
+              - generic [ref=e807]:
+                - generic [ref=e808]: Audit geometry for Burning Rock
+                - generic [ref=e813]: DIRA-37
+              - generic [ref=e815]: commented 4d ago
+              - button "Mark as read" [ref=e817]
+            - link "Detect intersections for Burning Rock DIRA-34 commented 4d ago" [ref=e819] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-34
+              - generic [ref=e820]:
+                - generic [ref=e821]: Detect intersections for Burning Rock
+                - generic [ref=e826]: DIRA-34
+              - generic [ref=e828]: commented 4d ago
+            - 'link "Hire Agent: Road Junction Engineer approved updated 4d ago" [ref=e418] [cursor=pointer]':
+              - /url: /DIRA/approvals/c4722af5-3565-48db-ad48-e0ef3154dd7f
+              - img [ref=e422]
+              - generic [ref=e425]:
+                - generic [ref=e426]: "Hire Agent: Road Junction Engineer"
+                - generic [ref=e427]:
+                  - generic [ref=e428]: approved
+                  - generic [ref=e429]: updated 4d ago
+            - 'link "Hire Agent: Local POI Scout approved updated 4d ago" [ref=e432] [cursor=pointer]':
+              - /url: /DIRA/approvals/94e4ea18-20a4-4ee7-a1b2-0768d37691dd
+              - img [ref=e436]
+              - generic [ref=e439]:
+                - generic [ref=e440]: "Hire Agent: Local POI Scout"
+                - generic [ref=e441]:
+                  - generic [ref=e442]: approved
+                  - generic [ref=e443]: updated 4d ago
+            - 'link "Hire Agent: Trail Geometry Auditor approved updated 4d ago" [ref=e446] [cursor=pointer]':
+              - /url: /DIRA/approvals/44ad1eda-bd84-481d-b623-add7bd33cdb9
+              - img [ref=e450]
+              - generic [ref=e453]:
+                - generic [ref=e454]: "Hire Agent: Trail Geometry Auditor"
+                - generic [ref=e455]:
+                  - generic [ref=e456]: approved
+                  - generic [ref=e457]: updated 4d ago
+            - 'link "Hire Agent: Intersection Detective approved updated 4d ago" [ref=e460] [cursor=pointer]':
+              - /url: /DIRA/approvals/51141cca-fdd7-48b6-949c-5a1990d5a959
+              - img [ref=e464]
+              - generic [ref=e467]:
+                - generic [ref=e468]: "Hire Agent: Intersection Detective"
+                - generic [ref=e469]:
+                  - generic [ref=e470]: approved
+                  - generic [ref=e471]: updated 4d ago
+            - 'link "Hire Agent: Intersection Detective approved updated 4d ago" [ref=e474] [cursor=pointer]':
+              - /url: /DIRA/approvals/8713d988-2989-4730-8e71-152be17f5425
+              - img [ref=e478]
+              - generic [ref=e481]:
+                - generic [ref=e482]: "Hire Agent: Intersection Detective"
+                - generic [ref=e483]:
+                  - generic [ref=e484]: approved
+                  - generic [ref=e485]: updated 4d ago
+            - link "Redesign Navigation HUD — beat Waze for glanceability at trail speed DIRA-1 commented 4d ago" [ref=e831] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e832]:
+                - generic [ref=e833]: Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e838]: DIRA-1
+              - generic [ref=e840]: commented 4d ago
+            - link "Build Burning Rock GPX test tracks from production trail data DIRA-22 commented 4d ago" [ref=e843] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e844]:
+                - generic [ref=e845]: Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e850]: DIRA-22
+              - generic [ref=e852]: commented 4d ago
+            - link "Generate Burning Rock GPX files from Supabase trail data DIRA-23 commented 4d ago Mark as read" [ref=e855] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e856]:
+                - generic [ref=e857]: Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e862]: DIRA-23
+              - generic [ref=e864]: commented 4d ago
+              - button "Mark as read" [ref=e866]
+            - 'link "Technical plan: GPX test tracks for HUD QA verification DIRA-12 updated 4d ago" [ref=e868] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-12
+              - generic [ref=e869]:
+                - generic [ref=e870]: "Technical plan: GPX test tracks for HUD QA verification"
+                - generic [ref=e875]: DIRA-12
+              - generic [ref=e877]: updated 4d ago
+            - link "Validate GPX test tracks — record video of HUD navigating routes DIRA-21 commented 5d ago" [ref=e880] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-21
+              - generic [ref=e881]:
+                - generic [ref=e882]: Validate GPX test tracks — record video of HUD navigating routes
+                - generic [ref=e887]: DIRA-21
+              - generic [ref=e889]: commented 5d ago
+            - link "QA cannot verify HUD — need .gpx test tracks that simulate rider movement DIRA-11 commented 5d ago Mark as read" [ref=e892] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e893]:
+                - generic [ref=e894]: QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e899]: DIRA-11
+              - generic [ref=e901]: commented 5d ago
+              - button "Mark as read" [ref=e903]
+            - 'link "Technical plan: HUD layout restructure for 80%+ map coverage DIRA-2 updated 5d ago" [ref=e905] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-2
+              - generic [ref=e906]:
+                - generic [ref=e907]: "Technical plan: HUD layout restructure for 80%+ map coverage"
+                - generic [ref=e912]: DIRA-2
+              - generic [ref=e914]: updated 5d ago
+            - link "Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios DIRA-15 commented 5d ago Mark as read" [ref=e917] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e918]:
+                - generic [ref=e919]: Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e924]: DIRA-15
+              - generic [ref=e926]: commented 5d ago
+              - button "Mark as read" [ref=e928]
+            - link "Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11 DIRA-17 commented 5d ago Mark as read" [ref=e930] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-17
+              - generic [ref=e931]:
+                - generic [ref=e932]: Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11
+                - generic [ref=e937]: DIRA-17
+              - generic [ref=e939]: commented 5d ago
+              - button "Mark as read" [ref=e941]
+            - link "Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks DIRA-16 commented 5d ago" [ref=e943] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e944]:
+                - generic [ref=e945]: Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e950]: DIRA-16
+              - generic [ref=e952]: commented 5d ago
+            - 'link "QA: Visual verification of HUD glanceability redesign DIRA-8 commented 5d ago Mark as read" [ref=e955] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e956]:
+                - generic [ref=e957]: "QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e962]: DIRA-8
+              - generic [ref=e964]: commented 5d ago
+              - button "Mark as read" [ref=e966]
+            - link "Enable AppConfig.navigationEnabled for HUD testing DIRA-9 commented 5d ago Mark as read" [ref=e968] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-9
+              - generic [ref=e969]:
+                - generic [ref=e970]: Enable AppConfig.navigationEnabled for HUD testing
+                - generic [ref=e975]: DIRA-9
+              - generic [ref=e977]: commented 5d ago
+              - button "Mark as read" [ref=e979]
+            - 'link "Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) DIRA-7 commented 5d ago Mark as read" [ref=e981] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e982]:
+                - generic [ref=e983]: "Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e988]: DIRA-7
+              - generic [ref=e990]: commented 5d ago
+              - button "Mark as read" [ref=e992]
+            - 'link "Technical plan: HUD redesign for glanceability DIRA-3 updated 5d ago" [ref=e994] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-3
+              - generic [ref=e995]:
+                - generic [ref=e996]: "Technical plan: HUD redesign for glanceability"
+                - generic [ref=e1001]: DIRA-3
+              - generic [ref=e1003]: updated 5d ago
+            - 'link "MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording DIRA-6 commented 5d ago Mark as read" [ref=e1006] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-6
+              - generic [ref=e1007]:
+                - generic [ref=e1008]: "MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording"
+                - generic [ref=e1013]: DIRA-6
+              - generic [ref=e1015]: commented 5d ago
+              - button "Mark as read" [ref=e1017]
+            - 'link "MapOverlayStack: add floating SpeedBadge during Ferrostar navigation DIRA-5 commented 5d ago Mark as read" [ref=e1019] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-5
+              - generic [ref=e1020]:
+                - generic [ref=e1021]: "MapOverlayStack: add floating SpeedBadge during Ferrostar navigation"
+                - generic [ref=e1026]: DIRA-5
+              - generic [ref=e1028]: commented 5d ago
+              - button "Mark as read" [ref=e1030]
+            - 'link "WazeNavBottomBar: show ETA (arrival time) instead of remaining time DIRA-4 commented 5d ago Mark as read" [ref=e1032] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-4
+              - generic [ref=e1033]:
+                - generic [ref=e1034]: "WazeNavBottomBar: show ETA (arrival time) instead of remaining time"
+                - generic [ref=e1039]: DIRA-4
+              - generic [ref=e1041]: commented 5d ago
+              - button "Mark as read" [ref=e1043]
+            - 'link "Hire Agent: HUD Engineer approved updated 5d ago" [ref=e488] [cursor=pointer]':
+              - /url: /DIRA/approvals/8c263465-85c1-4f87-9f47-4c65f232e866
+              - img [ref=e492]
+              - generic [ref=e495]:
+                - generic [ref=e496]: "Hire Agent: HUD Engineer"
+                - generic [ref=e497]:
+                  - generic [ref=e498]: approved
+                  - generic [ref=e499]: updated 5d ago
+            - link "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity) DIRA-91 updated 11m ago" [ref=e1045] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e1046]:
+                - generic [ref=e1047]: "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity)"
+                - generic [ref=e1052]: DIRA-91
+              - generic [ref=e1054]: updated 11m ago
+            - 'link "QA: Verify Mini-Why A trail detection V4 DIRA-42 updated 21h ago" [ref=e1057] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e1058]:
+                - generic [ref=e1059]: "QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e1064]: DIRA-42
+              - generic [ref=e1066]: updated 21h ago
+  - generic [ref=e500]:
+    - heading "Command Palette" [level=2] [ref=e501]
+    - paragraph [ref=e502]: Search for a command to run...

@@ -1,0 +1,388 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 6 live" [ref=e996] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e49]: 6 live
+              - link "Inbox 15" [ref=e419] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e52]
+                - generic [ref=e55]: Inbox
+                - generic [ref=e421]: "15"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Work
+              - generic [ref=e58]:
+                - link "Issues" [ref=e59] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e61]
+                  - generic [ref=e64]: Issues
+                - link "Routines Beta" [ref=e65] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e67]
+                  - generic [ref=e72]: Routines
+                  - generic [ref=e73]: Beta
+                - link "Goals" [ref=e74] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e76]
+                  - generic [ref=e80]: Goals
+            - generic [ref=e81]:
+              - generic [ref=e83]:
+                - button "Projects" [expanded] [ref=e84]:
+                  - img [ref=e85]
+                  - generic [ref=e87]: Projects
+                - button "New project" [ref=e88]:
+                  - img [ref=e89]
+              - generic [ref=e422]:
+                - button "DirtSync iOS" [ref=e424]:
+                  - link "DirtSync iOS" [ref=e426] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e428]: DirtSync iOS
+                - status [ref=e90]
+            - generic [ref=e91]:
+              - generic [ref=e93]:
+                - button "Agents" [expanded] [ref=e94]:
+                  - img [ref=e95]
+                  - generic [ref=e97]: Agents
+                - button "New agent" [ref=e98]:
+                  - img [ref=e99]
+              - generic [ref=e101]:
+                - link "DirtSync COO" [ref=e102] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e103]
+                  - generic [ref=e105]: DirtSync COO
+                - link "Build & Test Agent" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e107]
+                  - generic [ref=e109]: Build & Test Agent
+                - link "Drive Publisher" [ref=e110] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e111]
+                  - generic [ref=e113]: Drive Publisher
+                - link "HUD Engineer" [ref=e114] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e115]
+                  - generic [ref=e118]: HUD Engineer
+                - link "Map View Engineer" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e120]
+                  - generic [ref=e123]: Map View Engineer
+                - link "Navigation Engineer" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e125]
+                  - generic [ref=e130]: Navigation Engineer
+                - link "QA Rider" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e132]
+                  - generic [ref=e136]: QA Rider
+                - link "Ride Recording Engineer" [ref=e137] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e138]
+                  - generic [ref=e141]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e142] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e143]
+                  - generic [ref=e154]: Routine Manager
+                - link "Ship Engineer" [ref=e155] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e156]
+                  - generic [ref=e161]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e162] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e163]
+                  - generic [ref=e166]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e167] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e168]
+                  - generic [ref=e175]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e176] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e177]
+                  - generic [ref=e180]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e181] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e182]
+                  - generic [ref=e185]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 4 live" [ref=e186] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e187]
+                  - generic [ref=e190]: Waze Search UI Expert
+                  - generic [ref=e195]: 4 live
+                - link "XCUITest Engineer" [ref=e196] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e197]
+                  - generic [ref=e200]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e201] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e202]
+                  - generic [ref=e204]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e205] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e206]
+                  - generic [ref=e214]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e215] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e216]
+                  - generic [ref=e219]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e220] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e221]
+                  - generic [ref=e230]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e231] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e232]
+                  - generic [ref=e241]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e997] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e243]
+                  - generic [ref=e248]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e254] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e255]
+                  - generic [ref=e258]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e259] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e260]
+                  - generic [ref=e268]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e269] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e270]
+                  - generic [ref=e274]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e275] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e276]
+                  - generic [ref=e279]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e280] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e281]
+                  - generic [ref=e284]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e285] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e286]
+                  - generic [ref=e289]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e290] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e291]
+                  - generic [ref=e298]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e299] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e300]
+                  - generic [ref=e303]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e304] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e305]
+                  - generic [ref=e309]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e310] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e311]
+                  - generic [ref=e314]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e315] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e316]
+                  - generic [ref=e320]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e321] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e322]
+                  - generic [ref=e327]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e328] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e329]
+                  - generic [ref=e333]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e334] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e335]
+                  - generic [ref=e338]: Valhalla Health Agent
+            - generic [ref=e339]:
+              - generic [ref=e340]: Company
+              - generic [ref=e341]:
+                - link "Org" [ref=e342] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e344]
+                  - generic [ref=e349]: Org
+                - link "Skills" [ref=e350] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e352]
+                  - generic [ref=e362]: Skills
+                - link "Costs" [ref=e363] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e365]
+                  - generic [ref=e367]: Costs
+                - link "Activity" [ref=e368] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e370]
+                  - generic [ref=e374]: Activity
+                - link "Settings" [ref=e375] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e377]
+                  - generic [ref=e380]: Settings
+      - generic [ref=e382]:
+        - link "Documentation" [ref=e383] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e384]
+          - generic [ref=e386]: Documentation
+        - generic [ref=e387]: v
+        - link "Instance settings" [ref=e388] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e389]:
+          - img
+    - generic [ref=e390]:
+      - navigation "breadcrumb" [ref=e998]:
+        - list [ref=e999]:
+          - listitem [ref=e1000]:
+            - link "Routines" [ref=e1001] [cursor=pointer]:
+              - /url: /DIRA/routines
+          - listitem [ref=e1002]:
+            - img [ref=e1003]
+          - listitem [ref=e1005]:
+            - link "Doc Organizer — keep agent workspaces clean" [disabled] [ref=e1006]
+      - main [active] [ref=e396]:
+        - generic [ref=e1007]:
+          - generic [ref=e1008]:
+            - textbox "Routine title" [ref=e1009]: Doc Organizer — keep agent workspaces clean
+            - generic [ref=e1010]:
+              - button "Run now" [ref=e1011]:
+                - img
+                - generic [ref=e1012]: Run now
+              - switch "Pause automatic triggers" [checked] [ref=e1013]
+              - generic [ref=e1015]: Active
+          - generic [ref=e1017]:
+            - generic [ref=e1018]: For
+            - button "Doc Organizer Agent" [ref=e1019]:
+              - img [ref=e1020]
+              - generic [ref=e1025]: Doc Organizer Agent
+            - generic [ref=e1026]: in
+            - button "DirtSync iOS" [ref=e1027]:
+              - generic [ref=e1029]: DirtSync iOS
+          - textbox "editable markdown" [ref=e1034]:
+            - paragraph [ref=e1035]: "Hourly: Check each agents working files for messy notes, duplicate info, stale TODOs. Consolidate into proper skill files or memory. Clean agents think clearly."
+          - button "Advanced delivery settings" [ref=e1037]:
+            - generic [ref=e1038]: Advanced delivery settings
+            - img [ref=e1039]
+          - button "Save routine" [ref=e1042]:
+            - img
+            - text: Save routine
+          - generic [ref=e1043]:
+            - tablist [ref=e1044]:
+              - tab "Triggers" [selected] [ref=e1045]:
+                - img
+                - text: Triggers
+              - tab "Runs" [ref=e1046]:
+                - img
+                - text: Runs
+              - tab "Activity" [ref=e1047]:
+                - img
+                - text: Activity
+            - tabpanel "Triggers" [ref=e1048]:
+              - generic [ref=e1049]:
+                - paragraph [ref=e1050]: Add trigger
+                - generic [ref=e1051]:
+                  - generic [ref=e1052]:
+                    - generic [ref=e1053]: Kind
+                    - combobox [ref=e1054]:
+                      - generic: schedule
+                      - img
+                  - generic [ref=e1055]:
+                    - generic [ref=e1056]: Schedule
+                    - generic [ref=e1057]:
+                      - combobox [ref=e1058]:
+                        - generic: Every day
+                        - img
+                      - generic [ref=e1059]:
+                        - generic [ref=e1060]: at
+                        - combobox [ref=e1061]:
+                          - generic: 10 AM
+                          - img
+                        - generic [ref=e1062]: ":"
+                        - combobox [ref=e1063]:
+                          - generic: "00"
+                          - img
+                - button "Add trigger" [ref=e1065]
+              - generic [ref=e1066]:
+                - generic [ref=e1067]:
+                  - generic [ref=e1068]:
+                    - generic [ref=e1069]:
+                      - img [ref=e1070]
+                      - text: schedule
+                    - generic [ref=e1073]: "Next: 4/3/2026, 9:30:00 PM"
+                  - generic [ref=e1074]:
+                    - generic [ref=e1075]:
+                      - generic [ref=e1076]: Label
+                      - textbox [ref=e1077]
+                    - generic [ref=e1078]:
+                      - generic [ref=e1079]: Schedule
+                      - generic [ref=e1080]:
+                        - combobox [ref=e1081]:
+                          - generic: Every hour
+                          - img
+                        - generic [ref=e1082]:
+                          - generic [ref=e1083]: at minute
+                          - combobox [ref=e1084]:
+                            - generic: :30
+                            - img
+                  - generic [ref=e1085]:
+                    - generic [ref=e1086]: "Last: Created execution issue a6efd24a-0303-4e2a-b134-21577aa3b12b"
+                    - generic [ref=e1087]:
+                      - button "Save" [ref=e1088]:
+                        - img
+                        - text: Save
+                      - button [ref=e1089]:
+                        - img
+                - generic [ref=e1090]:
+                  - generic [ref=e1091]:
+                    - generic [ref=e1092]:
+                      - img [ref=e1093]
+                      - text: schedule
+                    - generic [ref=e1096]: "Next: 4/3/2026, 9:30:00 PM"
+                  - generic [ref=e1097]:
+                    - generic [ref=e1098]:
+                      - generic [ref=e1099]: Label
+                      - textbox [ref=e1100]
+                    - generic [ref=e1101]:
+                      - generic [ref=e1102]: Schedule
+                      - generic [ref=e1103]:
+                        - combobox [ref=e1104]:
+                          - generic: Every hour
+                          - img
+                        - generic [ref=e1105]:
+                          - generic [ref=e1106]: at minute
+                          - combobox [ref=e1107]:
+                            - generic: :30
+                            - img
+                  - generic [ref=e1108]:
+                    - generic [ref=e1109]: "Last: Coalesced into an existing live execution issue"
+                    - generic [ref=e1110]:
+                      - button "Save" [ref=e1111]:
+                        - img
+                        - text: Save
+                      - button [ref=e1112]:
+                        - img
+  - generic [ref=e416]:
+    - heading "Command Palette" [level=2] [ref=e417]
+    - paragraph [ref=e418]: Search for a command to run...

@@ -1,0 +1,1022 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 7 live" [ref=e195] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e200]: 7 live
+              - link "Inbox 15" [ref=e201] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e47]
+                - generic [ref=e50]: Inbox
+                - generic [ref=e203]: "15"
+            - generic [ref=e51]:
+              - generic [ref=e52]: Work
+              - generic [ref=e53]:
+                - link "Issues" [ref=e54] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e56]
+                  - generic [ref=e59]: Issues
+                - link "Routines Beta" [ref=e60] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e62]
+                  - generic [ref=e67]: Routines
+                  - generic [ref=e68]: Beta
+                - link "Goals" [ref=e69] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e71]
+                  - generic [ref=e75]: Goals
+            - generic [ref=e76]:
+              - generic [ref=e78]:
+                - button "Projects" [expanded] [ref=e79]:
+                  - img [ref=e80]
+                  - generic [ref=e82]: Projects
+                - button "New project" [ref=e83]:
+                  - img [ref=e84]
+              - generic [ref=e204]:
+                - button "DirtSync iOS" [ref=e206]:
+                  - link "DirtSync iOS" [ref=e208] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e210]: DirtSync iOS
+                - status [ref=e85]
+            - generic [ref=e86]:
+              - generic [ref=e88]:
+                - button "Agents" [expanded] [ref=e89]:
+                  - img [ref=e90]
+                  - generic [ref=e92]: Agents
+                - button "New agent" [ref=e93]:
+                  - img [ref=e94]
+              - generic [ref=e212]:
+                - link "DirtSync COO" [ref=e213] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e214]
+                  - generic [ref=e216]: DirtSync COO
+                - link "Build & Test Agent" [ref=e217] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e218]
+                  - generic [ref=e220]: Build & Test Agent
+                - link "Drive Publisher" [ref=e221] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e222]
+                  - generic [ref=e224]: Drive Publisher
+                - link "HUD Engineer" [ref=e225] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e226]
+                  - generic [ref=e229]: HUD Engineer
+                - link "Map View Engineer" [ref=e230] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e231]
+                  - generic [ref=e234]: Map View Engineer
+                - link "Navigation Engineer" [ref=e235] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e236]
+                  - generic [ref=e241]: Navigation Engineer
+                - link "QA Rider" [ref=e242] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e243]
+                  - generic [ref=e247]: QA Rider
+                - link "Ride Recording Engineer" [ref=e248] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e249]
+                  - generic [ref=e252]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e253] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e254]
+                  - generic [ref=e265]: Routine Manager
+                - link "Ship Engineer" [ref=e266] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e267]
+                  - generic [ref=e272]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e273] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e274]
+                  - generic [ref=e277]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e278] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e279]
+                  - generic [ref=e286]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e287] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e288]
+                  - generic [ref=e291]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e292] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e293]
+                  - generic [ref=e296]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 5 live" [ref=e297] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e298]
+                  - generic [ref=e301]: Waze Search UI Expert
+                  - generic [ref=e306]: 5 live
+                - link "XCUITest Engineer" [ref=e307] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e308]
+                  - generic [ref=e311]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e312] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e313]
+                  - generic [ref=e315]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e316] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e317]
+                  - generic [ref=e325]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e326] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e327]
+                  - generic [ref=e330]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e331] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e332]
+                  - generic [ref=e341]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e342] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e343]
+                  - generic [ref=e352]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e353] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e354]
+                  - generic [ref=e359]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e360] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e361]
+                  - generic [ref=e364]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e365] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e366]
+                  - generic [ref=e374]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e375] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e376]
+                  - generic [ref=e380]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e381] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e382]
+                  - generic [ref=e385]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e386] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e387]
+                  - generic [ref=e390]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e391] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e392]
+                  - generic [ref=e395]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e396] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e397]
+                  - generic [ref=e404]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e405] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e406]
+                  - generic [ref=e409]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e410] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e411]
+                  - generic [ref=e415]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e416] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e417]
+                  - generic [ref=e420]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e421] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e422]
+                  - generic [ref=e426]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e427] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e428]
+                  - generic [ref=e433]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e434] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e435]
+                  - generic [ref=e439]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e440] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e441]
+                  - generic [ref=e444]: Valhalla Health Agent
+            - generic [ref=e95]:
+              - generic [ref=e96]: Company
+              - generic [ref=e97]:
+                - link "Org" [ref=e98] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e100]
+                  - generic [ref=e105]: Org
+                - link "Skills" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e108]
+                  - generic [ref=e118]: Skills
+                - link "Costs" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e121]
+                  - generic [ref=e123]: Costs
+                - link "Activity" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e126]
+                  - generic [ref=e130]: Activity
+                - link "Settings" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e133]
+                  - generic [ref=e136]: Settings
+      - generic [ref=e138]:
+        - link "Documentation" [ref=e139] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e140]
+          - generic [ref=e142]: Documentation
+        - generic [ref=e143]: v
+        - link "Instance settings" [ref=e144] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e145]:
+          - img
+    - generic [ref=e146]:
+      - heading "Issues" [level=1] [ref=e150]
+      - main [ref=e152]:
+        - generic [ref=e153]:
+          - generic [ref=e154]:
+            - generic [ref=e155]:
+              - button "New Issue" [ref=e156]:
+                - img
+                - generic [ref=e157]: New Issue
+              - generic [ref=e158]:
+                - img
+                - textbox "Search issues" [ref=e159]:
+                  - /placeholder: Search issues...
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - button "List view" [ref=e162]:
+                  - img [ref=e163]
+                - button "Board view" [ref=e164]:
+                  - img [ref=e165]
+              - button "Filter" [ref=e167]:
+                - img
+                - generic [ref=e168]: Filter
+              - button "Sort" [ref=e169]:
+                - img
+                - generic [ref=e170]: Sort
+              - button "Group" [ref=e171]:
+                - img
+                - generic [ref=e172]: Group
+          - generic [ref=e446]:
+            - link "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity) DIRA-91 WE Waze Search UI Expert Apr 3, 2026" [ref=e447] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-91
+              - generic [ref=e448]:
+                - generic [ref=e449]: "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity)"
+                - generic [ref=e454]: DIRA-91
+              - generic [ref=e455]:
+                - button "WE Waze Search UI Expert" [ref=e456]:
+                  - generic [ref=e457]:
+                    - generic [ref=e459]: WE
+                    - generic [ref=e460]: Waze Search UI Expert
+                - generic [ref=e461]: Apr 3, 2026
+            - link "[MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model DIRA-94 Live WE Waze Search UI Expert Apr 3, 2026" [ref=e462] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-94
+              - generic [ref=e463]:
+                - generic [ref=e464]: "[MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model"
+                - generic [ref=e465]:
+                  - generic [ref=e468]: DIRA-94
+                  - generic [ref=e473]: Live
+              - generic [ref=e474]:
+                - button "WE Waze Search UI Expert" [ref=e475]:
+                  - generic [ref=e476]:
+                    - generic [ref=e478]: WE
+                    - generic [ref=e479]: Waze Search UI Expert
+                - generic [ref=e480]: Apr 3, 2026
+            - link "[MAJOR] Remove trail name banner from search/home state (or reposition below search bar) DIRA-93 Live WE Waze Search UI Expert Apr 3, 2026" [ref=e481] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-93
+              - generic [ref=e482]:
+                - generic [ref=e483]: "[MAJOR] Remove trail name banner from search/home state (or reposition below search bar)"
+                - generic [ref=e484]:
+                  - generic [ref=e487]: DIRA-93
+                  - generic [ref=e492]: Live
+              - generic [ref=e493]:
+                - button "WE Waze Search UI Expert" [ref=e494]:
+                  - generic [ref=e495]:
+                    - generic [ref=e497]: WE
+                    - generic [ref=e498]: Waze Search UI Expert
+                - generic [ref=e499]: Apr 3, 2026
+            - link "[CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) DIRA-90 Live WE Waze Search UI Expert Apr 3, 2026" [ref=e500] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-90
+              - generic [ref=e501]:
+                - generic [ref=e502]: "[CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)"
+                - generic [ref=e503]:
+                  - generic [ref=e507]: DIRA-90
+                  - generic [ref=e512]: Live
+              - generic [ref=e513]:
+                - button "WE Waze Search UI Expert" [ref=e514]:
+                  - generic [ref=e515]:
+                    - generic [ref=e517]: WE
+                    - generic [ref=e518]: Waze Search UI Expert
+                - generic [ref=e519]: Apr 3, 2026
+            - link "[MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar DIRA-95 Live WE Waze Search UI Expert Apr 3, 2026" [ref=e520] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-95
+              - generic [ref=e521]:
+                - generic [ref=e522]: "[MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar"
+                - generic [ref=e523]:
+                  - generic [ref=e527]: DIRA-95
+                  - generic [ref=e532]: Live
+              - generic [ref=e533]:
+                - button "WE Waze Search UI Expert" [ref=e534]:
+                  - generic [ref=e535]:
+                    - generic [ref=e537]: WE
+                    - generic [ref=e538]: Waze Search UI Expert
+                - generic [ref=e539]: Apr 3, 2026
+            - link "[MAJOR] Add microphone icon to search bar; fix search bar background color DIRA-92 Live WE Waze Search UI Expert Apr 3, 2026" [ref=e540] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-92
+              - generic [ref=e541]:
+                - generic [ref=e542]: "[MAJOR] Add microphone icon to search bar; fix search bar background color"
+                - generic [ref=e543]:
+                  - generic [ref=e547]: DIRA-92
+                  - generic [ref=e552]: Live
+              - generic [ref=e553]:
+                - button "WE Waze Search UI Expert" [ref=e554]:
+                  - generic [ref=e555]:
+                    - generic [ref=e557]: WE
+                    - generic [ref=e558]: Waze Search UI Expert
+                - generic [ref=e559]: Apr 3, 2026
+            - 'link "DIRA-86: Write XCUITests for full Waze navigation flow DIRA-89 XE XCUITest Engineer Apr 3, 2026" [ref=e560] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-89
+              - generic [ref=e561]:
+                - generic [ref=e562]: "DIRA-86: Write XCUITests for full Waze navigation flow"
+                - generic [ref=e567]: DIRA-89
+              - generic [ref=e568]:
+                - button "XE XCUITest Engineer" [ref=e569]:
+                  - generic [ref=e570]:
+                    - generic [ref=e572]: XE
+                    - generic [ref=e573]: XCUITest Engineer
+                - generic [ref=e574]: Apr 3, 2026
+            - 'link "DIRA-85: Full visual audit — screenshot every screen, compare to Waze DIRA-88 SA Simulator QA Agent Apr 3, 2026" [ref=e575] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-88
+              - generic [ref=e576]:
+                - generic [ref=e577]: "DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                - generic [ref=e582]: DIRA-88
+              - generic [ref=e583]:
+                - button "SA Simulator QA Agent" [ref=e584]:
+                  - generic [ref=e585]:
+                    - generic [ref=e587]: SA
+                    - generic [ref=e588]: Simulator QA Agent
+                - generic [ref=e589]: Apr 3, 2026
+            - link "Redesign Navigation HUD — beat Waze for glanceability at trail speed DIRA-1 Assignee Mar 29, 2026" [ref=e590] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-1
+              - generic [ref=e591]:
+                - generic [ref=e592]: Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                - generic [ref=e597]: DIRA-1
+              - generic [ref=e598]:
+                - button "Assignee" [ref=e599]:
+                  - generic [ref=e600]:
+                    - img [ref=e602]
+                    - text: Assignee
+                - generic [ref=e605]: Mar 29, 2026
+            - 'link "DIRA-82: Match Nav HUD to Waze active navigation DIRA-83 WE Waze Nav HUD Expert Apr 3, 2026" [ref=e606] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-83
+              - generic [ref=e607]:
+                - generic [ref=e608]: "DIRA-82: Match Nav HUD to Waze active navigation"
+                - generic [ref=e612]: DIRA-83
+              - generic [ref=e613]:
+                - button "WE Waze Nav HUD Expert" [ref=e614]:
+                  - generic [ref=e615]:
+                    - generic [ref=e617]: WE
+                    - generic [ref=e618]: Waze Nav HUD Expert
+                - generic [ref=e619]: Apr 3, 2026
+            - 'link "DIRA-81: Match RouteSelectionView to Waze route preview DIRA-82 WE Waze Route Preview Expert Apr 3, 2026" [ref=e620] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-82
+              - generic [ref=e621]:
+                - generic [ref=e622]: "DIRA-81: Match RouteSelectionView to Waze route preview"
+                - generic [ref=e627]: DIRA-82
+              - generic [ref=e628]:
+                - button "WE Waze Route Preview Expert" [ref=e629]:
+                  - generic [ref=e630]:
+                    - generic [ref=e632]: WE
+                    - generic [ref=e633]: Waze Route Preview Expert
+                - generic [ref=e634]: Apr 3, 2026
+            - 'link "DIRA-80: Match WhereToSheetView to Waze search screen DIRA-81 WE Waze Search UI Expert Apr 3, 2026" [ref=e635] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-81
+              - generic [ref=e636]:
+                - generic [ref=e637]: "DIRA-80: Match WhereToSheetView to Waze search screen"
+                - generic [ref=e642]: DIRA-81
+              - generic [ref=e643]:
+                - button "WE Waze Search UI Expert" [ref=e644]:
+                  - generic [ref=e645]:
+                    - generic [ref=e647]: WE
+                    - generic [ref=e648]: Waze Search UI Expert
+                - generic [ref=e649]: Apr 3, 2026
+            - link "Audit and finalize 3 Waze UI Expert agents for production readiness DIRA-85 DC DirtSync COO Apr 3, 2026" [ref=e650] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-85
+              - generic [ref=e651]:
+                - generic [ref=e652]: Audit and finalize 3 Waze UI Expert agents for production readiness
+                - generic [ref=e656]: DIRA-85
+              - generic [ref=e657]:
+                - button "DC DirtSync COO" [ref=e658]:
+                  - generic [ref=e659]:
+                    - generic [ref=e661]: DC
+                    - generic [ref=e662]: DirtSync COO
+                - generic [ref=e663]: Apr 3, 2026
+            - link "[ALERT] Trail data files missing — GeoJSON and MBTiles DIRA-75 TE Trail Data Expert Apr 3, 2026" [ref=e664] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-75
+              - generic [ref=e665]:
+                - generic [ref=e666]: "[ALERT] Trail data files missing — GeoJSON and MBTiles"
+                - generic [ref=e670]: DIRA-75
+              - generic [ref=e671]:
+                - button "TE Trail Data Expert" [ref=e672]:
+                  - generic [ref=e673]:
+                    - generic [ref=e675]: TE
+                    - generic [ref=e676]: Trail Data Expert
+                - generic [ref=e677]: Apr 3, 2026
+            - link "Hide End Ride button during Waze-model free riding DIRA-71 HE HUD Engineer Apr 3, 2026" [ref=e678] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-71
+              - generic [ref=e679]:
+                - generic [ref=e680]: Hide End Ride button during Waze-model free riding
+                - generic [ref=e684]: DIRA-71
+              - generic [ref=e685]:
+                - button "HE HUD Engineer" [ref=e686]:
+                  - generic [ref=e687]:
+                    - generic [ref=e689]: HE
+                    - generic [ref=e690]: HUD Engineer
+                - generic [ref=e691]: Apr 3, 2026
+            - 'link "Fix trail data: McMForge, Road Trail, Tight Pond Damn spelling DIRA-69 TE Trail Data Expert Apr 3, 2026" [ref=e692] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-69
+              - generic [ref=e693]:
+                - generic [ref=e694]: "Fix trail data: McMForge, Road Trail, Tight Pond Damn spelling"
+                - generic [ref=e698]: DIRA-69
+              - generic [ref=e699]:
+                - button "TE Trail Data Expert" [ref=e700]:
+                  - generic [ref=e701]:
+                    - generic [ref=e703]: TE
+                    - generic [ref=e704]: Trail Data Expert
+                - generic [ref=e705]: Apr 3, 2026
+            - 'link "Fix trail detection: too broad, flickers at intersections, detects roads as trails DIRA-68 NE Navigation Engineer Apr 3, 2026" [ref=e706] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-68
+              - generic [ref=e707]:
+                - generic [ref=e708]: "Fix trail detection: too broad, flickers at intersections, detects roads as trails"
+                - generic [ref=e712]: DIRA-68
+              - generic [ref=e713]:
+                - button "NE Navigation Engineer" [ref=e714]:
+                  - generic [ref=e715]:
+                    - generic [ref=e717]: NE
+                    - generic [ref=e718]: Navigation Engineer
+                - generic [ref=e719]: Apr 3, 2026
+            - link "Remove blue trail line overlay during free riding DIRA-67 ME Map View Engineer Apr 3, 2026" [ref=e720] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-67
+              - generic [ref=e721]:
+                - generic [ref=e722]: Remove blue trail line overlay during free riding
+                - generic [ref=e726]: DIRA-67
+              - generic [ref=e727]:
+                - button "ME Map View Engineer" [ref=e728]:
+                  - generic [ref=e729]:
+                    - generic [ref=e731]: ME
+                    - generic [ref=e732]: Map View Engineer
+                - generic [ref=e733]: Apr 3, 2026
+            - link "Remove End Ride button during free riding (Waze model) DIRA-66 HE HUD Engineer Apr 3, 2026" [ref=e734] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-66
+              - generic [ref=e735]:
+                - generic [ref=e736]: Remove End Ride button during free riding (Waze model)
+                - generic [ref=e740]: DIRA-66
+              - generic [ref=e741]:
+                - button "HE HUD Engineer" [ref=e742]:
+                  - generic [ref=e743]:
+                    - generic [ref=e745]: HE
+                    - generic [ref=e746]: HUD Engineer
+                - generic [ref=e747]: Apr 3, 2026
+            - 'link "QA: Navigation State Machine — PR #341 DIRA-60 BA Build & Test Agent Apr 3, 2026" [ref=e748] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-60
+              - generic [ref=e749]:
+                - generic [ref=e750]: "QA: Navigation State Machine — PR #341"
+                - generic [ref=e755]: DIRA-60
+              - generic [ref=e756]:
+                - button "BA Build & Test Agent" [ref=e757]:
+                  - generic [ref=e758]:
+                    - generic [ref=e760]: BA
+                    - generic [ref=e761]: Build & Test Agent
+                - generic [ref=e762]: Apr 3, 2026
+            - 'link "QA: Fix background auto-save modal + GPS speed spike false starts DIRA-58 BA Build & Test Agent Apr 3, 2026" [ref=e763] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-58
+              - generic [ref=e764]:
+                - generic [ref=e765]: "QA: Fix background auto-save modal + GPS speed spike false starts"
+                - generic [ref=e770]: DIRA-58
+              - generic [ref=e771]:
+                - button "BA Build & Test Agent" [ref=e772]:
+                  - generic [ref=e773]:
+                    - generic [ref=e775]: BA
+                    - generic [ref=e776]: Build & Test Agent
+                - generic [ref=e777]: Apr 3, 2026
+            - link "Fix background auto-save modal + GPS speed spike false starts DIRA-57 RE Ride Recording Engineer Apr 3, 2026" [ref=e778] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-57
+              - generic [ref=e779]:
+                - generic [ref=e780]: Fix background auto-save modal + GPS speed spike false starts
+                - generic [ref=e784]: DIRA-57
+              - generic [ref=e785]:
+                - button "RE Ride Recording Engineer" [ref=e786]:
+                  - generic [ref=e787]:
+                    - generic [ref=e789]: RE
+                    - generic [ref=e790]: Ride Recording Engineer
+                - generic [ref=e791]: Apr 3, 2026
+            - 'link "QA: Verify DIRA-53 speed gate + suppress Ride Complete modal DIRA-54 BA Build & Test Agent Apr 3, 2026" [ref=e792] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-54
+              - generic [ref=e793]:
+                - generic [ref=e794]: "QA: Verify DIRA-53 speed gate + suppress Ride Complete modal"
+                - generic [ref=e799]: DIRA-54
+              - generic [ref=e800]:
+                - button "BA Build & Test Agent" [ref=e801]:
+                  - generic [ref=e802]:
+                    - generic [ref=e804]: BA
+                    - generic [ref=e805]: Build & Test Agent
+                - generic [ref=e806]: Apr 3, 2026
+            - 'link "Fix auto-record: speed gate + suppress Ride Complete modal in free riding DIRA-53 RE Ride Recording Engineer Apr 3, 2026" [ref=e807] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-53
+              - generic [ref=e808]:
+                - generic [ref=e809]: "Fix auto-record: speed gate + suppress Ride Complete modal in free riding"
+                - generic [ref=e814]: DIRA-53
+              - generic [ref=e815]:
+                - button "RE Ride Recording Engineer" [ref=e816]:
+                  - generic [ref=e817]:
+                    - generic [ref=e819]: RE
+                    - generic [ref=e820]: Ride Recording Engineer
+                - generic [ref=e821]: Apr 3, 2026
+            - 'link "Fix auto-record: should not trigger on walking speed or show Ride Complete unprompted DIRA-50 RE Ride Recording Engineer Apr 3, 2026" [ref=e822] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-50
+              - generic [ref=e823]:
+                - generic [ref=e824]: "Fix auto-record: should not trigger on walking speed or show Ride Complete unprompted"
+                - generic [ref=e828]: DIRA-50
+              - generic [ref=e829]:
+                - button "RE Ride Recording Engineer" [ref=e830]:
+                  - generic [ref=e831]:
+                    - generic [ref=e833]: RE
+                    - generic [ref=e834]: Ride Recording Engineer
+                - generic [ref=e835]: Apr 3, 2026
+            - link "Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills DIRA-27 Assignee Mar 29, 2026" [ref=e836] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-27
+              - generic [ref=e837]:
+                - generic [ref=e838]: Build skill creation pipeline — port DirtSync Claude skills to Paperclip company skills
+                - generic [ref=e842]: DIRA-27
+              - generic [ref=e843]:
+                - button "Assignee" [ref=e844]:
+                  - generic [ref=e845]:
+                    - img [ref=e847]
+                    - text: Assignee
+                - generic [ref=e850]: Mar 29, 2026
+            - link "Hire Pipeline Manager — enforce flow order and catch skipped steps DIRA-30 Assignee Mar 29, 2026" [ref=e851] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-30
+              - generic [ref=e852]:
+                - generic [ref=e853]: Hire Pipeline Manager — enforce flow order and catch skipped steps
+                - generic [ref=e857]: DIRA-30
+              - generic [ref=e858]:
+                - button "Assignee" [ref=e859]:
+                  - generic [ref=e860]:
+                    - img [ref=e862]
+                    - text: Assignee
+                - generic [ref=e865]: Mar 29, 2026
+            - link "Design the ride completion screen — what does the rider see when they finish a trail? DIRA-18 Assignee Mar 29, 2026" [ref=e866] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-18
+              - generic [ref=e867]:
+                - generic [ref=e868]: Design the ride completion screen — what does the rider see when they finish a trail?
+                - generic [ref=e872]: DIRA-18
+              - generic [ref=e873]:
+                - button "Assignee" [ref=e874]:
+                  - generic [ref=e875]:
+                    - img [ref=e877]
+                    - text: Assignee
+                - generic [ref=e880]: Mar 29, 2026
+            - link "Hire Onboarding Specialist — every new agent passes 10/10 before going active DIRA-32 Assignee Mar 29, 2026" [ref=e881] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-32
+              - generic [ref=e882]:
+                - generic [ref=e883]: Hire Onboarding Specialist — every new agent passes 10/10 before going active
+                - generic [ref=e887]: DIRA-32
+              - generic [ref=e888]:
+                - button "Assignee" [ref=e889]:
+                  - generic [ref=e890]:
+                    - img [ref=e892]
+                    - text: Assignee
+                - generic [ref=e895]: Mar 29, 2026
+            - 'link "POI Research: Rockhouse DIRA-40 Assignee Mar 30, 2026" [ref=e896] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-40
+              - generic [ref=e897]:
+                - generic [ref=e898]: "POI Research: Rockhouse"
+                - generic [ref=e902]: DIRA-40
+              - generic [ref=e903]:
+                - button "Assignee" [ref=e904]:
+                  - generic [ref=e905]:
+                    - img [ref=e907]
+                    - text: Assignee
+                - generic [ref=e910]: Mar 30, 2026
+            - 'link "QA: Visual verification of Add-a-Stop feature — DIRA-25 DIRA-28 Assignee Mar 29, 2026" [ref=e911] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-28
+              - generic [ref=e912]:
+                - generic [ref=e913]: "QA: Visual verification of Add-a-Stop feature — DIRA-25"
+                - generic [ref=e917]: DIRA-28
+              - generic [ref=e918]:
+                - button "Assignee" [ref=e919]:
+                  - generic [ref=e920]:
+                    - img [ref=e922]
+                    - text: Assignee
+                - generic [ref=e925]: Mar 29, 2026
+            - 'link "PR: feat/dira-20-hud-trail-header → master (trail name header) DIRA-31 Assignee Mar 29, 2026" [ref=e926] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-31
+              - generic [ref=e927]:
+                - generic [ref=e928]: "PR: feat/dira-20-hud-trail-header → master (trail name header)"
+                - generic [ref=e932]: DIRA-31
+              - generic [ref=e933]:
+                - button "Assignee" [ref=e934]:
+                  - generic [ref=e935]:
+                    - img [ref=e937]
+                    - text: Assignee
+                - generic [ref=e940]: Mar 29, 2026
+            - link "Redesign Navigation HUD — start from Steve's requirements DIRA-20 Assignee Mar 29, 2026" [ref=e941] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-20
+              - generic [ref=e942]:
+                - generic [ref=e943]: Redesign Navigation HUD — start from Steve's requirements
+                - generic [ref=e947]: DIRA-20
+              - generic [ref=e948]:
+                - button "Assignee" [ref=e949]:
+                  - generic [ref=e950]:
+                    - img [ref=e952]
+                    - text: Assignee
+                - generic [ref=e955]: Mar 29, 2026
+            - 'link "QA: Verify Add-a-Stop buttons on branch feat/dira-23-add-a-stop DIRA-33 Assignee Mar 30, 2026" [ref=e956] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-33
+              - generic [ref=e957]:
+                - generic [ref=e958]: "QA: Verify Add-a-Stop buttons on branch feat/dira-23-add-a-stop"
+                - generic [ref=e962]: DIRA-33
+              - generic [ref=e963]:
+                - button "Assignee" [ref=e964]:
+                  - generic [ref=e965]:
+                    - img [ref=e967]
+                    - text: Assignee
+                - generic [ref=e970]: Mar 30, 2026
+            - link "Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet DIRA-25 Assignee Mar 29, 2026" [ref=e971] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-25
+              - generic [ref=e972]:
+                - generic [ref=e973]: Wire Add-a-Stop buttons to POISearchView in NavigationDetailSheet
+                - generic [ref=e977]: DIRA-25
+              - generic [ref=e978]:
+                - button "Assignee" [ref=e979]:
+                  - generic [ref=e980]:
+                    - img [ref=e982]
+                    - text: Assignee
+                - generic [ref=e985]: Mar 29, 2026
+            - 'link "QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data DIRA-24 Assignee Mar 29, 2026" [ref=e986] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-24
+              - generic [ref=e987]:
+                - generic [ref=e988]: "QA: Validate Burning Rock GPX tracks — screenshots + video of HUD with real trail data"
+                - generic [ref=e992]: DIRA-24
+              - generic [ref=e993]:
+                - button "Assignee" [ref=e994]:
+                  - generic [ref=e995]:
+                    - img [ref=e997]
+                    - text: Assignee
+                - generic [ref=e1000]: Mar 29, 2026
+            - link "Find all duplicate trails in Burning Rock DIRA-38 Assignee Mar 30, 2026" [ref=e1001] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-38
+              - generic [ref=e1002]:
+                - generic [ref=e1003]: Find all duplicate trails in Burning Rock
+                - generic [ref=e1007]: DIRA-38
+              - generic [ref=e1008]:
+                - button "Assignee" [ref=e1009]:
+                  - generic [ref=e1010]:
+                    - img [ref=e1012]
+                    - text: Assignee
+                - generic [ref=e1015]: Mar 30, 2026
+            - 'link "QA: Verify Mini-Why A trail detection V4 DIRA-42 QR QA Rider Apr 2, 2026" [ref=e1016] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-42
+              - generic [ref=e1017]:
+                - generic [ref=e1018]: "QA: Verify Mini-Why A trail detection V4"
+                - generic [ref=e1023]: DIRA-42
+              - generic [ref=e1024]:
+                - button "QR QA Rider" [ref=e1025]:
+                  - generic [ref=e1026]:
+                    - generic [ref=e1028]: QR
+                    - generic [ref=e1029]: QA Rider
+                - generic [ref=e1030]: Apr 2, 2026
+            - 'link "POI Research: Burning Rock DIRA-41 Assignee Mar 30, 2026" [ref=e1031] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-41
+              - generic [ref=e1032]:
+                - generic [ref=e1033]: "POI Research: Burning Rock"
+                - generic [ref=e1038]: DIRA-41
+              - generic [ref=e1039]:
+                - button "Assignee" [ref=e1040]:
+                  - generic [ref=e1041]:
+                    - img [ref=e1043]
+                    - text: Assignee
+                - generic [ref=e1046]: Mar 30, 2026
+            - link "Re-detect intersections for Burning Rock (bug fixed) DIRA-39 Assignee Mar 30, 2026" [ref=e1047] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-39
+              - generic [ref=e1048]:
+                - generic [ref=e1049]: Re-detect intersections for Burning Rock (bug fixed)
+                - generic [ref=e1054]: DIRA-39
+              - generic [ref=e1055]:
+                - button "Assignee" [ref=e1056]:
+                  - generic [ref=e1057]:
+                    - img [ref=e1059]
+                    - text: Assignee
+                - generic [ref=e1062]: Mar 30, 2026
+            - link "Create road junctions for Burning Rock DIRA-35 Assignee Mar 30, 2026" [ref=e1063] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-35
+              - generic [ref=e1064]:
+                - generic [ref=e1065]: Create road junctions for Burning Rock
+                - generic [ref=e1070]: DIRA-35
+              - generic [ref=e1071]:
+                - button "Assignee" [ref=e1072]:
+                  - generic [ref=e1073]:
+                    - img [ref=e1075]
+                    - text: Assignee
+                - generic [ref=e1078]: Mar 30, 2026
+            - link "Audit geometry for Burning Rock DIRA-37 Assignee Mar 30, 2026" [ref=e1079] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-37
+              - generic [ref=e1080]:
+                - generic [ref=e1081]: Audit geometry for Burning Rock
+                - generic [ref=e1086]: DIRA-37
+              - generic [ref=e1087]:
+                - button "Assignee" [ref=e1088]:
+                  - generic [ref=e1089]:
+                    - img [ref=e1091]
+                    - text: Assignee
+                - generic [ref=e1094]: Mar 30, 2026
+            - link "Seed POIs for Burning Rock DIRA-36 Assignee Mar 30, 2026" [ref=e1095] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-36
+              - generic [ref=e1096]:
+                - generic [ref=e1097]: Seed POIs for Burning Rock
+                - generic [ref=e1102]: DIRA-36
+              - generic [ref=e1103]:
+                - button "Assignee" [ref=e1104]:
+                  - generic [ref=e1105]:
+                    - img [ref=e1107]
+                    - text: Assignee
+                - generic [ref=e1110]: Mar 30, 2026
+            - link "Detect intersections for Burning Rock DIRA-34 Assignee Mar 30, 2026" [ref=e1111] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-34
+              - generic [ref=e1112]:
+                - generic [ref=e1113]: Detect intersections for Burning Rock
+                - generic [ref=e1118]: DIRA-34
+              - generic [ref=e1119]:
+                - button "Assignee" [ref=e1120]:
+                  - generic [ref=e1121]:
+                    - img [ref=e1123]
+                    - text: Assignee
+                - generic [ref=e1126]: Mar 30, 2026
+            - link "Build Burning Rock GPX test tracks from production trail data DIRA-22 Assignee Mar 29, 2026" [ref=e1127] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-22
+              - generic [ref=e1128]:
+                - generic [ref=e1129]: Build Burning Rock GPX test tracks from production trail data
+                - generic [ref=e1134]: DIRA-22
+              - generic [ref=e1135]:
+                - button "Assignee" [ref=e1136]:
+                  - generic [ref=e1137]:
+                    - img [ref=e1139]
+                    - text: Assignee
+                - generic [ref=e1142]: Mar 29, 2026
+            - 'link "Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval) DIRA-29 Assignee Mar 29, 2026" [ref=e1143] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-29
+              - generic [ref=e1144]:
+                - generic [ref=e1145]: "Code Review: Add-a-Stop wiring — DIRA-25 (after QA approval)"
+                - generic [ref=e1150]: DIRA-29
+              - generic [ref=e1151]:
+                - button "Assignee" [ref=e1152]:
+                  - generic [ref=e1153]:
+                    - img [ref=e1155]
+                    - text: Assignee
+                - generic [ref=e1158]: Mar 29, 2026
+            - 'link "Code Review: HUD glanceability redesign — QA approved DIRA-14 Assignee Mar 29, 2026" [ref=e1159] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-14
+              - generic [ref=e1160]:
+                - generic [ref=e1161]: "Code Review: HUD glanceability redesign — QA approved"
+                - generic [ref=e1166]: DIRA-14
+              - generic [ref=e1167]:
+                - button "Assignee" [ref=e1168]:
+                  - generic [ref=e1169]:
+                    - img [ref=e1171]
+                    - text: Assignee
+                - generic [ref=e1174]: Mar 29, 2026
+            - 'link "Fix: RideStatsBarView missing .allowsHitTesting(false) in navigation overlay DIRA-26 Assignee Mar 29, 2026" [ref=e1175] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-26
+              - generic [ref=e1176]:
+                - generic [ref=e1177]: "Fix: RideStatsBarView missing .allowsHitTesting(false) in navigation overlay"
+                - generic [ref=e1182]: DIRA-26
+              - generic [ref=e1183]:
+                - button "Assignee" [ref=e1184]:
+                  - generic [ref=e1185]:
+                    - img [ref=e1187]
+                    - text: Assignee
+                - generic [ref=e1190]: Mar 29, 2026
+            - link "Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent DIRA-19 Assignee Mar 29, 2026" [ref=e1191] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-19
+              - generic [ref=e1192]:
+                - generic [ref=e1193]: Fix double MPH conversion in SpeedBadgeView + confirm navigationEnabled intent
+                - generic [ref=e1198]: DIRA-19
+              - generic [ref=e1199]:
+                - button "Assignee" [ref=e1200]:
+                  - generic [ref=e1201]:
+                    - img [ref=e1203]
+                    - text: Assignee
+                - generic [ref=e1206]: Mar 29, 2026
+            - link "Generate Burning Rock GPX files from Supabase trail data DIRA-23 Assignee Mar 29, 2026" [ref=e1207] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-23
+              - generic [ref=e1208]:
+                - generic [ref=e1209]: Generate Burning Rock GPX files from Supabase trail data
+                - generic [ref=e1214]: DIRA-23
+              - generic [ref=e1215]:
+                - button "Assignee" [ref=e1216]:
+                  - generic [ref=e1217]:
+                    - img [ref=e1219]
+                    - text: Assignee
+                - generic [ref=e1222]: Mar 29, 2026
+            - 'link "Technical plan: GPX test tracks for HUD QA verification DIRA-12 Assignee Mar 29, 2026" [ref=e1223] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-12
+              - generic [ref=e1224]:
+                - generic [ref=e1225]: "Technical plan: GPX test tracks for HUD QA verification"
+                - generic [ref=e1230]: DIRA-12
+              - generic [ref=e1231]:
+                - button "Assignee" [ref=e1232]:
+                  - generic [ref=e1233]:
+                    - img [ref=e1235]
+                    - text: Assignee
+                - generic [ref=e1238]: Mar 29, 2026
+            - link "Validate GPX test tracks — record video of HUD navigating routes DIRA-21 Assignee Mar 29, 2026" [ref=e1239] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-21
+              - generic [ref=e1240]:
+                - generic [ref=e1241]: Validate GPX test tracks — record video of HUD navigating routes
+                - generic [ref=e1246]: DIRA-21
+              - generic [ref=e1247]:
+                - button "Assignee" [ref=e1248]:
+                  - generic [ref=e1249]:
+                    - img [ref=e1251]
+                    - text: Assignee
+                - generic [ref=e1254]: Mar 29, 2026
+            - 'link "QA re-verify: HUD glanceability fixes (DIRA-10) DIRA-13 Assignee Mar 29, 2026" [ref=e1255] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-13
+              - generic [ref=e1256]:
+                - generic [ref=e1257]: "QA re-verify: HUD glanceability fixes (DIRA-10)"
+                - generic [ref=e1262]: DIRA-13
+              - generic [ref=e1263]:
+                - button "Assignee" [ref=e1264]:
+                  - generic [ref=e1265]:
+                    - img [ref=e1267]
+                    - text: Assignee
+                - generic [ref=e1270]: Mar 29, 2026
+            - link "Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11 DIRA-17 Assignee Mar 29, 2026" [ref=e1271] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-17
+              - generic [ref=e1272]:
+                - generic [ref=e1273]: Write scripts/play_test_track.sh wrapper and post QA playbook to DIRA-11
+                - generic [ref=e1278]: DIRA-17
+              - generic [ref=e1279]:
+                - button "Assignee" [ref=e1280]:
+                  - generic [ref=e1281]:
+                    - img [ref=e1283]
+                    - text: Assignee
+                - generic [ref=e1286]: Mar 29, 2026
+            - link "QA cannot verify HUD — need .gpx test tracks that simulate rider movement DIRA-11 Assignee Mar 29, 2026" [ref=e1287] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-11
+              - generic [ref=e1288]:
+                - generic [ref=e1289]: QA cannot verify HUD — need .gpx test tracks that simulate rider movement
+                - generic [ref=e1294]: DIRA-11
+              - generic [ref=e1295]:
+                - button "Assignee" [ref=e1296]:
+                  - generic [ref=e1297]:
+                    - img [ref=e1299]
+                    - text: Assignee
+                - generic [ref=e1302]: Mar 29, 2026
+            - link "Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks DIRA-16 Assignee Mar 29, 2026" [ref=e1303] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-16
+              - generic [ref=e1304]:
+                - generic [ref=e1305]: Run generate_gpx_tracks.py, verify output, commit GPX files to agent/gpx-test-tracks
+                - generic [ref=e1310]: DIRA-16
+              - generic [ref=e1311]:
+                - button "Assignee" [ref=e1312]:
+                  - generic [ref=e1313]:
+                    - img [ref=e1315]
+                    - text: Assignee
+                - generic [ref=e1318]: Mar 29, 2026
+            - 'link "Technical plan: HUD layout restructure for 80%+ map coverage DIRA-2 Assignee Mar 29, 2026" [ref=e1319] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-2
+              - generic [ref=e1320]:
+                - generic [ref=e1321]: "Technical plan: HUD layout restructure for 80%+ map coverage"
+                - generic [ref=e1326]: DIRA-2
+              - generic [ref=e1327]:
+                - button "Assignee" [ref=e1328]:
+                  - generic [ref=e1329]:
+                    - img [ref=e1331]
+                    - text: Assignee
+                - generic [ref=e1334]: Mar 29, 2026
+            - link "Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios DIRA-15 Assignee Mar 29, 2026" [ref=e1335] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-15
+              - generic [ref=e1336]:
+                - generic [ref=e1337]: Write scripts/generate_gpx_tracks.py — convert UITestingRouteFactory waypoints to 4 GPX scenarios
+                - generic [ref=e1342]: DIRA-15
+              - generic [ref=e1343]:
+                - button "Assignee" [ref=e1344]:
+                  - generic [ref=e1345]:
+                    - img [ref=e1347]
+                    - text: Assignee
+                - generic [ref=e1350]: Mar 29, 2026
+            - 'link "Fix: HUD glanceability — 4 touch target and typography failures DIRA-10 Assignee Mar 29, 2026" [ref=e1351] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-10
+              - generic [ref=e1352]:
+                - generic [ref=e1353]: "Fix: HUD glanceability — 4 touch target and typography failures"
+                - generic [ref=e1358]: DIRA-10
+              - generic [ref=e1359]:
+                - button "Assignee" [ref=e1360]:
+                  - generic [ref=e1361]:
+                    - img [ref=e1363]
+                    - text: Assignee
+                - generic [ref=e1366]: Mar 29, 2026
+            - 'link "QA: Visual verification of HUD glanceability redesign DIRA-8 Assignee Mar 29, 2026" [ref=e1367] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-8
+              - generic [ref=e1368]:
+                - generic [ref=e1369]: "QA: Visual verification of HUD glanceability redesign"
+                - generic [ref=e1374]: DIRA-8
+              - generic [ref=e1375]:
+                - button "Assignee" [ref=e1376]:
+                  - generic [ref=e1377]:
+                    - img [ref=e1379]
+                    - text: Assignee
+                - generic [ref=e1382]: Mar 29, 2026
+            - link "Enable AppConfig.navigationEnabled for HUD testing DIRA-9 Assignee Mar 29, 2026" [ref=e1383] [cursor=pointer]:
+              - /url: /DIRA/issues/DIRA-9
+              - generic [ref=e1384]:
+                - generic [ref=e1385]: Enable AppConfig.navigationEnabled for HUD testing
+                - generic [ref=e1390]: DIRA-9
+              - generic [ref=e1391]:
+                - button "Assignee" [ref=e1392]:
+                  - generic [ref=e1393]:
+                    - img [ref=e1395]
+                    - text: Assignee
+                - generic [ref=e1398]: Mar 29, 2026
+            - 'link "Code Review: HUD glanceability changes (feature/hud-glanceability-redesign) DIRA-7 Assignee Mar 29, 2026" [ref=e1399] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-7
+              - generic [ref=e1400]:
+                - generic [ref=e1401]: "Code Review: HUD glanceability changes (feature/hud-glanceability-redesign)"
+                - generic [ref=e1406]: DIRA-7
+              - generic [ref=e1407]:
+                - button "Assignee" [ref=e1408]:
+                  - generic [ref=e1409]:
+                    - img [ref=e1411]
+                    - text: Assignee
+                - generic [ref=e1414]: Mar 29, 2026
+            - 'link "MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording DIRA-6 Assignee Mar 29, 2026" [ref=e1415] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-6
+              - generic [ref=e1416]:
+                - generic [ref=e1417]: "MapOverlayStack: show RideStatsBar (collapsed) during navigation when recording"
+                - generic [ref=e1422]: DIRA-6
+              - generic [ref=e1423]:
+                - button "Assignee" [ref=e1424]:
+                  - generic [ref=e1425]:
+                    - img [ref=e1427]
+                    - text: Assignee
+                - generic [ref=e1430]: Mar 29, 2026
+            - 'link "MapOverlayStack: add floating SpeedBadge during Ferrostar navigation DIRA-5 Assignee Mar 29, 2026" [ref=e1431] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-5
+              - generic [ref=e1432]:
+                - generic [ref=e1433]: "MapOverlayStack: add floating SpeedBadge during Ferrostar navigation"
+                - generic [ref=e1438]: DIRA-5
+              - generic [ref=e1439]:
+                - button "Assignee" [ref=e1440]:
+                  - generic [ref=e1441]:
+                    - img [ref=e1443]
+                    - text: Assignee
+                - generic [ref=e1446]: Mar 29, 2026
+            - 'link "Technical plan: HUD redesign for glanceability DIRA-3 Assignee Mar 29, 2026" [ref=e1447] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-3
+              - generic [ref=e1448]:
+                - generic [ref=e1449]: "Technical plan: HUD redesign for glanceability"
+                - generic [ref=e1454]: DIRA-3
+              - generic [ref=e1455]:
+                - button "Assignee" [ref=e1456]:
+                  - generic [ref=e1457]:
+                    - img [ref=e1459]
+                    - text: Assignee
+                - generic [ref=e1462]: Mar 29, 2026
+            - 'link "WazeNavBottomBar: show ETA (arrival time) instead of remaining time DIRA-4 Assignee Mar 29, 2026" [ref=e1463] [cursor=pointer]':
+              - /url: /DIRA/issues/DIRA-4
+              - generic [ref=e1464]:
+                - generic [ref=e1465]: "WazeNavBottomBar: show ETA (arrival time) instead of remaining time"
+                - generic [ref=e1470]: DIRA-4
+              - generic [ref=e1471]:
+                - button "Assignee" [ref=e1472]:
+                  - generic [ref=e1473]:
+                    - img [ref=e1475]
+                    - text: Assignee
+                - generic [ref=e1478]: Mar 29, 2026
+  - generic [ref=e192]:
+    - heading "Command Palette" [level=2] [ref=e193]
+    - paragraph [ref=e194]: Search for a command to run...

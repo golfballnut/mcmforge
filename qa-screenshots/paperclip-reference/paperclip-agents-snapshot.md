@@ -1,0 +1,549 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 7 live" [ref=e37] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e49]: 7 live
+              - link "Inbox 15" [ref=e417] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e52]
+                - generic [ref=e55]: Inbox
+                - generic [ref=e419]: "15"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Work
+              - generic [ref=e58]:
+                - link "Issues" [ref=e59] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e61]
+                  - generic [ref=e64]: Issues
+                - link "Routines Beta" [ref=e65] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e67]
+                  - generic [ref=e72]: Routines
+                  - generic [ref=e73]: Beta
+                - link "Goals" [ref=e74] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e76]
+                  - generic [ref=e80]: Goals
+            - generic [ref=e81]:
+              - generic [ref=e83]:
+                - button "Projects" [expanded] [ref=e84]:
+                  - img [ref=e85]
+                  - generic [ref=e87]: Projects
+                - button "New project" [ref=e88]:
+                  - img [ref=e89]
+              - generic [ref=e420]:
+                - button "DirtSync iOS" [ref=e422]:
+                  - link "DirtSync iOS" [ref=e424] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e426]: DirtSync iOS
+                - status [ref=e90]
+            - generic [ref=e91]:
+              - generic [ref=e93]:
+                - button "Agents" [expanded] [ref=e94]:
+                  - img [ref=e95]
+                  - generic [ref=e97]: Agents
+                - button "New agent" [ref=e98]:
+                  - img [ref=e99]
+              - generic [ref=e101]:
+                - link "DirtSync COO" [ref=e102] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e103]
+                  - generic [ref=e105]: DirtSync COO
+                - link "Build & Test Agent" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e107]
+                  - generic [ref=e109]: Build & Test Agent
+                - link "Drive Publisher" [ref=e110] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e111]
+                  - generic [ref=e113]: Drive Publisher
+                - link "HUD Engineer" [ref=e114] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e115]
+                  - generic [ref=e118]: HUD Engineer
+                - link "Map View Engineer" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e120]
+                  - generic [ref=e123]: Map View Engineer
+                - link "Navigation Engineer" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e125]
+                  - generic [ref=e130]: Navigation Engineer
+                - link "QA Rider" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e132]
+                  - generic [ref=e136]: QA Rider
+                - link "Ride Recording Engineer" [ref=e137] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e138]
+                  - generic [ref=e141]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e142] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e143]
+                  - generic [ref=e154]: Routine Manager
+                - link "Ship Engineer" [ref=e155] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e156]
+                  - generic [ref=e161]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e162] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e163]
+                  - generic [ref=e166]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e167] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e168]
+                  - generic [ref=e175]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e176] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e177]
+                  - generic [ref=e180]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e181] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e182]
+                  - generic [ref=e185]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 5 live" [ref=e186] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e187]
+                  - generic [ref=e190]: Waze Search UI Expert
+                  - generic [ref=e195]: 5 live
+                - link "XCUITest Engineer" [ref=e196] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e197]
+                  - generic [ref=e200]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e201] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e202]
+                  - generic [ref=e204]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e205] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e206]
+                  - generic [ref=e214]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e215] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e216]
+                  - generic [ref=e219]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e220] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e221]
+                  - generic [ref=e230]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e231] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e232]
+                  - generic [ref=e241]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e242] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e243]
+                  - generic [ref=e248]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e249] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e250]
+                  - generic [ref=e253]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e254] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e255]
+                  - generic [ref=e263]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e264] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e265]
+                  - generic [ref=e269]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e270] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e271]
+                  - generic [ref=e274]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e275] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e276]
+                  - generic [ref=e279]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e280] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e281]
+                  - generic [ref=e284]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e285] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e286]
+                  - generic [ref=e293]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e294] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e295]
+                  - generic [ref=e298]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e299] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e300]
+                  - generic [ref=e304]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e305] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e306]
+                  - generic [ref=e309]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e310] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e311]
+                  - generic [ref=e315]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e316] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e317]
+                  - generic [ref=e322]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e323] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e324]
+                  - generic [ref=e328]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e329] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e330]
+                  - generic [ref=e333]: Valhalla Health Agent
+            - generic [ref=e334]:
+              - generic [ref=e335]: Company
+              - generic [ref=e336]:
+                - link "Org" [ref=e337] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e339]
+                  - generic [ref=e344]: Org
+                - link "Skills" [ref=e345] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e347]
+                  - generic [ref=e357]: Skills
+                - link "Costs" [ref=e358] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e360]
+                  - generic [ref=e362]: Costs
+                - link "Activity" [ref=e363] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e365]
+                  - generic [ref=e369]: Activity
+                - link "Settings" [ref=e370] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e372]
+                  - generic [ref=e375]: Settings
+      - generic [ref=e377]:
+        - link "Documentation" [ref=e378] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e379]
+          - generic [ref=e381]: Documentation
+        - generic [ref=e382]: v
+        - link "Instance settings" [ref=e383] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e384]:
+          - img
+    - generic [ref=e385]:
+      - heading "Agents" [level=1] [ref=e389]
+      - main [ref=e391]:
+        - generic [ref=e392]:
+          - generic [ref=e393]:
+            - tablist [ref=e395]:
+              - tab "All" [selected] [ref=e396]
+              - tab "Active" [ref=e397]
+              - tab "Paused" [ref=e398]
+              - tab "Error" [ref=e399]
+            - generic [ref=e400]:
+              - button "Filters" [ref=e402]:
+                - img [ref=e403]
+                - text: Filters
+              - generic [ref=e404]:
+                - button [ref=e405]:
+                  - img [ref=e406]
+                - button [ref=e407]:
+                  - img [ref=e408]
+              - button "New Agent" [ref=e412]:
+                - img
+                - text: New Agent
+          - paragraph [ref=e413]: 36 agents
+          - generic [ref=e428]:
+            - link "DirtSync COOCEO Claude 2h ago active" [ref=e429] [cursor=pointer]:
+              - /url: /DIRA/agents/dirtsync-coo
+              - generic [ref=e432]: DirtSync COOCEO
+              - generic [ref=e434]:
+                - generic [ref=e435]: Claude
+                - generic [ref=e436]: 2h ago
+                - generic [ref=e438]: active
+            - generic [ref=e439]:
+              - link "Build & Test AgentQA Claude 8h ago idle" [ref=e441] [cursor=pointer]:
+                - /url: /DIRA/agents/build-test-agent
+                - generic [ref=e444]: Build & Test AgentQA
+                - generic [ref=e446]:
+                  - generic [ref=e447]: Claude
+                  - generic [ref=e448]: 8h ago
+                  - generic [ref=e450]: idle
+              - link "Drive PublisherGeneral Claude — active" [ref=e452] [cursor=pointer]:
+                - /url: /DIRA/agents/drive-publisher
+                - generic [ref=e455]: Drive PublisherGeneral
+                - generic [ref=e457]:
+                  - generic [ref=e458]: Claude
+                  - generic [ref=e459]: —
+                  - generic [ref=e461]: active
+              - link "HUD EngineerEngineer - FIRED — failed DIRA-66 and DIRA-71, zero output twice Claude 5h ago paused" [ref=e463] [cursor=pointer]:
+                - /url: /DIRA/agents/hud-engineer
+                - generic [ref=e466]:
+                  - text: HUD Engineer
+                  - generic [ref=e467]: Engineer - FIRED — failed DIRA-66 and DIRA-71, zero output twice
+                - generic [ref=e469]:
+                  - generic [ref=e470]: Claude
+                  - generic [ref=e471]: 5h ago
+                  - generic [ref=e473]: paused
+              - link "Map View EngineerEngineer Claude 6h ago idle" [ref=e475] [cursor=pointer]:
+                - /url: /DIRA/agents/map-view-engineer
+                - generic [ref=e478]: Map View EngineerEngineer
+                - generic [ref=e480]:
+                  - generic [ref=e481]: Claude
+                  - generic [ref=e482]: 6h ago
+                  - generic [ref=e484]: idle
+              - link "Navigation EngineerEngineer Claude 6h ago idle" [ref=e486] [cursor=pointer]:
+                - /url: /DIRA/agents/navigation-engineer
+                - generic [ref=e489]: Navigation EngineerEngineer
+                - generic [ref=e491]:
+                  - generic [ref=e492]: Claude
+                  - generic [ref=e493]: 6h ago
+                  - generic [ref=e495]: idle
+              - link "QA RiderQA - RETIRED — replaced by Build & Test Agent Claude 22h ago paused" [ref=e497] [cursor=pointer]:
+                - /url: /DIRA/agents/qa-rider
+                - generic [ref=e500]:
+                  - text: QA Rider
+                  - generic [ref=e501]: QA - RETIRED — replaced by Build & Test Agent
+                - generic [ref=e503]:
+                  - generic [ref=e504]: Claude
+                  - generic [ref=e505]: 22h ago
+                  - generic [ref=e507]: paused
+              - link "Ride Recording EngineerEngineer Claude 9h ago idle" [ref=e509] [cursor=pointer]:
+                - /url: /DIRA/agents/ride-recording-engineer
+                - generic [ref=e512]: Ride Recording EngineerEngineer
+                - generic [ref=e514]:
+                  - generic [ref=e515]: Claude
+                  - generic [ref=e516]: 9h ago
+                  - generic [ref=e518]: idle
+              - generic [ref=e519]:
+                - link "Routine ManagerGeneral - Manages 20 routine agents Claude — idle" [ref=e520] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - generic [ref=e523]:
+                    - text: Routine Manager
+                    - generic [ref=e524]: General - Manages 20 routine agents
+                  - generic [ref=e526]:
+                    - generic [ref=e527]: Claude
+                    - generic [ref=e528]: —
+                    - generic [ref=e530]: idle
+                - generic [ref=e531]:
+                  - link "App Store Readiness AgentGeneral Claude — idle" [ref=e533] [cursor=pointer]:
+                    - /url: /DIRA/agents/app-store-readiness-agent
+                    - generic [ref=e536]: App Store Readiness AgentGeneral
+                    - generic [ref=e538]:
+                      - generic [ref=e539]: Claude
+                      - generic [ref=e540]: —
+                      - generic [ref=e542]: idle
+                  - link "Claude AI Scanner AgentGeneral Claude — idle" [ref=e544] [cursor=pointer]:
+                    - /url: /DIRA/agents/claude-ai-scanner-agent
+                    - generic [ref=e547]: Claude AI Scanner AgentGeneral
+                    - generic [ref=e549]:
+                      - generic [ref=e550]: Claude
+                      - generic [ref=e551]: —
+                      - generic [ref=e553]: idle
+                  - link "Competitor Watch AgentGeneral Claude — idle" [ref=e555] [cursor=pointer]:
+                    - /url: /DIRA/agents/competitor-watch-agent
+                    - generic [ref=e558]: Competitor Watch AgentGeneral
+                    - generic [ref=e560]:
+                      - generic [ref=e561]: Claude
+                      - generic [ref=e562]: —
+                      - generic [ref=e564]: idle
+                  - link "Crash Monitor AgentGeneral Claude 11h ago idle" [ref=e566] [cursor=pointer]:
+                    - /url: /DIRA/agents/crash-monitor-agent
+                    - generic [ref=e569]: Crash Monitor AgentGeneral
+                    - generic [ref=e571]:
+                      - generic [ref=e572]: Claude
+                      - generic [ref=e573]: 11h ago
+                      - generic [ref=e575]: idle
+                  - link "Difficulty Calibration AgentGeneral Claude — idle" [ref=e577] [cursor=pointer]:
+                    - /url: /DIRA/agents/difficulty-calibration-agent
+                    - generic [ref=e580]: Difficulty Calibration AgentGeneral
+                    - generic [ref=e582]:
+                      - generic [ref=e583]: Claude
+                      - generic [ref=e584]: —
+                      - generic [ref=e586]: idle
+                  - link "Doc Organizer AgentGeneral Claude 58m ago idle" [ref=e588] [cursor=pointer]:
+                    - /url: /DIRA/agents/doc-organizer-agent
+                    - generic [ref=e591]: Doc Organizer AgentGeneral
+                    - generic [ref=e593]:
+                      - generic [ref=e594]: Claude
+                      - generic [ref=e595]: 58m ago
+                      - generic [ref=e597]: idle
+                  - link "Feature Usage AgentGeneral Claude — idle" [ref=e599] [cursor=pointer]:
+                    - /url: /DIRA/agents/feature-usage-agent
+                    - generic [ref=e602]: Feature Usage AgentGeneral
+                    - generic [ref=e604]:
+                      - generic [ref=e605]: Claude
+                      - generic [ref=e606]: —
+                      - generic [ref=e608]: idle
+                  - link "Learning Extractor AgentGeneral Claude 25m ago idle" [ref=e610] [cursor=pointer]:
+                    - /url: /DIRA/agents/learning-extractor-agent
+                    - generic [ref=e613]: Learning Extractor AgentGeneral
+                    - generic [ref=e615]:
+                      - generic [ref=e616]: Claude
+                      - generic [ref=e617]: 25m ago
+                      - generic [ref=e619]: idle
+                  - link "MBTiles Sync AgentGeneral Claude — idle" [ref=e621] [cursor=pointer]:
+                    - /url: /DIRA/agents/mbtiles-sync-agent
+                    - generic [ref=e624]: MBTiles Sync AgentGeneral
+                    - generic [ref=e626]:
+                      - generic [ref=e627]: Claude
+                      - generic [ref=e628]: —
+                      - generic [ref=e630]: idle
+                  - link "Morning Agenda AgentGeneral Claude 2h ago idle" [ref=e632] [cursor=pointer]:
+                    - /url: /DIRA/agents/morning-agenda-agent
+                    - generic [ref=e635]: Morning Agenda AgentGeneral
+                    - generic [ref=e637]:
+                      - generic [ref=e638]: Claude
+                      - generic [ref=e639]: 2h ago
+                      - generic [ref=e641]: idle
+                  - link "New Trail Scanner AgentGeneral Claude — idle" [ref=e643] [cursor=pointer]:
+                    - /url: /DIRA/agents/new-trail-scanner-agent
+                    - generic [ref=e646]: New Trail Scanner AgentGeneral
+                    - generic [ref=e648]:
+                      - generic [ref=e649]: Claude
+                      - generic [ref=e650]: —
+                      - generic [ref=e652]: idle
+                  - link "OSM Monitor AgentGeneral Claude — idle" [ref=e654] [cursor=pointer]:
+                    - /url: /DIRA/agents/osm-monitor-agent
+                    - generic [ref=e657]: OSM Monitor AgentGeneral
+                    - generic [ref=e659]:
+                      - generic [ref=e660]: Claude
+                      - generic [ref=e661]: —
+                      - generic [ref=e663]: idle
+                  - link "POI Freshness AgentGeneral Claude — idle" [ref=e665] [cursor=pointer]:
+                    - /url: /DIRA/agents/poi-freshness-agent
+                    - generic [ref=e668]: POI Freshness AgentGeneral
+                    - generic [ref=e670]:
+                      - generic [ref=e671]: Claude
+                      - generic [ref=e672]: —
+                      - generic [ref=e674]: idle
+                  - link "Revenue Scanner AgentGeneral Claude — idle" [ref=e676] [cursor=pointer]:
+                    - /url: /DIRA/agents/revenue-scanner-agent
+                    - generic [ref=e679]: Revenue Scanner AgentGeneral
+                    - generic [ref=e681]:
+                      - generic [ref=e682]: Claude
+                      - generic [ref=e683]: —
+                      - generic [ref=e685]: idle
+                  - link "Ride Audit AgentGeneral Claude — idle" [ref=e687] [cursor=pointer]:
+                    - /url: /DIRA/agents/ride-audit-agent
+                    - generic [ref=e690]: Ride Audit AgentGeneral
+                    - generic [ref=e692]:
+                      - generic [ref=e693]: Claude
+                      - generic [ref=e694]: —
+                      - generic [ref=e696]: idle
+                  - link "Road Network AgentGeneral Claude — idle" [ref=e698] [cursor=pointer]:
+                    - /url: /DIRA/agents/road-network-agent
+                    - generic [ref=e701]: Road Network AgentGeneral
+                    - generic [ref=e703]:
+                      - generic [ref=e704]: Claude
+                      - generic [ref=e705]: —
+                      - generic [ref=e707]: idle
+                  - link "SDK Releases AgentGeneral Claude — idle" [ref=e709] [cursor=pointer]:
+                    - /url: /DIRA/agents/sdk-releases-agent
+                    - generic [ref=e712]: SDK Releases AgentGeneral
+                    - generic [ref=e714]:
+                      - generic [ref=e715]: Claude
+                      - generic [ref=e716]: —
+                      - generic [ref=e718]: idle
+                  - link "TestFlight Monitor AgentGeneral Claude — idle" [ref=e720] [cursor=pointer]:
+                    - /url: /DIRA/agents/testflight-monitor-agent
+                    - generic [ref=e723]: TestFlight Monitor AgentGeneral
+                    - generic [ref=e725]:
+                      - generic [ref=e726]: Claude
+                      - generic [ref=e727]: —
+                      - generic [ref=e729]: idle
+                  - link "Trail Data Health AgentGeneral - Routine — Daily 6am Claude 4h ago idle" [ref=e731] [cursor=pointer]:
+                    - /url: /DIRA/agents/trail-data-health-agent
+                    - generic [ref=e734]:
+                      - text: Trail Data Health Agent
+                      - generic [ref=e735]: General - Routine — Daily 6am
+                    - generic [ref=e737]:
+                      - generic [ref=e738]: Claude
+                      - generic [ref=e739]: 4h ago
+                      - generic [ref=e741]: idle
+                  - link "Valhalla Health AgentGeneral Claude — idle" [ref=e743] [cursor=pointer]:
+                    - /url: /DIRA/agents/valhalla-health-agent
+                    - generic [ref=e746]: Valhalla Health AgentGeneral
+                    - generic [ref=e748]:
+                      - generic [ref=e749]: Claude
+                      - generic [ref=e750]: —
+                      - generic [ref=e752]: idle
+              - link "Ship EngineerEngineer - RETIRED — replaced by domain specialists Claude — paused" [ref=e754] [cursor=pointer]:
+                - /url: /DIRA/agents/ship-engineer
+                - generic [ref=e757]:
+                  - text: Ship Engineer
+                  - generic [ref=e758]: Engineer - RETIRED — replaced by domain specialists
+                - generic [ref=e760]:
+                  - generic [ref=e761]: Claude
+                  - generic [ref=e762]: —
+                  - generic [ref=e764]: paused
+              - link "Simulator QA AgentQA Claude 29m ago idle" [ref=e766] [cursor=pointer]:
+                - /url: /DIRA/agents/simulator-qa-agent
+                - generic [ref=e769]: Simulator QA AgentQA
+                - generic [ref=e771]:
+                  - generic [ref=e772]: Claude
+                  - generic [ref=e773]: 29m ago
+                  - generic [ref=e775]: idle
+              - link "Trail Data ExpertEngineer Claude 4h ago idle" [ref=e777] [cursor=pointer]:
+                - /url: /DIRA/agents/trail-data-expert
+                - generic [ref=e780]: Trail Data ExpertEngineer
+                - generic [ref=e782]:
+                  - generic [ref=e783]: Claude
+                  - generic [ref=e784]: 4h ago
+                  - generic [ref=e786]: idle
+              - link "Waze Nav HUD ExpertGeneral Codex 47m ago error" [ref=e788] [cursor=pointer]:
+                - /url: /DIRA/agents/waze-nav-hud-expert
+                - generic [ref=e791]: Waze Nav HUD ExpertGeneral
+                - generic [ref=e793]:
+                  - generic [ref=e794]: Codex
+                  - generic [ref=e795]: 47m ago
+                  - generic [ref=e797]: error
+              - link "Waze Route Preview ExpertGeneral Claude 1h ago active" [ref=e799] [cursor=pointer]:
+                - /url: /DIRA/agents/waze-route-preview-expert
+                - generic [ref=e802]: Waze Route Preview ExpertGeneral
+                - generic [ref=e804]:
+                  - generic [ref=e805]: Claude
+                  - generic [ref=e806]: 1h ago
+                  - generic [ref=e808]: active
+              - link "Waze Search UI ExpertGeneral Live (5) Claude 7m ago running" [ref=e810] [cursor=pointer]:
+                - /url: /DIRA/agents/waze-search-ui-expert
+                - generic [ref=e813]: Waze Search UI ExpertGeneral
+                - generic [ref=e815]:
+                  - link "Live (5)" [ref=e816]:
+                    - /url: /DIRA/agents/waze-search-ui-expert/runs/abc9efb1-92a5-41ea-ba97-4882a96cadc9
+                    - generic [ref=e820]: Live (5)
+                  - generic [ref=e821]: Claude
+                  - generic [ref=e822]: 7m ago
+                  - generic [ref=e824]: running
+              - link "XCUITest EngineerQA Claude 27m ago idle" [ref=e826] [cursor=pointer]:
+                - /url: /DIRA/agents/xcuitest-engineer
+                - generic [ref=e829]: XCUITest EngineerQA
+                - generic [ref=e831]:
+                  - generic [ref=e832]: Claude
+                  - generic [ref=e833]: 27m ago
+                  - generic [ref=e835]: idle
+  - generic [ref=e414]:
+    - heading "Command Palette" [level=2] [ref=e415]
+    - paragraph [ref=e416]: Search for a command to run...

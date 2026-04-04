@@ -1,0 +1,548 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 6 live" [ref=e37] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e49]: 6 live
+              - link "Inbox 15" [ref=e235] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e52]
+                - generic [ref=e55]: Inbox
+                - generic [ref=e237]: "15"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Work
+              - generic [ref=e58]:
+                - link "Issues" [ref=e59] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e61]
+                  - generic [ref=e64]: Issues
+                - link "Routines Beta" [ref=e65] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e67]
+                  - generic [ref=e72]: Routines
+                  - generic [ref=e73]: Beta
+                - link "Goals" [ref=e74] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e76]
+                  - generic [ref=e80]: Goals
+            - generic [ref=e81]:
+              - generic [ref=e83]:
+                - button "Projects" [expanded] [ref=e84]:
+                  - img [ref=e85]
+                  - generic [ref=e87]: Projects
+                - button "New project" [ref=e88]:
+                  - img [ref=e89]
+              - generic [ref=e238]:
+                - button "DirtSync iOS" [ref=e240]:
+                  - link "DirtSync iOS" [ref=e242] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e244]: DirtSync iOS
+                - status [ref=e90]
+            - generic [ref=e91]:
+              - generic [ref=e93]:
+                - button "Agents" [expanded] [ref=e94]:
+                  - img [ref=e95]
+                  - generic [ref=e97]: Agents
+                - button "New agent" [ref=e98]:
+                  - img [ref=e99]
+              - generic [ref=e246]:
+                - link "DirtSync COO" [ref=e247] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e248]
+                  - generic [ref=e250]: DirtSync COO
+                - link "Build & Test Agent" [ref=e251] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e252]
+                  - generic [ref=e254]: Build & Test Agent
+                - link "Drive Publisher" [ref=e255] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e256]
+                  - generic [ref=e258]: Drive Publisher
+                - link "HUD Engineer" [ref=e259] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e260]
+                  - generic [ref=e263]: HUD Engineer
+                - link "Map View Engineer" [ref=e264] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e265]
+                  - generic [ref=e268]: Map View Engineer
+                - link "Navigation Engineer" [ref=e269] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e270]
+                  - generic [ref=e275]: Navigation Engineer
+                - link "QA Rider" [ref=e276] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e277]
+                  - generic [ref=e281]: QA Rider
+                - link "Ride Recording Engineer" [ref=e282] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e283]
+                  - generic [ref=e286]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e287] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e288]
+                  - generic [ref=e299]: Routine Manager
+                - link "Ship Engineer" [ref=e300] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e301]
+                  - generic [ref=e306]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e307] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e308]
+                  - generic [ref=e311]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e312] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e313]
+                  - generic [ref=e320]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e321] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e322]
+                  - generic [ref=e325]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e326] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e327]
+                  - generic [ref=e330]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 4 live" [ref=e331] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e332]
+                  - generic [ref=e335]: Waze Search UI Expert
+                  - generic [ref=e340]: 4 live
+                - link "XCUITest Engineer" [ref=e341] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e342]
+                  - generic [ref=e345]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e346] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e347]
+                  - generic [ref=e349]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e350] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e351]
+                  - generic [ref=e359]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e360] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e361]
+                  - generic [ref=e364]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e365] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e366]
+                  - generic [ref=e375]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e376] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e377]
+                  - generic [ref=e386]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e387] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e388]
+                  - generic [ref=e393]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e394] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e395]
+                  - generic [ref=e398]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e399] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e400]
+                  - generic [ref=e408]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e409] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e410]
+                  - generic [ref=e414]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e415] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e416]
+                  - generic [ref=e419]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e420] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e421]
+                  - generic [ref=e424]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e425] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e426]
+                  - generic [ref=e429]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e430] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e431]
+                  - generic [ref=e438]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e439] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e440]
+                  - generic [ref=e443]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e444] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e445]
+                  - generic [ref=e449]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e450] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e451]
+                  - generic [ref=e454]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e455] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e456]
+                  - generic [ref=e460]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e461] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e462]
+                  - generic [ref=e467]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e468] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e469]
+                  - generic [ref=e473]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e474] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e475]
+                  - generic [ref=e478]: Valhalla Health Agent
+            - generic [ref=e100]:
+              - generic [ref=e101]: Company
+              - generic [ref=e102]:
+                - link "Org" [ref=e103] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e105]
+                  - generic [ref=e110]: Org
+                - link "Skills" [ref=e111] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e113]
+                  - generic [ref=e123]: Skills
+                - link "Costs" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e126]
+                  - generic [ref=e128]: Costs
+                - link "Activity" [ref=e129] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e131]
+                  - generic [ref=e135]: Activity
+                - link "Settings" [ref=e136] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e138]
+                  - generic [ref=e141]: Settings
+      - generic [ref=e143]:
+        - link "Documentation" [ref=e144] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e145]
+          - generic [ref=e147]: Documentation
+        - generic [ref=e148]: v
+        - link "Instance settings" [ref=e149] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e150]:
+          - img
+    - generic [ref=e151]:
+      - heading "Costs" [level=1] [ref=e155]
+      - main [ref=e157]:
+        - generic [ref=e158]:
+          - generic [ref=e159]:
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - heading "Costs" [level=1] [ref=e162]
+                - paragraph [ref=e163]: Inference spend, platform fees, credits, and live quota windows.
+              - generic [ref=e164]:
+                - button "Month to Date" [ref=e165]
+                - button "Last 7 Days" [ref=e166]
+                - button "Last 30 Days" [ref=e167]
+                - button "Year to Date" [ref=e168]
+                - button "All Time" [ref=e169]
+                - button "Custom" [ref=e170]
+            - generic [ref=e171]:
+              - generic [ref=e173]:
+                - generic [ref=e174]:
+                  - generic [ref=e175]: Inference spend
+                  - generic [ref=e176]: $0.00
+                  - generic [ref=e177]: 80.6M tokens across request-scoped events
+                - img [ref=e179]
+              - generic [ref=e182]:
+                - generic [ref=e183]:
+                  - generic [ref=e184]: Budget
+                  - generic [ref=e185]: 0%
+                  - generic [ref=e186]: $0.00 of $500.00
+                - img [ref=e188]
+              - generic [ref=e194]:
+                - generic [ref=e195]:
+                  - generic [ref=e196]: Finance net
+                  - generic [ref=e197]: $0.00
+                  - generic [ref=e198]: $0.00 debits · $0.00 credits
+                - img [ref=e200]
+              - generic [ref=e203]:
+                - generic [ref=e204]:
+                  - generic [ref=e205]: Finance events
+                  - generic [ref=e206]: "0"
+                  - generic [ref=e207]: $0.00 estimated in range
+                - img [ref=e209]
+          - generic [ref=e212]:
+            - tablist [ref=e213]:
+              - tab "Overview" [selected] [ref=e214]
+              - tab "Budgets" [ref=e215]
+              - tab "Providers" [ref=e216]
+              - tab "Billers" [ref=e217]
+              - tab "Finance" [ref=e218]
+            - tabpanel "Overview" [ref=e219]:
+              - generic [ref=e479]:
+                - generic [ref=e480]:
+                  - generic [ref=e481]:
+                    - generic [ref=e482]: Inference ledger
+                    - generic [ref=e483]: Request-scoped inference spend for the selected period.
+                  - generic [ref=e484]:
+                    - generic [ref=e485]:
+                      - generic [ref=e486]:
+                        - generic [ref=e487]: $0.00
+                        - generic [ref=e488]: Budget $500.00
+                      - generic [ref=e489]:
+                        - generic [ref=e490]: usage
+                        - generic [ref=e491]: 80.6M
+                    - generic [ref=e494]: 0% of monthly budget consumed in this range.
+                - generic [ref=e495]:
+                  - generic [ref=e496]:
+                    - generic [ref=e497]: Finance ledger
+                    - generic [ref=e498]: Account-level charges that do not map to a single inference request.
+                  - generic [ref=e499]:
+                    - generic [ref=e501]:
+                      - generic [ref=e502]:
+                        - generic [ref=e503]: Debits
+                        - generic [ref=e504]: $0.00
+                        - generic [ref=e505]: 0 total events in range
+                      - img [ref=e507]
+                    - generic [ref=e511]:
+                      - generic [ref=e512]:
+                        - generic [ref=e513]: Credits
+                        - generic [ref=e514]: $0.00
+                        - generic [ref=e515]: Refunds, offsets, and credit returns
+                      - img [ref=e517]
+                    - generic [ref=e521]:
+                      - generic [ref=e522]:
+                        - generic [ref=e523]: Net
+                        - generic [ref=e524]: $0.00
+                        - generic [ref=e525]: Debit minus credit for the selected period
+                      - img [ref=e527]
+                    - generic [ref=e530]:
+                      - generic [ref=e531]:
+                        - generic [ref=e532]: Estimated
+                        - generic [ref=e533]: $0.00
+                        - generic [ref=e534]: Estimated debits that are not yet invoice-authoritative
+                      - img [ref=e536]
+              - generic [ref=e541]:
+                - generic [ref=e542]:
+                  - generic [ref=e543]:
+                    - generic [ref=e544]: By agent
+                    - generic [ref=e545]: What each agent consumed in the selected period.
+                  - generic [ref=e546]:
+                    - generic [ref=e548] [cursor=pointer]:
+                      - generic [ref=e549]:
+                        - img [ref=e550]
+                        - generic [ref=e552]:
+                          - generic [ref=e554]: NE
+                          - generic [ref=e555]: Navigation Engineer
+                      - generic [ref=e556]:
+                        - generic [ref=e557]: $0.00
+                        - generic [ref=e558]: in 2.9M · out 20.5k
+                        - generic [ref=e559]: 0 api · 1 subscription
+                    - generic [ref=e561] [cursor=pointer]:
+                      - generic [ref=e562]:
+                        - img [ref=e563]
+                        - generic [ref=e565]:
+                          - generic [ref=e567]: HE
+                          - generic [ref=e568]: HUD Engineer
+                      - generic [ref=e569]:
+                        - generic [ref=e570]: $0.00
+                        - generic [ref=e571]: in 4.1M · out 20.9k
+                        - generic [ref=e572]: 0 api · 2 subscription
+                    - generic [ref=e574] [cursor=pointer]:
+                      - generic [ref=e575]:
+                        - img [ref=e576]
+                        - generic [ref=e578]:
+                          - generic [ref=e580]: MA
+                          - generic [ref=e581]: Morning Agenda Agent
+                      - generic [ref=e582]:
+                        - generic [ref=e583]: $0.00
+                        - generic [ref=e584]: in 1.0M · out 18.3k
+                        - generic [ref=e585]: 0 api · 3 subscription
+                    - generic [ref=e587] [cursor=pointer]:
+                      - generic [ref=e588]:
+                        - img [ref=e589]
+                        - generic [ref=e591]:
+                          - generic [ref=e593]: WE
+                          - generic [ref=e594]: Waze Nav HUD Expert
+                      - generic [ref=e595]:
+                        - generic [ref=e596]: $0.00
+                        - generic [ref=e597]: in 4.7M · out 63.9k
+                        - generic [ref=e598]: 0 api · 2 subscription
+                    - generic [ref=e600] [cursor=pointer]:
+                      - generic [ref=e601]:
+                        - img [ref=e602]
+                        - generic [ref=e604]:
+                          - generic [ref=e606]: QR
+                          - generic [ref=e607]: QA Rider
+                      - generic [ref=e608]:
+                        - generic [ref=e609]: $0.00
+                        - generic [ref=e610]: in 3.8M · out 17.5k
+                        - generic [ref=e611]: 0 api · 2 subscription
+                    - generic [ref=e613] [cursor=pointer]:
+                      - generic [ref=e614]:
+                        - img [ref=e615]
+                        - generic [ref=e617]:
+                          - generic [ref=e619]: BA
+                          - generic [ref=e620]: Build & Test Agent
+                      - generic [ref=e621]:
+                        - generic [ref=e622]: $0.00
+                        - generic [ref=e623]: in 16.6M · out 110.2k
+                        - generic [ref=e624]: 0 api · 6 subscription
+                    - generic [ref=e626] [cursor=pointer]:
+                      - generic [ref=e627]:
+                        - img [ref=e628]
+                        - generic [ref=e630]:
+                          - generic [ref=e632]: ME
+                          - generic [ref=e633]: Map View Engineer
+                      - generic [ref=e634]:
+                        - generic [ref=e635]: $0.00
+                        - generic [ref=e636]: in 3.2M · out 17.9k
+                        - generic [ref=e637]: 0 api · 1 subscription
+                    - generic [ref=e639] [cursor=pointer]:
+                      - generic [ref=e640]:
+                        - img [ref=e641]
+                        - generic [ref=e643]:
+                          - generic [ref=e645]: WE
+                          - generic [ref=e646]: Waze Route Preview Expert
+                      - generic [ref=e647]:
+                        - generic [ref=e648]: $0.00
+                        - generic [ref=e649]: in 2.6M · out 25.1k
+                        - generic [ref=e650]: 0 api · 2 subscription
+                    - generic [ref=e652] [cursor=pointer]:
+                      - generic [ref=e653]:
+                        - img [ref=e654]
+                        - generic [ref=e656]:
+                          - generic [ref=e658]: XE
+                          - generic [ref=e659]: XCUITest Engineer
+                      - generic [ref=e660]:
+                        - generic [ref=e661]: $0.00
+                        - generic [ref=e662]: in 2.2M · out 18.8k
+                        - generic [ref=e663]: 0 api · 2 subscription
+                    - generic [ref=e665] [cursor=pointer]:
+                      - generic [ref=e666]:
+                        - img [ref=e667]
+                        - generic [ref=e669]:
+                          - generic [ref=e671]: CA
+                          - generic [ref=e672]: Crash Monitor Agent
+                      - generic [ref=e673]:
+                        - generic [ref=e674]: $0.00
+                        - generic [ref=e675]: in 275.2k · out 2.3k
+                        - generic [ref=e676]: 0 api · 1 subscription
+                    - generic [ref=e678] [cursor=pointer]:
+                      - generic [ref=e679]:
+                        - img [ref=e680]
+                        - generic [ref=e682]:
+                          - generic [ref=e684]: DC
+                          - generic [ref=e685]: DirtSync COO
+                      - generic [ref=e686]:
+                        - generic [ref=e687]: $0.00
+                        - generic [ref=e688]: in 250.2k · out 5.0k
+                        - generic [ref=e689]: 0 api · 1 subscription
+                    - generic [ref=e691] [cursor=pointer]:
+                      - generic [ref=e692]:
+                        - img [ref=e693]
+                        - generic [ref=e695]:
+                          - generic [ref=e697]: TE
+                          - generic [ref=e698]: Trail Data Expert
+                      - generic [ref=e699]:
+                        - generic [ref=e700]: $0.00
+                        - generic [ref=e701]: in 4.8M · out 33.5k
+                        - generic [ref=e702]: 0 api · 2 subscription
+                    - generic [ref=e704] [cursor=pointer]:
+                      - generic [ref=e705]:
+                        - img [ref=e706]
+                        - generic [ref=e708]:
+                          - generic [ref=e710]: LA
+                          - generic [ref=e711]: Learning Extractor Agent
+                      - generic [ref=e712]:
+                        - generic [ref=e713]: $0.00
+                        - generic [ref=e714]: in 9.6M · out 101.3k
+                        - generic [ref=e715]: 0 api · 11 subscription
+                    - generic [ref=e717] [cursor=pointer]:
+                      - generic [ref=e718]:
+                        - img [ref=e719]
+                        - generic [ref=e721]:
+                          - generic [ref=e723]: SA
+                          - generic [ref=e724]: Simulator QA Agent
+                      - generic [ref=e725]:
+                        - generic [ref=e726]: $0.00
+                        - generic [ref=e727]: in 1.9M · out 24.3k
+                        - generic [ref=e728]: 0 api · 2 subscription
+                    - generic [ref=e730] [cursor=pointer]:
+                      - generic [ref=e731]:
+                        - img [ref=e732]
+                        - generic [ref=e734]:
+                          - generic [ref=e736]: DA
+                          - generic [ref=e737]: Doc Organizer Agent
+                      - generic [ref=e738]:
+                        - generic [ref=e739]: $0.00
+                        - generic [ref=e740]: in 6.5M · out 42.6k
+                        - generic [ref=e741]: 0 api · 12 subscription
+                    - generic [ref=e743] [cursor=pointer]:
+                      - generic [ref=e744]:
+                        - img [ref=e745]
+                        - generic [ref=e747]:
+                          - generic [ref=e749]: TA
+                          - generic [ref=e750]: Trail Data Health Agent
+                      - generic [ref=e751]:
+                        - generic [ref=e752]: $0.00
+                        - generic [ref=e753]: in 1.6M · out 9.6k
+                        - generic [ref=e754]: 0 api · 4 subscription
+                    - generic [ref=e756] [cursor=pointer]:
+                      - generic [ref=e757]:
+                        - img [ref=e758]
+                        - generic [ref=e760]:
+                          - generic [ref=e762]: RE
+                          - generic [ref=e763]: Ride Recording Engineer
+                      - generic [ref=e764]:
+                        - generic [ref=e765]: $0.00
+                        - generic [ref=e766]: in 5.7M · out 40.8k
+                        - generic [ref=e767]: 0 api · 4 subscription
+                    - generic [ref=e769] [cursor=pointer]:
+                      - generic [ref=e770]:
+                        - img [ref=e771]
+                        - generic [ref=e773]:
+                          - generic [ref=e775]: WE
+                          - generic [ref=e776]: Waze Search UI Expert
+                      - generic [ref=e777]:
+                        - generic [ref=e778]: $0.00
+                        - generic [ref=e779]: in 8.3M · out 90.3k
+                        - generic [ref=e780]: 0 api · 6 subscription
+                - generic [ref=e781]:
+                  - generic [ref=e782]:
+                    - generic [ref=e783]:
+                      - generic [ref=e784]: By project
+                      - generic [ref=e785]: Run costs attributed through project-linked issues.
+                    - generic [ref=e787]:
+                      - generic [ref=e788]: DirtSync iOS
+                      - generic [ref=e789]: $0.00
+                  - generic [ref=e790]:
+                    - generic [ref=e791]:
+                      - generic [ref=e792]: Recent financial events
+                      - generic [ref=e793]: Top-ups, fees, credits, commitments, and other non-request charges.
+                    - paragraph [ref=e795]: No finance events yet. Add account-level charges once biller invoices or credits land.
+  - generic [ref=e232]:
+    - heading "Command Palette" [level=2] [ref=e233]
+    - paragraph [ref=e234]: Search for a command to run...

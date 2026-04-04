@@ -1,0 +1,460 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 7 live" [ref=e37] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e49]: 7 live
+              - link "Inbox 15" [ref=e417] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e52]
+                - generic [ref=e55]: Inbox
+                - generic [ref=e419]: "15"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Work
+              - generic [ref=e58]:
+                - link "Issues" [ref=e59] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e61]
+                  - generic [ref=e64]: Issues
+                - link "Routines Beta" [ref=e65] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e67]
+                  - generic [ref=e72]: Routines
+                  - generic [ref=e73]: Beta
+                - link "Goals" [ref=e74] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e76]
+                  - generic [ref=e80]: Goals
+            - generic [ref=e81]:
+              - generic [ref=e83]:
+                - button "Projects" [expanded] [ref=e84]:
+                  - img [ref=e85]
+                  - generic [ref=e87]: Projects
+                - button "New project" [ref=e88]:
+                  - img [ref=e89]
+              - generic [ref=e420]:
+                - button "DirtSync iOS" [ref=e422]:
+                  - link "DirtSync iOS" [ref=e424] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e426]: DirtSync iOS
+                - status [ref=e90]
+            - generic [ref=e91]:
+              - generic [ref=e93]:
+                - button "Agents" [expanded] [ref=e94]:
+                  - img [ref=e95]
+                  - generic [ref=e97]: Agents
+                - button "New agent" [ref=e98]:
+                  - img [ref=e99]
+              - generic [ref=e101]:
+                - link "DirtSync COO" [ref=e102] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo/dashboard
+                  - img [ref=e103]
+                  - generic [ref=e105]: DirtSync COO
+                - link "Build & Test Agent" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent/dashboard
+                  - img [ref=e107]
+                  - generic [ref=e109]: Build & Test Agent
+                - link "Drive Publisher" [ref=e110] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher/dashboard
+                  - img [ref=e111]
+                  - generic [ref=e113]: Drive Publisher
+                - link "HUD Engineer" [ref=e114] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer/dashboard
+                  - img [ref=e115]
+                  - generic [ref=e118]: HUD Engineer
+                - link "Map View Engineer" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer/dashboard
+                  - img [ref=e120]
+                  - generic [ref=e123]: Map View Engineer
+                - link "Navigation Engineer" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer/dashboard
+                  - img [ref=e125]
+                  - generic [ref=e130]: Navigation Engineer
+                - link "QA Rider" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider/dashboard
+                  - img [ref=e132]
+                  - generic [ref=e136]: QA Rider
+                - link "Ride Recording Engineer" [ref=e137] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer/dashboard
+                  - img [ref=e138]
+                  - generic [ref=e141]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e142] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager/dashboard
+                  - img [ref=e143]
+                  - generic [ref=e154]: Routine Manager
+                - link "Ship Engineer" [ref=e155] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer/dashboard
+                  - img [ref=e156]
+                  - generic [ref=e161]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e162] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent/dashboard
+                  - img [ref=e163]
+                  - generic [ref=e166]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e167] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert/dashboard
+                  - img [ref=e168]
+                  - generic [ref=e175]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e176] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert/dashboard
+                  - img [ref=e177]
+                  - generic [ref=e180]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e181] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert/dashboard
+                  - img [ref=e182]
+                  - generic [ref=e185]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 5 live" [ref=e186] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert/dashboard
+                  - img [ref=e187]
+                  - generic [ref=e190]: Waze Search UI Expert
+                  - generic [ref=e195]: 5 live
+                - link "XCUITest Engineer" [ref=e196] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer/dashboard
+                  - img [ref=e197]
+                  - generic [ref=e200]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e201] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent/dashboard
+                  - img [ref=e202]
+                  - generic [ref=e204]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e205] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent/dashboard
+                  - img [ref=e206]
+                  - generic [ref=e214]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e215] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent/dashboard
+                  - img [ref=e216]
+                  - generic [ref=e219]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e220] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent/dashboard
+                  - img [ref=e221]
+                  - generic [ref=e230]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e231] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent/dashboard
+                  - img [ref=e232]
+                  - generic [ref=e241]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e242] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent/dashboard
+                  - img [ref=e243]
+                  - generic [ref=e248]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e249] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent/dashboard
+                  - img [ref=e250]
+                  - generic [ref=e253]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e254] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent/dashboard
+                  - img [ref=e255]
+                  - generic [ref=e263]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e264] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent/dashboard
+                  - img [ref=e265]
+                  - generic [ref=e269]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e270] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent/dashboard
+                  - img [ref=e271]
+                  - generic [ref=e274]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e275] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent/dashboard
+                  - img [ref=e276]
+                  - generic [ref=e279]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e280] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent/dashboard
+                  - img [ref=e281]
+                  - generic [ref=e284]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e285] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent/dashboard
+                  - img [ref=e286]
+                  - generic [ref=e293]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e294] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent/dashboard
+                  - img [ref=e295]
+                  - generic [ref=e298]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e299] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent/dashboard
+                  - img [ref=e300]
+                  - generic [ref=e304]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e305] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent/dashboard
+                  - img [ref=e306]
+                  - generic [ref=e309]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e310] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent/dashboard
+                  - img [ref=e311]
+                  - generic [ref=e315]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e316] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent/dashboard
+                  - img [ref=e317]
+                  - generic [ref=e322]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e323] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent/dashboard
+                  - img [ref=e324]
+                  - generic [ref=e328]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e329] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent/dashboard
+                  - img [ref=e330]
+                  - generic [ref=e333]: Valhalla Health Agent
+            - generic [ref=e334]:
+              - generic [ref=e335]: Company
+              - generic [ref=e336]:
+                - link "Org" [ref=e337] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e339]
+                  - generic [ref=e344]: Org
+                - link "Skills" [ref=e345] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e347]
+                  - generic [ref=e357]: Skills
+                - link "Costs" [ref=e358] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e360]
+                  - generic [ref=e362]: Costs
+                - link "Activity" [ref=e363] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e365]
+                  - generic [ref=e369]: Activity
+                - link "Settings" [ref=e370] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e372]
+                  - generic [ref=e375]: Settings
+      - generic [ref=e377]:
+        - link "Documentation" [ref=e378] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e379]
+          - generic [ref=e381]: Documentation
+        - generic [ref=e382]: v
+        - link "Instance settings" [ref=e383] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e384]:
+          - img
+    - generic [ref=e385]:
+      - navigation "breadcrumb" [ref=e836]:
+        - list [ref=e837]:
+          - listitem [ref=e838]:
+            - link "Agents" [ref=e839] [cursor=pointer]:
+              - /url: /DIRA/agents
+          - listitem [ref=e840]:
+            - img [ref=e841]
+          - listitem [ref=e843]:
+            - link "DirtSync COO" [disabled] [ref=e844]
+      - main [ref=e391]:
+        - generic [ref=e845]:
+          - generic [ref=e846]:
+            - generic [ref=e847]:
+              - button [ref=e848]:
+                - img [ref=e849]
+              - generic [ref=e851]:
+                - heading "DirtSync COO" [level=2] [ref=e852]
+                - paragraph [ref=e853]: CEO
+            - generic [ref=e854]:
+              - button "Assign Task" [ref=e855]:
+                - img
+                - generic [ref=e856]: Assign Task
+              - button "Run Heartbeat" [ref=e857]:
+                - img
+                - generic [ref=e858]: Run Heartbeat
+              - button "Pause" [ref=e859]:
+                - img
+                - generic [ref=e860]: Pause
+              - generic [ref=e862]: active
+              - button [ref=e863]:
+                - img
+          - tablist [ref=e865]:
+            - tab "Dashboard" [selected] [ref=e866]
+            - tab "Instructions" [ref=e867]
+            - tab "Skills" [ref=e868]
+            - tab "Configuration" [ref=e869]
+            - tab "Runs" [ref=e870]
+            - tab "Budget" [ref=e871]
+          - generic:
+            - generic:
+              - button "Cancel"
+              - button "Save"
+          - generic [ref=e872]:
+            - generic [ref=e873]:
+              - generic [ref=e874]:
+                - heading "Latest Run" [level=3] [ref=e875]
+                - link "View details →" [ref=e876] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo/runs/0fb4280e-3b90-4543-b46b-b2b4a0ae41fd
+              - link "succeeded 0fb4280e Assignment 2h ago Standing by for your direction, Steve. What do you want me to prioritize?" [ref=e877] [cursor=pointer]:
+                - /url: /DIRA/agents/dirtsync-coo/runs/0fb4280e-3b90-4543-b46b-b2b4a0ae41fd
+                - generic [ref=e878]:
+                  - img [ref=e879]
+                  - generic [ref=e882]: succeeded
+                  - generic [ref=e883]: 0fb4280e
+                  - generic [ref=e884]: Assignment
+                  - generic [ref=e885]: 2h ago
+                - paragraph [ref=e888]: Standing by for your direction, Steve. What do you want me to prioritize?
+            - generic [ref=e889]:
+              - generic [ref=e890]:
+                - generic [ref=e891]:
+                  - heading "Run Activity" [level=3] [ref=e892]
+                  - text: Last 14 days
+                - generic [ref=e893]:
+                  - generic [ref=e894]:
+                    - 'generic "2026-03-22: 0 runs" [ref=e895]'
+                    - 'generic "2026-03-23: 0 runs" [ref=e897]'
+                    - 'generic "2026-03-24: 0 runs" [ref=e899]'
+                    - 'generic "2026-03-25: 0 runs" [ref=e901]'
+                    - 'generic "2026-03-26: 0 runs" [ref=e903]'
+                    - 'generic "2026-03-27: 0 runs" [ref=e905]'
+                    - 'generic "2026-03-28: 0 runs" [ref=e907]'
+                    - 'generic "2026-03-29: 0 runs" [ref=e909]'
+                    - 'generic "2026-03-30: 0 runs" [ref=e911]'
+                    - 'generic "2026-03-31: 0 runs" [ref=e913]'
+                    - 'generic "2026-04-01: 0 runs" [ref=e915]'
+                    - 'generic "2026-04-02: 0 runs" [ref=e917]'
+                    - 'generic "2026-04-03: 1 runs" [ref=e919]'
+                    - 'generic "2026-04-04: 0 runs" [ref=e922]'
+                  - generic [ref=e924]:
+                    - generic [ref=e925]: 3/22
+                    - generic [ref=e931]: 3/28
+                    - generic [ref=e938]: 4/4
+              - generic [ref=e939]:
+                - generic [ref=e940]:
+                  - heading "Issues by Priority" [level=3] [ref=e941]
+                  - text: Last 14 days
+                - generic [ref=e942]:
+                  - generic [ref=e943]:
+                    - 'generic "2026-03-22: 0 issues" [ref=e944]'
+                    - 'generic "2026-03-23: 0 issues" [ref=e946]'
+                    - 'generic "2026-03-24: 0 issues" [ref=e948]'
+                    - 'generic "2026-03-25: 0 issues" [ref=e950]'
+                    - 'generic "2026-03-26: 0 issues" [ref=e952]'
+                    - 'generic "2026-03-27: 0 issues" [ref=e954]'
+                    - 'generic "2026-03-28: 0 issues" [ref=e956]'
+                    - 'generic "2026-03-29: 0 issues" [ref=e958]'
+                    - 'generic "2026-03-30: 0 issues" [ref=e960]'
+                    - 'generic "2026-03-31: 0 issues" [ref=e962]'
+                    - 'generic "2026-04-01: 0 issues" [ref=e964]'
+                    - 'generic "2026-04-02: 0 issues" [ref=e966]'
+                    - 'generic "2026-04-03: 1 issues" [ref=e968]'
+                    - 'generic "2026-04-04: 0 issues" [ref=e971]'
+                  - generic [ref=e973]:
+                    - generic [ref=e974]: 3/22
+                    - generic [ref=e980]: 3/28
+                    - generic [ref=e987]: 4/4
+                  - generic [ref=e988]:
+                    - generic [ref=e989]: Critical
+                    - generic [ref=e991]: High
+                    - generic [ref=e993]: Medium
+                    - generic [ref=e995]: Low
+              - generic [ref=e997]:
+                - generic [ref=e998]:
+                  - heading "Issues by Status" [level=3] [ref=e999]
+                  - text: Last 14 days
+                - generic [ref=e1000]:
+                  - generic [ref=e1001]:
+                    - 'generic "2026-03-22: 0 issues" [ref=e1002]'
+                    - 'generic "2026-03-23: 0 issues" [ref=e1004]'
+                    - 'generic "2026-03-24: 0 issues" [ref=e1006]'
+                    - 'generic "2026-03-25: 0 issues" [ref=e1008]'
+                    - 'generic "2026-03-26: 0 issues" [ref=e1010]'
+                    - 'generic "2026-03-27: 0 issues" [ref=e1012]'
+                    - 'generic "2026-03-28: 0 issues" [ref=e1014]'
+                    - 'generic "2026-03-29: 0 issues" [ref=e1016]'
+                    - 'generic "2026-03-30: 0 issues" [ref=e1018]'
+                    - 'generic "2026-03-31: 0 issues" [ref=e1020]'
+                    - 'generic "2026-04-01: 0 issues" [ref=e1022]'
+                    - 'generic "2026-04-02: 0 issues" [ref=e1024]'
+                    - 'generic "2026-04-03: 1 issues" [ref=e1026]'
+                    - 'generic "2026-04-04: 0 issues" [ref=e1029]'
+                  - generic [ref=e1031]:
+                    - generic [ref=e1032]: 3/22
+                    - generic [ref=e1038]: 3/28
+                    - generic [ref=e1045]: 4/4
+                  - generic [ref=e1047]: To Do
+              - generic [ref=e1049]:
+                - generic [ref=e1050]:
+                  - heading "Success Rate" [level=3] [ref=e1051]
+                  - text: Last 14 days
+                - generic [ref=e1052]:
+                  - generic [ref=e1053]:
+                    - 'generic "2026-03-22: 0% (0/0)" [ref=e1054]'
+                    - 'generic "2026-03-23: 0% (0/0)" [ref=e1056]'
+                    - 'generic "2026-03-24: 0% (0/0)" [ref=e1058]'
+                    - 'generic "2026-03-25: 0% (0/0)" [ref=e1060]'
+                    - 'generic "2026-03-26: 0% (0/0)" [ref=e1062]'
+                    - 'generic "2026-03-27: 0% (0/0)" [ref=e1064]'
+                    - 'generic "2026-03-28: 0% (0/0)" [ref=e1066]'
+                    - 'generic "2026-03-29: 0% (0/0)" [ref=e1068]'
+                    - 'generic "2026-03-30: 0% (0/0)" [ref=e1070]'
+                    - 'generic "2026-03-31: 0% (0/0)" [ref=e1072]'
+                    - 'generic "2026-04-01: 0% (0/0)" [ref=e1074]'
+                    - 'generic "2026-04-02: 0% (0/0)" [ref=e1076]'
+                    - 'generic "2026-04-03: 100% (1/1)" [ref=e1078]'
+                    - 'generic "2026-04-04: 0% (0/0)" [ref=e1080]'
+                  - generic [ref=e1082]:
+                    - generic [ref=e1083]: 3/22
+                    - generic [ref=e1089]: 3/28
+                    - generic [ref=e1096]: 4/4
+            - generic [ref=e1097]:
+              - generic [ref=e1098]:
+                - heading "Recent Issues" [level=3] [ref=e1099]
+                - link "See All →" [ref=e1100] [cursor=pointer]:
+                  - /url: /DIRA/issues?participantAgentId=7ed75955-73dd-4fcd-b9a5-7f20841e90de
+              - link "DIRA-85 Audit and finalize 3 Waze UI Expert agents for production readiness todo" [ref=e1102] [cursor=pointer]:
+                - /url: /DIRA/issues/DIRA-85
+                - generic [ref=e1104]:
+                  - generic [ref=e1105]: DIRA-85
+                  - generic [ref=e1106]: Audit and finalize 3 Waze UI Expert agents for production readiness
+                - generic [ref=e1108]: todo
+            - generic [ref=e1109]:
+              - heading "Costs" [level=3] [ref=e1110]
+              - generic [ref=e1111]:
+                - generic [ref=e1113]:
+                  - generic [ref=e1114]:
+                    - generic [ref=e1115]: Input tokens
+                    - text: 2.0k
+                  - generic [ref=e1116]:
+                    - generic [ref=e1117]: Output tokens
+                    - text: 5.0k
+                  - generic [ref=e1118]:
+                    - generic [ref=e1119]: Cached tokens
+                    - text: 248.2k
+                  - generic [ref=e1120]:
+                    - generic [ref=e1121]: Total cost
+                    - text: $0.00
+                - table [ref=e1123]:
+                  - rowgroup [ref=e1124]:
+                    - row "Date Run Input Output Cost" [ref=e1125]:
+                      - columnheader "Date" [ref=e1126]
+                      - columnheader "Run" [ref=e1127]
+                      - columnheader "Input" [ref=e1128]
+                      - columnheader "Output" [ref=e1129]
+                      - columnheader "Cost" [ref=e1130]
+                  - rowgroup [ref=e1131]:
+                    - row "Apr 3, 2026 0fb4280e 2.0k 5.0k -" [ref=e1132]:
+                      - cell "Apr 3, 2026" [ref=e1133]
+                      - cell "0fb4280e" [ref=e1134]
+                      - cell "2.0k" [ref=e1135]
+                      - cell "5.0k" [ref=e1136]
+                      - cell "-" [ref=e1137]
+  - generic [ref=e414]:
+    - heading "Command Palette" [level=2] [ref=e415]
+    - paragraph [ref=e416]: Search for a command to run...

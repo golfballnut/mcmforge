@@ -1,0 +1,277 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e17]:
+                  - img [ref=e18]
+                  - generic [ref=e19]: D
+            - status [ref=e20]
+          - button "Add company" [ref=e23]:
+            - img [ref=e24]
+        - complementary [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: DirtSync
+            - button [ref=e29]:
+              - img
+          - navigation [ref=e30]:
+            - generic [ref=e31]:
+              - button "New Issue" [ref=e32]:
+                - img [ref=e33]
+                - generic [ref=e36]: New Issue
+              - link "Dashboard 6 live" [ref=e170] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e39]
+                - generic [ref=e44]: Dashboard
+                - generic [ref=e175]: 6 live
+              - link "Inbox 15" [ref=e176] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e47]
+                - generic [ref=e50]: Inbox
+                - generic [ref=e178]: "15"
+            - generic [ref=e51]:
+              - generic [ref=e52]: Work
+              - generic [ref=e53]:
+                - link "Issues" [ref=e54] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e56]
+                  - generic [ref=e59]: Issues
+                - link "Routines Beta" [ref=e60] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e62]
+                  - generic [ref=e67]: Routines
+                  - generic [ref=e68]: Beta
+                - link "Goals" [ref=e69] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e71]
+                  - generic [ref=e75]: Goals
+            - generic [ref=e76]:
+              - generic [ref=e78]:
+                - button "Projects" [expanded] [ref=e79]:
+                  - img [ref=e80]
+                  - generic [ref=e82]: Projects
+                - button "New project" [ref=e83]:
+                  - img [ref=e84]
+              - generic [ref=e179]:
+                - button "DirtSync iOS" [ref=e181]:
+                  - link "DirtSync iOS" [ref=e183] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e185]: DirtSync iOS
+                - status [ref=e85]
+            - generic [ref=e86]:
+              - generic [ref=e88]:
+                - button "Agents" [expanded] [ref=e89]:
+                  - img [ref=e90]
+                  - generic [ref=e92]: Agents
+                - button "New agent" [ref=e93]:
+                  - img [ref=e94]
+              - generic [ref=e187]:
+                - link "DirtSync COO" [ref=e188] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e189]
+                  - generic [ref=e191]: DirtSync COO
+                - link "Build & Test Agent" [ref=e192] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e193]
+                  - generic [ref=e195]: Build & Test Agent
+                - link "Drive Publisher" [ref=e196] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e197]
+                  - generic [ref=e199]: Drive Publisher
+                - link "HUD Engineer" [ref=e200] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e201]
+                  - generic [ref=e204]: HUD Engineer
+                - link "Map View Engineer" [ref=e205] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e206]
+                  - generic [ref=e209]: Map View Engineer
+                - link "Navigation Engineer" [ref=e210] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e211]
+                  - generic [ref=e216]: Navigation Engineer
+                - link "QA Rider" [ref=e217] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e218]
+                  - generic [ref=e222]: QA Rider
+                - link "Ride Recording Engineer" [ref=e223] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e224]
+                  - generic [ref=e227]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e228] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e229]
+                  - generic [ref=e240]: Routine Manager
+                - link "Ship Engineer" [ref=e241] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e242]
+                  - generic [ref=e247]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e248] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e249]
+                  - generic [ref=e252]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e253] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e254]
+                  - generic [ref=e261]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e262] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e263]
+                  - generic [ref=e266]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e267] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e268]
+                  - generic [ref=e271]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 4 live" [ref=e272] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e273]
+                  - generic [ref=e276]: Waze Search UI Expert
+                  - generic [ref=e281]: 4 live
+                - link "XCUITest Engineer" [ref=e282] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e283]
+                  - generic [ref=e286]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e287] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e288]
+                  - generic [ref=e290]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e291] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e292]
+                  - generic [ref=e300]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e301] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e302]
+                  - generic [ref=e305]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e306] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e307]
+                  - generic [ref=e316]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e317] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e318]
+                  - generic [ref=e327]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e328] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e329]
+                  - generic [ref=e334]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e335] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e336]
+                  - generic [ref=e339]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e340] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e341]
+                  - generic [ref=e349]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e350] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e351]
+                  - generic [ref=e355]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e356] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e357]
+                  - generic [ref=e360]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e361] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e362]
+                  - generic [ref=e365]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e366] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e367]
+                  - generic [ref=e370]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e371] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e372]
+                  - generic [ref=e379]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e380] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e381]
+                  - generic [ref=e384]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e385] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e386]
+                  - generic [ref=e390]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e391] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e392]
+                  - generic [ref=e395]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e396] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e397]
+                  - generic [ref=e401]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e402] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e403]
+                  - generic [ref=e408]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e409] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e410]
+                  - generic [ref=e414]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e415] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e416]
+                  - generic [ref=e419]: Valhalla Health Agent
+            - generic [ref=e95]:
+              - generic [ref=e96]: Company
+              - generic [ref=e97]:
+                - link "Org" [ref=e98] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e100]
+                  - generic [ref=e105]: Org
+                - link "Skills" [ref=e106] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e108]
+                  - generic [ref=e118]: Skills
+                - link "Costs" [ref=e119] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e121]
+                  - generic [ref=e123]: Costs
+                - link "Activity" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e126]
+                  - generic [ref=e130]: Activity
+                - link "Settings" [ref=e131] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e133]
+                  - generic [ref=e136]: Settings
+      - generic [ref=e138]:
+        - link "Documentation" [ref=e139] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e140]
+          - generic [ref=e142]: Documentation
+        - generic [ref=e143]: v
+        - link "Instance settings" [ref=e144] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e145]:
+          - img
+    - generic [ref=e146]:
+      - heading "Goals" [level=1] [ref=e150]
+      - main [ref=e152]:
+        - generic [ref=e420]:
+          - button "New Goal" [ref=e422]:
+            - img
+            - text: New Goal
+          - generic [ref=e424]:
+            - link "company Launch DirtSync on App Store with 4.5+ rating active" [ref=e425] [cursor=pointer]:
+              - /url: /DIRA/goals/e41cea9d-e704-4ac4-9f03-c634921cc8cf
+              - button [ref=e426]:
+                - img [ref=e427]
+              - generic [ref=e429]: company
+              - generic [ref=e430]: Launch DirtSync on App Store with 4.5+ rating
+              - generic [ref=e431]: active
+            - link "company Build best-in-class trail navigation HUD active" [ref=e434] [cursor=pointer]:
+              - /url: /DIRA/goals/28643cd6-58c4-4e5a-a542-f4d490e592b8
+              - generic [ref=e435]: company
+              - generic [ref=e436]: Build best-in-class trail navigation HUD
+              - generic [ref=e437]: active
+  - generic [ref=e167]:
+    - heading "Command Palette" [level=2] [ref=e168]
+    - paragraph [ref=e169]: Search for a command to run...

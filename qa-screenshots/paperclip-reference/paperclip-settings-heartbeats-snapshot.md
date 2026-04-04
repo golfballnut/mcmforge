@@ -1,0 +1,654 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e13]:
+              - link "D" [ref=e14] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e16]:
+                  - img [ref=e17]
+                  - generic [ref=e18]: D
+            - status [ref=e19]
+          - button "Add company" [ref=e22]:
+            - img [ref=e23]
+        - complementary [ref=e25]:
+          - generic [ref=e26]:
+            - img [ref=e27]
+            - generic [ref=e30]: Instance Settings
+          - navigation [ref=e31]:
+            - generic [ref=e32]:
+              - link "General" [ref=e33] [cursor=pointer]:
+                - /url: /instance/settings/general
+                - img [ref=e35]
+                - generic [ref=e36]: General
+              - link "Heartbeats" [ref=e37] [cursor=pointer]:
+                - /url: /instance/settings/heartbeats
+                - img [ref=e39]
+                - generic [ref=e42]: Heartbeats
+              - link "Experimental" [ref=e43] [cursor=pointer]:
+                - /url: /instance/settings/experimental
+                - img [ref=e45]
+                - generic [ref=e47]: Experimental
+              - link "Plugins" [ref=e48] [cursor=pointer]:
+                - /url: /instance/settings/plugins
+                - img [ref=e50]
+                - generic [ref=e52]: Plugins
+      - generic [ref=e54]:
+        - link "Documentation" [ref=e55] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e56]
+          - generic [ref=e58]: Documentation
+        - generic [ref=e59]: v
+        - link "Instance settings" [ref=e60] [cursor=pointer]:
+          - /url: /instance/settings/heartbeats
+          - img
+        - button "Switch to light mode" [ref=e61]:
+          - img
+    - generic [ref=e62]:
+      - navigation "breadcrumb" [ref=e66]:
+        - list [ref=e67]:
+          - listitem [ref=e68]:
+            - link "Instance Settings" [disabled] [ref=e69]
+          - listitem [ref=e70]:
+            - img [ref=e71]
+          - listitem [ref=e73]:
+            - link "Heartbeats" [disabled] [ref=e74]
+      - main [ref=e76]:
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - img [ref=e80]
+              - heading "Scheduler Heartbeats" [level=1] [ref=e83]
+            - paragraph [ref=e84]: Agents with a timer heartbeat enabled across all of your companies.
+          - generic [ref=e85]:
+            - generic [ref=e86]: 1 active
+            - generic [ref=e87]: 46 disabled
+            - generic [ref=e88]: 5 companies
+            - button "Disable All" [ref=e89]
+          - generic [ref=e90]:
+            - generic [ref=e92]:
+              - generic [ref=e93]: DirtSync
+              - generic [ref=e95]:
+                - generic [ref=e96]: "On"
+                - link "CTO" [ref=e97] [cursor=pointer]:
+                  - /url: /DIR/agents/cto
+                - generic [ref=e98]: Chief Technology Officer
+                - generic [ref=e99]: 1800s
+                - generic "Apr 3, 2026, 8:07 PM" [ref=e100]: 27m ago
+                - generic [ref=e101]:
+                  - link "Full agent config" [ref=e102] [cursor=pointer]:
+                    - /url: /DIR/agents/cto
+                    - img [ref=e103]
+                  - button "Disable Timer Heartbeat" [ref=e107]
+            - generic [ref=e109]:
+              - generic [ref=e110]: DirtSync
+              - generic [ref=e111]:
+                - generic [ref=e112]:
+                  - generic [ref=e113]: "Off"
+                  - link "App Store Readiness Agent" [ref=e114] [cursor=pointer]:
+                    - /url: /DIRA/agents/app-store-readiness-agent
+                  - generic [ref=e115]: general
+                  - generic [ref=e116]: 0s
+                  - generic [ref=e117]: never
+                  - generic [ref=e118]:
+                    - link "Full agent config" [ref=e119] [cursor=pointer]:
+                      - /url: /DIRA/agents/app-store-readiness-agent
+                      - img [ref=e120]
+                    - button "Disable Timer Heartbeat" [ref=e124]
+                - generic [ref=e125]:
+                  - generic [ref=e126]: "Off"
+                  - link "Build & Test Agent" [ref=e127] [cursor=pointer]:
+                    - /url: /DIRA/agents/build-test-agent
+                  - generic [ref=e128]: qa
+                  - generic [ref=e129]: 0s
+                  - generic "Apr 3, 2026, 12:37 PM" [ref=e130]: 8h ago
+                  - generic [ref=e131]:
+                    - link "Full agent config" [ref=e132] [cursor=pointer]:
+                      - /url: /DIRA/agents/build-test-agent
+                      - img [ref=e133]
+                    - button "Disable Timer Heartbeat" [ref=e137]
+                - generic [ref=e138]:
+                  - generic [ref=e139]: "Off"
+                  - link "Claude AI Scanner Agent" [ref=e140] [cursor=pointer]:
+                    - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - generic [ref=e141]: general
+                  - generic [ref=e142]: 0s
+                  - generic [ref=e143]: never
+                  - generic [ref=e144]:
+                    - link "Full agent config" [ref=e145] [cursor=pointer]:
+                      - /url: /DIRA/agents/claude-ai-scanner-agent
+                      - img [ref=e146]
+                    - button "Disable Timer Heartbeat" [ref=e150]
+                - generic [ref=e151]:
+                  - generic [ref=e152]: "Off"
+                  - link "Competitor Watch Agent" [ref=e153] [cursor=pointer]:
+                    - /url: /DIRA/agents/competitor-watch-agent
+                  - generic [ref=e154]: general
+                  - generic [ref=e155]: 0s
+                  - generic [ref=e156]: never
+                  - generic [ref=e157]:
+                    - link "Full agent config" [ref=e158] [cursor=pointer]:
+                      - /url: /DIRA/agents/competitor-watch-agent
+                      - img [ref=e159]
+                    - button "Disable Timer Heartbeat" [ref=e163]
+                - generic [ref=e164]:
+                  - generic [ref=e165]: "Off"
+                  - link "Crash Monitor Agent" [ref=e166] [cursor=pointer]:
+                    - /url: /DIRA/agents/crash-monitor-agent
+                  - generic [ref=e167]: general
+                  - generic [ref=e168]: 0s
+                  - generic "Apr 3, 2026, 9:06 AM" [ref=e169]: 11h ago
+                  - generic [ref=e170]:
+                    - link "Full agent config" [ref=e171] [cursor=pointer]:
+                      - /url: /DIRA/agents/crash-monitor-agent
+                      - img [ref=e172]
+                    - button "Disable Timer Heartbeat" [ref=e176]
+                - generic [ref=e177]:
+                  - generic [ref=e178]: "Off"
+                  - link "Difficulty Calibration Agent" [ref=e179] [cursor=pointer]:
+                    - /url: /DIRA/agents/difficulty-calibration-agent
+                  - generic [ref=e180]: general
+                  - generic [ref=e181]: 0s
+                  - generic [ref=e182]: never
+                  - generic [ref=e183]:
+                    - link "Full agent config" [ref=e184] [cursor=pointer]:
+                      - /url: /DIRA/agents/difficulty-calibration-agent
+                      - img [ref=e185]
+                    - button "Disable Timer Heartbeat" [ref=e189]
+                - generic [ref=e190]:
+                  - generic [ref=e191]: "Off"
+                  - link "DirtSync COO" [ref=e192] [cursor=pointer]:
+                    - /url: /DIRA/agents/dirtsync-coo
+                  - generic [ref=e193]: ceo
+                  - generic [ref=e194]: 0s
+                  - generic "Apr 3, 2026, 6:58 PM" [ref=e195]: 2h ago
+                  - generic [ref=e196]:
+                    - link "Full agent config" [ref=e197] [cursor=pointer]:
+                      - /url: /DIRA/agents/dirtsync-coo
+                      - img [ref=e198]
+                    - button "Disable Timer Heartbeat" [ref=e202]
+                - generic [ref=e203]:
+                  - generic [ref=e204]: "Off"
+                  - link "Doc Organizer Agent" [ref=e205] [cursor=pointer]:
+                    - /url: /DIRA/agents/doc-organizer-agent
+                  - generic [ref=e206]: general
+                  - generic [ref=e207]: 0s
+                  - generic "Apr 3, 2026, 8:31 PM" [ref=e208]: 2m ago
+                  - generic [ref=e209]:
+                    - link "Full agent config" [ref=e210] [cursor=pointer]:
+                      - /url: /DIRA/agents/doc-organizer-agent
+                      - img [ref=e211]
+                    - button "Disable Timer Heartbeat" [ref=e215]
+                - generic [ref=e216]:
+                  - generic [ref=e217]: "Off"
+                  - link "Drive Publisher" [ref=e218] [cursor=pointer]:
+                    - /url: /DIRA/agents/drive-publisher
+                  - generic [ref=e219]: general
+                  - generic [ref=e220]: 0s
+                  - generic [ref=e221]: never
+                  - generic [ref=e222]:
+                    - link "Full agent config" [ref=e223] [cursor=pointer]:
+                      - /url: /DIRA/agents/drive-publisher
+                      - img [ref=e224]
+                    - button "Disable Timer Heartbeat" [ref=e228]
+                - generic [ref=e229]:
+                  - generic [ref=e230]: "Off"
+                  - link "Feature Usage Agent" [ref=e231] [cursor=pointer]:
+                    - /url: /DIRA/agents/feature-usage-agent
+                  - generic [ref=e232]: general
+                  - generic [ref=e233]: 0s
+                  - generic [ref=e234]: never
+                  - generic [ref=e235]:
+                    - link "Full agent config" [ref=e236] [cursor=pointer]:
+                      - /url: /DIRA/agents/feature-usage-agent
+                      - img [ref=e237]
+                    - button "Disable Timer Heartbeat" [ref=e241]
+                - generic [ref=e242]:
+                  - generic [ref=e243]: "Off"
+                  - link "Learning Extractor Agent" [ref=e244] [cursor=pointer]:
+                    - /url: /DIRA/agents/learning-extractor-agent
+                  - generic [ref=e245]: general
+                  - generic [ref=e246]: 0s
+                  - generic "Apr 3, 2026, 8:04 PM" [ref=e247]: 30m ago
+                  - generic [ref=e248]:
+                    - link "Full agent config" [ref=e249] [cursor=pointer]:
+                      - /url: /DIRA/agents/learning-extractor-agent
+                      - img [ref=e250]
+                    - button "Disable Timer Heartbeat" [ref=e254]
+                - generic [ref=e255]:
+                  - generic [ref=e256]: "Off"
+                  - link "Map View Engineer" [ref=e257] [cursor=pointer]:
+                    - /url: /DIRA/agents/map-view-engineer
+                  - generic [ref=e258]: engineer
+                  - generic [ref=e259]: 0s
+                  - generic "Apr 3, 2026, 2:48 PM" [ref=e260]: 6h ago
+                  - generic [ref=e261]:
+                    - link "Full agent config" [ref=e262] [cursor=pointer]:
+                      - /url: /DIRA/agents/map-view-engineer
+                      - img [ref=e263]
+                    - button "Disable Timer Heartbeat" [ref=e267]
+                - generic [ref=e268]:
+                  - generic [ref=e269]: "Off"
+                  - link "MBTiles Sync Agent" [ref=e270] [cursor=pointer]:
+                    - /url: /DIRA/agents/mbtiles-sync-agent
+                  - generic [ref=e271]: general
+                  - generic [ref=e272]: 0s
+                  - generic [ref=e273]: never
+                  - generic [ref=e274]:
+                    - link "Full agent config" [ref=e275] [cursor=pointer]:
+                      - /url: /DIRA/agents/mbtiles-sync-agent
+                      - img [ref=e276]
+                    - button "Disable Timer Heartbeat" [ref=e280]
+                - generic [ref=e281]:
+                  - generic [ref=e282]: "Off"
+                  - link "Morning Agenda Agent" [ref=e283] [cursor=pointer]:
+                    - /url: /DIRA/agents/morning-agenda-agent
+                  - generic [ref=e284]: general
+                  - generic [ref=e285]: 0s
+                  - generic "Apr 3, 2026, 6:54 PM" [ref=e286]: 2h ago
+                  - generic [ref=e287]:
+                    - link "Full agent config" [ref=e288] [cursor=pointer]:
+                      - /url: /DIRA/agents/morning-agenda-agent
+                      - img [ref=e289]
+                    - button "Disable Timer Heartbeat" [ref=e293]
+                - generic [ref=e294]:
+                  - generic [ref=e295]: "Off"
+                  - link "Navigation Engineer" [ref=e296] [cursor=pointer]:
+                    - /url: /DIRA/agents/navigation-engineer
+                  - generic [ref=e297]: engineer
+                  - generic [ref=e298]: 0s
+                  - generic "Apr 3, 2026, 2:47 PM" [ref=e299]: 6h ago
+                  - generic [ref=e300]:
+                    - link "Full agent config" [ref=e301] [cursor=pointer]:
+                      - /url: /DIRA/agents/navigation-engineer
+                      - img [ref=e302]
+                    - button "Disable Timer Heartbeat" [ref=e306]
+                - generic [ref=e307]:
+                  - generic [ref=e308]: "Off"
+                  - link "New Trail Scanner Agent" [ref=e309] [cursor=pointer]:
+                    - /url: /DIRA/agents/new-trail-scanner-agent
+                  - generic [ref=e310]: general
+                  - generic [ref=e311]: 0s
+                  - generic [ref=e312]: never
+                  - generic [ref=e313]:
+                    - link "Full agent config" [ref=e314] [cursor=pointer]:
+                      - /url: /DIRA/agents/new-trail-scanner-agent
+                      - img [ref=e315]
+                    - button "Disable Timer Heartbeat" [ref=e319]
+                - generic [ref=e320]:
+                  - generic [ref=e321]: "Off"
+                  - link "OSM Monitor Agent" [ref=e322] [cursor=pointer]:
+                    - /url: /DIRA/agents/osm-monitor-agent
+                  - generic [ref=e323]: general
+                  - generic [ref=e324]: 0s
+                  - generic [ref=e325]: never
+                  - generic [ref=e326]:
+                    - link "Full agent config" [ref=e327] [cursor=pointer]:
+                      - /url: /DIRA/agents/osm-monitor-agent
+                      - img [ref=e328]
+                    - button "Disable Timer Heartbeat" [ref=e332]
+                - generic [ref=e333]:
+                  - generic [ref=e334]: "Off"
+                  - link "POI Freshness Agent" [ref=e335] [cursor=pointer]:
+                    - /url: /DIRA/agents/poi-freshness-agent
+                  - generic [ref=e336]: general
+                  - generic [ref=e337]: 0s
+                  - generic [ref=e338]: never
+                  - generic [ref=e339]:
+                    - link "Full agent config" [ref=e340] [cursor=pointer]:
+                      - /url: /DIRA/agents/poi-freshness-agent
+                      - img [ref=e341]
+                    - button "Disable Timer Heartbeat" [ref=e345]
+                - generic [ref=e346]:
+                  - generic [ref=e347]: "Off"
+                  - link "Revenue Scanner Agent" [ref=e348] [cursor=pointer]:
+                    - /url: /DIRA/agents/revenue-scanner-agent
+                  - generic [ref=e349]: general
+                  - generic [ref=e350]: 0s
+                  - generic [ref=e351]: never
+                  - generic [ref=e352]:
+                    - link "Full agent config" [ref=e353] [cursor=pointer]:
+                      - /url: /DIRA/agents/revenue-scanner-agent
+                      - img [ref=e354]
+                    - button "Disable Timer Heartbeat" [ref=e358]
+                - generic [ref=e359]:
+                  - generic [ref=e360]: "Off"
+                  - link "Ride Audit Agent" [ref=e361] [cursor=pointer]:
+                    - /url: /DIRA/agents/ride-audit-agent
+                  - generic [ref=e362]: general
+                  - generic [ref=e363]: 0s
+                  - generic [ref=e364]: never
+                  - generic [ref=e365]:
+                    - link "Full agent config" [ref=e366] [cursor=pointer]:
+                      - /url: /DIRA/agents/ride-audit-agent
+                      - img [ref=e367]
+                    - button "Disable Timer Heartbeat" [ref=e371]
+                - generic [ref=e372]:
+                  - generic [ref=e373]: "Off"
+                  - link "Ride Recording Engineer" [ref=e374] [cursor=pointer]:
+                    - /url: /DIRA/agents/ride-recording-engineer
+                  - generic [ref=e375]: engineer
+                  - generic [ref=e376]: 0s
+                  - generic "Apr 3, 2026, 11:52 AM" [ref=e377]: 9h ago
+                  - generic [ref=e378]:
+                    - link "Full agent config" [ref=e379] [cursor=pointer]:
+                      - /url: /DIRA/agents/ride-recording-engineer
+                      - img [ref=e380]
+                    - button "Disable Timer Heartbeat" [ref=e384]
+                - generic [ref=e385]:
+                  - generic [ref=e386]: "Off"
+                  - link "Road Network Agent" [ref=e387] [cursor=pointer]:
+                    - /url: /DIRA/agents/road-network-agent
+                  - generic [ref=e388]: general
+                  - generic [ref=e389]: 0s
+                  - generic [ref=e390]: never
+                  - generic [ref=e391]:
+                    - link "Full agent config" [ref=e392] [cursor=pointer]:
+                      - /url: /DIRA/agents/road-network-agent
+                      - img [ref=e393]
+                    - button "Disable Timer Heartbeat" [ref=e397]
+                - generic [ref=e398]:
+                  - generic [ref=e399]: "Off"
+                  - link "Routine Manager" [ref=e400] [cursor=pointer]:
+                    - /url: /DIRA/agents/routine-manager
+                  - generic [ref=e401]: Manages 20 routine agents
+                  - generic [ref=e402]: 0s
+                  - generic [ref=e403]: never
+                  - generic [ref=e404]:
+                    - link "Full agent config" [ref=e405] [cursor=pointer]:
+                      - /url: /DIRA/agents/routine-manager
+                      - img [ref=e406]
+                    - button "Disable Timer Heartbeat" [ref=e410]
+                - generic [ref=e411]:
+                  - generic [ref=e412]: "Off"
+                  - link "SDK Releases Agent" [ref=e413] [cursor=pointer]:
+                    - /url: /DIRA/agents/sdk-releases-agent
+                  - generic [ref=e414]: general
+                  - generic [ref=e415]: 0s
+                  - generic [ref=e416]: never
+                  - generic [ref=e417]:
+                    - link "Full agent config" [ref=e418] [cursor=pointer]:
+                      - /url: /DIRA/agents/sdk-releases-agent
+                      - img [ref=e419]
+                    - button "Disable Timer Heartbeat" [ref=e423]
+                - generic [ref=e424]:
+                  - generic [ref=e425]: "Off"
+                  - link "Simulator QA Agent" [ref=e426] [cursor=pointer]:
+                    - /url: /DIRA/agents/simulator-qa-agent
+                  - generic [ref=e427]: qa
+                  - generic [ref=e428]: 0s
+                  - generic "Apr 3, 2026, 8:00 PM" [ref=e429]: 34m ago
+                  - generic [ref=e430]:
+                    - link "Full agent config" [ref=e431] [cursor=pointer]:
+                      - /url: /DIRA/agents/simulator-qa-agent
+                      - img [ref=e432]
+                    - button "Disable Timer Heartbeat" [ref=e436]
+                - generic [ref=e437]:
+                  - generic [ref=e438]: "Off"
+                  - link "TestFlight Monitor Agent" [ref=e439] [cursor=pointer]:
+                    - /url: /DIRA/agents/testflight-monitor-agent
+                  - generic [ref=e440]: general
+                  - generic [ref=e441]: 0s
+                  - generic [ref=e442]: never
+                  - generic [ref=e443]:
+                    - link "Full agent config" [ref=e444] [cursor=pointer]:
+                      - /url: /DIRA/agents/testflight-monitor-agent
+                      - img [ref=e445]
+                    - button "Disable Timer Heartbeat" [ref=e449]
+                - generic [ref=e450]:
+                  - generic [ref=e451]: "Off"
+                  - link "Trail Data Expert" [ref=e452] [cursor=pointer]:
+                    - /url: /DIRA/agents/trail-data-expert
+                  - generic [ref=e453]: engineer
+                  - generic [ref=e454]: 0s
+                  - generic "Apr 3, 2026, 4:35 PM" [ref=e455]: 4h ago
+                  - generic [ref=e456]:
+                    - link "Full agent config" [ref=e457] [cursor=pointer]:
+                      - /url: /DIRA/agents/trail-data-expert
+                      - img [ref=e458]
+                    - button "Disable Timer Heartbeat" [ref=e462]
+                - generic [ref=e463]:
+                  - generic [ref=e464]: "Off"
+                  - link "Trail Data Health Agent" [ref=e465] [cursor=pointer]:
+                    - /url: /DIRA/agents/trail-data-health-agent
+                  - generic [ref=e466]: Routine — Daily 6am
+                  - generic [ref=e467]: 0s
+                  - generic "Apr 3, 2026, 4:34 PM" [ref=e468]: 4h ago
+                  - generic [ref=e469]:
+                    - link "Full agent config" [ref=e470] [cursor=pointer]:
+                      - /url: /DIRA/agents/trail-data-health-agent
+                      - img [ref=e471]
+                    - button "Disable Timer Heartbeat" [ref=e475]
+                - generic [ref=e476]:
+                  - generic [ref=e477]: "Off"
+                  - link "Valhalla Health Agent" [ref=e478] [cursor=pointer]:
+                    - /url: /DIRA/agents/valhalla-health-agent
+                  - generic [ref=e479]: general
+                  - generic [ref=e480]: 0s
+                  - generic [ref=e481]: never
+                  - generic [ref=e482]:
+                    - link "Full agent config" [ref=e483] [cursor=pointer]:
+                      - /url: /DIRA/agents/valhalla-health-agent
+                      - img [ref=e484]
+                    - button "Disable Timer Heartbeat" [ref=e488]
+                - generic [ref=e489]:
+                  - generic [ref=e490]: "Off"
+                  - link "Waze Nav HUD Expert" [ref=e491] [cursor=pointer]:
+                    - /url: /DIRA/agents/waze-nav-hud-expert
+                  - generic [ref=e492]: general
+                  - generic [ref=e493]: 0s
+                  - generic "Apr 3, 2026, 7:41 PM" [ref=e494]: 52m ago
+                  - generic [ref=e495]:
+                    - link "Full agent config" [ref=e496] [cursor=pointer]:
+                      - /url: /DIRA/agents/waze-nav-hud-expert
+                      - img [ref=e497]
+                    - button "Disable Timer Heartbeat" [ref=e501]
+                - generic [ref=e502]:
+                  - generic [ref=e503]: "Off"
+                  - link "Waze Route Preview Expert" [ref=e504] [cursor=pointer]:
+                    - /url: /DIRA/agents/waze-route-preview-expert
+                  - generic [ref=e505]: general
+                  - generic [ref=e506]: 0s
+                  - generic "Apr 3, 2026, 7:22 PM" [ref=e507]: 1h ago
+                  - generic [ref=e508]:
+                    - link "Full agent config" [ref=e509] [cursor=pointer]:
+                      - /url: /DIRA/agents/waze-route-preview-expert
+                      - img [ref=e510]
+                    - button "Disable Timer Heartbeat" [ref=e514]
+                - generic [ref=e515]:
+                  - generic [ref=e516]: "Off"
+                  - link "Waze Search UI Expert" [ref=e517] [cursor=pointer]:
+                    - /url: /DIRA/agents/waze-search-ui-expert
+                  - generic [ref=e518]: general
+                  - generic [ref=e519]: 0s
+                  - generic "Apr 3, 2026, 8:30 PM" [ref=e520]: 4m ago
+                  - generic [ref=e521]:
+                    - link "Full agent config" [ref=e522] [cursor=pointer]:
+                      - /url: /DIRA/agents/waze-search-ui-expert
+                      - img [ref=e523]
+                    - button "Disable Timer Heartbeat" [ref=e527]
+                - generic [ref=e528]:
+                  - generic [ref=e529]: "Off"
+                  - link "XCUITest Engineer" [ref=e530] [cursor=pointer]:
+                    - /url: /DIRA/agents/xcuitest-engineer
+                  - generic [ref=e531]: qa
+                  - generic [ref=e532]: 0s
+                  - generic "Apr 3, 2026, 8:01 PM" [ref=e533]: 32m ago
+                  - generic [ref=e534]:
+                    - link "Full agent config" [ref=e535] [cursor=pointer]:
+                      - /url: /DIRA/agents/xcuitest-engineer
+                      - img [ref=e536]
+                    - button "Disable Timer Heartbeat" [ref=e540]
+            - generic [ref=e542]:
+              - generic [ref=e543]: GStack Study
+              - generic [ref=e544]:
+                - generic [ref=e545]:
+                  - generic [ref=e546]: "Off"
+                  - link "CEO" [ref=e547] [cursor=pointer]:
+                    - /url: /GST/agents/ceo
+                  - generic [ref=e548]: Chief Executive Officer
+                  - generic [ref=e549]: 0s
+                  - generic [ref=e550]: never
+                  - generic [ref=e551]:
+                    - link "Full agent config" [ref=e552] [cursor=pointer]:
+                      - /url: /GST/agents/ceo
+                      - img [ref=e553]
+                    - button "Enable Timer Heartbeat" [ref=e557]
+                - generic [ref=e558]:
+                  - generic [ref=e559]: "Off"
+                  - link "CTO" [ref=e560] [cursor=pointer]:
+                    - /url: /GST/agents/cto
+                  - generic [ref=e561]: Chief Technology Officer
+                  - generic [ref=e562]: 0s
+                  - generic [ref=e563]: never
+                  - generic [ref=e564]:
+                    - link "Full agent config" [ref=e565] [cursor=pointer]:
+                      - /url: /GST/agents/cto
+                      - img [ref=e566]
+                    - button "Enable Timer Heartbeat" [ref=e570]
+                - generic [ref=e571]:
+                  - generic [ref=e572]: "Off"
+                  - link "QA Engineer" [ref=e573] [cursor=pointer]:
+                    - /url: /GST/agents/qa-engineer
+                  - generic [ref=e574]: QA Engineer
+                  - generic [ref=e575]: 0s
+                  - generic [ref=e576]: never
+                  - generic [ref=e577]:
+                    - link "Full agent config" [ref=e578] [cursor=pointer]:
+                      - /url: /GST/agents/qa-engineer
+                      - img [ref=e579]
+                    - button "Enable Timer Heartbeat" [ref=e583]
+                - generic [ref=e584]:
+                  - generic [ref=e585]: "Off"
+                  - link "Release Engineer" [ref=e586] [cursor=pointer]:
+                    - /url: /GST/agents/release-engineer
+                  - generic [ref=e587]: Release Engineer
+                  - generic [ref=e588]: 0s
+                  - generic [ref=e589]: never
+                  - generic [ref=e590]:
+                    - link "Full agent config" [ref=e591] [cursor=pointer]:
+                      - /url: /GST/agents/release-engineer
+                      - img [ref=e592]
+                    - button "Enable Timer Heartbeat" [ref=e596]
+                - generic [ref=e597]:
+                  - generic [ref=e598]: "Off"
+                  - link "Staff Engineer" [ref=e599] [cursor=pointer]:
+                    - /url: /GST/agents/staff-engineer
+                  - generic [ref=e600]: Staff Engineer
+                  - generic [ref=e601]: 0s
+                  - generic [ref=e602]: never
+                  - generic [ref=e603]:
+                    - link "Full agent config" [ref=e604] [cursor=pointer]:
+                      - /url: /GST/agents/staff-engineer
+                      - img [ref=e605]
+                    - button "Enable Timer Heartbeat" [ref=e609]
+            - generic [ref=e611]:
+              - generic [ref=e612]: MCM Template Test
+              - generic [ref=e613]:
+                - generic [ref=e614]:
+                  - generic [ref=e615]: "Off"
+                  - link "CEO" [ref=e616] [cursor=pointer]:
+                    - /url: /MCM/agents/ceo
+                  - generic [ref=e617]: Chief Executive Officer
+                  - generic [ref=e618]: 0s
+                  - generic [ref=e619]: never
+                  - generic [ref=e620]:
+                    - link "Full agent config" [ref=e621] [cursor=pointer]:
+                      - /url: /MCM/agents/ceo
+                      - img [ref=e622]
+                    - button "Enable Timer Heartbeat" [ref=e626]
+                - generic [ref=e627]:
+                  - generic [ref=e628]: "Off"
+                  - link "Code Reviewer" [ref=e629] [cursor=pointer]:
+                    - /url: /MCM/agents/code-reviewer
+                  - generic [ref=e630]: Senior Code Reviewer
+                  - generic [ref=e631]: 0s
+                  - generic [ref=e632]: never
+                  - generic [ref=e633]:
+                    - link "Full agent config" [ref=e634] [cursor=pointer]:
+                      - /url: /MCM/agents/code-reviewer
+                      - img [ref=e635]
+                    - button "Enable Timer Heartbeat" [ref=e639]
+                - generic [ref=e640]:
+                  - generic [ref=e641]: "Off"
+                  - link "CTO" [ref=e642] [cursor=pointer]:
+                    - /url: /MCM/agents/cto
+                  - generic [ref=e643]: Chief Technology Officer
+                  - generic [ref=e644]: 0s
+                  - generic [ref=e645]: never
+                  - generic [ref=e646]:
+                    - link "Full agent config" [ref=e647] [cursor=pointer]:
+                      - /url: /MCM/agents/cto
+                      - img [ref=e648]
+                    - button "Enable Timer Heartbeat" [ref=e652]
+                - generic [ref=e653]:
+                  - generic [ref=e654]: "Off"
+                  - link "Release Engineer" [ref=e655] [cursor=pointer]:
+                    - /url: /MCM/agents/release-engineer
+                  - generic [ref=e656]: Release Engineer
+                  - generic [ref=e657]: 0s
+                  - generic [ref=e658]: never
+                  - generic [ref=e659]:
+                    - link "Full agent config" [ref=e660] [cursor=pointer]:
+                      - /url: /MCM/agents/release-engineer
+                      - img [ref=e661]
+                    - button "Enable Timer Heartbeat" [ref=e665]
+            - generic [ref=e667]:
+              - generic [ref=e668]: Superpowers Study
+              - generic [ref=e669]:
+                - generic [ref=e670]:
+                  - generic [ref=e671]: "Off"
+                  - link "CEO" [ref=e672] [cursor=pointer]:
+                    - /url: /SUP/agents/ceo
+                  - generic [ref=e673]: Chief Executive Officer
+                  - generic [ref=e674]: 0s
+                  - generic [ref=e675]: never
+                  - generic [ref=e676]:
+                    - link "Full agent config" [ref=e677] [cursor=pointer]:
+                      - /url: /SUP/agents/ceo
+                      - img [ref=e678]
+                    - button "Enable Timer Heartbeat" [ref=e682]
+                - generic [ref=e683]:
+                  - generic [ref=e684]: "Off"
+                  - link "Code Reviewer" [ref=e685] [cursor=pointer]:
+                    - /url: /SUP/agents/code-reviewer
+                  - generic [ref=e686]: Senior Code Reviewer
+                  - generic [ref=e687]: 0s
+                  - generic [ref=e688]: never
+                  - generic [ref=e689]:
+                    - link "Full agent config" [ref=e690] [cursor=pointer]:
+                      - /url: /SUP/agents/code-reviewer
+                      - img [ref=e691]
+                    - button "Enable Timer Heartbeat" [ref=e695]
+                - generic [ref=e696]:
+                  - generic [ref=e697]: "Off"
+                  - link "Lead Engineer" [ref=e698] [cursor=pointer]:
+                    - /url: /SUP/agents/lead-engineer
+                  - generic [ref=e699]: Lead Software Engineer
+                  - generic [ref=e700]: 0s
+                  - generic [ref=e701]: never
+                  - generic [ref=e702]:
+                    - link "Full agent config" [ref=e703] [cursor=pointer]:
+                      - /url: /SUP/agents/lead-engineer
+                      - img [ref=e704]
+                    - button "Enable Timer Heartbeat" [ref=e708]
+                - generic [ref=e709]:
+                  - generic [ref=e710]: "Off"
+                  - link "Release Engineer" [ref=e711] [cursor=pointer]:
+                    - /url: /SUP/agents/release-engineer
+                  - generic [ref=e712]: Release Engineer
+                  - generic [ref=e713]: 0s
+                  - generic [ref=e714]: never
+                  - generic [ref=e715]:
+                    - link "Full agent config" [ref=e716] [cursor=pointer]:
+                      - /url: /SUP/agents/release-engineer
+                      - img [ref=e717]
+                    - button "Enable Timer Heartbeat" [ref=e721]
+  - generic [ref=e722]:
+    - heading "Command Palette" [level=2] [ref=e723]
+    - paragraph [ref=e724]: Search for a command to run...

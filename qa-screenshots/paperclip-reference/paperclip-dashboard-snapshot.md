@@ -1,0 +1,743 @@
+- generic [ref=e3]:
+  - link "Skip to Main Content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img [ref=e10]
+          - generic [ref=e12]:
+            - button "D" [ref=e164]:
+              - link "D" [ref=e165] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - generic [ref=e168]:
+                  - img [ref=e169]
+                  - generic [ref=e170]: D
+            - status [ref=e13]
+          - button "Add company" [ref=e16]:
+            - img [ref=e17]
+        - complementary [ref=e19]:
+          - generic [ref=e20]:
+            - generic [ref=e21]: DirtSync
+            - button [ref=e22]:
+              - img
+          - navigation [ref=e23]:
+            - generic [ref=e24]:
+              - button "New Issue" [ref=e25]:
+                - img [ref=e26]
+                - generic [ref=e29]: New Issue
+              - link "Dashboard 7 live" [ref=e171] [cursor=pointer]:
+                - /url: /DIRA/dashboard
+                - img [ref=e32]
+                - generic [ref=e37]: Dashboard
+                - generic [ref=e176]: 7 live
+              - link "Inbox 15" [ref=e177] [cursor=pointer]:
+                - /url: /DIRA/inbox
+                - img [ref=e40]
+                - generic [ref=e43]: Inbox
+                - generic [ref=e179]: "15"
+            - generic [ref=e44]:
+              - generic [ref=e45]: Work
+              - generic [ref=e46]:
+                - link "Issues" [ref=e47] [cursor=pointer]:
+                  - /url: /DIRA/issues
+                  - img [ref=e49]
+                  - generic [ref=e52]: Issues
+                - link "Routines Beta" [ref=e53] [cursor=pointer]:
+                  - /url: /DIRA/routines
+                  - img [ref=e55]
+                  - generic [ref=e60]: Routines
+                  - generic [ref=e61]: Beta
+                - link "Goals" [ref=e62] [cursor=pointer]:
+                  - /url: /DIRA/goals
+                  - img [ref=e64]
+                  - generic [ref=e68]: Goals
+            - generic [ref=e69]:
+              - generic [ref=e71]:
+                - button "Projects" [expanded] [ref=e72]:
+                  - img [ref=e73]
+                  - generic [ref=e75]: Projects
+                - button "New project" [ref=e76]:
+                  - img [ref=e77]
+              - generic [ref=e180]:
+                - button "DirtSync iOS" [ref=e182]:
+                  - link "DirtSync iOS" [ref=e184] [cursor=pointer]:
+                    - /url: /DIRA/projects/dirtsync-ios/issues
+                    - generic [ref=e186]: DirtSync iOS
+                - status [ref=e78]
+            - generic [ref=e79]:
+              - generic [ref=e81]:
+                - button "Agents" [expanded] [ref=e82]:
+                  - img [ref=e83]
+                  - generic [ref=e85]: Agents
+                - button "New agent" [ref=e86]:
+                  - img [ref=e87]
+              - generic [ref=e188]:
+                - link "DirtSync COO" [ref=e189] [cursor=pointer]:
+                  - /url: /DIRA/agents/dirtsync-coo
+                  - img [ref=e190]
+                  - generic [ref=e192]: DirtSync COO
+                - link "Build & Test Agent" [ref=e193] [cursor=pointer]:
+                  - /url: /DIRA/agents/build-test-agent
+                  - img [ref=e194]
+                  - generic [ref=e196]: Build & Test Agent
+                - link "Drive Publisher" [ref=e197] [cursor=pointer]:
+                  - /url: /DIRA/agents/drive-publisher
+                  - img [ref=e198]
+                  - generic [ref=e200]: Drive Publisher
+                - link "HUD Engineer" [ref=e201] [cursor=pointer]:
+                  - /url: /DIRA/agents/hud-engineer
+                  - img [ref=e202]
+                  - generic [ref=e205]: HUD Engineer
+                - link "Map View Engineer" [ref=e206] [cursor=pointer]:
+                  - /url: /DIRA/agents/map-view-engineer
+                  - img [ref=e207]
+                  - generic [ref=e210]: Map View Engineer
+                - link "Navigation Engineer" [ref=e211] [cursor=pointer]:
+                  - /url: /DIRA/agents/navigation-engineer
+                  - img [ref=e212]
+                  - generic [ref=e217]: Navigation Engineer
+                - link "QA Rider" [ref=e218] [cursor=pointer]:
+                  - /url: /DIRA/agents/qa-rider
+                  - img [ref=e219]
+                  - generic [ref=e223]: QA Rider
+                - link "Ride Recording Engineer" [ref=e224] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-recording-engineer
+                  - img [ref=e225]
+                  - generic [ref=e228]: Ride Recording Engineer
+                - link "Routine Manager" [ref=e229] [cursor=pointer]:
+                  - /url: /DIRA/agents/routine-manager
+                  - img [ref=e230]
+                  - generic [ref=e241]: Routine Manager
+                - link "Ship Engineer" [ref=e242] [cursor=pointer]:
+                  - /url: /DIRA/agents/ship-engineer
+                  - img [ref=e243]
+                  - generic [ref=e248]: Ship Engineer
+                - link "Simulator QA Agent" [ref=e249] [cursor=pointer]:
+                  - /url: /DIRA/agents/simulator-qa-agent
+                  - img [ref=e250]
+                  - generic [ref=e253]: Simulator QA Agent
+                - link "Trail Data Expert" [ref=e254] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-expert
+                  - img [ref=e255]
+                  - generic [ref=e262]: Trail Data Expert
+                - link "Waze Nav HUD Expert" [ref=e263] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-nav-hud-expert
+                  - img [ref=e264]
+                  - generic [ref=e267]: Waze Nav HUD Expert
+                - link "Waze Route Preview Expert" [ref=e268] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-route-preview-expert
+                  - img [ref=e269]
+                  - generic [ref=e272]: Waze Route Preview Expert
+                - link "Waze Search UI Expert 5 live" [ref=e273] [cursor=pointer]:
+                  - /url: /DIRA/agents/waze-search-ui-expert
+                  - img [ref=e274]
+                  - generic [ref=e277]: Waze Search UI Expert
+                  - generic [ref=e282]: 5 live
+                - link "XCUITest Engineer" [ref=e283] [cursor=pointer]:
+                  - /url: /DIRA/agents/xcuitest-engineer
+                  - img [ref=e284]
+                  - generic [ref=e287]: XCUITest Engineer
+                - link "App Store Readiness Agent" [ref=e288] [cursor=pointer]:
+                  - /url: /DIRA/agents/app-store-readiness-agent
+                  - img [ref=e289]
+                  - generic [ref=e291]: App Store Readiness Agent
+                - link "Claude AI Scanner Agent" [ref=e292] [cursor=pointer]:
+                  - /url: /DIRA/agents/claude-ai-scanner-agent
+                  - img [ref=e293]
+                  - generic [ref=e301]: Claude AI Scanner Agent
+                - link "Competitor Watch Agent" [ref=e302] [cursor=pointer]:
+                  - /url: /DIRA/agents/competitor-watch-agent
+                  - img [ref=e303]
+                  - generic [ref=e306]: Competitor Watch Agent
+                - link "Crash Monitor Agent" [ref=e307] [cursor=pointer]:
+                  - /url: /DIRA/agents/crash-monitor-agent
+                  - img [ref=e308]
+                  - generic [ref=e317]: Crash Monitor Agent
+                - link "Difficulty Calibration Agent" [ref=e318] [cursor=pointer]:
+                  - /url: /DIRA/agents/difficulty-calibration-agent
+                  - img [ref=e319]
+                  - generic [ref=e328]: Difficulty Calibration Agent
+                - link "Doc Organizer Agent" [ref=e329] [cursor=pointer]:
+                  - /url: /DIRA/agents/doc-organizer-agent
+                  - img [ref=e330]
+                  - generic [ref=e335]: Doc Organizer Agent
+                - link "Feature Usage Agent" [ref=e336] [cursor=pointer]:
+                  - /url: /DIRA/agents/feature-usage-agent
+                  - img [ref=e337]
+                  - generic [ref=e340]: Feature Usage Agent
+                - link "Learning Extractor Agent" [ref=e341] [cursor=pointer]:
+                  - /url: /DIRA/agents/learning-extractor-agent
+                  - img [ref=e342]
+                  - generic [ref=e350]: Learning Extractor Agent
+                - link "MBTiles Sync Agent" [ref=e351] [cursor=pointer]:
+                  - /url: /DIRA/agents/mbtiles-sync-agent
+                  - img [ref=e352]
+                  - generic [ref=e356]: MBTiles Sync Agent
+                - link "Morning Agenda Agent" [ref=e357] [cursor=pointer]:
+                  - /url: /DIRA/agents/morning-agenda-agent
+                  - img [ref=e358]
+                  - generic [ref=e361]: Morning Agenda Agent
+                - link "New Trail Scanner Agent" [ref=e362] [cursor=pointer]:
+                  - /url: /DIRA/agents/new-trail-scanner-agent
+                  - img [ref=e363]
+                  - generic [ref=e366]: New Trail Scanner Agent
+                - link "OSM Monitor Agent" [ref=e367] [cursor=pointer]:
+                  - /url: /DIRA/agents/osm-monitor-agent
+                  - img [ref=e368]
+                  - generic [ref=e371]: OSM Monitor Agent
+                - link "POI Freshness Agent" [ref=e372] [cursor=pointer]:
+                  - /url: /DIRA/agents/poi-freshness-agent
+                  - img [ref=e373]
+                  - generic [ref=e380]: POI Freshness Agent
+                - link "Revenue Scanner Agent" [ref=e381] [cursor=pointer]:
+                  - /url: /DIRA/agents/revenue-scanner-agent
+                  - img [ref=e382]
+                  - generic [ref=e385]: Revenue Scanner Agent
+                - link "Ride Audit Agent" [ref=e386] [cursor=pointer]:
+                  - /url: /DIRA/agents/ride-audit-agent
+                  - img [ref=e387]
+                  - generic [ref=e391]: Ride Audit Agent
+                - link "Road Network Agent" [ref=e392] [cursor=pointer]:
+                  - /url: /DIRA/agents/road-network-agent
+                  - img [ref=e393]
+                  - generic [ref=e396]: Road Network Agent
+                - link "SDK Releases Agent" [ref=e397] [cursor=pointer]:
+                  - /url: /DIRA/agents/sdk-releases-agent
+                  - img [ref=e398]
+                  - generic [ref=e402]: SDK Releases Agent
+                - link "TestFlight Monitor Agent" [ref=e403] [cursor=pointer]:
+                  - /url: /DIRA/agents/testflight-monitor-agent
+                  - img [ref=e404]
+                  - generic [ref=e409]: TestFlight Monitor Agent
+                - link "Trail Data Health Agent" [ref=e410] [cursor=pointer]:
+                  - /url: /DIRA/agents/trail-data-health-agent
+                  - img [ref=e411]
+                  - generic [ref=e415]: Trail Data Health Agent
+                - link "Valhalla Health Agent" [ref=e416] [cursor=pointer]:
+                  - /url: /DIRA/agents/valhalla-health-agent
+                  - img [ref=e417]
+                  - generic [ref=e420]: Valhalla Health Agent
+            - generic [ref=e88]:
+              - generic [ref=e89]: Company
+              - generic [ref=e90]:
+                - link "Org" [ref=e91] [cursor=pointer]:
+                  - /url: /DIRA/org
+                  - img [ref=e93]
+                  - generic [ref=e98]: Org
+                - link "Skills" [ref=e99] [cursor=pointer]:
+                  - /url: /DIRA/skills
+                  - img [ref=e101]
+                  - generic [ref=e111]: Skills
+                - link "Costs" [ref=e112] [cursor=pointer]:
+                  - /url: /DIRA/costs
+                  - img [ref=e114]
+                  - generic [ref=e116]: Costs
+                - link "Activity" [ref=e117] [cursor=pointer]:
+                  - /url: /DIRA/activity
+                  - img [ref=e119]
+                  - generic [ref=e123]: Activity
+                - link "Settings" [ref=e124] [cursor=pointer]:
+                  - /url: /DIRA/company/settings
+                  - img [ref=e126]
+                  - generic [ref=e129]: Settings
+      - generic [ref=e131]:
+        - link "Documentation" [ref=e132] [cursor=pointer]:
+          - /url: https://docs.paperclip.ing/
+          - img [ref=e133]
+          - generic [ref=e135]: Documentation
+        - generic [ref=e136]: v
+        - link "Instance settings" [ref=e137] [cursor=pointer]:
+          - /url: /instance/settings/general
+          - img
+        - button "Switch to light mode" [ref=e138]:
+          - img
+    - generic [ref=e139]:
+      - heading "Dashboard" [level=1] [ref=e143]
+      - main [ref=e145]:
+        - generic [ref=e421]:
+          - generic [ref=e422]:
+            - heading "Agents" [level=3] [ref=e423]
+            - generic [ref=e424]:
+              - generic [ref=e425]:
+                - generic [ref=e426]:
+                  - generic [ref=e427]:
+                    - generic [ref=e428]:
+                      - generic [ref=e433]:
+                        - generic [ref=e435]: WE
+                        - generic [ref=e436]: Waze Search UI Expert
+                      - generic [ref=e438]: Live now
+                    - link [ref=e439] [cursor=pointer]:
+                      - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0/runs/abc9efb1-92a5-41ea-ba97-4882a96cadc9
+                      - img [ref=e440]
+                  - link "DIRA-90 - [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)" [ref=e445] [cursor=pointer]:
+                    - /url: /DIRA/issues/DIRA-90
+                - generic [ref=e447]: Waiting for output...
+              - generic [ref=e448]:
+                - generic [ref=e449]:
+                  - generic [ref=e450]:
+                    - generic [ref=e451]:
+                      - generic [ref=e456]:
+                        - generic [ref=e458]: WE
+                        - generic [ref=e459]: Waze Search UI Expert
+                      - generic [ref=e461]: Live now
+                    - link [ref=e462] [cursor=pointer]:
+                      - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0/runs/f330e254-04cd-4cb2-87c8-b017628dd6d7
+                      - img [ref=e463]
+                  - link "DIRA-95 - [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar" [ref=e468] [cursor=pointer]:
+                    - /url: /DIRA/issues/DIRA-95
+                - generic [ref=e470]: Waiting for output...
+              - generic [ref=e471]:
+                - generic [ref=e472]:
+                  - generic [ref=e473]:
+                    - generic [ref=e474]:
+                      - generic [ref=e479]:
+                        - generic [ref=e481]: WE
+                        - generic [ref=e482]: Waze Search UI Expert
+                      - generic [ref=e484]: Live now
+                    - link [ref=e485] [cursor=pointer]:
+                      - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0/runs/d2932121-e04d-420b-9d51-5b74025a0c34
+                      - img [ref=e486]
+                  - link "DIRA-94 - [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model" [ref=e491] [cursor=pointer]:
+                    - /url: /DIRA/issues/DIRA-94
+                - generic [ref=e493]: Waiting for output...
+              - generic [ref=e494]:
+                - generic [ref=e495]:
+                  - generic [ref=e496]:
+                    - generic [ref=e497]:
+                      - generic [ref=e502]:
+                        - generic [ref=e504]: WE
+                        - generic [ref=e505]: Waze Search UI Expert
+                      - generic [ref=e507]: Live now
+                    - link [ref=e508] [cursor=pointer]:
+                      - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0/runs/d84230a2-b9c6-4b93-abbf-ac55740e91f6
+                      - img [ref=e509]
+                  - link "DIRA-93 - [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)" [ref=e514] [cursor=pointer]:
+                    - /url: /DIRA/issues/DIRA-93
+                - generic [ref=e516]: Waiting for output...
+              - generic [ref=e517]:
+                - generic [ref=e518]:
+                  - generic [ref=e519]:
+                    - generic [ref=e520]:
+                      - generic [ref=e525]:
+                        - generic [ref=e527]: WE
+                        - generic [ref=e528]: Waze Search UI Expert
+                      - generic [ref=e530]: Live now
+                    - link [ref=e531] [cursor=pointer]:
+                      - /url: /DIRA/agents/f6ae3234-4fc0-4368-90a0-1aa50f9606e0/runs/c5dfe2fd-842d-419d-9f97-656758695413
+                      - img [ref=e532]
+                  - link "DIRA-92 - [MAJOR] Add microphone icon to search bar; fix search bar background color" [ref=e537] [cursor=pointer]:
+                    - /url: /DIRA/issues/DIRA-92
+                - generic [ref=e539]:
+                  - generic [ref=e541]:
+                    - paragraph [ref=e542]: Now I understand WhereToSheetView.swift. The trail name banner (DIRA-93) and the 3-tab navigation bar (DIRA-94) are NOT in WhereToSheetView.swift. These are in MapView.swift or another file. I cannot edit those files per my constraints.
+                    - paragraph [ref=e543]: Let me look at MapView.swift to understand the structure of both of these issues.
+                  - paragraph [ref=e547]: Now let me read MapView.swift to understand where the trail banner and tab bar live.
+                  - generic [ref=e549]:
+                    - generic [ref=e550]:
+                      - img [ref=e551]
+                      - generic [ref=e553]:
+                        - generic [ref=e554]:
+                          - generic [ref=e555]: Read
+                          - generic [ref=e556]: Errored
+                        - generic [ref=e557]: File content (15903 tokens) exceeds maximum allowed tokens (10000). Use offset and …
+                      - button "Collapse tool details" [ref=e558]:
+                        - img [ref=e559]
+                    - generic [ref=e563]:
+                      - generic [ref=e564]:
+                        - generic [ref=e565]: Input
+                        - generic [ref=e566]: "{ \"file_path\": \"/Users/stevemcmillian/llama-3-agents/Apps/projects/DirtSync/DirtSync/DirtSyncApp/Views/MapView.swift\" }"
+                      - generic [ref=e567]:
+                        - generic [ref=e568]: Result
+                        - generic [ref=e569]: File content (15903 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.
+                  - generic [ref=e572]:
+                    - img [ref=e1156]
+                    - generic [ref=e575]:
+                      - generic [ref=e576]:
+                        - generic [ref=e577]: Grep
+                        - generic [ref=e578]: Completed
+                      - generic [ref=e579]: 19- @StateObject var trailDetectionService = TrailDetectionService()
+                    - button "Expand tool details" [ref=e580]:
+                      - img [ref=e581]
+                  - generic [ref=e585]:
+                    - generic [ref=e586]: stdout
+                    - button "Expand stdout" [ref=e587]:
+                      - img [ref=e588]
+              - generic [ref=e590]:
+                - generic [ref=e592]:
+                  - generic [ref=e593]:
+                    - generic [ref=e598]:
+                      - generic [ref=e600]: QE
+                      - generic [ref=e601]: QA Engineer
+                    - generic [ref=e603]: Live now
+                  - link [ref=e604] [cursor=pointer]:
+                    - /url: /DIRA/agents/739df96f-bb7e-4903-afd3-a5b660467e30/runs/da06f4c8-96bc-4afe-9a99-bb85dad00664
+                    - img [ref=e605]
+                - generic [ref=e610]: Waiting for output...
+              - generic [ref=e611]:
+                - generic [ref=e613]:
+                  - generic [ref=e614]:
+                    - generic [ref=e619]:
+                      - generic [ref=e621]: CT
+                      - generic [ref=e622]: CTO
+                    - generic [ref=e624]: Live now
+                  - link [ref=e625] [cursor=pointer]:
+                    - /url: /DIRA/agents/673eed1d-1bd2-4329-8ddf-dae2d2ef1f70/runs/9b396220-d3b7-4937-b4ab-180a16328517
+                    - img [ref=e626]
+                - generic [ref=e631]: Waiting for output...
+          - generic [ref=e632]:
+            - link "36 Agents Enabled 1 running, 3 paused, 1 errors" [ref=e633] [cursor=pointer]:
+              - /url: /DIRA/agents
+              - generic [ref=e635]:
+                - generic [ref=e636]:
+                  - paragraph [ref=e637]: "36"
+                  - paragraph [ref=e638]: Agents Enabled
+                  - generic [ref=e640]: 1 running, 3 paused, 1 errors
+                - img [ref=e641]
+            - link "0 Tasks In Progress 29 open, 0 blocked" [ref=e644] [cursor=pointer]:
+              - /url: /DIRA/issues
+              - generic [ref=e646]:
+                - generic [ref=e647]:
+                  - paragraph [ref=e648]: "0"
+                  - paragraph [ref=e649]: Tasks In Progress
+                  - generic [ref=e651]: 29 open, 0 blocked
+                - img [ref=e652]
+            - link "$0.00 Month Spend 0% of $500.00 budget" [ref=e655] [cursor=pointer]:
+              - /url: /DIRA/costs
+              - generic [ref=e657]:
+                - generic [ref=e658]:
+                  - paragraph [ref=e659]: $0.00
+                  - paragraph [ref=e660]: Month Spend
+                  - generic [ref=e661]: 0% of $500.00 budget
+                - img [ref=e662]
+            - link "0 Pending Approvals Awaiting board review" [ref=e664] [cursor=pointer]:
+              - /url: /DIRA/approvals
+              - generic [ref=e666]:
+                - generic [ref=e667]:
+                  - paragraph [ref=e668]: "0"
+                  - paragraph [ref=e669]: Pending Approvals
+                  - generic [ref=e670]: Awaiting board review
+                - img [ref=e671]
+          - generic [ref=e674]:
+            - generic [ref=e675]:
+              - generic [ref=e676]:
+                - heading "Run Activity" [level=3] [ref=e677]
+                - text: Last 14 days
+              - generic [ref=e678]:
+                - generic [ref=e679]:
+                  - 'generic "2026-03-22: 0 runs" [ref=e680]'
+                  - 'generic "2026-03-23: 0 runs" [ref=e682]'
+                  - 'generic "2026-03-24: 0 runs" [ref=e684]'
+                  - 'generic "2026-03-25: 0 runs" [ref=e686]'
+                  - 'generic "2026-03-26: 0 runs" [ref=e688]'
+                  - 'generic "2026-03-27: 0 runs" [ref=e690]'
+                  - 'generic "2026-03-28: 0 runs" [ref=e692]'
+                  - 'generic "2026-03-29: 116 runs" [ref=e694]'
+                  - 'generic "2026-03-30: 137 runs" [ref=e699]'
+                  - 'generic "2026-03-31: 0 runs" [ref=e704]'
+                  - 'generic "2026-04-01: 0 runs" [ref=e706]'
+                  - 'generic "2026-04-02: 0 runs" [ref=e708]'
+                  - 'generic "2026-04-03: 70 runs" [ref=e710]'
+                  - 'generic "2026-04-04: 2 runs" [ref=e715]'
+                - generic [ref=e719]:
+                  - generic [ref=e720]: 3/22
+                  - generic [ref=e726]: 3/28
+                  - generic [ref=e733]: 4/4
+            - generic [ref=e734]:
+              - generic [ref=e735]:
+                - heading "Issues by Priority" [level=3] [ref=e736]
+                - text: Last 14 days
+              - generic [ref=e737]:
+                - generic [ref=e738]:
+                  - 'generic "2026-03-22: 0 issues" [ref=e739]'
+                  - 'generic "2026-03-23: 0 issues" [ref=e741]'
+                  - 'generic "2026-03-24: 0 issues" [ref=e743]'
+                  - 'generic "2026-03-25: 0 issues" [ref=e745]'
+                  - 'generic "2026-03-26: 0 issues" [ref=e747]'
+                  - 'generic "2026-03-27: 0 issues" [ref=e749]'
+                  - 'generic "2026-03-28: 0 issues" [ref=e751]'
+                  - 'generic "2026-03-29: 20 issues" [ref=e753]'
+                  - 'generic "2026-03-30: 21 issues" [ref=e757]'
+                  - 'generic "2026-03-31: 0 issues" [ref=e762]'
+                  - 'generic "2026-04-01: 0 issues" [ref=e764]'
+                  - 'generic "2026-04-02: 0 issues" [ref=e766]'
+                  - 'generic "2026-04-03: 25 issues" [ref=e768]'
+                  - 'generic "2026-04-04: 0 issues" [ref=e771]'
+                - generic [ref=e773]:
+                  - generic [ref=e774]: 3/22
+                  - generic [ref=e780]: 3/28
+                  - generic [ref=e787]: 4/4
+                - generic [ref=e788]:
+                  - generic [ref=e789]: Critical
+                  - generic [ref=e791]: High
+                  - generic [ref=e793]: Medium
+                  - generic [ref=e795]: Low
+            - generic [ref=e797]:
+              - generic [ref=e798]:
+                - heading "Issues by Status" [level=3] [ref=e799]
+                - text: Last 14 days
+              - generic [ref=e800]:
+                - generic [ref=e801]:
+                  - 'generic "2026-03-22: 0 issues" [ref=e802]'
+                  - 'generic "2026-03-23: 0 issues" [ref=e804]'
+                  - 'generic "2026-03-24: 0 issues" [ref=e806]'
+                  - 'generic "2026-03-25: 0 issues" [ref=e808]'
+                  - 'generic "2026-03-26: 0 issues" [ref=e810]'
+                  - 'generic "2026-03-27: 0 issues" [ref=e812]'
+                  - 'generic "2026-03-28: 0 issues" [ref=e814]'
+                  - 'generic "2026-03-29: 20 issues" [ref=e816]'
+                  - 'generic "2026-03-30: 21 issues" [ref=e820]'
+                  - 'generic "2026-03-31: 0 issues" [ref=e824]'
+                  - 'generic "2026-04-01: 0 issues" [ref=e826]'
+                  - 'generic "2026-04-02: 0 issues" [ref=e828]'
+                  - 'generic "2026-04-03: 25 issues" [ref=e830]'
+                  - 'generic "2026-04-04: 0 issues" [ref=e835]'
+                - generic [ref=e837]:
+                  - generic [ref=e838]: 3/22
+                  - generic [ref=e844]: 3/28
+                  - generic [ref=e851]: 4/4
+                - generic [ref=e852]:
+                  - generic [ref=e853]: To Do
+                  - generic [ref=e855]: Done
+                  - generic [ref=e857]: Cancelled
+            - generic [ref=e859]:
+              - generic [ref=e860]:
+                - heading "Success Rate" [level=3] [ref=e861]
+                - text: Last 14 days
+              - generic [ref=e862]:
+                - generic [ref=e863]:
+                  - 'generic "2026-03-22: 0% (0/0)" [ref=e864]'
+                  - 'generic "2026-03-23: 0% (0/0)" [ref=e866]'
+                  - 'generic "2026-03-24: 0% (0/0)" [ref=e868]'
+                  - 'generic "2026-03-25: 0% (0/0)" [ref=e870]'
+                  - 'generic "2026-03-26: 0% (0/0)" [ref=e872]'
+                  - 'generic "2026-03-27: 0% (0/0)" [ref=e874]'
+                  - 'generic "2026-03-28: 0% (0/0)" [ref=e876]'
+                  - 'generic "2026-03-29: 95% (110/116)" [ref=e878]'
+                  - 'generic "2026-03-30: 93% (128/137)" [ref=e880]'
+                  - 'generic "2026-03-31: 0% (0/0)" [ref=e882]'
+                  - 'generic "2026-04-01: 0% (0/0)" [ref=e884]'
+                  - 'generic "2026-04-02: 0% (0/0)" [ref=e886]'
+                  - 'generic "2026-04-03: 87% (61/70)" [ref=e888]'
+                  - 'generic "2026-04-04: 50% (1/2)" [ref=e890]'
+                - generic [ref=e892]:
+                  - generic [ref=e893]: 3/22
+                  - generic [ref=e899]: 3/28
+                  - generic [ref=e906]: 4/4
+          - generic [ref=e907]:
+            - generic [ref=e908]:
+              - heading "Recent Activity" [level=3] [ref=e909]
+              - generic [ref=e910]:
+                - link "BO Board commented on DIRA-94— [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model 6m ago" [ref=e911] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-94
+                  - generic [ref=e912]:
+                    - paragraph [ref=e913]:
+                      - generic [ref=e914]:
+                        - generic [ref=e916]: BO
+                        - generic [ref=e917]: Board
+                      - generic [ref=e918]: commented on
+                      - text: DIRA-94
+                      - generic [ref=e919]: — [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model
+                    - generic [ref=e920]: 6m ago
+                - link "BO Board commented on DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 6m ago" [ref=e921] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-93
+                  - generic [ref=e922]:
+                    - paragraph [ref=e923]:
+                      - generic [ref=e924]:
+                        - generic [ref=e926]: BO
+                        - generic [ref=e927]: Board
+                      - generic [ref=e928]: commented on
+                      - text: DIRA-93
+                      - generic [ref=e929]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                    - generic [ref=e930]: 6m ago
+                - link "BO Board commented on DIRA-90— [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) 13m ago" [ref=e931] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-90
+                  - generic [ref=e932]:
+                    - paragraph [ref=e933]:
+                      - generic [ref=e934]:
+                        - generic [ref=e936]: BO
+                        - generic [ref=e937]: Board
+                      - generic [ref=e938]: commented on
+                      - text: DIRA-90
+                      - generic [ref=e939]: — [CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)
+                    - generic [ref=e940]: 13m ago
+                - link "BO Board commented on DIRA-94— [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model 13m ago" [ref=e941] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-94
+                  - generic [ref=e942]:
+                    - paragraph [ref=e943]:
+                      - generic [ref=e944]:
+                        - generic [ref=e946]: BO
+                        - generic [ref=e947]: Board
+                      - generic [ref=e948]: commented on
+                      - text: DIRA-94
+                      - generic [ref=e949]: — [MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model
+                    - generic [ref=e950]: 13m ago
+                - link "BO Board commented on DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 13m ago" [ref=e951] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-93
+                  - generic [ref=e952]:
+                    - paragraph [ref=e953]:
+                      - generic [ref=e954]:
+                        - generic [ref=e956]: BO
+                        - generic [ref=e957]: Board
+                      - generic [ref=e958]: commented on
+                      - text: DIRA-93
+                      - generic [ref=e959]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                    - generic [ref=e960]: 13m ago
+                - link "BO Board commented on DIRA-93— [MAJOR] Remove trail name banner from search/home state (or reposition below search bar) 14m ago" [ref=e961] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-93
+                  - generic [ref=e962]:
+                    - paragraph [ref=e963]:
+                      - generic [ref=e964]:
+                        - generic [ref=e966]: BO
+                        - generic [ref=e967]: Board
+                      - generic [ref=e968]: commented on
+                      - text: DIRA-93
+                      - generic [ref=e969]: — [MAJOR] Remove trail name banner from search/home state (or reposition below search bar)
+                    - generic [ref=e970]: 14m ago
+                - link "BO Board changed status to done on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 14m ago" [ref=e971] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-95
+                  - generic [ref=e972]:
+                    - paragraph [ref=e973]:
+                      - generic [ref=e974]:
+                        - generic [ref=e976]: BO
+                        - generic [ref=e977]: Board
+                      - generic [ref=e978]: changed status to done on
+                      - text: DIRA-95
+                      - generic [ref=e979]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                    - generic [ref=e980]: 14m ago
+                - link "BO Board changed status to done on DIRA-92— [MAJOR] Add microphone icon to search bar; fix search bar background color 14m ago" [ref=e981] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-92
+                  - generic [ref=e982]:
+                    - paragraph [ref=e983]:
+                      - generic [ref=e984]:
+                        - generic [ref=e986]: BO
+                        - generic [ref=e987]: Board
+                      - generic [ref=e988]: changed status to done on
+                      - text: DIRA-92
+                      - generic [ref=e989]: — [MAJOR] Add microphone icon to search bar; fix search bar background color
+                    - generic [ref=e990]: 14m ago
+                - link "BO Board changed status to done on DIRA-91— [CRITICAL] Switch search/home screen theme from dark to light (Waze parity) 14m ago" [ref=e991] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-91
+                  - generic [ref=e992]:
+                    - paragraph [ref=e993]:
+                      - generic [ref=e994]:
+                        - generic [ref=e996]: BO
+                        - generic [ref=e997]: Board
+                      - generic [ref=e998]: changed status to done on
+                      - text: DIRA-91
+                      - generic [ref=e999]: — [CRITICAL] Switch search/home screen theme from dark to light (Waze parity)
+                    - generic [ref=e1000]: 14m ago
+                - link "BO Board changed status from todo to done on DIRA-95— [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar 14m ago" [ref=e1001] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-95
+                  - generic [ref=e1002]:
+                    - paragraph [ref=e1003]:
+                      - generic [ref=e1004]:
+                        - generic [ref=e1006]: BO
+                        - generic [ref=e1007]: Board
+                      - generic [ref=e1008]: changed status from todo to done on
+                      - text: DIRA-95
+                      - generic [ref=e1009]: — [MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar
+                    - generic [ref=e1010]: 14m ago
+            - generic [ref=e1011]:
+              - heading "Recent Tasks" [level=3] [ref=e1012]
+              - generic [ref=e1013]:
+                - link "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity) DIRA-91 WE Waze Search UI Expert 6m ago" [ref=e1014] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-91
+                  - generic [ref=e1016]:
+                    - generic [ref=e1017]: "[CRITICAL] Switch search/home screen theme from dark to light (Waze parity)"
+                    - generic [ref=e1018]:
+                      - generic [ref=e1022]: DIRA-91
+                      - generic [ref=e1024]:
+                        - generic [ref=e1026]: WE
+                        - generic [ref=e1027]: Waze Search UI Expert
+                      - generic [ref=e1028]: 6m ago
+                - link "[MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model DIRA-94 WE Waze Search UI Expert 6m ago" [ref=e1029] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-94
+                  - generic [ref=e1031]:
+                    - generic [ref=e1032]: "[MAJOR] Redesign bottom navigation — replace 3-tab bar with Waze-style bottom sheet model"
+                    - generic [ref=e1033]:
+                      - generic [ref=e1036]: DIRA-94
+                      - generic [ref=e1038]:
+                        - generic [ref=e1040]: WE
+                        - generic [ref=e1041]: Waze Search UI Expert
+                      - generic [ref=e1042]: 6m ago
+                - link "[MAJOR] Remove trail name banner from search/home state (or reposition below search bar) DIRA-93 WE Waze Search UI Expert 6m ago" [ref=e1043] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-93
+                  - generic [ref=e1045]:
+                    - generic [ref=e1046]: "[MAJOR] Remove trail name banner from search/home state (or reposition below search bar)"
+                    - generic [ref=e1047]:
+                      - generic [ref=e1050]: DIRA-93
+                      - generic [ref=e1052]:
+                        - generic [ref=e1054]: WE
+                        - generic [ref=e1055]: Waze Search UI Expert
+                      - generic [ref=e1056]: 6m ago
+                - link "[CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity) DIRA-90 WE Waze Search UI Expert 12m ago" [ref=e1057] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-90
+                  - generic [ref=e1059]:
+                    - generic [ref=e1060]: "[CRITICAL] Add full search panel with category shortcuts, saved places, and recents (Waze parity)"
+                    - generic [ref=e1061]:
+                      - generic [ref=e1065]: DIRA-90
+                      - generic [ref=e1067]:
+                        - generic [ref=e1069]: WE
+                        - generic [ref=e1070]: Waze Search UI Expert
+                      - generic [ref=e1071]: 12m ago
+                - link "[MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar DIRA-95 WE Waze Search UI Expert 14m ago" [ref=e1072] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-95
+                  - generic [ref=e1074]:
+                    - generic [ref=e1075]: "[MAJOR] Add category shortcut row (Saved, Gas, Food, etc.) below search bar"
+                    - generic [ref=e1076]:
+                      - generic [ref=e1080]: DIRA-95
+                      - generic [ref=e1082]:
+                        - generic [ref=e1084]: WE
+                        - generic [ref=e1085]: Waze Search UI Expert
+                      - generic [ref=e1086]: 14m ago
+                - link "[MAJOR] Add microphone icon to search bar; fix search bar background color DIRA-92 WE Waze Search UI Expert 14m ago" [ref=e1087] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-92
+                  - generic [ref=e1089]:
+                    - generic [ref=e1090]: "[MAJOR] Add microphone icon to search bar; fix search bar background color"
+                    - generic [ref=e1091]:
+                      - generic [ref=e1095]: DIRA-92
+                      - generic [ref=e1097]:
+                        - generic [ref=e1099]: WE
+                        - generic [ref=e1100]: Waze Search UI Expert
+                      - generic [ref=e1101]: 14m ago
+                - 'link "DIRA-86: Write XCUITests for full Waze navigation flow DIRA-89 XE XCUITest Engineer 26m ago" [ref=e1102] [cursor=pointer]':
+                  - /url: /DIRA/issues/DIRA-89
+                  - generic [ref=e1104]:
+                    - generic [ref=e1105]: "DIRA-86: Write XCUITests for full Waze navigation flow"
+                    - generic [ref=e1106]:
+                      - generic [ref=e1110]: DIRA-89
+                      - generic [ref=e1112]:
+                        - generic [ref=e1114]: XE
+                        - generic [ref=e1115]: XCUITest Engineer
+                      - generic [ref=e1116]: 26m ago
+                - 'link "DIRA-85: Full visual audit — screenshot every screen, compare to Waze DIRA-88 SA Simulator QA Agent 27m ago" [ref=e1117] [cursor=pointer]':
+                  - /url: /DIRA/issues/DIRA-88
+                  - generic [ref=e1119]:
+                    - generic [ref=e1120]: "DIRA-85: Full visual audit — screenshot every screen, compare to Waze"
+                    - generic [ref=e1121]:
+                      - generic [ref=e1125]: DIRA-88
+                      - generic [ref=e1127]:
+                        - generic [ref=e1129]: SA
+                        - generic [ref=e1130]: Simulator QA Agent
+                      - generic [ref=e1131]: 27m ago
+                - link "Redesign Navigation HUD — beat Waze for glanceability at trail speed DIRA-1 27m ago" [ref=e1132] [cursor=pointer]:
+                  - /url: /DIRA/issues/DIRA-1
+                  - generic [ref=e1134]:
+                    - generic [ref=e1135]: Redesign Navigation HUD — beat Waze for glanceability at trail speed
+                    - generic [ref=e1136]:
+                      - generic [ref=e1140]: DIRA-1
+                      - generic [ref=e1141]: 27m ago
+                - 'link "DIRA-82: Match Nav HUD to Waze active navigation DIRA-83 WE Waze Nav HUD Expert 45m ago" [ref=e1142] [cursor=pointer]':
+                  - /url: /DIRA/issues/DIRA-83
+                  - generic [ref=e1144]:
+                    - generic [ref=e1145]: "DIRA-82: Match Nav HUD to Waze active navigation"
+                    - generic [ref=e1146]:
+                      - generic [ref=e1149]: DIRA-83
+                      - generic [ref=e1151]:
+                        - generic [ref=e1153]: WE
+                        - generic [ref=e1154]: Waze Nav HUD Expert
+                      - generic [ref=e1155]: 45m ago
+  - generic [ref=e161]:
+    - heading "Command Palette" [level=2] [ref=e162]
+    - paragraph [ref=e163]: Search for a command to run...

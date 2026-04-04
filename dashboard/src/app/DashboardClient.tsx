@@ -114,8 +114,8 @@ export default function DashboardClient({ initialAgents, recentRuns }: Props) {
   const activeAgents = agents
     .filter((a) => a.status !== "terminated")
     .sort((a, b) => {
-      const order = { running: 0, error: 1, paused: 2, idle: 3, terminated: 4 };
-      return (order[a.status] ?? 9) - (order[b.status] ?? 9);
+      const order: Record<string, number> = { running: 0, error: 1, paused: 2, idle: 3, terminated: 4 };
+      return (order[a.status as string] ?? 9) - (order[b.status as string] ?? 9);
     });
 
   return (

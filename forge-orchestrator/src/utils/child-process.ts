@@ -33,7 +33,17 @@ export async function runChildProcess(opts: RunOptions): Promise<RunResult> {
     let timedOut = false;
     let timer: NodeJS.Timeout | null = null;
 
-    opts.onSpawn(child.pid!);
+    child.on('error', (err) => {
+      resolve({
+        stdout,
+        stderr: stderr + `\nSpawn error: ${err.message}`,
+        exitCode: 127,
+        signal: null,
+        timedOut: false,
+      });
+    });
+
+    if (child.pid) opts.onSpawn(child.pid);
 
     child.stdout.on('data', (chunk: Buffer) => {
       const text = chunk.toString();

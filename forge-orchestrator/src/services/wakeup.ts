@@ -64,8 +64,8 @@ export async function createWakeup(
     .insert({
       company_id: input.companyId,
       agent_id: input.agentId,
-      wakeup_request_id: wakeup.id,
-      source: input.source,
+      invocation_source: input.source,
+      trigger_detail: input.triggerDetail ?? 'system',
       status: 'queued',
       context_snapshot: input.payload ?? null,
       created_at: new Date().toISOString(),

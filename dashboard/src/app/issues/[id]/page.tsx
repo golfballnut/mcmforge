@@ -1,6 +1,7 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
 
 export const revalidate = 15;
 
@@ -38,16 +39,18 @@ async function getIssue(id: string) {
 
   if (!issue) return null;
 
-  // Fetch assignee name
-  let assigneeName: string | null = null;
-  if (issue.assignee_agent_id) {
-    const { data: agent } = await supabase
-      .from("agents")
-      .select("name")
-      .eq("id", issue.assignee_agent_id)
-      .single();
-    assigneeName = agent?.name ?? null;
-  }
+  // Fetch all agents for assignee dropdown + assignee name lookup
+  const { data: allAgents } = await supabase
+    .from("agents")
+    .select("id, name")
+    .order("name", { ascending: true });
+
+  const agentList = (allAgents ?? []) as { id: string; name: string }[];
+  const agentMap = Object.fromEntries(agentList.map((a) => [a.id, a.name]));
+
+  const assigneeName = issue.assignee_agent_id
+    ? (agentMap[issue.assignee_agent_id] ?? null)
+    : null;
 
   // Fetch comments with author names
   const { data: rawComments } = await supabase
@@ -58,26 +61,15 @@ async function getIssue(id: string) {
 
   const comments: Comment[] = [];
   if (rawComments && rawComments.length > 0) {
-    const authorIds = [...new Set(rawComments.map((c) => c.author_agent_id).filter(Boolean))];
-    let authorMap: Record<string, string> = {};
-    if (authorIds.length > 0) {
-      const { data: agents } = await supabase
-        .from("agents")
-        .select("id, name")
-        .in("id", authorIds);
-      if (agents) {
-        authorMap = Object.fromEntries(agents.map((a) => [a.id, a.name]));
-      }
-    }
     for (const c of rawComments) {
       comments.push({
         ...c,
-        author_name: c.author_agent_id ? authorMap[c.author_agent_id] ?? null : null,
+        author_name: c.author_agent_id ? agentMap[c.author_agent_id] ?? null : null,
       });
     }
   }
 
-  return { issue: issue as Issue, assigneeName, comments };
+  return { issue: issue as Issue, assigneeName, comments, agents: agentList };
 }
 
 function formatRelativeTime(timestamp: string): string {
@@ -138,7 +130,7 @@ export default async function IssueDetailPage({
 
   if (!result) notFound();
 
-  const { issue, assigneeName, comments } = result;
+  const { issue, assigneeName, comments, agents } = result;
   const statusCfg = STATUS_CONFIG[issue.status] ?? STATUS_CONFIG.backlog;
   const priorityCfg = PRIORITY_CONFIG[issue.priority] ?? PRIORITY_CONFIG.medium;
 
@@ -245,19 +237,7 @@ export default async function IssueDetailPage({
           </div>
 
           {/* Comment input */}
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
-            <textarea
-              rows={3}
-              placeholder="Leave a comment..."
-              className="w-full px-4 py-3 bg-transparent text-sm text-[#e6edf3] placeholder-[#8b949e] resize-none focus:outline-none"
-            />
-            <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#30363d]">
-              <span className="text-xs text-[#8b949e]">Markdown supported</span>
-              <button className="px-3 py-1.5 bg-[#00d4aa] text-[#0d1117] text-xs font-medium rounded hover:bg-[#00e4b8] transition-colors">
-                Comment
-              </button>
-            </div>
-          </div>
+          <CommentForm issueId={issue.id} companyId={issue.company_id} />
         </div>
 
         {/* Right: properties panel */}
@@ -268,29 +248,19 @@ export default async function IssueDetailPage({
             </h3>
 
             <PropertyRow label="Status">
-              <span className={`flex items-center gap-1.5 justify-end ${statusCfg.color}`}>
-                <span className={`w-2 h-2 rounded-full ${statusCfg.dot}`} />
-                {statusCfg.label}
-              </span>
+              <StatusDropdown issueId={issue.id} currentStatus={issue.status} />
             </PropertyRow>
 
             <PropertyRow label="Priority">
-              <span className={priorityCfg.color}>{priorityCfg.label}</span>
+              <PriorityDropdown issueId={issue.id} currentPriority={issue.priority} />
             </PropertyRow>
 
             <PropertyRow label="Assignee">
-              {assigneeName ? (
-                <span className="flex items-center gap-1.5 justify-end">
-                  <div className="w-5 h-5 rounded-full bg-[#00d4aa] flex items-center justify-center">
-                    <span className="text-[9px] font-bold text-[#0d1117]">
-                      {assigneeName[0].toUpperCase()}
-                    </span>
-                  </div>
-                  {assigneeName}
-                </span>
-              ) : (
-                <span className="text-[#484f58]">Unassigned</span>
-              )}
+              <AssigneeDropdown
+                issueId={issue.id}
+                currentAgentId={issue.assignee_agent_id}
+                agents={agents}
+              />
             </PropertyRow>
 
             <PropertyRow label="Project">

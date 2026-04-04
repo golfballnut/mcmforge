@@ -1,5 +1,6 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
 import Link from "next/link";
+import { AgentActions } from "./AgentActions";
 
 export const revalidate = 30;
 
@@ -885,27 +886,11 @@ export default async function AgentDetailPage({
 
         {/* Action buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          {[
-            { label: "Assign Task",    icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
-            { label: "Run Heartbeat",  icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" },
-            { label: "Pause",          icon: "M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" },
-            { label: "Delete",         icon: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16", danger: true },
-          ].map((btn) => (
-            <button
-              key={btn.label}
-              type="button"
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border transition-colors ${
-                btn.danger
-                  ? "bg-transparent border-[#f85149]/30 text-[#f85149] hover:border-[#f85149] hover:bg-[#f85149]/10"
-                  : "bg-transparent border-[#30363d] text-[#8b949e] hover:border-[#8b949e] hover:text-[#e6edf3]"
-              }`}
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={btn.icon} />
-              </svg>
-              {btn.label}
-            </button>
-          ))}
+          <AgentActions
+            agentId={id}
+            companyId={agent.company_id}
+            status={agent.status}
+          />
         </div>
       </div>
 

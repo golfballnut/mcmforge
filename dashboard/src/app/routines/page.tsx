@@ -1,5 +1,6 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
 import Link from "next/link";
+import { RoutineToggle } from "./RoutineToggle";
 
 export const revalidate = 30;
 
@@ -169,13 +170,12 @@ export default async function RoutinesPage() {
             {routines.map((routine) => {
               const isActive = routine.status === "active";
               return (
-                <Link
+                <div
                   key={routine.id}
-                  href={`/routines/${routine.id}`}
-                  className="grid grid-cols-[1fr_100px_160px_200px_90px_120px] gap-x-4 px-4 py-3 bg-[#161b22] hover:bg-[#1c2333] transition-colors items-center cursor-pointer"
+                  className="grid grid-cols-[1fr_100px_160px_200px_90px_120px] gap-x-4 px-4 py-3 bg-[#161b22] hover:bg-[#1c2333] transition-colors items-center relative"
                 >
-                  {/* Title + priority */}
-                  <div className="min-w-0">
+                  {/* Title + priority — clickable link */}
+                  <Link href={`/routines/${routine.id}`} className="min-w-0">
                     <span className="text-sm font-medium text-[#e6edf3] truncate block">
                       {routine.title}
                     </span>
@@ -186,7 +186,7 @@ export default async function RoutinesPage() {
                     >
                       {routine.priority}
                     </span>
-                  </div>
+                  </Link>
 
                   {/* Company slug */}
                   <div>
@@ -215,13 +215,9 @@ export default async function RoutinesPage() {
                     </span>
                   </div>
 
-                  {/* Status dot */}
+                  {/* Toggle */}
                   <div className="flex items-center justify-center gap-1.5">
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        isActive ? "bg-[#3fb950]" : "bg-[#8b949e]"
-                      }`}
-                    />
+                    <RoutineToggle routineId={routine.id} currentStatus={routine.status} />
                     <span
                       className={`text-xs ${
                         isActive ? "text-[#3fb950]" : "text-[#8b949e]"
@@ -237,7 +233,7 @@ export default async function RoutinesPage() {
                       {formatRelativeTime(routine.last_triggered_at)}
                     </span>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>

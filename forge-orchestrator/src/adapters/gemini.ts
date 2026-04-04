@@ -1,3 +1,5 @@
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
 import { CLIAdapter, AdapterExecuteInput, AdapterExecuteResult } from './types.js';
 import { runChildProcess } from '../utils/child-process.js';
 import { renderTemplate } from '../utils/template.js';
@@ -20,6 +22,21 @@ export const geminiAdapter: CLIAdapter = {
       run: { id: input.runId },
     });
 
+    // Read all onboarding files from the agent's directory and prepend to the prompt
+    let systemContext = '';
+    if (input.instructionsFile) {
+      const agentDir = path.dirname(input.instructionsFile);
+      const onboardingFiles = ['AGENTS.md', 'HEARTBEAT.md', 'SOUL.md', 'TOOLS.md'];
+      for (const file of onboardingFiles) {
+        const filePath = path.join(agentDir, file);
+        if (existsSync(filePath)) {
+          const content = readFileSync(filePath, 'utf-8');
+          systemContext += `\n\n--- ${file} ---\n${content}`;
+        }
+      }
+    }
+    const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
+
     const args = ['--output-format', 'jsonl'];
     if (model) args.push('--model', model);
     if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
@@ -30,6 +47,7 @@ export const geminiAdapter: CLIAdapter = {
       FORGE_AGENT_ID: input.agent.id,
       FORGE_AGENT_NAME: input.agent.name,
       FORGE_COMPANY_ID: input.agent.companyId,
+      FORGE_AGENT_HOME: input.agentHome,
     };
 
     if (input.context.issueId) env.FORGE_ISSUE_ID = input.context.issueId as string;
@@ -43,7 +61,7 @@ export const geminiAdapter: CLIAdapter = {
       args,
       cwd: input.cwd,
       env,
-      stdin: prompt,
+      stdin: fullPrompt,
       timeoutSec,
       signal: input.signal,
       onLog: input.onLog,

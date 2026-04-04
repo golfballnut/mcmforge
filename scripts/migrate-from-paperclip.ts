@@ -14,7 +14,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const PAPERCLIP_BASE = 'http://127.0.0.1:3100';
-const COMPANY_SLUG = 'DIRA'; // DirtSync
+const PAPERCLIP_COMPANY_ID = 'b724f8bb-9567-47a1-8ec6-fd8e23c70093'; // DirtSync in Paperclip
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -36,7 +36,7 @@ async function getForgeCompanyId(slug: string): Promise<string> {
 
 async function migrateAgents(companyId: string) {
   console.log('Fetching Paperclip agents...');
-  const agents = await fetchPaperclip(`/api/companies/${COMPANY_SLUG}/agents`);
+  const agents = await fetchPaperclip(`/api/companies/${PAPERCLIP_COMPANY_ID}/agents`);
   console.log(`Found ${agents.length} agents`);
 
   const agentIdMap = new Map<string, string>(); // paperclip ID -> forge ID
@@ -92,7 +92,7 @@ async function migrateAgents(companyId: string) {
 
 async function migrateIssues(companyId: string, agentIdMap: Map<string, string>) {
   console.log('\nFetching Paperclip issues...');
-  const issues = await fetchPaperclip(`/api/companies/${COMPANY_SLUG}/issues?limit=1000`);
+  const issues = await fetchPaperclip(`/api/companies/${PAPERCLIP_COMPANY_ID}/issues?limit=1000`);
   console.log(`Found ${issues.length} issues`);
 
   for (const issue of issues) {
@@ -122,7 +122,7 @@ async function migrateIssues(companyId: string, agentIdMap: Map<string, string>)
 
 async function migrateRoutines(companyId: string, agentIdMap: Map<string, string>) {
   console.log('\nFetching Paperclip routines...');
-  const routines = await fetchPaperclip(`/api/companies/${COMPANY_SLUG}/routines`);
+  const routines = await fetchPaperclip(`/api/companies/${PAPERCLIP_COMPANY_ID}/routines`);
   console.log(`Found ${routines.length} routines`);
 
   // Need a project ID — get first project or create one

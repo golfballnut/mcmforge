@@ -33,48 +33,48 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
       <div className="w-full max-w-sm">
-        <div className="bg-white border border-[#dadce0] rounded-2xl p-8 shadow-sm">
+        <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-8 shadow-lg">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-[#1a73e8] rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white text-xl font-bold">M</span>
+            <div className="w-14 h-14 bg-[#00d4aa] rounded-xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-[#0d1117] text-2xl font-bold">M</span>
             </div>
-            <h1 className="text-2xl font-normal text-[#202124]">
+            <h1 className="text-2xl font-semibold text-[#e6edf3]">
               Sign in
             </h1>
-            <p className="text-[#5f6368] text-sm mt-2">to MCM Forge Command Center</p>
+            <p className="text-[#8b949e] text-sm mt-2">to MCM Forge Orchestrator</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm text-[#5f6368] mb-1">Email</label>
+              <label className="block text-sm text-[#8b949e] mb-1.5">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-[#dadce0] rounded-lg text-[#202124] focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8] transition-colors"
-                placeholder="steve@mcmforge.com"
+                className="w-full px-4 py-3 bg-[#0d1117] border border-[#30363d] rounded-lg text-[#e6edf3] placeholder-[#484f58] focus:outline-none focus:border-[#00d4aa] focus:ring-1 focus:ring-[#00d4aa] transition-colors"
+                placeholder="steve@linkschoice.com"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm text-[#5f6368] mb-1">
+              <label className="block text-sm text-[#8b949e] mb-1.5">
                 Password
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-[#dadce0] rounded-lg text-[#202124] focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8] transition-colors"
+                className="w-full px-4 py-3 bg-[#0d1117] border border-[#30363d] rounded-lg text-[#e6edf3] placeholder-[#484f58] focus:outline-none focus:border-[#00d4aa] focus:ring-1 focus:ring-[#00d4aa] transition-colors"
                 placeholder="Enter password"
                 required
               />
             </div>
 
             {error && (
-              <div className="text-red-700 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
+              <div className="text-[#f85149] text-sm bg-[#f8514922] border border-[#f8514944] rounded-lg p-3">
                 {error}
               </div>
             )}
@@ -82,12 +82,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#1a73e8] hover:bg-[#1765cc] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+              className="w-full py-3 bg-[#00d4aa] hover:bg-[#00e4b8] disabled:opacity-50 disabled:cursor-not-allowed text-[#0d1117] font-semibold rounded-lg transition-colors"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
         </div>
+
+        <p className="text-center text-[#484f58] text-xs mt-6">
+          MCM Forge Orchestrator &mdash; AI Agent Operations Platform
+        </p>
       </div>
     </div>
   );

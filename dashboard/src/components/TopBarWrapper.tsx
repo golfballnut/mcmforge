@@ -43,9 +43,9 @@ export default function TopBarWrapper({
         {/* Sidebar container */}
         <div
           className={`
-            fixed md:static z-50 md:z-auto top-16 left-0 h-[calc(100vh-4rem)] w-64 shrink-0
+            fixed md:static z-50 md:z-auto top-16 left-0 h-[calc(100vh-4rem)] w-[296px] shrink-0
             transition-transform duration-200 ease-in-out
-            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-[296px]"}
             md:translate-x-0
           `}
         >

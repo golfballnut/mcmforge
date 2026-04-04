@@ -1,3 +1,5 @@
+import { mkdirSync } from 'node:fs';
+import path from 'node:path';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { ForgeConfig } from '../config.js';
 import { getAdapter } from '../adapters/registry.js';
@@ -84,6 +86,11 @@ async function executeRun(
   const abortController = new AbortController();
   const cwd = agent.adapter_config?.cwd || config.agentHomeDir;
 
+  // Create agent home directory with persistent subdirs
+  const agentHome = path.join(config.agentHomeDir, agent.name.toLowerCase().replace(/\s+/g, '-'));
+  mkdirSync(path.join(agentHome, 'memory'), { recursive: true });
+  mkdirSync(path.join(agentHome, 'life'), { recursive: true });
+
   // Dry-run mode: skip CLI spawn, mark run as succeeded immediately
   if (config.dryRun) {
     logger.info({ runId: run.id, agent: agent.name, adapterType: agent.adapter_type }, 'DRY RUN: Would spawn CLI');
@@ -120,6 +127,7 @@ async function executeRun(
       sessionParams: agent.session_params,
       context: run.context_snapshot || {},
       cwd,
+      agentHome,
       signal: abortController.signal,
       onLog: async (stream, chunk) => {
         await supabase.from('run_events').insert({

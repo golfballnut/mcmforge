@@ -1,3 +1,5 @@
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
 import { CLIAdapter, AdapterExecuteInput, AdapterExecuteResult } from './types.js';
 import { runChildProcess } from '../utils/child-process.js';
 import { renderTemplate } from '../utils/template.js';
@@ -21,14 +23,26 @@ export const claudeAdapter: CLIAdapter = {
       run: { id: input.runId },
     });
 
+    // Read all onboarding files from the agent's directory and prepend to the prompt
+    let systemContext = '';
+    if (input.instructionsFile) {
+      const agentDir = path.dirname(input.instructionsFile);
+      const onboardingFiles = ['AGENTS.md', 'HEARTBEAT.md', 'SOUL.md', 'TOOLS.md'];
+      for (const file of onboardingFiles) {
+        const filePath = path.join(agentDir, file);
+        if (existsSync(filePath)) {
+          const content = readFileSync(filePath, 'utf-8');
+          systemContext += `\n\n--- ${file} ---\n${content}`;
+        }
+      }
+    }
+    const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
+
     const args = ['--print', '-', '--output-format', 'stream-json', '--verbose'];
     if (input.sessionId) args.push('--resume', input.sessionId);
     if (dangerouslySkipPermissions) args.push('--dangerously-skip-permissions');
     if (model) args.push('--model', model);
     if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
-    if (input.instructionsFile) {
-      args.push('--append-system-prompt-file', input.instructionsFile);
-    }
 
     const env: Record<string, string> = {
       ...process.env as Record<string, string>,
@@ -36,6 +50,7 @@ export const claudeAdapter: CLIAdapter = {
       FORGE_AGENT_ID: input.agent.id,
       FORGE_AGENT_NAME: input.agent.name,
       FORGE_COMPANY_ID: input.agent.companyId,
+      FORGE_AGENT_HOME: input.agentHome,
     };
 
     if (input.context.issueId) env.FORGE_ISSUE_ID = input.context.issueId as string;
@@ -46,7 +61,7 @@ export const claudeAdapter: CLIAdapter = {
       args,
       cwd: input.cwd,
       env,
-      stdin: prompt,
+      stdin: fullPrompt,
       timeoutSec,
       signal: input.signal,
       onLog: input.onLog,

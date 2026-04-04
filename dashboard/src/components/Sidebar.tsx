@@ -227,43 +227,62 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { activeCompany: ctxCompany, companies: ctxCompanies, setActiveCompany } = useCompany();
-  const [companies, setCompanies] = useState<Company[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [liveCount, setLiveCount] = useState(0);
+  const [inboxCount, setInboxCount] = useState(0);
 
-  // Sync companies from context
-  useEffect(() => {
-    if (ctxCompanies.length > 0) {
-      setCompanies(ctxCompanies.map(c => ({ ...c, status: "active" })));
-    }
-  }, [ctxCompanies]);
+  // Derive companies list from context for icon rail
+  const companies = ctxCompanies.map(c => ({ ...c, status: "active" }));
 
   useEffect(() => {
+    if (!ctxCompany) return;
+    const companyId = ctxCompany.id;
     const supabase = createForgeBrowserClient();
 
     async function fetchData() {
-      const [agentsRes] = await Promise.all([
-        supabase.from("agents").select("id, name, role, icon, status, company_id").order("name"),
-      ]);
+      // Fetch agents for this company
+      const agentsRes = await supabase
+        .from("agents")
+        .select("id, name, role, icon, status, company_id")
+        .eq("company_id", companyId)
+        .order("name");
 
       if (agentsRes.data) {
-        const agentData = agentsRes.data as Agent[];
-        setAgents(agentData);
+        setAgents(agentsRes.data as Agent[]);
+      }
+
+      // Fetch projects for this company
+      const projectsRes = await supabase
+        .from("projects")
+        .select("id, name, company_id, color")
+        .eq("company_id", companyId)
+        .order("name");
+
+      if (projectsRes.data) {
+        setProjects(projectsRes.data as Project[]);
+      }
+
+      // Fetch inbox count: failed + running runs for agents in this company
+      const agentIds = (agentsRes.data ?? []).map((a: Agent) => a.id);
+      if (agentIds.length > 0) {
+        const runsRes = await supabase
+          .from("runs")
+          .select("id", { count: "exact", head: true })
+          .in("agent_id", agentIds)
+          .in("status", ["failed", "running"]);
+        setInboxCount(runsRes.count ?? 0);
+      } else {
+        setInboxCount(0);
       }
     }
 
     fetchData();
-  }, []);
-
-  // Filter agents and live count by active company
-  const filteredAgents = ctxCompany
-    ? agents.filter((a) => a.company_id === ctxCompany.id)
-    : agents;
+  }, [ctxCompany?.id]);
 
   useEffect(() => {
-    setLiveCount(filteredAgents.filter((a) => a.status === "running").length);
-  }, [filteredAgents]);
+    setLiveCount(agents.filter((a) => a.status === "running").length);
+  }, [agents]);
 
   const activeCompanyName = ctxCompany?.name ?? "MCM Forge";
 
@@ -346,14 +365,16 @@ export default function Sidebar() {
             href="/"
             icon={<IconDashboard />}
             label="Dashboard"
-            badge={liveCount > 0 ? `${liveCount} live` : undefined}
-            badgeVariant="cyan"
+            badge={liveCount > 0 ? `${liveCount} live` : agents.length > 0 ? `${agents.length}` : undefined}
+            badgeVariant={liveCount > 0 ? "cyan" : "default"}
             isActive={isActive("/")}
           />
           <NavLink
             href="/inbox"
             icon={<IconInbox />}
             label="Inbox"
+            badge={inboxCount > 0 ? inboxCount : undefined}
+            badgeVariant="default"
             isActive={isActive("/inbox")}
           />
         </div>
@@ -387,14 +408,7 @@ export default function Sidebar() {
         <SectionHeader label="Projects" onAdd={() => {}} />
         <div className="space-y-0.5 pb-1">
           {projects.length === 0 ? (
-            // Fallback static project while loading / if empty
-            <div className="flex items-center gap-2.5 px-4 py-1.5 text-sm text-[#8b949e]">
-              <span
-                className="w-2 h-2 rounded-full shrink-0"
-                style={{ backgroundColor: PROJECT_COLORS[0] }}
-              />
-              <span className="truncate">DirtSync iOS</span>
-            </div>
+            <p className="px-4 py-1.5 text-xs text-[#484f58]">No projects</p>
           ) : (
             projects.map((project, idx) => (
               <Link
@@ -417,10 +431,10 @@ export default function Sidebar() {
         {/* AGENTS section — scrollable */}
         <SectionHeader label="Agents" onAdd={() => {}} />
         <div className="flex-1 overflow-y-auto pb-2 space-y-0.5 min-h-0">
-          {filteredAgents.length === 0 ? (
+          {agents.length === 0 ? (
             <p className="px-4 py-2 text-xs text-[#484f58]">No agents yet</p>
           ) : (
-            filteredAgents.map((agent) => {
+            agents.map((agent) => {
               const initials = agent.name
                 .split(/[\s-_]+/)
                 .slice(0, 2)

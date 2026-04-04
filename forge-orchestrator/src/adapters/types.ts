@@ -15,6 +15,7 @@ export interface AdapterExecuteInput {
   sessionParams: Record<string, unknown> | null;
   context: Record<string, unknown>;
   cwd: string;
+  agentHome: string;
   signal: AbortSignal;
   onLog: (stream: 'stdout' | 'stderr', chunk: string) => Promise<void>;
   onSpawn: (pid: number) => Promise<void>;

@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8f9fa;
-  --foreground: #202124;
-  --g-blue: #1a73e8;
-  --g-red: #ea4335;
-  --g-yellow: #fbbc04;
-  --g-green: #34a853;
-  --g-gray: #5f6368;
-  --g-border: #dadce0;
-  --g-hover: #f1f3f4;
-  --g-active: #d3e3fd;
+  --background: #0d1117;
+  --foreground: #e6edf3;
+  --accent: #00d4aa;
+  --accent-dim: #00d4aa33;
+  --surface: #161b22;
+  --surface-hover: #1c2333;
+  --border: #30363d;
+  --border-light: #21262d;
+  --text-muted: #8b949e;
+  --text-secondary: #c9d1d9;
+  --danger: #f85149;
+  --warning: #d29922;
+  --success: #3fb950;
+  --info: #58a6ff;
 }
 
 @theme inline {
@@ -23,7 +27,23 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 @keyframes fadeIn {

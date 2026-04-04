@@ -2,7 +2,8 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { ForgeConfig } from '../config.js';
 import { getAdapter } from '../adapters/registry.js';
 import { recordCost } from '../services/cost-ledger.js';
-import { releaseIssueExecution } from '../services/issue-lifecycle.js';
+import { releaseIssueExecution, lockIssueExecution } from '../services/issue-lifecycle.js';
+import { createWakeup } from '../services/wakeup.js';
 import { logger } from '../utils/logger.js';
 
 const activeRuns = new Map<string, { pid: number; abortController: AbortController }>();
@@ -15,6 +16,13 @@ export async function startRunExecutor(supabase: SupabaseClient, config: ForgeCo
   logger.info({ interval: config.runPollIntervalMs }, 'Run executor started');
 
   const tick = async () => {
+    // Check for newly assigned issues and create wakeups before claiming runs
+    try {
+      await checkAssignedIssues(supabase);
+    } catch (err) {
+      logger.error(err, 'Issue assignment check failed');
+    }
+
     if (activeRuns.size >= config.maxConcurrentRuns) return;
     try {
       await claimAndExecuteNextRun(supabase, config);
@@ -189,6 +197,51 @@ async function executeRun(
       .eq('id', agent.id);
   } finally {
     activeRuns.delete(run.id);
+  }
+}
+
+/**
+ * Detect issues that have been assigned to an agent (assignee_agent_id set, status='todo',
+ * no active execution lock) and create wakeup requests so the agent picks them up.
+ */
+async function checkAssignedIssues(supabase: SupabaseClient) {
+  const { data: issues, error } = await supabase
+    .from('issues')
+    .select('id, company_id, assignee_agent_id, title, project_id, priority')
+    .eq('status', 'todo')
+    .not('assignee_agent_id', 'is', null)
+    .is('execution_run_id', null)
+    .limit(10);
+
+  if (error) {
+    logger.error({ error }, 'Failed to query assigned issues');
+    return;
+  }
+
+  if (!issues?.length) return;
+
+  for (const issue of issues) {
+    const agentId = issue.assignee_agent_id as string;
+
+    logger.debug({ issueId: issue.id, agentId }, 'Creating wakeup for assigned issue');
+
+    const runId = await createWakeup(supabase, {
+      companyId: issue.company_id,
+      agentId,
+      source: 'assignment',
+      triggerDetail: issue.title,
+      reason: `Assigned issue: ${issue.title}`,
+      payload: {
+        issueId: issue.id,
+        projectId: issue.project_id ?? null,
+      },
+      // Prevent re-creating a wakeup if one already fired for this issue
+      idempotencyKey: `assignment-${issue.id}`,
+    });
+
+    if (runId) {
+      await lockIssueExecution(supabase, issue.id, runId);
+    }
   }
 }
 

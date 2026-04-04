@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 
 export const revalidate = 60;
 
@@ -86,14 +87,27 @@ function getRangeStart(range: string): Date | null {
   return null; // all time
 }
 
-async function getCostData(range: string) {
+async function getCostData(range: string, companyId: string) {
   const supabase = await createForgeClient();
+
+  // Get agent IDs for this company
+  const { data: companyAgents } = await supabase
+    .from("agents")
+    .select("id, name, role, icon")
+    .eq("company_id", companyId);
+  const agents = (companyAgents as Agent[]) || [];
+  const agentIds = agents.map((a) => a.id);
+
+  if (agentIds.length === 0) {
+    return { events: [] as CostEvent[], agents };
+  }
 
   const rangeStart = getRangeStart(range);
 
   let query = supabase
     .from("cost_events")
     .select("*")
+    .in("agent_id", agentIds)
     .order("occurred_at", { ascending: false });
 
   if (rangeStart) {
@@ -101,13 +115,10 @@ async function getCostData(range: string) {
   }
 
   const { data: events } = await query.limit(500);
-  const { data: agents } = await supabase
-    .from("agents")
-    .select("id, name, role, icon");
 
   return {
     events: (events as CostEvent[]) || [],
-    agents: (agents as Agent[]) || [],
+    agents,
   };
 }
 
@@ -119,7 +130,8 @@ export default async function CostsPage({
   const params = await searchParams;
   const activeRange = params?.range ?? "mtd";
 
-  const { events, agents } = await getCostData(activeRange);
+  const company = await getActiveCompany();
+  const { events, agents } = await getCostData(activeRange, company?.id ?? "");
 
   const agentById = Object.fromEntries(agents.map((a) => [a.id, a]));
 

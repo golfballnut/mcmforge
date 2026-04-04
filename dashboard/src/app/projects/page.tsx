@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
 export const revalidate = 30;
@@ -18,11 +19,12 @@ type Project = {
   company: { name: string; slug: string } | null;
 };
 
-async function getProjects(): Promise<Project[]> {
+async function getProjects(companyId: string): Promise<Project[]> {
   const supabase = await createForgeClient();
   const { data } = await supabase
     .from("projects")
     .select("*, company:companies(name, slug)")
+    .eq("company_id", companyId)
     .order("created_at", { ascending: false });
   return ((data as unknown) as Project[]) || [];
 }
@@ -50,7 +52,8 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default async function ProjectsPage() {
-  const projects = await getProjects();
+  const company = await getActiveCompany();
+  const projects = await getProjects(company?.id ?? "");
 
   const statusCounts = {
     active:      projects.filter((p) => p.status === "active").length,

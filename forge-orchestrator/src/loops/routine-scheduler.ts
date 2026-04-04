@@ -41,7 +41,7 @@ async function processDueRoutines(supabase: SupabaseClient) {
     try {
       await fireRoutine(supabase, routine);
     } catch (err) {
-      logger.error({ err, routineId: routine.id, routineName: routine.name }, 'Failed to fire routine');
+      logger.error({ err, routineId: routine.id, routineTitle: routine.title }, 'Failed to fire routine');
     }
   }
 }
@@ -124,8 +124,8 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
     companyId: routine.company_id,
     agentId,
     source: 'routine',
-    triggerDetail: routine.name,
-    reason: `Routine: ${routine.name}`,
+    triggerDetail: routine.title,
+    reason: `Routine: ${routine.title}`,
     payload: {
       routineId: routine.id,
       issueId: issue.id,
@@ -155,8 +155,8 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
   const { error: routineRunError } = await supabase.from('routine_runs').insert({
     company_id: routine.company_id,
     routine_id: routine.id,
-    issue_id: issue.id,
-    run_id: runId,
+    linked_issue_id: issue.id,
+    linked_run_id: runId,
     triggered_at: new Date().toISOString(),
     status: 'running',
   });
@@ -166,7 +166,7 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
   }
 
   logger.info(
-    { routineId: routine.id, routineName: routine.name, issueId: issue.id, runId },
+    { routineId: routine.id, routineTitle: routine.title, issueId: issue.id, runId },
     'Routine fired',
   );
 

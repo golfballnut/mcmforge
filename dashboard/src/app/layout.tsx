@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import TopBarWrapper from "@/components/TopBarWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PageViewTracker from "@/components/PageViewTracker";
+import { Providers } from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,13 +53,15 @@ export default async function RootLayout({
         <ErrorBoundary>
           <PageViewTracker />
           {user ? (
-            <TopBarWrapper
-              userEmail={user.email || ""}
-              dispatcherStatus={dispatcherStatus}
-              sidebar={<Sidebar />}
-            >
-              {children}
-            </TopBarWrapper>
+            <Providers>
+              <TopBarWrapper
+                userEmail={user.email || ""}
+                dispatcherStatus={dispatcherStatus}
+                sidebar={<Sidebar />}
+              >
+                {children}
+              </TopBarWrapper>
+            </Providers>
           ) : (
             children
           )}

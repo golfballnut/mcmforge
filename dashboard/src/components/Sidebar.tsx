@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createForgeBrowserClient } from "@/lib/supabase/forge-client";
+import { useCompany } from "@/lib/company-context";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -224,34 +225,47 @@ function SectionHeader({
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { activeCompany: ctxCompany, companies: ctxCompanies, setActiveCompany } = useCompany();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [liveCount, setLiveCount] = useState(0);
 
+  // Sync companies from context
+  useEffect(() => {
+    if (ctxCompanies.length > 0) {
+      setCompanies(ctxCompanies.map(c => ({ ...c, status: "active" })));
+    }
+  }, [ctxCompanies]);
+
   useEffect(() => {
     const supabase = createForgeBrowserClient();
 
     async function fetchData() {
-      const [companiesRes, agentsRes] = await Promise.all([
-        supabase.from("companies").select("id, name, slug, status").order("name"),
+      const [agentsRes] = await Promise.all([
         supabase.from("agents").select("id, name, role, icon, status, company_id").order("name"),
       ]);
 
-      if (companiesRes.data) setCompanies(companiesRes.data as Company[]);
       if (agentsRes.data) {
         const agentData = agentsRes.data as Agent[];
         setAgents(agentData);
-        setLiveCount(agentData.filter((a) => a.status === "running").length);
       }
     }
 
     fetchData();
   }, []);
 
-  // Active company = first company (DirtSync) for now
-  const activeCompany = companies[0];
-  const activeCompanyName = activeCompany?.name ?? "MCM Forge";
+  // Filter agents and live count by active company
+  const filteredAgents = ctxCompany
+    ? agents.filter((a) => a.company_id === ctxCompany.id)
+    : agents;
+
+  useEffect(() => {
+    setLiveCount(filteredAgents.filter((a) => a.status === "running").length);
+  }, [filteredAgents]);
+
+  const activeCompanyName = ctxCompany?.name ?? "MCM Forge";
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -266,12 +280,16 @@ export default function Sidebar() {
         </div>
 
         {/* Company icons */}
-        {companies.map((company, idx) => {
-          const isActiveCompany = idx === 0;
+        {companies.map((company) => {
+          const isActiveCompany = ctxCompany?.id === company.id;
           return (
             <div
               key={company.id}
               title={company.name}
+              onClick={() => {
+                setActiveCompany({ ...company, issue_prefix: "" });
+                router.refresh();
+              }}
               className={`w-9 h-9 rounded-full flex items-center justify-center mb-2 cursor-pointer transition-all shrink-0 ${
                 isActiveCompany
                   ? "ring-2 ring-[#00d4aa] ring-offset-1 ring-offset-[#010409]"
@@ -399,10 +417,10 @@ export default function Sidebar() {
         {/* AGENTS section — scrollable */}
         <SectionHeader label="Agents" onAdd={() => {}} />
         <div className="flex-1 overflow-y-auto pb-2 space-y-0.5 min-h-0">
-          {agents.length === 0 ? (
+          {filteredAgents.length === 0 ? (
             <p className="px-4 py-2 text-xs text-[#484f58]">No agents yet</p>
           ) : (
-            agents.map((agent) => {
+            filteredAgents.map((agent) => {
               const initials = agent.name
                 .split(/[\s-_]+/)
                 .slice(0, 2)

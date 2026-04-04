@@ -84,6 +84,24 @@ async function executeRun(
   const abortController = new AbortController();
   const cwd = agent.adapter_config?.cwd || config.agentHomeDir;
 
+  // Dry-run mode: skip CLI spawn, mark run as succeeded immediately
+  if (config.dryRun) {
+    logger.info({ runId: run.id, agent: agent.name, adapterType: agent.adapter_type }, 'DRY RUN: Would spawn CLI');
+    await supabase.from('runs').update({
+      status: 'succeeded',
+      summary: `Dry run — would spawn ${agent.adapter_type} for "${run.context_snapshot?.wakeReason || 'unknown'}"`,
+      finished_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }).eq('id', run.id);
+    await supabase.from('agents').update({
+      status: 'idle',
+      last_heartbeat_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }).eq('id', agent.id);
+    activeRuns.delete(run.id);
+    return;
+  }
+
   try {
     const result = await adapter.execute({
       runId: run.id,

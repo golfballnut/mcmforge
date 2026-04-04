@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { RoutineToggle } from "./RoutineToggle";
 
@@ -31,12 +32,12 @@ type RoutineRow = Routine & {
   companySlug: string;
 };
 
-async function getRoutines(): Promise<RoutineRow[]> {
+async function getRoutines(companyId: string): Promise<RoutineRow[]> {
   const supabase = await createForgeClient();
 
   const [{ data: routines }, { data: agents }, { data: companies }] =
     await Promise.all([
-      supabase.from("routines").select("*").order("title", { ascending: true }),
+      supabase.from("routines").select("*").eq("company_id", companyId).order("title", { ascending: true }),
       supabase.from("agents").select("id, name, icon"),
       supabase.from("companies").select("id, slug, name"),
     ]);
@@ -122,7 +123,8 @@ const PRIORITY_COLOR: Record<string, string> = {
 };
 
 export default async function RoutinesPage() {
-  const routines = await getRoutines();
+  const company = await getActiveCompany();
+  const routines = await getRoutines(company?.id ?? "");
 
   const activeCount = routines.filter((r) => r.status === "active").length;
   const pausedCount = routines.filter((r) => r.status === "paused").length;

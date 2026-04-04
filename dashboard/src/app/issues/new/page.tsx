@@ -1,21 +1,20 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { createIssue } from "./actions";
 
-async function getFormData() {
+async function getFormData(companyId: string) {
   const supabase = await createForgeClient();
 
-  const [{ data: agents }, { data: projects }, { data: companies }] =
+  const [{ data: agents }, { data: projects }] =
     await Promise.all([
-      supabase.from("agents").select("id, name, icon").order("name"),
-      supabase.from("projects").select("id, name").order("name"),
-      supabase.from("companies").select("id, name, slug, issue_prefix").order("name"),
+      supabase.from("agents").select("id, name, icon").eq("company_id", companyId).order("name"),
+      supabase.from("projects").select("id, name").eq("company_id", companyId).order("name"),
     ]);
 
   return {
     agents: agents ?? [],
     projects: projects ?? [],
-    companies: companies ?? [],
   };
 }
 
@@ -28,7 +27,9 @@ const SELECT_CLASS =
 const LABEL_CLASS = "block text-xs font-medium text-[#8b949e] mb-1.5 uppercase tracking-wide";
 
 export default async function NewIssuePage() {
-  const { agents, projects, companies } = await getFormData();
+  const company = await getActiveCompany();
+  const companyId = company?.id ?? "";
+  const { agents, projects } = await getFormData(companyId);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -119,27 +120,14 @@ export default async function NewIssuePage() {
           </div>
         </div>
 
-        {/* Company */}
-        <div>
-          <label htmlFor="company_id" className={LABEL_CLASS}>
-            Company <span className="text-[#8b949e] font-normal normal-case">(determines issue ID prefix)</span>
-          </label>
-          <div className="relative">
-            <select id="company_id" name="company_id" defaultValue="" className={SELECT_CLASS}>
-              <option value="">No company</option>
-              {companies.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}{c.issue_prefix ? ` (${c.issue_prefix})` : ""}
-                </option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center">
-              <svg className="w-4 h-4 text-[#8b949e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+        {/* Company — auto-set from active company */}
+        <input type="hidden" name="company_id" value={companyId} />
+        {company && (
+          <div>
+            <span className={LABEL_CLASS}>Company</span>
+            <p className="text-sm text-[#e6edf3]">{company.name}{company.issue_prefix ? ` (${company.issue_prefix})` : ""}</p>
           </div>
-        </div>
+        )}
 
         {/* Assignee */}
         <div>

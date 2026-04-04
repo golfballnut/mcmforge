@@ -1,25 +1,35 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import DashboardClient from "./DashboardClient";
 
 export const revalidate = 15;
 
-async function getAgents() {
+async function getAgents(companyId: string) {
   const supabase = await createForgeClient();
   const { data } = await supabase
     .from("agents")
     .select(
       "id, name, title, status, adapter_type, adapter_config, last_heartbeat_at, company_id"
     )
+    .eq("company_id", companyId)
     .order("status")
     .order("name");
   return data ?? [];
 }
 
-async function getRecentRuns() {
+async function getRecentRuns(companyId: string) {
   const supabase = await createForgeClient();
+  // Runs don't have company_id directly — filter via agent join
+  const { data: agents } = await supabase
+    .from("agents")
+    .select("id")
+    .eq("company_id", companyId);
+  const agentIds = (agents ?? []).map((a) => a.id);
+  if (agentIds.length === 0) return [];
   const { data } = await supabase
     .from("runs")
     .select("id, agent_id, status, summary, started_at, finished_at, context_snapshot")
+    .in("agent_id", agentIds)
     .order("created_at", { ascending: false })
     .limit(100);
   return data ?? [];
@@ -35,15 +45,16 @@ function buildLatestRunMap(runs: any[]): Record<string, any> {
   return map;
 }
 
-async function getStats() {
+async function getStats(companyId: string) {
   const supabase = await createForgeClient();
 
   const [agentsRes, issuesRes, approvalsRes] = await Promise.all([
-    supabase.from("agents").select("id, status"),
+    supabase.from("agents").select("id, status").eq("company_id", companyId),
     supabase
       .from("issues")
       .select("id", { count: "exact" })
-      .eq("status", "in_progress"),
+      .eq("status", "in_progress")
+      .eq("company_id", companyId),
     supabase
       .from("approvals")
       .select("id", { count: "exact" })
@@ -56,14 +67,19 @@ async function getStats() {
   // Monthly spend: sum cost_events for current month if table exists
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const { data: costData } = await supabase
-    .from("cost_events")
-    .select("amount_usd")
-    .gte("created_at", monthStart);
-  const monthlySpend = (costData ?? []).reduce(
-    (sum, row) => sum + (row.amount_usd ?? 0),
-    0
-  );
+  const agentIds = agents.map((a) => a.id);
+  let monthlySpend = 0;
+  if (agentIds.length > 0) {
+    const { data: costData } = await supabase
+      .from("cost_events")
+      .select("amount_usd")
+      .in("agent_id", agentIds)
+      .gte("created_at", monthStart);
+    monthlySpend = (costData ?? []).reduce(
+      (sum, row) => sum + (row.amount_usd ?? 0),
+      0
+    );
+  }
 
   return {
     enabledAgents,
@@ -101,10 +117,14 @@ function StatCard({
 }
 
 export default async function HomePage() {
+  const company = await getActiveCompany();
+  const companyId = company?.id ?? "";
+  const companyName = company?.name ?? "MCM Forge";
+
   const [agents, recentRuns, stats] = await Promise.all([
-    getAgents(),
-    getRecentRuns(),
-    getStats(),
+    getAgents(companyId),
+    getRecentRuns(companyId),
+    getStats(companyId),
   ]);
 
   const latestRunMap = buildLatestRunMap(recentRuns);
@@ -120,7 +140,7 @@ export default async function HomePage() {
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-semibold" style={{ color: "#e6edf3" }}>
-          MCM Forge
+          {companyName}
         </h1>
         <p className="text-sm mt-1" style={{ color: "#8b949e" }}>
           {runningCount > 0

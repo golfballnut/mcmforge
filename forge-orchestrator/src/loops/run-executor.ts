@@ -67,6 +67,32 @@ async function claimAndExecuteNextRun(supabase: SupabaseClient, config: ForgeCon
     return;
   }
 
+  // Budget enforcement: auto-pause agent if monthly spend exceeds limit
+  if (agent.budget_monthly_cents > 0) {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const { data: spend } = await supabase
+      .from('cost_events')
+      .select('cost_cents')
+      .eq('agent_id', agent.id)
+      .gte('occurred_at', startOfMonth.toISOString());
+
+    const totalSpent = (spend || []).reduce((sum: number, e: { cost_cents: number }) => sum + (e.cost_cents || 0), 0);
+
+    if (totalSpent >= agent.budget_monthly_cents) {
+      logger.warn({ agent: agent.name, spent: totalSpent, budget: agent.budget_monthly_cents }, 'Agent over budget, auto-pausing');
+      await supabase.from('agents').update({
+        status: 'paused',
+        pause_reason: `Budget exceeded: $${(totalSpent / 100).toFixed(2)} of $${(agent.budget_monthly_cents / 100).toFixed(2)}`,
+        paused_at: new Date().toISOString(),
+      }).eq('id', agent.id);
+      await cancelRun(supabase, run.id, 'Agent over budget');
+      return;
+    }
+  }
+
   await supabase
     .from('agents')
     .update({ status: 'running', updated_at: new Date().toISOString() })

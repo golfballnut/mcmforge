@@ -1,6 +1,7 @@
-import Link from "next/link";
+"use client";
 
-export const revalidate = false;
+import Link from "next/link";
+import { useState, useEffect, useCallback } from "react";
 
 // ── Nav items ──────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -48,9 +49,98 @@ const NAV_ITEMS = [
   },
 ];
 
+const STORAGE_KEY = "forge_settings_general";
+
+interface GeneralSettings {
+  censorUsername: boolean;
+  instanceName: string;
+  logRetentionDays: number;
+}
+
+const DEFAULT_SETTINGS: GeneralSettings = {
+  censorUsername: false,
+  instanceName: "MCM Forge",
+  logRetentionDays: 90,
+};
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+
+function Toast({ message, onDone }: { message: string; onDone: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 2500);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return (
+    <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 bg-[#161b22] border border-[#00d4aa] rounded-lg shadow-xl animate-in slide-in-from-bottom-2 duration-200">
+      <svg className="w-4 h-4 text-[#00d4aa] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      </svg>
+      <span className="text-sm text-[#e6edf3]">{message}</span>
+    </div>
+  );
+}
+
+// ── Toggle ────────────────────────────────────────────────────────────────────
+
+function Toggle({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00d4aa] ${
+        checked
+          ? "bg-[#00d4aa] border-[#00d4aa]"
+          : "bg-[#30363d] border-[#484f58]"
+      }`}
+    >
+      <span className="sr-only">{label}</span>
+      <span
+        className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
+          checked ? "translate-x-6" : "translate-x-1"
+        }`}
+      />
+    </button>
+  );
+}
+
 // ── Tab content ─────────────────────────────────────────────────────────────────
 
 function GeneralTab() {
+  const [settings, setSettings] = useState<GeneralSettings>(DEFAULT_SETTINGS);
+  const [toast, setToast] = useState(false);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(raw) });
+      }
+    } catch {
+      // ignore parse errors
+    }
+  }, []);
+
+  const handleSave = useCallback(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    } catch {
+      // ignore storage errors
+    }
+    setToast(true);
+  }, [settings]);
+
   return (
     <div>
       {/* Section header */}
@@ -78,21 +168,16 @@ function GeneralTab() {
               all agent run logs and dispatcher output. Useful for shared environments.
             </p>
           </div>
-          {/* Toggle switch — off by default */}
           <div className="shrink-0 pt-0.5">
-            <button
-              type="button"
-              role="switch"
-              aria-checked="false"
-              className="relative inline-flex h-6 w-11 items-center rounded-full bg-[#30363d] border border-[#484f58] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00d4aa]"
-            >
-              <span className="sr-only">Censor username in logs</span>
-              <span className="inline-block h-4 w-4 translate-x-1 rounded-full bg-[#8b949e] shadow transition-transform" />
-            </button>
+            <Toggle
+              checked={settings.censorUsername}
+              onChange={(v) => setSettings((s) => ({ ...s, censorUsername: v }))}
+              label="Censor username in logs"
+            />
           </div>
         </div>
 
-        {/* Instance name (display only) */}
+        {/* Instance name */}
         <div className="flex items-start justify-between gap-6 px-5 py-4">
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-[#e6edf3]">Instance name</p>
@@ -103,8 +188,8 @@ function GeneralTab() {
           <div className="shrink-0">
             <input
               type="text"
-              defaultValue="MCM Forge"
-              readOnly
+              value={settings.instanceName}
+              onChange={(e) => setSettings((s) => ({ ...s, instanceName: e.target.value }))}
               className="w-44 px-3 py-1.5 text-sm bg-[#0d1117] border border-[#30363d] rounded-md text-[#e6edf3] focus:outline-none focus:border-[#00d4aa] transition-colors font-mono"
             />
           </div>
@@ -121,8 +206,8 @@ function GeneralTab() {
           <div className="shrink-0 flex items-center gap-2">
             <input
               type="number"
-              defaultValue={90}
-              readOnly
+              value={settings.logRetentionDays}
+              onChange={(e) => setSettings((s) => ({ ...s, logRetentionDays: Number(e.target.value) }))}
               className="w-20 px-3 py-1.5 text-sm bg-[#0d1117] border border-[#30363d] rounded-md text-[#e6edf3] focus:outline-none focus:border-[#00d4aa] transition-colors font-mono text-right"
             />
             <span className="text-xs text-[#8b949e]">days</span>
@@ -135,11 +220,16 @@ function GeneralTab() {
         <span className="text-xs text-[#8b949e]">Changes apply on next dispatcher restart.</span>
         <button
           type="button"
+          onClick={handleSave}
           className="px-4 py-1.5 bg-[#00d4aa] text-[#0d1117] text-sm font-medium rounded-md hover:bg-[#00bfaa] transition-colors"
         >
           Save
         </button>
       </div>
+
+      {toast && (
+        <Toast message="Settings saved" onDone={() => setToast(false)} />
+      )}
     </div>
   );
 }
@@ -171,13 +261,21 @@ function PlaceholderTab({
 
 // ── Page ────────────────────────────────────────────────────────────────────────
 
-export default async function SettingsPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ tab?: string }>;
-}) {
-  const params = await searchParams;
-  const activeTab = params?.tab ?? "general";
+export default function SettingsPage() {
+  const [activeTab, setActiveTab] = useState("general");
+
+  // Sync tab from URL search param on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab) setActiveTab(tab);
+  }, []);
+
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+    const url = key === "general" ? "/settings" : `/settings?tab=${key}`;
+    window.history.pushState({}, "", url);
+  };
 
   return (
     <div className="flex gap-0 min-h-[calc(100vh-60px)]">
@@ -201,10 +299,10 @@ export default async function SettingsPage({
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.key;
             return (
-              <Link
+              <button
                 key={item.key}
-                href={item.key === "general" ? "/settings" : `/settings?tab=${item.key}`}
-                className={`flex items-center gap-2.5 px-4 py-2 text-sm transition-colors rounded-sm mx-1 ${
+                onClick={() => handleTabChange(item.key)}
+                className={`w-full flex items-center gap-2.5 px-4 py-2 text-sm transition-colors rounded-sm mx-1 text-left ${
                   isActive
                     ? "bg-[#1c2333] text-[#e6edf3]"
                     : "text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#161b22]"
@@ -212,7 +310,7 @@ export default async function SettingsPage({
               >
                 <span className={isActive ? "text-[#00d4aa]" : ""}>{item.icon}</span>
                 {item.label}
-              </Link>
+              </button>
             );
           })}
         </nav>

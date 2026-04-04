@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { loadConfig } from './config.js';
 import { createSupabaseClient } from './supabase.js';
 import { startRunExecutor } from './loops/run-executor.js';

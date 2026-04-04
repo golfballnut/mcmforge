@@ -112,6 +112,30 @@ function IconDoc() {
   );
 }
 
+function IconOrg() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+function IconCosts() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function IconActivity() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+}
+
 // ─── Project dot colors (cycle through these) ────────────────────────────────
 
 const PROJECT_COLORS = [
@@ -334,12 +358,6 @@ export default function Sidebar() {
             isActive={isActive("/routines")}
           />
           <NavLink
-            href="/skills"
-            icon={<IconSkills />}
-            label="Skills"
-            isActive={isActive("/skills")}
-          />
-          <NavLink
             href="/goals"
             icon={<IconGoals />}
             label="Goals"
@@ -414,7 +432,10 @@ export default function Sidebar() {
                   </span>
                   <span className="truncate flex-1">{agent.name}</span>
                   {isRunning && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00d4aa] shrink-0 animate-pulse" />
+                    <span className="ml-auto flex items-center gap-1 text-[10px] text-[#00d4aa] shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00d4aa] animate-pulse" />
+                      1 live
+                    </span>
                   )}
                 </Link>
               );
@@ -422,20 +443,49 @@ export default function Sidebar() {
           )}
         </div>
 
+        {/* COMPANY section — fixed at bottom */}
+        <div className="shrink-0 border-t border-[#21262d]">
+          <SectionHeader label="Company" />
+          <div className="space-y-0.5 pb-1">
+            <NavLink
+              href="/org"
+              icon={<IconOrg />}
+              label="Org"
+              isActive={isActive("/org")}
+            />
+            <NavLink
+              href="/skills"
+              icon={<IconSkills />}
+              label="Skills"
+              isActive={isActive("/skills")}
+            />
+            <NavLink
+              href="/costs"
+              icon={<IconCosts />}
+              label="Costs"
+              isActive={isActive("/costs")}
+            />
+            <NavLink
+              href="/activity"
+              icon={<IconActivity />}
+              label="Activity"
+              isActive={isActive("/activity")}
+            />
+            <NavLink
+              href="/settings"
+              icon={<IconSettings />}
+              label="Settings"
+              isActive={isActive("/settings")}
+            />
+          </div>
+        </div>
+
         {/* Footer */}
-        <div className="shrink-0 px-3 py-3 border-t border-[#21262d] flex items-center gap-2">
+        <div className="shrink-0 px-3 py-2 border-t border-[#21262d] flex items-center gap-2">
           <button className="flex items-center gap-1.5 text-xs text-[#8b949e] hover:text-[#e6edf3] transition-colors">
             <IconDoc />
             <span>Documentation</span>
           </button>
-          <div className="flex-1" />
-          <Link
-            href="/settings"
-            className="text-[#8b949e] hover:text-[#e6edf3] transition-colors"
-            title="Settings"
-          >
-            <IconSettings />
-          </Link>
         </div>
       </div>
     </div>

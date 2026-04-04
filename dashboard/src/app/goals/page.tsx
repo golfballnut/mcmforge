@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import Link from "next/link";
 
 export const revalidate = 60;
 
@@ -216,12 +217,15 @@ export default async function GoalsPage() {
           )}
         </div>
 
-        <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#00d4aa] text-[#00d4aa] text-sm font-medium hover:bg-[#00d4aa]/10 transition-colors cursor-not-allowed opacity-80">
+        <Link
+          href="/goals/new"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#00d4aa] text-[#00d4aa] text-sm font-medium hover:bg-[#00d4aa]/10 transition-colors"
+        >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           New Goal
-        </button>
+        </Link>
       </div>
 
       {/* Table */}

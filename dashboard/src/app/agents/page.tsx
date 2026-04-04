@@ -1,16 +1,31 @@
-import { createClient } from "@/lib/supabase/server";
+import { createForgeClient } from "@/lib/supabase/forge-server";
 import Link from "next/link";
 
 export const revalidate = 30;
 
-async function getAgents() {
-  const supabase = await createClient();
+type Agent = {
+  id: string;
+  company_id: string | null;
+  name: string;
+  role: string | null;
+  title: string | null;
+  icon: string | null;
+  status: "idle" | "running" | "paused" | "error" | "terminated" | string;
+  adapter_type: string | null;
+  adapter_config: Record<string, unknown> | null;
+  last_heartbeat_at: string | null;
+  reports_to: string | null;
+  skills: string[] | null;
+  created_at: string;
+};
+
+async function getAgents(): Promise<Agent[]> {
+  const supabase = await createForgeClient();
   const { data } = await supabase
-    .from("forge_agents")
+    .from("agents")
     .select("*")
-    .order("status", { ascending: true })
     .order("name", { ascending: true });
-  return data || [];
+  return (data as Agent[]) || [];
 }
 
 function formatRelativeTime(timestamp: string | null): string {
@@ -25,165 +40,236 @@ function formatRelativeTime(timestamp: string | null): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-function formatCents(cents: number | null): string {
-  if (cents == null) return "$0.00";
-  return `$${(cents / 100).toFixed(2)}`;
+const STATUS_CONFIG: Record<string, { dot: string; label: string }> = {
+  idle:       { dot: "bg-[#3fb950]", label: "Idle" },
+  running:    { dot: "bg-[#58a6ff]", label: "Running" },
+  paused:     { dot: "bg-[#d29922]", label: "Paused" },
+  error:      { dot: "bg-[#f85149]", label: "Error" },
+  terminated: { dot: "bg-[#8b949e]", label: "Terminated" },
+};
+
+const FILTER_TABS = [
+  { key: "all",        label: "All" },
+  { key: "active",     label: "Active" },
+  { key: "paused",     label: "Paused" },
+  { key: "error",      label: "Error" },
+];
+
+function adapterLabel(adapterType: string | null): string {
+  if (!adapterType) return "--";
+  const map: Record<string, string> = {
+    claude_local: "Claude",
+    claude:       "Claude",
+    gemini:       "Gemini",
+    codex:        "Codex",
+    openai:       "OpenAI",
+  };
+  return map[adapterType.toLowerCase()] ?? adapterType;
 }
 
-export default async function AgentsPage() {
+function adapterColor(adapterType: string | null): string {
+  if (!adapterType) return "text-[#8b949e]";
+  const t = adapterType.toLowerCase();
+  if (t.includes("claude")) return "text-[#d4a27f]";
+  if (t.includes("gemini")) return "text-[#58a6ff]";
+  if (t.includes("codex") || t.includes("openai")) return "text-[#3fb950]";
+  return "text-[#8b949e]";
+}
+
+function modelFromConfig(config: Record<string, unknown> | null): string {
+  if (!config) return "--";
+  const model = config.model as string | undefined;
+  if (!model) return "--";
+  // Shorten model names for table display
+  return model.replace("claude-", "").replace("sonnet", "sonnet").replace("opus", "opus");
+}
+
+export default async function AgentsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ filter?: string }>;
+}) {
+  const params = await searchParams;
+  const activeFilter = params?.filter ?? "all";
+
   const agents = await getAgents();
-  const activeCount = agents.filter((a) => a.status === "active").length;
+
+  // Derive "active" as idle+running for the Active tab
+  const filtered = agents.filter((a) => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "active") return a.status === "idle" || a.status === "running";
+    if (activeFilter === "paused") return a.status === "paused";
+    if (activeFilter === "error") return a.status === "error";
+    return true;
+  });
+
+  const counts = {
+    all:        agents.length,
+    active:     agents.filter((a) => a.status === "idle" || a.status === "running").length,
+    paused:     agents.filter((a) => a.status === "paused").length,
+    error:      agents.filter((a) => a.status === "error").length,
+  };
+
+  // Build a lookup for reports_to name resolution
+  const agentById = Object.fromEntries(agents.map((a) => [a.id, a]));
 
   return (
     <div>
-      <div className="mb-6 md:mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <h1 className="text-2xl md:text-3xl font-medium text-[#202124]">Agent Roster</h1>
-          <span className="px-3 py-1 bg-green-50 border border-green-200 text-green-700 text-sm rounded-full">
-            {activeCount} / {agents.length} active
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold tracking-wide text-[#e6edf3] uppercase">
+            Agents
+          </h1>
+          <span className="px-2 py-0.5 text-xs font-mono rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e]">
+            {agents.length}
           </span>
         </div>
-        <p className="text-[#5f6368] mt-1">All registered AI agents and their current status</p>
+        <Link
+          href="/agents/new"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#00d4aa] text-[#0d1117] text-sm font-medium hover:bg-[#00bfaa] transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          New Agent
+        </Link>
       </div>
 
-      {agents.length === 0 ? (
-        <div className="text-[#5f6368] text-sm p-12 border border-[#dadce0] bg-white rounded-xl text-center">
-          No agents registered
+      {/* Filter tabs */}
+      <div className="flex gap-1 mb-4 border-b border-[#30363d]">
+        {FILTER_TABS.map((tab) => {
+          const isActive = activeFilter === tab.key;
+          return (
+            <Link
+              key={tab.key}
+              href={tab.key === "all" ? "/agents" : `/agents?filter=${tab.key}`}
+              className={`px-3 py-2 text-sm rounded-t-md transition-colors ${
+                isActive
+                  ? "bg-[#1c2333] text-[#e6edf3] border border-b-0 border-[#30363d]"
+                  : "text-[#8b949e] hover:text-[#e6edf3]"
+              }`}
+            >
+              {tab.label}
+              <span className={`ml-1.5 text-xs font-mono ${isActive ? "text-[#8b949e]" : "text-[#8b949e]"}`}>
+                {counts[tab.key as keyof typeof counts]}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Table */}
+      {filtered.length === 0 ? (
+        <div className="text-[#8b949e] text-sm p-12 border border-[#30363d] bg-[#161b22] rounded-lg text-center">
+          No agents match this filter
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {agents.map((agent) => (
-            <AgentCard key={agent.id} agent={agent} />
-          ))}
+        <div className="border border-[#30363d] rounded-lg overflow-hidden">
+          {/* Table header */}
+          <div className="grid grid-cols-[20px_1fr_120px_90px_160px_110px_60px] gap-x-4 px-4 py-2.5 bg-[#161b22] border-b border-[#30363d] text-xs font-medium text-[#8b949e] uppercase tracking-wide">
+            <div />
+            <div>Name</div>
+            <div>Role</div>
+            <div>Adapter</div>
+            <div>Model</div>
+            <div>Heartbeat</div>
+            <div className="text-right">Skills</div>
+          </div>
+
+          {/* Table rows */}
+          <div className="divide-y divide-[#30363d]">
+            {filtered.map((agent) => {
+              const statusCfg = STATUS_CONFIG[agent.status] ?? {
+                dot: "bg-[#8b949e]",
+                label: agent.status,
+              };
+              const model = modelFromConfig(agent.adapter_config);
+              const skillCount = agent.skills?.length ?? 0;
+              const reportsTo = agent.reports_to ? agentById[agent.reports_to]?.name : null;
+
+              return (
+                <Link
+                  key={agent.id}
+                  href={`/agents/${agent.id}`}
+                  className="grid grid-cols-[20px_1fr_120px_90px_160px_110px_60px] gap-x-4 px-4 py-3 bg-[#161b22] hover:bg-[#1c2333] transition-colors items-center cursor-pointer"
+                >
+                  {/* Status dot */}
+                  <div className="flex items-center">
+                    <span
+                      className={`w-2 h-2 rounded-full ${statusCfg.dot} ${
+                        agent.status === "running" ? "animate-pulse" : ""
+                      }`}
+                      title={statusCfg.label}
+                    />
+                  </div>
+
+                  {/* Name + title */}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      {agent.icon && (
+                        <span className="text-base leading-none">{agent.icon}</span>
+                      )}
+                      <span className="text-sm font-medium text-[#e6edf3] truncate">
+                        {agent.name}
+                      </span>
+                    </div>
+                    {agent.title && (
+                      <p className="text-xs text-[#8b949e] mt-0.5 truncate">{agent.title}</p>
+                    )}
+                    {reportsTo && (
+                      <p className="text-xs text-[#8b949e] mt-0.5 truncate">
+                        ↳ {reportsTo}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Role badge */}
+                  <div>
+                    {agent.role ? (
+                      <span className="inline-block px-2 py-0.5 text-xs rounded bg-[#0d1117] border border-[#30363d] text-[#8b949e] truncate max-w-full">
+                        {agent.role}
+                      </span>
+                    ) : (
+                      <span className="text-[#8b949e] text-xs">--</span>
+                    )}
+                  </div>
+
+                  {/* Adapter type */}
+                  <div>
+                    <span className={`text-xs font-mono ${adapterColor(agent.adapter_type)}`}>
+                      {adapterLabel(agent.adapter_type)}
+                    </span>
+                  </div>
+
+                  {/* Model */}
+                  <div>
+                    <span className="text-xs font-mono text-[#8b949e] truncate">
+                      {model}
+                    </span>
+                  </div>
+
+                  {/* Last heartbeat */}
+                  <div>
+                    <span className="text-xs text-[#8b949e]">
+                      {formatRelativeTime(agent.last_heartbeat_at)}
+                    </span>
+                  </div>
+
+                  {/* Skills count */}
+                  <div className="text-right">
+                    {skillCount > 0 ? (
+                      <span className="text-xs font-mono text-[#00d4aa]">{skillCount}</span>
+                    ) : (
+                      <span className="text-xs text-[#8b949e]">—</span>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
-  );
-}
-
-function AgentCard({ agent }: { agent: Record<string, unknown> }) {
-  const status = agent.status as string;
-  const lastHeartbeat = agent.last_heartbeat_at as string | null;
-  const tasksCompleted = (agent.tasks_completed as number) || 0;
-  const tasksFailed = (agent.tasks_failed as number) || 0;
-  const total = tasksCompleted + tasksFailed;
-  const successRate = total > 0 ? ((tasksCompleted / total) * 100).toFixed(1) : null;
-  const currentOrderId = agent.current_order_id as string | null;
-
-  const spent = (agent.spent_monthly_cents as number) || 0;
-  const budget = (agent.budget_monthly_cents as number) || 0;
-  const budgetPct = budget > 0 ? (spent / budget) * 100 : 0;
-  const budgetColor =
-    budgetPct > 100 ? "bg-[#ea4335]" : budgetPct >= 80 ? "bg-amber-400" : "bg-[#34a853]";
-
-  const statusConfig: Record<string, { dot: string; label: string; border: string }> = {
-    active: {
-      dot: "bg-[#34a853]",
-      label: "Active",
-      border: "border-green-200",
-    },
-    paused: {
-      dot: "bg-amber-400",
-      label: "Paused",
-      border: "border-amber-200",
-    },
-    budget_exceeded: {
-      dot: "bg-[#ea4335]",
-      label: "Over Budget",
-      border: "border-red-200",
-    },
-    terminated: {
-      dot: "bg-[#ea4335]",
-      label: "Terminated",
-      border: "border-red-200",
-    },
-  };
-
-  const statusStyle = statusConfig[status] ?? {
-    dot: "bg-[#5f6368]",
-    label: status,
-    border: "border-[#dadce0]",
-  };
-
-  return (
-    <Link href={`/agents/${agent.id}`}>
-      <div
-        className={`bg-white border rounded-xl p-5 flex flex-col gap-4 ${statusStyle.border} hover:shadow-md hover:border-[#1a73e8] transition-all cursor-pointer`}
-      >
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-base font-medium leading-tight text-[#202124]">{agent.name as string}</p>
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className="inline-block px-2 py-0.5 bg-[#e8f0fe] border border-[#d3e3fd] text-[#1a73e8] text-xs rounded">
-                {agent.role as string}
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${statusStyle.dot} animate-pulse`} />
-            <span className="text-xs text-[#5f6368]">{statusStyle.label}</span>
-          </div>
-        </div>
-
-        {/* Meta */}
-        <div className="space-y-1.5 text-xs text-[#5f6368]">
-          {agent.title ? (
-            <div className="flex justify-between">
-              <span className="text-[#5f6368]">Title</span>
-              <span className="text-[#202124]">{agent.title as string}</span>
-            </div>
-          ) : null}
-          <div className="flex justify-between">
-            <span className="text-[#5f6368]">Model</span>
-            <span className="font-mono text-[#202124]">{(agent.model as string) || "--"}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-[#5f6368]">Last heartbeat</span>
-            <span className="text-[#202124]">{formatRelativeTime(lastHeartbeat)}</span>
-          </div>
-        </div>
-
-        {/* Budget bar */}
-        {budget > 0 && (
-          <div className="space-y-1">
-            <div className="flex justify-between text-xs">
-              <span className="text-[#5f6368]">Budget</span>
-              <span className="text-[#202124]">
-                {formatCents(spent)} / {formatCents(budget)}
-              </span>
-            </div>
-            <div className="w-full h-1.5 bg-[#f1f3f4] rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all ${budgetColor}`}
-                style={{ width: `${Math.min(budgetPct, 100)}%` }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[#dadce0]">
-          <div className="text-center">
-            <p className="text-lg font-semibold text-[#202124]">{tasksCompleted}</p>
-            <p className="text-xs text-[#5f6368]">Tasks done</p>
-          </div>
-          <div className="text-center">
-            <p className="text-lg font-semibold text-[#202124]">
-              {successRate != null ? `${successRate}%` : "\u2014"}
-            </p>
-            <p className="text-xs text-[#5f6368]">Success rate</p>
-          </div>
-        </div>
-
-        {/* Working indicator */}
-        {currentOrderId && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-[#e8f0fe] border border-[#d3e3fd] rounded-lg">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#1a73e8] animate-pulse" />
-            <span className="text-xs text-[#1a73e8]">Working on task...</span>
-          </div>
-        )}
-      </div>
-    </Link>
   );
 }

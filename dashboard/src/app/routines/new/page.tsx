@@ -1,19 +1,18 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { createRoutine } from "./actions";
 
-async function getFormData() {
+async function getFormData(companyId: string) {
   const supabase = await createForgeClient();
 
-  const [{ data: companies }, { data: agents }, { data: projects }] =
+  const [{ data: agents }, { data: projects }] =
     await Promise.all([
-      supabase.from("companies").select("id, name, slug").order("name"),
-      supabase.from("agents").select("id, name, icon, company_id").order("name"),
-      supabase.from("projects").select("id, name, company_id").order("name"),
+      supabase.from("agents").select("id, name, icon, company_id").eq("company_id", companyId).order("name"),
+      supabase.from("projects").select("id, name, company_id").eq("company_id", companyId).order("name"),
     ]);
 
   return {
-    companies: companies ?? [],
     agents: agents ?? [],
     projects: projects ?? [],
   };
@@ -51,7 +50,9 @@ const CRON_EXAMPLES = [
 ];
 
 export default async function NewRoutinePage() {
-  const { companies, agents, projects } = await getFormData();
+  const company = await getActiveCompany();
+  const companyId = company?.id ?? "";
+  const { agents, projects } = await getFormData(companyId);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -102,20 +103,12 @@ export default async function NewRoutinePage() {
           />
         </div>
 
-        {/* Company + Priority */}
+        {/* Company (auto-set) + Priority */}
+        <input type="hidden" name="company_id" value={companyId} />
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="company_id" className={LABEL_CLASS}>
-              Company <span className="text-[#f85149]">*</span>
-            </label>
-            <SelectWrapper>
-              <select id="company_id" name="company_id" required defaultValue="" className={SELECT_CLASS}>
-                <option value="" disabled>Select company...</option>
-                {companies.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </SelectWrapper>
+            <span className={LABEL_CLASS}>Company</span>
+            <p className="text-sm text-[#e6edf3] py-2">{company?.name ?? "—"}</p>
           </div>
 
           <div>

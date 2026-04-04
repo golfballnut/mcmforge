@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
 export const revalidate = 60;
@@ -161,17 +162,19 @@ function TreeLevel({
   );
 }
 
-async function getAgents(): Promise<Agent[]> {
+async function getAgents(companyId: string): Promise<Agent[]> {
   const supabase = await createForgeClient();
   const { data } = await supabase
     .from("agents")
     .select("id, name, role, title, icon, status, adapter_type, reports_to")
+    .eq("company_id", companyId)
     .order("name", { ascending: true });
   return (data as Agent[]) || [];
 }
 
 export default async function OrgPage() {
-  const agents = await getAgents();
+  const company = await getActiveCompany();
+  const agents = await getAgents(company?.id ?? "");
   const hasHierarchy = agents.some((a) => a.reports_to !== null);
   const tree = buildTree(agents);
 

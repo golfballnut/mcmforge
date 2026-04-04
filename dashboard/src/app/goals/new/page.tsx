@@ -1,16 +1,18 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { createGoal } from "./actions";
 
-async function getFormData() {
+async function getFormData(companyId: string) {
   const supabase = await createForgeClient();
 
-  const [{ data: companies }, { data: goals }] = await Promise.all([
-    supabase.from("companies").select("id, name").order("name"),
-    supabase.from("goals").select("id, title, level").order("title"),
-  ]);
+  const { data: goals } = await supabase
+    .from("goals")
+    .select("id, title, level")
+    .eq("company_id", companyId)
+    .order("title");
 
-  return { companies: companies ?? [], goals: goals ?? [] };
+  return { goals: goals ?? [] };
 }
 
 const INPUT_CLASS =
@@ -35,7 +37,9 @@ function SelectWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export default async function NewGoalPage() {
-  const { companies, goals } = await getFormData();
+  const company = await getActiveCompany();
+  const companyId = company?.id ?? "";
+  const { goals } = await getFormData(companyId);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -102,17 +106,9 @@ export default async function NewGoalPage() {
           </div>
 
           <div>
-            <label htmlFor="company_id" className={LABEL_CLASS}>
-              Company <span className="text-[#f85149]">*</span>
-            </label>
-            <SelectWrapper>
-              <select id="company_id" name="company_id" required defaultValue="" className={SELECT_CLASS}>
-                <option value="" disabled>Select company...</option>
-                {companies.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </SelectWrapper>
+            <span className={LABEL_CLASS}>Company</span>
+            <p className="text-sm text-[#e6edf3] py-2">{company?.name ?? "—"}</p>
+            <input type="hidden" name="company_id" value={companyId} />
           </div>
         </div>
 

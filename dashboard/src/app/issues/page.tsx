@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
 export const revalidate = 15;
@@ -19,11 +20,12 @@ interface Issue {
   agent_name?: string | null;
 }
 
-async function getIssues(): Promise<Issue[]> {
+async function getIssues(companyId: string): Promise<Issue[]> {
   const supabase = await createForgeClient();
   const { data: issues } = await supabase
     .from("issues")
     .select("*")
+    .eq("company_id", companyId)
     .order("created_at", { ascending: false });
 
   if (!issues || issues.length === 0) return [];
@@ -96,7 +98,8 @@ function PriorityBadge({ priority }: { priority: string }) {
 }
 
 export default async function IssuesPage() {
-  const issues = await getIssues();
+  const company = await getActiveCompany();
+  const issues = await getIssues(company?.id ?? "");
 
   const openCount = issues.filter((i) => !["done", "cancelled"].includes(i.status)).length;
   const doneCount = issues.filter((i) => i.status === "done").length;

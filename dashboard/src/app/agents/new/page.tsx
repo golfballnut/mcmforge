@@ -1,16 +1,18 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { createAgent } from "./actions";
 
-async function getFormData() {
+async function getFormData(companyId: string) {
   const supabase = await createForgeClient();
 
-  const [{ data: companies }, { data: agents }] = await Promise.all([
-    supabase.from("companies").select("id, name, slug").order("name"),
-    supabase.from("agents").select("id, name, icon").order("name"),
-  ]);
+  const { data: agents } = await supabase
+    .from("agents")
+    .select("id, name, icon")
+    .eq("company_id", companyId)
+    .order("name");
 
-  return { companies: companies ?? [], agents: agents ?? [] };
+  return { agents: agents ?? [] };
 }
 
 const INPUT_CLASS =
@@ -35,7 +37,9 @@ function SelectWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export default async function NewAgentPage() {
-  const { companies, agents } = await getFormData();
+  const company = await getActiveCompany();
+  const companyId = company?.id ?? "";
+  const { agents } = await getFormData(companyId);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -117,17 +121,9 @@ export default async function NewAgentPage() {
           </div>
 
           <div>
-            <label htmlFor="company_id" className={LABEL_CLASS}>
-              Company <span className="text-[#f85149]">*</span>
-            </label>
-            <SelectWrapper>
-              <select id="company_id" name="company_id" required defaultValue="" className={SELECT_CLASS}>
-                <option value="" disabled>Select company...</option>
-                {companies.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </SelectWrapper>
+            <span className={LABEL_CLASS}>Company</span>
+            <p className="text-sm text-[#e6edf3] py-2">{company?.name ?? "—"}</p>
+            <input type="hidden" name="company_id" value={companyId} />
           </div>
         </div>
 

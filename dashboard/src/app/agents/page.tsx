@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
 export const revalidate = 30;
@@ -19,11 +20,12 @@ type Agent = {
   created_at: string;
 };
 
-async function getAgents(): Promise<Agent[]> {
+async function getAgents(companyId: string): Promise<Agent[]> {
   const supabase = await createForgeClient();
   const { data } = await supabase
     .from("agents")
     .select("*")
+    .eq("company_id", companyId)
     .order("name", { ascending: true });
   return (data as Agent[]) || [];
 }
@@ -92,7 +94,8 @@ export default async function AgentsPage({
   const params = await searchParams;
   const activeFilter = params?.filter ?? "all";
 
-  const agents = await getAgents();
+  const company = await getActiveCompany();
+  const agents = await getAgents(company?.id ?? "");
 
   // Derive "active" as idle+running for the Active tab
   const filtered = agents.filter((a) => {

@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
 export const revalidate = 15;
@@ -22,12 +23,21 @@ type IssueRef = {
   title: string;
 };
 
-async function getRuns(): Promise<{ runs: Run[]; issueMap: Record<string, IssueRef> }> {
+async function getRuns(companyId: string): Promise<{ runs: Run[]; issueMap: Record<string, IssueRef> }> {
   const supabase = await createForgeClient();
+
+  // Get agent IDs for this company
+  const { data: companyAgents } = await supabase
+    .from("agents")
+    .select("id")
+    .eq("company_id", companyId);
+  const agentIds = (companyAgents ?? []).map((a) => a.id);
+  if (agentIds.length === 0) return { runs: [], issueMap: {} };
 
   const { data } = await supabase
     .from("runs")
     .select("id, agent_id, status, summary, trigger_detail, context_snapshot, created_at, started_at, finished_at, agent:agents(name, icon)")
+    .in("agent_id", agentIds)
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -101,7 +111,8 @@ export default async function InboxPage({
   const params = await searchParams;
   const activeTab = params?.tab ?? "recent";
 
-  const { runs, issueMap } = await getRuns();
+  const company = await getActiveCompany();
+  const { runs, issueMap } = await getRuns(company?.id ?? "");
 
   // Tab filtering
   const filtered =

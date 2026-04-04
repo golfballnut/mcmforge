@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 
 export const revalidate = 15;
 
@@ -116,12 +117,25 @@ function initials(name: string): string {
     .join("");
 }
 
-async function getActivity(filter: string) {
+async function getActivity(filter: string, companyId: string) {
   const supabase = await createForgeClient();
+
+  // Get agent IDs for this company
+  const { data: companyAgents } = await supabase
+    .from("agents")
+    .select("id, name, role, icon")
+    .eq("company_id", companyId);
+  const agents = (companyAgents as Agent[]) || [];
+  const agentIds = agents.map((a) => a.id);
+
+  if (agentIds.length === 0) {
+    return { runs: [] as Run[], agents };
+  }
 
   let query = supabase
     .from("runs")
     .select("*")
+    .in("agent_id", agentIds)
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -132,13 +146,10 @@ async function getActivity(filter: string) {
   }
 
   const { data: runs } = await query;
-  const { data: agents } = await supabase
-    .from("agents")
-    .select("id, name, role, icon");
 
   return {
     runs: (runs as Run[]) || [],
-    agents: (agents as Agent[]) || [],
+    agents,
   };
 }
 
@@ -150,7 +161,8 @@ export default async function ActivityPage({
   const params = await searchParams;
   const activeFilter = params?.filter ?? "all";
 
-  const { runs, agents } = await getActivity(activeFilter);
+  const company = await getActiveCompany();
+  const { runs, agents } = await getActivity(activeFilter, company?.id ?? "");
   const agentById = Object.fromEntries(agents.map((a) => [a.id, a]));
 
   return (

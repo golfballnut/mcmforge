@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
 export const revalidate = 60;
@@ -27,11 +28,11 @@ type GoalWithMeta = Goal & {
 
 // ─── Data fetching ────────────────────────────────────────────────────────────
 
-async function getGoals(): Promise<{ roots: GoalWithMeta[]; total: number }> {
+async function getGoals(companyId: string): Promise<{ roots: GoalWithMeta[]; total: number }> {
   const supabase = await createForgeClient();
 
   const [{ data: goals }, { data: companies }] = await Promise.all([
-    supabase.from("goals").select("*").order("created_at", { ascending: true }),
+    supabase.from("goals").select("*").eq("company_id", companyId).order("created_at", { ascending: true }),
     supabase.from("companies").select("id, name, slug"),
   ]);
 
@@ -183,7 +184,8 @@ function GoalRow({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function GoalsPage() {
-  const { roots, total } = await getGoals();
+  const company = await getActiveCompany();
+  const { roots, total } = await getGoals(company?.id ?? "");
 
   const flatGoals = (goals: GoalWithMeta[]): GoalWithMeta[] =>
     goals.flatMap((g) => [g, ...flatGoals(g.children)]);

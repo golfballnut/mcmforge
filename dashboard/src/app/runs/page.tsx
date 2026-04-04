@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
 export const revalidate = 15;
@@ -18,11 +19,19 @@ type Run = {
   agent: { name: string; icon: string | null } | null;
 };
 
-async function getRuns(): Promise<Run[]> {
+async function getRuns(companyId: string): Promise<Run[]> {
   const supabase = await createForgeClient();
+  // Get agent IDs for this company first
+  const { data: agents } = await supabase
+    .from("agents")
+    .select("id")
+    .eq("company_id", companyId);
+  const agentIds = (agents ?? []).map((a) => a.id);
+  if (agentIds.length === 0) return [];
   const { data } = await supabase
     .from("runs")
     .select("id, agent_id, status, started_at, finished_at, created_at, model, input_tokens, output_tokens, cached_input_tokens, cost_usd, agent:agents(name, icon)")
+    .in("agent_id", agentIds)
     .order("created_at", { ascending: false })
     .limit(50);
   return ((data as unknown) as Run[]) || [];
@@ -103,7 +112,8 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default async function RunsPage() {
-  const runs = await getRuns();
+  const company = await getActiveCompany();
+  const runs = await getRuns(company?.id ?? "");
 
   // Summary counts
   const counts = {

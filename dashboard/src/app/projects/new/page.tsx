@@ -1,15 +1,6 @@
-import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { createProject } from "./actions";
-
-async function getFormData() {
-  const supabase = await createForgeClient();
-  const { data: companies } = await supabase
-    .from("companies")
-    .select("id, name")
-    .order("name");
-  return { companies: companies ?? [] };
-}
 
 const INPUT_CLASS =
   "w-full px-3 py-2 rounded-md bg-[#0d1117] border border-[#30363d] text-[#e6edf3] text-sm placeholder-[#8b949e] focus:outline-none focus:border-[#00d4aa] focus:ring-1 focus:ring-[#00d4aa]/30 transition-colors";
@@ -44,7 +35,8 @@ function SelectWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export default async function NewProjectPage() {
-  const { companies } = await getFormData();
+  const company = await getActiveCompany();
+  const companyId = company?.id ?? "";
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -95,19 +87,11 @@ export default async function NewProjectPage() {
           />
         </div>
 
-        {/* Company */}
+        {/* Company — auto-set from active company */}
+        <input type="hidden" name="company_id" value={companyId} />
         <div>
-          <label htmlFor="company_id" className={LABEL_CLASS}>
-            Company <span className="text-[#f85149]">*</span>
-          </label>
-          <SelectWrapper>
-            <select id="company_id" name="company_id" required defaultValue="" className={SELECT_CLASS}>
-              <option value="" disabled>Select company...</option>
-              {companies.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </SelectWrapper>
+          <span className={LABEL_CLASS}>Company</span>
+          <p className="text-sm text-[#e6edf3] py-2">{company?.name ?? "—"}</p>
         </div>
 
         {/* Repo URL + Branch */}

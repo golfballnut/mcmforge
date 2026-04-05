@@ -12,14 +12,14 @@ export interface Company {
 interface CompanyContextType {
   activeCompany: Company | null;
   companies: Company[];
-  setActiveCompany: (company: Company) => void;
+  setActiveCompany: (company: Company) => Promise<void>;
   loading: boolean;
 }
 
 const CompanyContext = createContext<CompanyContextType>({
   activeCompany: null,
   companies: [],
-  setActiveCompany: () => {},
+  setActiveCompany: async () => {},
   loading: true,
 });
 
@@ -53,11 +53,13 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-  const setActiveCompany = (company: Company) => {
+  const setActiveCompany = async (company: Company) => {
     setActiveCompanyState(company);
     localStorage.setItem("forge-active-company", company.slug);
-    // Also set cookie for server components
-    fetch("/api/company", {
+    // Also set cookie for server components — await so callers can refresh
+    // AFTER the cookie is written (otherwise server re-renders with the old
+    // cookie and the main content shows the previous company).
+    await fetch("/api/company", {
       method: "POST",
       body: JSON.stringify({ slug: company.slug }),
       headers: { "Content-Type": "application/json" },

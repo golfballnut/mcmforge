@@ -6,6 +6,7 @@ import { startHeartbeatScheduler } from './loops/heartbeat-scheduler.js';
 import { startRoutineScheduler } from './loops/routine-scheduler.js';
 import { startOrphanReaper } from './loops/orphan-reaper.js';
 import { startMentionWatcher } from './loops/mention-watcher.js';
+import { startAgentApi } from './agent-api.js';
 import { logger } from './utils/logger.js';
 
 async function main() {
@@ -20,6 +21,10 @@ async function main() {
     process.exit(1);
   }
   logger.info({ companies: data?.length ?? 0 }, 'Supabase connected');
+
+  // Start the local agent API (localhost only, no network exposure)
+  const agentApiPort = config.agentApiPort;
+  startAgentApi(supabase, agentApiPort);
 
   await startOrphanReaper(supabase, { ...config, runOnce: true });
 

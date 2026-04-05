@@ -54,6 +54,7 @@ export const codexAdapter: CLIAdapter = {
       FORGE_AGENT_NAME: input.agent.name,
       FORGE_COMPANY_ID: input.agent.companyId,
       FORGE_AGENT_HOME: input.agentHome,
+      FORGE_API_URL: process.env.FORGE_AGENT_API_URL || 'http://127.0.0.1:3200',
     };
 
     if (input.context.issueId) env.FORGE_ISSUE_ID = input.context.issueId as string;

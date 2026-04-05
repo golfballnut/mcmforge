@@ -56,7 +56,7 @@ export function startAgentApi(supabase: SupabaseClient<any, any, any>, port: num
 
         const { data: agent } = await supabase
           .from('agents')
-          .select('id, name, role, title, status, company_id, adapter_type, budget_monthly_cents, spent_monthly_cents, reports_to')
+          .select('id, name, role, title, status, company_id, adapter_type, budget_monthly_cents, reports_to')
           .eq('id', agentId)
           .single();
 

@@ -1,43 +1,69 @@
-# HEARTBEAT.md — Forge Builder
+# Heartbeat Protocol — Forge Builder
 
-Run this procedure on every heartbeat wake.
+Execute this EVERY time you wake up. No exceptions.
 
-## 1. Check Wake Context
-Read environment variables:
-- `FORGE_RUN_ID` — your current run
-- `FORGE_AGENT_ID` — your identity
-- `FORGE_ISSUE_ID` — the issue to work on (if set)
-- `FORGE_WAKE_REASON` — why you were woken
+## Step 1: Check Inbox
+```bash
+curl -s "$FORGE_API_URL/api/agent/me/inbox" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
+```
+If `FORGE_ISSUE_ID` is set, prioritize that issue. Otherwise work the inbox.
+Priority: `in_progress` first, then `todo`. Skip `blocked`.
 
-## 2. Understand the Task
-If FORGE_ISSUE_ID is set, that's your assignment. Read the issue context from the prompt.
-If no specific issue, check for any pending work.
+**If inbox is empty:** Post "[SILENT] No work in inbox." and exit immediately. Do not burn turns.
 
-## 3. Plan Before Coding
-Before writing any code:
-- Read the relevant files
-- Understand the current state
-- Plan your changes (which files, what approach)
-- If the task is unclear, exit with a comment asking for clarification
+## Step 2: Read Issue Context
+```bash
+curl -s "$FORGE_API_URL/api/agent/issues/{issueId}/context" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
+```
+Read the full issue description, acceptance criteria, and any comments from the COO.
 
-## 4. Implement
-- Create a feature branch from main
-- Make the changes
-- Follow existing code patterns
+## Step 3: Checkout Issue
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/checkout" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID"
+```
+If 409 Conflict: someone else has it. Pick next issue or exit.
+
+## Step 4: Read Existing Code
+Before writing ANY code, read the files you're about to change. Understand the current state. This is non-negotiable.
+
+## Step 5: Implement
+- Create feature branch: `git checkout -b agent/<issue-slug>`
+- Make changes following existing patterns
 - Keep changes minimal and focused
+- If the task is unclear, comment asking for clarification and EXIT
 
-## 5. Verify
-- Run the appropriate build command
-- Check for TypeScript errors
-- Verify the change works as described
+## Step 6: Verify Build
+```bash
+cd ~/MCMForge/dashboard && npx next build
+```
+If build fails, fix it before committing. Never commit broken code.
 
-## 6. Commit and Report
-- Commit with a clear message referencing the issue
-- Push the branch
-- Exit with a summary of what you did
+## Step 7: Commit, Push, PR
+```bash
+git add <specific-files>
+git commit -m "feat(FORGE-X): description"
+git push -u origin agent/<issue-slug>
+gh pr create --title "feat(FORGE-X): ..." --body "## Summary\n- What changed\n- Why\n\n## Test plan\n- Build passes\n- [criteria from issue]"
+```
+
+## Step 8: Report Results
+```bash
+curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/{issueId}" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "done",
+    "comment": "Implemented [what]. Branch: agent/[slug]. PR #[number]. Build passes. [any notes]."
+  }'
+```
 
 ## Rules
 - Never push to main directly
 - Never modify files outside the scope of your issue
 - If something is broken that's NOT your issue, report it but don't fix it
-- Keep turns short — implement, verify, commit, done
+- Post a comment before every exit — the COO reads your comments
+- If inbox is empty, exit immediately with [SILENT] marker

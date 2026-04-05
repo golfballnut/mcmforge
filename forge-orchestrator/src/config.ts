@@ -11,6 +11,7 @@ export interface ForgeConfig {
   geminiCommand: string;
   codexCommand: string;
   dryRun: boolean;
+  agentApiPort: number;
 }
 
 export function loadConfig(): ForgeConfig {
@@ -41,5 +42,6 @@ export function loadConfig(): ForgeConfig {
     geminiCommand: optional('GEMINI_COMMAND', 'gemini'),
     codexCommand: optional('CODEX_COMMAND', 'codex'),
     dryRun: process.env.FORGE_DRY_RUN === 'true',
+    agentApiPort: optionalInt('FORGE_AGENT_API_PORT', 3200),
   };
 }

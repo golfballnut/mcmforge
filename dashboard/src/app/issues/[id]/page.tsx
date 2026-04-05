@@ -2,6 +2,7 @@ import { createForgeClient } from "@/lib/supabase/forge-server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
+import { AttachmentsSection } from "./AttachmentsSection";
 
 export const revalidate = 15;
 
@@ -26,6 +27,15 @@ interface Comment {
   author_agent_id: string | null;
   created_at: string;
   author_name?: string | null;
+}
+
+interface Attachment {
+  id: string;
+  file_name: string;
+  file_url: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
 }
 
 async function getIssue(id: string) {
@@ -69,7 +79,14 @@ async function getIssue(id: string) {
     }
   }
 
-  return { issue: issue as Issue, assigneeName, comments, agents: agentList };
+  // Fetch attachments
+  const { data: attachments } = await supabase
+    .from("issue_attachments")
+    .select("id, file_name, file_url, mime_type, size_bytes, created_at")
+    .eq("issue_id", id)
+    .order("created_at", { ascending: true });
+
+  return { issue: issue as Issue, assigneeName, comments, agents: agentList, attachments: (attachments ?? []) as Attachment[] };
 }
 
 function formatRelativeTime(timestamp: string): string {
@@ -130,7 +147,7 @@ export default async function IssueDetailPage({
 
   if (!result) notFound();
 
-  const { issue, assigneeName, comments, agents } = result;
+  const { issue, assigneeName, comments, agents, attachments } = result;
   const statusCfg = STATUS_CONFIG[issue.status] ?? STATUS_CONFIG.backlog;
   const priorityCfg = PRIORITY_CONFIG[issue.priority] ?? PRIORITY_CONFIG.medium;
 
@@ -178,6 +195,11 @@ export default async function IssueDetailPage({
             ) : (
               <p className="text-sm text-[#8b949e] italic">No description provided.</p>
             )}
+          </div>
+
+          {/* Attachments */}
+          <div className="mb-6">
+            <AttachmentsSection issueId={issue.id} initialAttachments={attachments} />
           </div>
 
           {/* Tabs */}

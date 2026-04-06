@@ -1,5 +1,7 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { AgentActions } from "./AgentActions";
 
 export const revalidate = 30;
@@ -61,11 +63,14 @@ type CostEvent = {
 
 async function getAgent(id: string): Promise<Agent | null> {
   const supabase = await createForgeClient();
+  const company = await getActiveCompany();
   const { data } = await supabase
     .from("agents")
     .select("*")
     .eq("id", id)
     .single();
+  if (!data) return null;
+  if (company && data.company_id !== company.id) notFound();
   return data as Agent | null;
 }
 

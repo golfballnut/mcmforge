@@ -38,9 +38,8 @@ export const codexAdapter: CLIAdapter = {
     }
     const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
 
-    const args = ['--output-format', 'jsonl'];
-    if (model) args.push('--model', model);
-    if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
+    const args = ['exec', '--json', '--full-auto', '--skip-git-repo-check', '-'];
+    if (model) args.push('-c', `model="${model}"`);
 
     // Each agent gets its own CODEX_HOME for session isolation
     const codexHome = (config.codexHome as string) ||

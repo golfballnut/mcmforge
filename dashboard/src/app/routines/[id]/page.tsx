@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -141,6 +142,8 @@ export default async function RoutineDetailPage({
   ]);
 
   if (!routine) notFound();
+  const activeCompany = await getActiveCompany();
+  if (activeCompany && routine.company_id !== activeCompany.id) notFound();
 
   const r = routine as Routine;
   const agentMap = Object.fromEntries(

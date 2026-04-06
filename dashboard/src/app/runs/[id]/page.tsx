@@ -1,5 +1,7 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export const revalidate = 15;
 
@@ -42,11 +44,14 @@ type RunEvent = {
 
 async function getRun(id: string): Promise<Run | null> {
   const supabase = await createForgeClient();
+  const company = await getActiveCompany();
   const { data } = await supabase
     .from("runs")
     .select("*, agent:agents(name, icon, title)")
     .eq("id", id)
     .single();
+  if (!data) return null;
+  if (company && data.company_id !== company.id) notFound();
   return data as Run | null;
 }
 

@@ -37,9 +37,8 @@ export const geminiAdapter: CLIAdapter = {
     }
     const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
 
-    const args = ['--output-format', 'jsonl'];
+    const args = ['-p', fullPrompt, '--yolo'];
     if (model) args.push('--model', model);
-    if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
 
     const env: Record<string, string> = {
       ...process.env as Record<string, string>,
@@ -62,7 +61,7 @@ export const geminiAdapter: CLIAdapter = {
       args,
       cwd: input.cwd,
       env,
-      stdin: fullPrompt,
+      stdin: undefined,
       timeoutSec,
       signal: input.signal,
       onLog: input.onLog,

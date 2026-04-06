@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createForgeBrowserClient } from "@/lib/supabase/forge-client";
+import { useCompany } from "@/lib/company-context";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -98,6 +99,7 @@ function SkillItem({
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function SkillsPage() {
+  const { activeCompany } = useCompany();
   const [skills, setSkills] = useState<SkillEntry[]>([]);
   const [filtered, setFiltered] = useState<SkillEntry[]>([]);
   const [query, setQuery] = useState("");
@@ -109,10 +111,14 @@ export default function SkillsPage() {
     const supabase = createForgeBrowserClient();
 
     async function load() {
-      const { data } = await supabase
+      let q = supabase
         .from("agents")
         .select("id, name, skills")
         .not("skills", "is", null);
+      if (activeCompany) {
+        q = q.eq("company_id", activeCompany.id);
+      }
+      const { data } = await q;
 
       const agents = (data as AgentRow[]) || [];
 
@@ -137,7 +143,7 @@ export default function SkillsPage() {
     }
 
     load();
-  }, []);
+  }, [activeCompany]);
 
   // Filter by query
   useEffect(() => {

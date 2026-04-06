@@ -48,10 +48,13 @@ export async function startRunExecutor(supabase: SupabaseClient, config: ForgeCo
 }
 
 async function claimAndExecuteNextRun(supabase: SupabaseClient, config: ForgeConfig) {
+  // Claim next queued run: respect priority, skip runs with future not_before
+  const now = new Date().toISOString();
   const { data: queuedRuns } = await supabase
     .from('runs')
     .select('*, agent:agents(*)')
     .eq('status', 'queued')
+    .or(`not_before.is.null,not_before.lte.${now}`)
     .order('priority', { ascending: false })
     .order('created_at', { ascending: true })
     .limit(1);
@@ -101,6 +104,56 @@ async function claimAndExecuteNextRun(supabase: SupabaseClient, config: ForgeCon
         paused_at: new Date().toISOString(),
       }).eq('id', agent.id);
       await cancelRun(supabase, run.id, 'Agent over budget');
+      return;
+    }
+  }
+
+  // Approval gate: if agent requires approval, hold the run until approved
+  if (agent.approval_required) {
+    // Check if an approval already exists and is approved
+    const { data: existingApproval } = await supabase
+      .from('approvals')
+      .select('id, status')
+      .eq('run_id', run.id)
+      .limit(1);
+
+    if (existingApproval?.length) {
+      if (existingApproval[0].status === 'approved') {
+        // Good — approval granted, proceed
+        logger.info({ runId: run.id, agent: agent.name }, 'Approval granted — executing');
+      } else if (existingApproval[0].status === 'rejected') {
+        await cancelRun(supabase, run.id, 'Approval rejected');
+        return;
+      } else {
+        // Still pending — put run back to queued
+        await supabase.from('runs').update({
+          status: 'queued',
+          updated_at: new Date().toISOString(),
+        }).eq('id', run.id);
+        return;
+      }
+    } else {
+      // No approval exists yet — create one and hold the run
+      await supabase.from('approvals').insert({
+        company_id: run.company_id,
+        type: 'run_execution',
+        requested_by_agent_id: agent.id,
+        run_id: run.id,
+        status: 'pending',
+        payload: {
+          agentName: agent.name,
+          triggerDetail: run.trigger_detail,
+          context: run.context_snapshot,
+        },
+      });
+
+      // Put run back to queued — it'll be picked up again after approval
+      await supabase.from('runs').update({
+        status: 'queued',
+        updated_at: new Date().toISOString(),
+      }).eq('id', run.id);
+
+      logger.info({ runId: run.id, agent: agent.name }, 'Approval required — holding run');
       return;
     }
   }
@@ -316,15 +369,21 @@ async function executeRun(
       });
     }
 
+    // Retry failed runs automatically
+    if (status === 'failed' || status === 'timed_out') {
+      await maybeRetryRun(supabase, run, agent, result.errorMessage || 'Non-zero exit code');
+    }
+
     logger.info({ runId: run.id, status, agent: agent.name }, 'Run completed');
 
   } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
     logger.error({ err, runId: run.id }, 'Run execution failed');
     await supabase
       .from('runs')
       .update({
         status: 'failed',
-        error: err instanceof Error ? err.message : String(err),
+        error: errorMsg,
         finished_at: new Date().toISOString(),
       })
       .eq('id', run.id);
@@ -333,6 +392,9 @@ async function executeRun(
       .from('agents')
       .update({ status: 'error', updated_at: new Date().toISOString() })
       .eq('id', agent.id);
+
+    // Retry on crash/exception too
+    await maybeRetryRun(supabase, run, agent, errorMsg);
   } finally {
     activeRuns.delete(run.id);
   }
@@ -483,6 +545,63 @@ async function checkForQAHandoff(supabase: SupabaseClient, run: any) {
   logger.info(
     { qaIssueId: qaIssue?.id, identifier: qaIssue?.identifier, parentIssue: issue.id },
     'QA subtask created — assignment detector will wake Forge QA',
+  );
+}
+
+/**
+ * Retry a failed run with exponential backoff.
+ * Creates a new queued run linked to the original via parent_run_id.
+ * Backoff: retry 1 = 30s, retry 2 = 120s (2min). Max 2 retries by default.
+ */
+async function maybeRetryRun(supabase: SupabaseClient, run: any, agent: any, error: string) {
+  const retryCount = run.retry_count ?? 0;
+  const maxRetries = run.max_retries ?? 2;
+
+  if (retryCount >= maxRetries) {
+    logger.info({ runId: run.id, retryCount, maxRetries }, 'Max retries reached — not retrying');
+    return;
+  }
+
+  // Don't retry budget overruns or cancellations
+  if (error.includes('over budget') || error.includes('Approval rejected')) return;
+
+  const nextRetry = retryCount + 1;
+  const backoffMs = 30_000 * Math.pow(2, retryCount); // 30s, 60s, 120s
+  const notBefore = new Date(Date.now() + backoffMs).toISOString();
+
+  const { data: retryRun, error: insertErr } = await supabase
+    .from('runs')
+    .insert({
+      company_id: run.company_id,
+      agent_id: run.agent_id,
+      invocation_source: run.invocation_source,
+      trigger_detail: `retry #${nextRetry}: ${run.trigger_detail || 'unknown'}`,
+      status: 'queued',
+      context_snapshot: run.context_snapshot,
+      priority: run.priority ?? 0,
+      retry_count: nextRetry,
+      max_retries: maxRetries,
+      parent_run_id: run.parent_run_id || run.id,
+      not_before: notBefore,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .select('id')
+    .single();
+
+  if (insertErr) {
+    logger.error({ insertErr, runId: run.id }, 'Failed to create retry run');
+    return;
+  }
+
+  // Reset agent to idle so it can pick up the retry
+  await supabase.from('agents')
+    .update({ status: 'idle', updated_at: new Date().toISOString() })
+    .eq('id', agent.id);
+
+  logger.info(
+    { runId: run.id, retryRunId: retryRun?.id, retryCount: nextRetry, backoffMs, notBefore },
+    'Retry run queued with backoff',
   );
 }
 

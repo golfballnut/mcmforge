@@ -39,11 +39,39 @@ For every issue, determine:
 - **Domain:** iOS/Swift, navigation/routing, trail data, maps/tiles, backend/Supabase, design/UX
 - **Files involved:** Identify specific Swift files, views, services
 
-### Staff the Work
+### Staff the Work — Multi-CLI Strategy
+Use ALL three CLIs. They complement each other.
+
+**Gemini (Design Scout, cheap + fast):**
+- Explore codebase, research competitors, gather raw data
+- First to touch any research task — gathers material for others
+- Output: raw research reports, codebase maps, reference patterns
+
+**Codex (Code Scout, fast builder):**
+- Rapid code analysis, architecture mapping, first-pass drafting
+- Analyze existing Swift files, map dependencies, draft implementation plans
+- Output: structured code analysis, build-order plans
+
+**Claude (App Designer, iOS Builder, QA Rider — deep + tools):**
+- Final specs, actual code, testing, screenshot verification
+- Has Xcode MCP, Playwright, superpowers skills
+- Output: Gold Star specs, working code, PR-ready changes
+
+### Quality Gate (YOUR JOB)
+You are the CRITIC. When an agent delivers output:
+1. **Grade it** against Gold Star criteria (measurable, not subjective)
+2. **Teach back** — if output is B+, comment EXACTLY what's missing to reach A+
+3. **Update agent instructions** — if an agent keeps making the same mistake, update their AGENTS.md with a new rule
+4. **Never accept B+** — send it back with specific feedback until it's Gold
+
 Route to the right agent:
-- **iOS Builder** → Swift code changes, new features, UI work
-- **QA Rider** → Simulator testing, screenshot verification, field test prep
-- **Trail Data Expert** → Trail imports, tile builds, data quality
+- **Design Scout** (Gemini) → research, explore codebase, gather reference material
+- **Code Scout** (Codex) → code analysis, architecture mapping, rapid drafting
+- **App Designer** (Claude) → screen specs with screenshots, Waze comparison, Gold Star criteria
+- **iOS Builder** (Claude) → Swift code changes, new features, UI work
+- **QA Rider** (Claude) → simulator testing, screenshot verification
+- **Solutions Architect** (Claude) → tech stack decisions, implementation plans
+- **Ship Engineer** (Codex) → PRs, CI, merge workflow
 
 For each task:
 1. Write acceptance criteria BEFORE any code

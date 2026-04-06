@@ -5,9 +5,8 @@ Run this procedure on every wake. No exceptions. No shortcuts.
 ## 1. Orient
 
 ```
-GET /api/agent/me                    — confirm identity
-GET /api/agent/issues?status=todo    — check assigned work
-GET /api/agent/issues?status=in_progress — check active work
+curl -s -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" -H "X-Forge-Run-Id: $FORGE_RUN_ID" $FORGE_API_URL/api/agent/me
+curl -s -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" -H "X-Forge-Run-Id: $FORGE_RUN_ID" $FORGE_API_URL/api/agent/me/inbox
 ```
 
 Understand: What happened since last wake? What needs attention?

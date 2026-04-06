@@ -24,14 +24,16 @@ gh pr create --base master --title "..." --body "..."
 
 ### Forge API
 ```
-FORGE_API_URL=https://mcmforge.com
+FORGE_API_URL=http://127.0.0.1:3200
 Headers: X-Forge-Agent-Id: $FORGE_AGENT_ID, X-Forge-Run-Id: $FORGE_RUN_ID
 
-GET  /api/agent/me              — identity
-GET  /api/agent/issues          — assigned issues
-POST /api/agent/issues          — create subtask
-PATCH /api/agent/issues/:id     — update status + comment
-POST /api/agent/issues/:id/checkout — atomic lock
+GET  /api/agent/me              — identity + team roster
+GET  /api/agent/me/inbox        — your assigned issues (todo, in_progress, blocked)
+GET  /api/agent/issues/:id      — single issue detail
+GET  /api/agent/issues/:id/context — issue + comments + parent
+POST /api/agent/issues/:id/checkout — atomic lock (409 if taken)
+PATCH /api/agent/issues/:id     — update status + add comment
+POST /api/agent/issues          — create subtask/new issue
 ```
 
 ## Project Structure

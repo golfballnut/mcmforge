@@ -255,6 +255,15 @@ async function executeRun(
 
     await releaseIssueExecution(supabase, run);
 
+    // Auto-create QA subtask when builder marks issue as 'in_review'
+    if (status === 'succeeded') {
+      try {
+        await checkForQAHandoff(supabase, run);
+      } catch (err) {
+        logger.error({ err, runId: run.id }, 'QA handoff check failed');
+      }
+    }
+
     // Index the run result for FTS5 cross-session search
     const indexableText = result.summary || (result.resultJson as any)?.result || '';
     if (indexableText && !isSilent) {
@@ -336,6 +345,105 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
       await lockIssueExecution(supabase, issue.id, runId);
     }
   }
+}
+
+/**
+ * After a successful run, check if the issue was moved to 'in_review'.
+ * If so, auto-create a QA subtask assigned to the company's 'Forge QA' agent.
+ */
+async function checkForQAHandoff(supabase: SupabaseClient, run: any) {
+  const issueId = run.context_snapshot?.issueId;
+  if (!issueId) return;
+
+  // 1. Confirm the issue is now in_review
+  const { data: issue } = await supabase
+    .from('issues')
+    .select('id, title, status, description, company_id, project_id')
+    .eq('id', issueId)
+    .single();
+
+  if (!issue || issue.status !== 'in_review') return;
+
+  // 2. Find the QA agent for this company
+  const { data: qaAgent } = await supabase
+    .from('agents')
+    .select('id')
+    .eq('company_id', issue.company_id)
+    .eq('name', 'Forge QA')
+    .single();
+
+  if (!qaAgent) {
+    logger.warn({ companyId: issue.company_id }, 'No Forge QA agent found — skipping QA handoff');
+    return;
+  }
+
+  // 3. Check if a QA subtask already exists for this issue (idempotency)
+  const { data: existing } = await supabase
+    .from('issues')
+    .select('id')
+    .eq('parent_id', issue.id)
+    .eq('assignee_agent_id', qaAgent.id)
+    .limit(1);
+
+  if (existing && existing.length > 0) {
+    logger.debug({ issueId: issue.id }, 'QA subtask already exists — skipping');
+    return;
+  }
+
+  // 4. Increment issue counter for identifier
+  const { data: company } = await supabase
+    .from('companies')
+    .select('issue_prefix, issue_counter')
+    .eq('id', issue.company_id)
+    .single();
+
+  const { data: updated } = await supabase
+    .from('companies')
+    .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+    .eq('id', issue.company_id)
+    .select('issue_counter')
+    .single();
+
+  const issueNumber = updated?.issue_counter || 1;
+  const identifier = `${company?.issue_prefix}-${issueNumber}`;
+
+  // 5. Build QA description with acceptance criteria and branch info
+  const branch = run.context_snapshot?.branch || run.context_snapshot?.branchName || 'unknown';
+  const description = [
+    `## QA Verification for: ${issue.title}`,
+    '',
+    `**Branch:** \`${branch}\``,
+    `**Parent issue:** ${issue.id}`,
+    '',
+    '### Acceptance Criteria',
+    issue.description || '_No acceptance criteria provided — verify the feature works as described in the title._',
+  ].join('\n');
+
+  // 6. Create the QA subtask
+  const { data: qaIssue, error } = await supabase.from('issues').insert({
+    company_id: issue.company_id,
+    project_id: issue.project_id,
+    title: `QA: Verify ${issue.title}`,
+    description,
+    status: 'todo',
+    priority: 'high',
+    assignee_agent_id: qaAgent.id,
+    parent_id: issue.id,
+    issue_number: issueNumber,
+    identifier,
+    origin_kind: 'qa_handoff',
+    origin_id: run.agent_id,
+  }).select('id, identifier').single();
+
+  if (error) {
+    logger.error({ error, issueId: issue.id }, 'Failed to create QA subtask');
+    return;
+  }
+
+  logger.info(
+    { qaIssueId: qaIssue?.id, identifier: qaIssue?.identifier, parentIssue: issue.id },
+    'QA subtask created — assignment detector will wake Forge QA',
+  );
 }
 
 async function cancelRun(supabase: SupabaseClient, runId: string, reason: string) {

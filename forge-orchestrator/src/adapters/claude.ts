@@ -50,6 +50,9 @@ export const claudeAdapter: CLIAdapter = {
     if (model) args.push('--model', model);
     if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
 
+    // Determine agent role for isolation enforcement
+    const agentRole = (config.role as string) || 'engineer';
+
     const env: Record<string, string> = {
       ...process.env as Record<string, string>,
       FORGE_RUN_ID: input.runId,
@@ -57,6 +60,7 @@ export const claudeAdapter: CLIAdapter = {
       FORGE_AGENT_NAME: input.agent.name,
       FORGE_COMPANY_ID: input.agent.companyId,
       FORGE_AGENT_HOME: input.agentHome,
+      FORGE_AGENT_ROLE: agentRole,
       FORGE_API_URL: process.env.FORGE_AGENT_API_URL || 'http://127.0.0.1:3200',
     };
 

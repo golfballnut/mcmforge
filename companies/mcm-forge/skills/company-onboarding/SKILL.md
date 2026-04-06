@@ -56,6 +56,44 @@ VALUES (
 
 **Checkpoint:** `SELECT * FROM forge.goals WHERE company_id = '<id>' AND level = 'company'` returns at least 1 active goal.
 
+### Sub-Goals
+
+Break the company goal into measurable sub-goals. Each sub-goal becomes a goal with `parent_id` pointing to the company goal:
+
+```sql
+INSERT INTO forge.goals (id, company_id, parent_id, title, description, level, status)
+VALUES (
+  gen_random_uuid(),
+  '<company-id>',
+  '<parent-goal-id>',
+  '<specific sub-goal>',
+  '<what done looks like>',
+  'team',
+  'active'
+);
+```
+
+**Sub-goals become issues.** When the CEO creates issues, they link them to sub-goals via `goal_id`. The goal-watcher loop auto-completes:
+- Sub-goal → `completed` when ALL linked issues are `done`
+- Parent goal → `completed` when ALL sub-goals are `completed`
+
+This creates the chain: **Vision → Goal → Sub-goals → Issues → Code**
+
+**Example for DirtSync:**
+```
+Goal: "Ship DirtSync v1 for April 9 group ride"
+  ├─ Sub-goal: "Navigation works end-to-end" 
+  │    ├─ Issue: Build nav HUD
+  │    ├─ Issue: Trail routing with Valhalla
+  │    └─ Issue: Offline route caching
+  ├─ Sub-goal: "Trail maps display correctly"
+  │    ├─ Issue: Tile rendering
+  │    └─ Issue: Trail detail panel
+  └─ Sub-goal: "Ride recording works"
+       ├─ Issue: Silent track recording
+       └─ Issue: Ride history screen
+```
+
 ### Step 3: Create the Project
 
 Every company needs at least one project linking to a code repository:
@@ -119,6 +157,33 @@ Create `companies/<slug>/vision/NORTH-STAR.md` with:
 
 **Checkpoint:** File exists and contains all sections.
 
+### Step 5b: Expert Research Phase
+
+Before hiring builders, run scout agents to build domain expertise for the company's tech stack.
+
+**Why:** Agents with generic knowledge produce B+ work. Agents loaded with official docs, reference analysis, and production gotchas produce A+ work. The research investment pays for itself on the first feature.
+
+**Procedure:**
+1. Identify the company's unique/novel tech stack (what can't be solved with Stack Overflow)
+2. Deploy Design Scout (Gemini) to research:
+   - Official documentation for each framework/library
+   - Competitor UX patterns (screenshots, measurements, behaviors)
+   - Best practices and known gotchas
+3. Deploy Code Scout (Codex) to analyze:
+   - Existing codebase structure (every View, Component, Service mapped)
+   - Design system tokens from actual code (colors, fonts, spacing)
+   - Architecture patterns in use (MVVM, singletons, etc.)
+4. Scouts produce reference documents that get embedded in specialist AGENTS.md files
+5. CEO reviews scout output before it's embedded
+
+**Deliverables:**
+- Codebase inventory (all files mapped with purpose)
+- Design system doc (colors, fonts, spacing from actual code)
+- Reference app analysis (competitor patterns with measurements)
+- Framework-specific gotchas doc (Valhalla, Ferrostar, MapLibre, etc.)
+
+**Checkpoint:** At least 2 reference docs exist before hiring any builder agents.
+
 ### Step 6: Verify Issue Counter
 
 The issue counter determines the next issue identifier (e.g., DIRA-1, FORGE-6):
@@ -147,6 +212,19 @@ The CEO is ALWAYS the first agent hired. Run the `/agent-onboarding` skill with:
 2. CEO dry run completes successfully
 3. Steve approves the CEO's first strategy proposal
 
+After CEO is validated, the hiring order matters:
+
+1. **CEO** (first — triages and delegates)
+2. **Scouts** (second — research domain expertise)
+3. **Designer** (third — needs scout research for reference docs)
+4. **Architect** (fourth — needs codebase analysis from scouts)
+5. **Builder** (fifth — needs specs from designer + plans from architect)
+6. **QA** (sixth — needs working builds to test)
+7. **Ship Engineer** (seventh — needs QA-approved work to ship)
+8. **Presentation Builder** (eighth — delivers to Steve for approval)
+
+**The auto-handoff chain:** Builder sets `in_review` → orchestrator auto-creates QA subtask → QA sets `approved` → orchestrator auto-creates Ship subtask. Agents don't need to manually delegate these handoffs.
+
 ## Completion Report
 
 After all 7 steps, report to Steve:
@@ -169,3 +247,7 @@ Company Onboarding Complete: <Company Name>
 - Skipping the vision doc = agents don't understand WHY
 - Skipping the budget = unlimited spend with no guardrails
 - Hiring agents before the CEO = no one to triage, delegate, or verify
+- No sub-goals = no way to track progress toward the north star
+- No expert research phase = agents guess instead of knowing = B+ output
+- Hiring builders before scouts = builders lack domain knowledge = rework
+- Not linking issues to goals = goal-watcher can't auto-complete = manual tracking

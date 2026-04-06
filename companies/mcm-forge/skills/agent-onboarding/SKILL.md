@@ -104,6 +104,19 @@ An agent that knows "MapLibre GL Native iOS v6.4, use MLNMapView, style URL patt
 is mapbox://styles/{owner}/{id}, camera follows user via userTrackingMode = .follow"
 is a specialist.
 
+### Expert Knowledge: The Secret Sauce
+
+A domain section with generic descriptions produces B+ agents. Gold Star agents need:
+
+1. **Official documentation loaded** — not "uses MapLibre" but the actual API reference, version numbers, key class names
+2. **Reference analysis** — study how competitors solve the same problem (e.g., Waze nav HUD breakdown with exact px sizes, color codes)
+3. **Production gotchas** — every bug discovered in production gets written back into AGENTS.md
+4. **Codebase inventory** — map every View, Component, ViewModel, Service in the project. Embed the inventory.
+
+**For novel stacks (trail routing, custom Valhalla, Ferrostar):** Run scout agents (Gemini/Codex) to research the actual library docs BEFORE writing the AGENTS.md. The scouts produce reference docs that get embedded in the specialist's instructions.
+
+**Pattern:** Scout researches → reference doc created → embedded in AGENTS.md domain section → builder uses it
+
 ### Step 3: Write HEARTBEAT.md
 
 The step-by-step wake procedure. This is a CHECKLIST, not guidelines.
@@ -123,11 +136,23 @@ Run this procedure on every wake. No exceptions.
 - Identify the test I need to pass
 - Estimate: can I finish in this session? If no, break into smaller pieces.
 
+## 2b. Plan (MANDATORY for code/design work)
+- Enter plan mode or produce a written plan
+- Plan must include: files to change, acceptance criteria, test approach, what could go wrong
+- Plan must be reviewed and approved (10/10) before execution begins
+- For trivial fixes (<10 lines, obvious from error): skip plan, note why in comment
+
 ## 3. Execute
 - Create branch: `agent/<issue-slug>`
 - Make the changes
 - Run build: `<build-command>`
 - Run tests: `<test-command>`
+
+### For iOS builders and QA agents:
+**Step 0 (MANDATORY before any build):**
+1. Call `mcp__XcodeBuildMCP__session_show_defaults` to verify project/scheme/simulator
+2. If not configured, call `mcp__XcodeBuildMCP__session_set_defaults` with correct values
+3. NEVER use raw `xcodebuild` commands — always use XcodeBuildMCP MCP tools
 
 ## 4. Verify
 - [ ] Build passes
@@ -185,6 +210,33 @@ Available tools, commands, paths, and hard limits.
 - Spend more than $5 on a single issue without approval
 - Delete branches without Steve's approval
 - Send emails (drafts only)
+
+## Issue Lifecycle & Auto-Handoffs
+
+The orchestrator auto-creates handoff subtasks. Your agent must use the correct status transitions:
+
+| Agent sets status to | Orchestrator auto-creates |
+|---------------------|--------------------------|
+| `in_review` | QA subtask → assigned to QA Rider |
+| `approved` | Ship subtask → assigned to Ship Engineer |
+| `done` | Goal completion check (if issue linked to goal) |
+
+**Forge API for status updates:**
+```bash
+# PATCH issue status (triggers auto-handoffs)
+curl -X PATCH http://127.0.0.1:3200/api/agent/issues/<id> \
+  -H "X-Forge-Agent-Id: <agent-id>" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "in_review"}'
+```
+
+**Goal linking:** When creating issues, include `goal_id` to link to a company goal:
+```bash
+curl -X POST http://127.0.0.1:3200/api/agent/issues \
+  -H "X-Forge-Agent-Id: <agent-id>" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "...", "goal_id": "<goal-uuid>", ...}'
+```
 ```
 
 ### Step 6: Create DB Record
@@ -216,9 +268,14 @@ INSERT INTO forge.agents (
 
 **Adapter config rules:**
 - CEO: claude-opus-4-6, maxTurns=3 (short review/routing work)
-- Builders: gemini or codex, maxTurns=15
-- QA: codex or gemini, maxTurns=10
-- Routines: haiku, maxTurns=5
+- Builders (iOS/Swift): claude-sonnet-4-6, maxTurns=10 (needs Xcode MCP + tool use)
+- Designers: claude-sonnet-4-6, maxTurns=10 (needs Xcode MCP + Playwright + Context7)
+- Scouts (research): gemini or codex, maxTurns=5, run_in_background (cheap research)
+- QA: claude-sonnet-4-6, maxTurns=10 (needs Xcode MCP for screenshots)
+- Ship: claude-sonnet-4-6, maxTurns=5 (needs gh CLI)
+- Routines: claude-haiku-4-5, maxTurns=5
+
+**Rule:** Any agent that needs MCP tools (Xcode, Playwright, Supabase) MUST use Claude adapter.
 
 ### Step 7: Validate -- Skill First
 
@@ -267,3 +324,7 @@ Agent Onboarded: <Agent Name>
 - Vague domain section = generalist output = B+ at best
 - Skipping dry run = first real issue may burn budget on garbage
 - Two agents on same file = they revert each other's work
+- No plan gate = rework when approach is wrong = wasted budget
+- Generic domain section = B+ output = Steve sends it back = double cost
+- Wrong adapter (Gemini for builder) = no MCP tools = can't build/test
+- Missing auto-handoff knowledge = agent doesn't set correct status = pipeline stalls

@@ -178,6 +178,14 @@ async function executeRun(
     const status = result.timedOut ? 'timed_out'
       : (result.exitCode === 0 ? 'succeeded' : 'failed');
 
+    // Detect [SILENT] marker — agent had nothing to report
+    const resultText = result.summary || (result.resultJson as any)?.result || '';
+    const isSilent = resultText.includes('[SILENT]');
+
+    if (isSilent) {
+      logger.info({ runId: run.id, agent: agent.name }, 'Silent run — agent had nothing to report');
+    }
+
     await supabase
       .from('runs')
       .update({
@@ -189,7 +197,7 @@ async function executeRun(
         session_id_after: result.sessionId,
         session_params: result.sessionParams,
         result_json: result.resultJson,
-        summary: result.summary,
+        summary: isSilent ? '[SILENT] ' + (result.summary || 'No work to do') : result.summary,
         input_tokens: result.usage?.inputTokens ?? 0,
         cached_input_tokens: result.usage?.cachedInputTokens ?? 0,
         output_tokens: result.usage?.outputTokens ?? 0,

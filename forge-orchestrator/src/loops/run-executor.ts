@@ -6,6 +6,7 @@ import { getAdapter } from '../adapters/registry.js';
 import { recordCost } from '../services/cost-ledger.js';
 import { releaseIssueExecution, lockIssueExecution } from '../services/issue-lifecycle.js';
 import { createWakeup } from '../services/wakeup.js';
+import { indexRunResult, searchAgentHistory } from '../services/session-search.js';
 import { logger } from '../utils/logger.js';
 
 const activeRuns = new Map<string, { pid: number; abortController: AbortController }>();
@@ -136,6 +137,22 @@ async function executeRun(
   }
 
   try {
+    // Inject recent history from FTS5 session search
+    const recentHistory = searchAgentHistory(config.agentHomeDir, {
+      agentId: agent.id,
+      limit: 3,
+    });
+    const historyContext = recentHistory.length > 0
+      ? recentHistory.map((h, i) =>
+          `--- Previous Run ${i + 1} (${h.createdAt}) ---\n${h.resultText.slice(0, 500)}`
+        ).join('\n\n')
+      : '';
+
+    const contextWithHistory = {
+      ...(run.context_snapshot || {}),
+      recentHistory: historyContext || undefined,
+    };
+
     const result = await adapter.execute({
       runId: run.id,
       agent: {
@@ -151,7 +168,7 @@ async function executeRun(
       skills: agent.skills || [],
       sessionId: agent.session_id,
       sessionParams: agent.session_params,
-      context: run.context_snapshot || {},
+      context: contextWithHistory,
       cwd,
       agentHome,
       signal: abortController.signal,
@@ -237,6 +254,22 @@ async function executeRun(
     }
 
     await releaseIssueExecution(supabase, run);
+
+    // Index the run result for FTS5 cross-session search
+    const indexableText = result.summary || (result.resultJson as any)?.result || '';
+    if (indexableText && !isSilent) {
+      indexRunResult(config.agentHomeDir, {
+        runId: run.id,
+        agentId: agent.id,
+        agentName: agent.name,
+        companyId: run.company_id,
+        resultText: indexableText,
+        costUsd: result.costUsd ?? null,
+        turnsUsed: (result.resultJson as any)?.num_turns ?? null,
+        status,
+        issueId: run.context_snapshot?.issueId ?? null,
+      });
+    }
 
     logger.info({ runId: run.id, status, agent: agent.name }, 'Run completed');
 

@@ -247,6 +247,7 @@ export function startAgentApi(supabase: SupabaseClient<any, any, any>, port: num
           assignee_agent_id: (body.assigneeAgentId as string) || null,
           parent_id: (body.parentId as string) || null,
           project_id: (body.projectId as string) || null,
+          goal_id: (body.goal_id as string) || null,
           issue_number: issueNumber,
           identifier,
           origin_kind: 'agent_created',

@@ -344,12 +344,17 @@ async function executeRun(
 
     await releaseIssueExecution(supabase, run);
 
-    // Auto-create QA subtask when builder marks issue as 'in_review'
+    // Auto-handoffs on successful runs
     if (status === 'succeeded') {
       try {
         await checkForQAHandoff(supabase, run);
       } catch (err) {
         logger.error({ err, runId: run.id }, 'QA handoff check failed');
+      }
+      try {
+        await checkForShipHandoff(supabase, run);
+      } catch (err) {
+        logger.error({ err, runId: run.id }, 'Ship handoff check failed');
       }
     }
 
@@ -451,7 +456,7 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
 
 /**
  * After a successful run, check if the issue was moved to 'in_review'.
- * If so, auto-create a QA subtask assigned to the company's 'Forge QA' agent.
+ * If so, auto-create a QA subtask assigned to the company's 'QA Rider' agent.
  */
 async function checkForQAHandoff(supabase: SupabaseClient, run: any) {
   const issueId = run.context_snapshot?.issueId;
@@ -471,11 +476,11 @@ async function checkForQAHandoff(supabase: SupabaseClient, run: any) {
     .from('agents')
     .select('id')
     .eq('company_id', issue.company_id)
-    .eq('name', 'Forge QA')
+    .eq('name', 'QA Rider')
     .single();
 
   if (!qaAgent) {
-    logger.warn({ companyId: issue.company_id }, 'No Forge QA agent found — skipping QA handoff');
+    logger.warn({ companyId: issue.company_id }, 'No QA Rider agent found — skipping QA handoff');
     return;
   }
 
@@ -544,7 +549,104 @@ async function checkForQAHandoff(supabase: SupabaseClient, run: any) {
 
   logger.info(
     { qaIssueId: qaIssue?.id, identifier: qaIssue?.identifier, parentIssue: issue.id },
-    'QA subtask created — assignment detector will wake Forge QA',
+    'QA subtask created — assignment detector will wake QA Rider',
+  );
+}
+
+/**
+ * After QA marks an issue as 'approved', auto-create a ship subtask
+ * assigned to the company's Ship Engineer agent.
+ */
+async function checkForShipHandoff(supabase: SupabaseClient, run: any) {
+  const issueId = run.context_snapshot?.issueId;
+  if (!issueId) return;
+
+  const { data: issue } = await supabase
+    .from('issues')
+    .select('id, title, status, description, company_id, project_id')
+    .eq('id', issueId)
+    .single();
+
+  if (!issue || issue.status !== 'approved') return;
+
+  // Find the Ship Engineer for this company
+  const { data: shipAgent } = await supabase
+    .from('agents')
+    .select('id')
+    .eq('company_id', issue.company_id)
+    .eq('name', 'Ship Engineer')
+    .single();
+
+  if (!shipAgent) {
+    logger.warn({ companyId: issue.company_id }, 'No Ship Engineer agent found — skipping ship handoff');
+    return;
+  }
+
+  // Idempotency: check if ship subtask already exists
+  const { data: existing } = await supabase
+    .from('issues')
+    .select('id')
+    .eq('parent_id', issue.id)
+    .eq('assignee_agent_id', shipAgent.id)
+    .limit(1);
+
+  if (existing && existing.length > 0) return;
+
+  // Increment issue counter
+  const { data: company } = await supabase
+    .from('companies')
+    .select('issue_prefix, issue_counter')
+    .eq('id', issue.company_id)
+    .single();
+
+  const { data: updated } = await supabase
+    .from('companies')
+    .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+    .eq('id', issue.company_id)
+    .select('issue_counter')
+    .single();
+
+  const issueNumber = updated?.issue_counter || 1;
+  const identifier = `${company?.issue_prefix}-${issueNumber}`;
+
+  const branch = run.context_snapshot?.branch || run.context_snapshot?.branchName || 'unknown';
+  const description = [
+    `## Ship: ${issue.title}`,
+    '',
+    `**Branch:** \`${branch}\``,
+    `**Parent issue:** ${issue.id}`,
+    `**QA Status:** Approved`,
+    '',
+    '### Instructions',
+    '1. Rebase branch on master',
+    '2. Verify build passes',
+    '3. Create PR via `gh pr create` targeting `master`',
+    '4. Post PR URL as comment on the parent issue',
+  ].join('\n');
+
+  const { data: shipIssue, error } = await supabase.from('issues').insert({
+    company_id: issue.company_id,
+    project_id: issue.project_id,
+    title: `Ship: ${issue.title}`,
+    description,
+    status: 'todo',
+    priority: 'high',
+    assignee_agent_id: shipAgent.id,
+    parent_id: issue.id,
+    issue_number: issueNumber,
+    identifier,
+    origin_kind: 'ship_handoff',
+    origin_id: run.agent_id,
+  }).select('id, identifier').single();
+
+  if (error) {
+    logger.error({ error, issueId: issue.id }, 'Failed to create ship subtask');
+    return;
+  }
+
+  logger.info(
+    { shipIssueId: shipIssue?.id, identifier: shipIssue?.identifier, parentIssue: issue.id },
+    'Ship subtask created — assignment detector will wake Ship Engineer',
   );
 }
 

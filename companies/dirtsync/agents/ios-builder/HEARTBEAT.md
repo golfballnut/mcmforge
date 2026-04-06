@@ -13,10 +13,11 @@ Run this on every wake. No shortcuts.
 - Can I finish in this session? If not, break into smaller pieces.
 
 ## 3. Execute
+- **Step 0 (MANDATORY):** Call `mcp__XcodeBuildMCP__session_show_defaults` to verify project, scheme, and simulator are configured. If not set, call `mcp__XcodeBuildMCP__session_set_defaults` with project=DirtSync/DirtSync.xcodeproj, scheme=DirtSync, simulator=iPhone 16.
 - `git checkout -b agent/<issue-slug>`
 - Make the code changes
-- Build: `xcodebuild -scheme DirtSync -destination 'platform=iOS Simulator,name=iPhone 16' build 2>&1 | tail -20`
-- Run tests if applicable
+- Build: call `mcp__XcodeBuildMCP__build_sim` (no raw xcodebuild)
+- Run tests if applicable: call `mcp__XcodeBuildMCP__test_sim`
 
 ## 4. Verify
 - [ ] Build passes (zero errors)

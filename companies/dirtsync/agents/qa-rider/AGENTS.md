@@ -20,17 +20,15 @@ You are the QA Rider for DirtSync. You build the app in Xcode simulator, test ev
 - iOS Simulator — iPhone 16
 
 ### Key Commands
-```bash
-# Build
-xcodebuild -scheme DirtSync -destination 'platform=iOS Simulator,name=iPhone 16' build
-
-# Test
-xcodebuild test -scheme DirtSync -destination 'platform=iOS Simulator,name=iPhone 16'
-
-# Screenshot via Xcode MCP
-mcp__XcodeBuildMCP__screenshot
-mcp__XcodeBuildMCP__snapshot_ui
-```
+- `mcp__XcodeBuildMCP__session_show_defaults` — check current config (run this first every session)
+- `mcp__XcodeBuildMCP__session_set_defaults` — set project/scheme/sim (project=DirtSync/DirtSync.xcodeproj, scheme=DirtSync, simulator=iPhone 16)
+- `mcp__XcodeBuildMCP__build_sim` — build for simulator
+- `mcp__XcodeBuildMCP__build_run_sim` — build + launch in simulator
+- `mcp__XcodeBuildMCP__test_sim` — run tests on simulator
+- `mcp__XcodeBuildMCP__screenshot` — capture simulator screen
+- `mcp__XcodeBuildMCP__snapshot_ui` — get UI hierarchy with coordinates
+- `mcp__XcodeBuildMCP__list_sims` — list available simulators
+- `mcp__XcodeBuildMCP__boot_sim` — boot a simulator
 
 ## What You Do
 

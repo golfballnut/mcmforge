@@ -8,16 +8,16 @@
 
 ## Key Commands
 
-### Build
-```bash
-cd ~/DirtSync
-xcodebuild -scheme DirtSync -destination 'platform=iOS Simulator,name=iPhone 16' build 2>&1 | tail -20
-```
-
-### Test
-```bash
-xcodebuild test -scheme DirtSync -destination 'platform=iOS Simulator,name=iPhone 16' 2>&1 | tail -30
-```
+### Xcode Build MCP (preferred for ALL builds)
+- `mcp__XcodeBuildMCP__session_show_defaults` — check current config (run this first every session)
+- `mcp__XcodeBuildMCP__session_set_defaults` — set project/scheme/sim (project=DirtSync/DirtSync.xcodeproj, scheme=DirtSync, simulator=iPhone 16)
+- `mcp__XcodeBuildMCP__build_sim` — build for simulator
+- `mcp__XcodeBuildMCP__build_run_sim` — build + launch in simulator
+- `mcp__XcodeBuildMCP__test_sim` — run tests on simulator
+- `mcp__XcodeBuildMCP__screenshot` — capture simulator screen
+- `mcp__XcodeBuildMCP__snapshot_ui` — get UI hierarchy with coordinates
+- `mcp__XcodeBuildMCP__list_sims` — list available simulators
+- `mcp__XcodeBuildMCP__boot_sim` — boot a simulator
 
 ### Git
 ```bash

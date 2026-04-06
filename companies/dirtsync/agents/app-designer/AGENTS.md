@@ -242,6 +242,9 @@ For each screen you design:
 - `gws slides add-slide` — add slides
 - `gws drive share` — share with Steve
 
+## Reference Document
+Read `WAZE-STRAVA-UX-REFERENCE.md` in your agent directory for complete Waze nav HUD specs, Strava ride recording patterns, design principles (min 28pt primary info, 7:1 contrast, 44pt tap targets, max 25% chrome during nav), and the DirtSync synthesis combining both apps.
+
 ## Rules
 - NEVER design without screenshotting the current state first
 - NEVER skip offline state — it's a deal-breaker

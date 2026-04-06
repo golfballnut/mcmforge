@@ -133,5 +133,7 @@ function parseGeminiResult(
     resultJson,
     summary,
     clearSession: false,
+    stdoutExcerpt: proc.stdout?.slice(0, 2000) || null,
+    stderrExcerpt: proc.stderr?.slice(0, 2000) || null,
   };
 }

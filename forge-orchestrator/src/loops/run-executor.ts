@@ -211,6 +211,8 @@ async function executeRun(
         signal: result.signal,
         timed_out: result.timedOut,
         error: result.errorMessage,
+        stdout_excerpt: result.stdoutExcerpt,
+        stderr_excerpt: result.stderrExcerpt,
         session_id_after: result.sessionId,
         session_params: result.sessionParams,
         result_json: result.resultJson,

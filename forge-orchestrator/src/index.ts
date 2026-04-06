@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { loadConfig } from './config.js';
 import { createSupabaseClient } from './supabase.js';
-import { startRunExecutor } from './loops/run-executor.js';
+import { startRunExecutor, getActiveRuns, setShuttingDown } from './loops/run-executor.js';
 import { startHeartbeatScheduler } from './loops/heartbeat-scheduler.js';
 import { startRoutineScheduler } from './loops/routine-scheduler.js';
 import { startOrphanReaper } from './loops/orphan-reaper.js';
@@ -44,12 +44,45 @@ main().catch((err) => {
   process.exit(1);
 });
 
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down');
-  process.exit(0);
-});
+async function gracefulShutdown(signal: string) {
+  logger.info({ signal }, 'Shutdown signal received — stopping new runs');
+  setShuttingDown();
 
-process.on('SIGINT', () => {
-  logger.info('SIGINT received, shutting down');
+  const active = getActiveRuns();
+  if (active.size === 0) {
+    logger.info('No active runs, exiting immediately');
+    process.exit(0);
+  }
+
+  logger.info({ count: active.size }, 'Waiting for active runs to finish (30s timeout)');
+
+  // Send SIGTERM to all child CLI processes
+  for (const [runId, { pid, abortController }] of active) {
+    try {
+      logger.info({ runId, pid }, 'Sending SIGTERM to child process');
+      abortController.abort();
+      process.kill(pid, 'SIGTERM');
+    } catch {
+      // Process may have already exited
+    }
+  }
+
+  // Wait up to 30s for active runs to drain
+  const deadline = Date.now() + 30_000;
+  while (active.size > 0 && Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+
+  if (active.size > 0) {
+    logger.warn({ remaining: active.size }, 'Timeout — force killing remaining processes');
+    for (const [, { pid }] of active) {
+      try { process.kill(pid, 'SIGKILL'); } catch { /* already dead */ }
+    }
+  }
+
+  logger.info('Graceful shutdown complete');
   process.exit(0);
-});
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));

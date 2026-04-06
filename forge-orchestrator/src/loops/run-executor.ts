@@ -11,8 +11,18 @@ import { logger } from '../utils/logger.js';
 
 const activeRuns = new Map<string, { pid: number; abortController: AbortController }>();
 
+let shuttingDown = false;
+
 export function getActiveRunCount(): number {
   return activeRuns.size;
+}
+
+export function getActiveRuns(): Map<string, { pid: number; abortController: AbortController }> {
+  return activeRuns;
+}
+
+export function setShuttingDown(): void {
+  shuttingDown = true;
 }
 
 export async function startRunExecutor(supabase: SupabaseClient, config: ForgeConfig) {
@@ -26,7 +36,7 @@ export async function startRunExecutor(supabase: SupabaseClient, config: ForgeCo
       logger.error(err, 'Issue assignment check failed');
     }
 
-    if (activeRuns.size >= config.maxConcurrentRuns) return;
+    if (shuttingDown || activeRuns.size >= config.maxConcurrentRuns) return;
     try {
       await claimAndExecuteNextRun(supabase, config);
     } catch (err) {
@@ -42,6 +52,7 @@ async function claimAndExecuteNextRun(supabase: SupabaseClient, config: ForgeCon
     .from('runs')
     .select('*, agent:agents(*)')
     .eq('status', 'queued')
+    .order('priority', { ascending: false })
     .order('created_at', { ascending: true })
     .limit(1);
 
@@ -137,8 +148,8 @@ async function executeRun(
   }
 
   try {
-    // Inject recent history from FTS5 session search
-    const recentHistory = searchAgentHistory(config.agentHomeDir, {
+    // Inject recent history from Supabase runs table — agent memory
+    const recentHistory = await searchAgentHistory(supabase, {
       agentId: agent.id,
       limit: 3,
     });
@@ -148,9 +159,30 @@ async function executeRun(
         ).join('\n\n')
       : '';
 
+    // Inject goal context — agents should know the north star
+    let goalContext = '';
+    try {
+      const { data: goals } = await supabase
+        .from('goals')
+        .select('title, description, status')
+        .eq('company_id', run.company_id)
+        .in('status', ['active', 'in_progress'])
+        .order('created_at', { ascending: true })
+        .limit(5);
+
+      if (goals?.length) {
+        goalContext = '## Company Goals\n' + goals.map((g) =>
+          `- **${g.title}** (${g.status}): ${g.description || ''}`
+        ).join('\n');
+      }
+    } catch (err) {
+      logger.debug({ err }, 'Failed to fetch goals — continuing without');
+    }
+
     const contextWithHistory = {
       ...(run.context_snapshot || {}),
       recentHistory: historyContext || undefined,
+      goalContext: goalContext || undefined,
     };
 
     const result = await adapter.execute({
@@ -173,6 +205,8 @@ async function executeRun(
       agentHome,
       signal: abortController.signal,
       onLog: async (stream, chunk) => {
+        // Keep run alive — update updated_at so orphan reaper doesn't kill us
+        await supabase.from('runs').update({ updated_at: new Date().toISOString() }).eq('id', run.id);
         await supabase.from('run_events').insert({
           company_id: run.company_id,
           run_id: run.id,
@@ -329,6 +363,10 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
 
     logger.debug({ issueId: issue.id, agentId }, 'Creating wakeup for assigned issue');
 
+    // Map issue priority to run priority: critical=3, high=2, medium=1, low=0
+    const priorityMap: Record<string, number> = { critical: 3, high: 2, medium: 1, low: 0 };
+    const runPriority = priorityMap[issue.priority] ?? 0;
+
     const runId = await createWakeup(supabase, {
       companyId: issue.company_id,
       agentId,
@@ -339,8 +377,8 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
         issueId: issue.id,
         projectId: issue.project_id ?? null,
       },
-      // Prevent re-creating a wakeup if one already fired for this issue
       idempotencyKey: `assignment-${issue.id}`,
+      priority: runPriority,
     });
 
     if (runId) {

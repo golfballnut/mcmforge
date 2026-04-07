@@ -325,6 +325,12 @@ async function executeRun(
       })
       .eq('id', agent.id);
 
+    // O-2: Auto-heal ERROR status — if agent was in error and just succeeded, log the recovery
+    if (status === 'succeeded' && agent.status === 'error') {
+      await supabase.from('agents').update({ status: 'idle' }).eq('id', agent.id);
+      logger.info({ agentId: agent.id }, 'Auto-healed ERROR status');
+    }
+
     if (result.usage && (result.usage.inputTokens > 0 || result.usage.outputTokens > 0)) {
       await recordCost(supabase, {
         companyId: run.company_id,
@@ -510,6 +516,18 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
     // Skip if this agent already has work in progress — one issue at a time
     if (busyAgents.has(agentId)) {
       logger.debug({ issueId: issue.id, agentId }, 'Agent busy — skipping issue until current work completes');
+      continue;
+    }
+
+    // O-1: Per-issue dedup — skip if a run is already queued/running for this issue
+    const { data: activeRun } = await supabase
+      .from('runs')
+      .select('id')
+      .eq('context_snapshot->>issueId', issue.id)
+      .in('status', ['running', 'queued'])
+      .maybeSingle();
+    if (activeRun) {
+      logger.debug({ issueId: issue.id, agentId }, 'Issue already has active run — skipping dispatch');
       continue;
     }
 

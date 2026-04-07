@@ -1,22 +1,46 @@
 # TOOLS.md — DirtSync Design Scout
 
-> **Note:** Design Scout runs on Gemini (NOT Claude). No MCP tools available.
-> Tools: web search, file read, codebase file exploration only.
+> **Runs on Claude Sonnet** with WebSearch, Playwright, Context7, and file tools.
+> Switched from Gemini (web search was broken) to Claude for reliable research.
 
 ## Available Tools
-- Web search (Gemini native — search for UX teardowns, competitor analysis, app store reviews)
-- File read (codebase exploration: Swift views, components, design tokens)
-- Bash read-only (find, grep, cat — for codebase mapping; NO writes, NO git commits)
+- **WebSearch** — search the web for UX teardowns, competitor analysis, app reviews
+- **Playwright MCP** — browse actual apps/websites, take screenshots, inspect layouts
+- **Context7 MCP** — query official docs for SwiftUI, MapLibre, iOS HIG
+- **File read** (codebase exploration: Swift views, components, design tokens)
+- **Forge API** — read issues, post research reports
 
 ## Web Research
 
 ```
-Search queries that work well:
+WebSearch queries that work well:
 - "Waze navigation HUD UX teardown element sizes"
-- "AllTrails app UX analysis 2024"
+- "Strava ride recording screen analysis"
+- "AllTrails trail detail page UX analysis"
 - "OnX Offroad vs Trailforks feature comparison"
-- "iOS navigation app 1-star reviews"
-- site:apptopia.com dirtsync competitor
+- "iOS navigation app design patterns 2025"
+```
+
+## Playwright — Browse Real Apps
+
+```
+# Take screenshot of a competitor's web app
+mcp__plugin_playwright_playwright__browser_navigate → URL
+mcp__plugin_playwright_playwright__browser_take_screenshot → capture
+mcp__plugin_playwright_playwright__browser_snapshot → get element tree
+
+# Useful for: Waze web, Strava web, AllTrails web, onX web
+```
+
+## Context7 — Official Docs
+
+```
+# Look up SwiftUI components
+mcp__plugin_context7_context7__resolve-library-id → "apple/swiftui"
+mcp__plugin_context7_context7__query-docs → "NavigationStack sheet overlay"
+
+# Look up MapLibre
+mcp__plugin_context7_context7__resolve-library-id → "maplibre/maplibre-gl-native"
 ```
 
 ## Codebase Exploration
@@ -25,18 +49,12 @@ Search queries that work well:
 # Map all views
 find ~/DirtSync/DirtSync -path "*/Views/*.swift" | sort
 
-# Map all components
-find ~/DirtSync/DirtSync -path "*/Components/*.swift" | sort
-
-# Read a specific view
-cat ~/DirtSync/DirtSync/Views/Navigation/NavigationHUDView.swift
+# Read design tokens
+cat ~/DirtSync/DirtSync/DirtSyncApp/Theme/PremiumColors.swift
 
 # Find what services a view uses
-grep -r "Service\|ViewModel\|@StateObject\|@ObservedObject" \
+grep -r "Service\|ViewModel\|@StateObject" \
   ~/DirtSync/DirtSync/Views/Navigation/NavigationHUDView.swift
-
-# Count elements
-find ~/DirtSync/DirtSync -name "*.swift" | wc -l
 ```
 
 ## Forge API
@@ -77,5 +95,4 @@ PATCH /api/agent/issues/:id        — post research report, update status
 - Write design specs or recommendations (App Designer's job)
 - Edit any files in the DirtSync repo
 - Make git commits or create PRs
-- Access MCP tools (XcodeBuildMCP, Supabase, Playwright)
 - Produce opinions — only cited, measurable observations

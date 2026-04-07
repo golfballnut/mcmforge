@@ -7,6 +7,7 @@ import { startRoutineScheduler } from './loops/routine-scheduler.js';
 import { startOrphanReaper } from './loops/orphan-reaper.js';
 import { startMentionWatcher } from './loops/mention-watcher.js';
 import { startGoalWatcher } from './loops/goal-watcher.js';
+import { startAgentAdvisor } from './loops/agent-advisor.js';
 import { startAgentApi } from './agent-api.js';
 import { logger } from './utils/logger.js';
 
@@ -36,6 +37,7 @@ async function main() {
     startOrphanReaper(supabase, config),
     startMentionWatcher(supabase, config),
     startGoalWatcher(supabase, config),
+    startAgentAdvisor(supabase, config),
   ]);
 
   logger.info('All loops running');

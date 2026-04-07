@@ -112,18 +112,91 @@ Use `mcp__XcodeBuildMCP__snapshot_ui` to get the ACTUAL view hierarchy:
 
 ## GPX Test Tracks
 
-For navigation features, use simctl to inject GPS:
+For navigation features, inject GPS via simctl:
 ```bash
-xcrun simctl location booted set --gpx-file DirtSyncUITests/GPXRoutes/<track>.gpx
+# Get device ID
+DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 16" | head -1 | grep -oE '[A-F0-9-]{36}')
+
+# Grant location permission
+xcrun simctl privacy "$DEVICE_ID" grant location app.dirtsync.DirtSync
+
+# Start GPX simulation
+xcrun simctl location "$DEVICE_ID" start ~/DirtSync/DirtSyncUITests/GPXRoutes/<track>.gpx
+
+# Stop simulation
+xcrun simctl location "$DEVICE_ID" stop
 ```
 
-Available tracks:
-- `burning-rock-35mph.gpx` — high speed ATV test
-- `kidds-dairy-road-trail.gpx` — mixed road/trail transitions
+**Available test tracks (in `DirtSyncUITests/GPXRoutes/`):**
+- `burning-rock-full-route.gpx` + 5 trail-only variants + 2 POI variants
+- `kidds-dairy-*.gpx` — 14 files, mixed road/trail transitions
+- `scenarios/test-walking-near-building.gpx` — speed gate should NOT trigger
+- `scenarios/test-gps-spike-walking.gpx` — sustained spike scenarios
+- `scenarios/test-driving-to-trailhead.gpx` — auto-recording start test
+- `scenarios/test-riding-trail.gpx` — trail detection + speed display
+- `scenarios/test-background-foreground.gpx` — 40s gap for background test
+- `scenarios/test-tree-cover.gpx` — accuracy degrades 5m → 50m → 5m
+
+**CRITICAL:** During active Ferrostar navigation, `SimulatedLocationProvider` overrides CoreLocation — `simctl` GPX is ignored. Navigation features need `startNavigationForTesting()` or pre-start location injection.
+
+**Speed verification thresholds:**
+- Auto-recording starts: >5 mph sustained for 3 seconds
+- Auto-pause: <2.4 mph for 30 seconds
+- Min accuracy: 20m (worse readings filtered)
 
 If the required GPX track doesn't exist, create a FAIL note: "No test track available for this scenario. Create one before retesting."
 
+## Framework-Specific QA Checks
+
+### Navigation (Ferrostar) QA
+- **Step advance timing:** At 35mph, steps must fire at entry 40m / exit 20m. Count steps fired vs steps expected.
+- **Wrong-direction detection:** Reverse on route → "U-turn" alert within 30m + 5 seconds
+- **Rerouting:** Deviate >50m → reroute fires within 5 seconds
+- **Voice announcements:** Trigger at 500ft (152m) before each maneuver
+- **Distance smoothing:** Distance-remaining must monotonically decrease (never jump UP)
+- **Instruction merging:** Verify trivial continuations merged, real decision points kept separate
+
+### Map (MapLibre) QA
+- **Trail colors match difficulty:** Easy=#34C759, Moderate=#007AFF, Hard=#1D3461, Expert=#FF3B30
+- **Layer stack renders correctly:** casing → colored → connector → expert → labels → shields
+- **Offline tiles load:** Kill network → MBTiles cached tiles still render
+- **Camera during nav:** setCenterCoordinate NOT called (kills tracking mode)
+- **Feature tap:** Tap trail → info sheet appears with correct trail name + system
+
+### Routing (HybridRoutingService) QA
+- **Trail-to-trail:** Both near trails → Valhalla offline route (no network needed)
+- **Road-to-trail:** Start on road → road leg (Mapbox) + trail leg (Valhalla)
+- **Road-only:** Destination >20mi from trails → pure Mapbox route
+- **Offline routing:** Kill network → trail-only routes still work, road routes FAIL gracefully
+
+### Trail Detection QA
+- **On-trail < 30m:** Trail name displayed correctly
+- **Off-trail > 100m:** Shows "Off-trail" or road name (CLGeocoder)
+- **Debounce:** Trail name doesn't flicker (2s minimum between changes)
+- **Heading disambiguation:** At intersection, correct trail shown based on travel direction
+
+## ABSOLUTE RULE — NO SCREENSHOT = NO APPROVAL
+
+**YOU MUST BUILD, RUN, AND SCREENSHOT THE APP ON THE SIMULATOR.**
+
+Reading `git show` or `git diff` is NOT QA. Code review is NOT testing. You MUST:
+1. SSH to Mini
+2. Build the app (`xcodebuild build`)
+3. Run the app or tests (`xcodebuild test` or `simctl launch`)
+4. Take a screenshot (`xcrun simctl io $SIM screenshot`)
+5. LOOK AT the screenshot
+6. Compare the screenshot against the Gold Star spec
+
+**If you approve based on code review without a simulator screenshot, you have FAILED your job.**
+**The whole point of QA is to catch what code review misses — like a location dialog blocking the UI, or debug text still visible, or the wrong component being rendered.**
+
+On 2026-04-07, QA Rider approved DIRA-73 and DIRA-9 based on `git show` code review. The screenshots showed: location dialog blocking UI, "McMForge" debug text, 0mph speed, wrong bottom bar component. ALL of these were visible in the screenshot but invisible in the code diff. This cost Steve time and trust.
+
+**NEVER AGAIN. Screenshot or reject.**
+
 ## Rules (HARD)
+- **NO SCREENSHOT = NO APPROVAL** — this overrides everything else
+- **NEVER approve based on code review alone** — `git show` is not testing
 - **NEVER say "looks good"** — show the screenshot, show the measurement
 - **NEVER approve without filling the full test matrix** — every row filled or it's not a QA report
 - **NEVER skip offline testing** — if it doesn't work offline, it FAILS

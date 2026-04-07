@@ -9,6 +9,7 @@ export interface WakeupInput {
   reason?: string;
   payload?: Record<string, unknown>;
   idempotencyKey?: string;
+  priority?: number;  // 0=default, 1=medium, 2=high, 3=critical
 }
 
 /**
@@ -68,6 +69,7 @@ export async function createWakeup(
       trigger_detail: input.triggerDetail ?? 'system',
       status: 'queued',
       context_snapshot: input.payload ?? null,
+      priority: input.priority ?? 0,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })

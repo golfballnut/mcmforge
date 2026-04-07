@@ -2,7 +2,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { ForgeConfig } from '../config.js';
 import { logger } from '../utils/logger.js';
 
-const ORPHAN_THRESHOLD_MS = 10 * 60 * 1000;
+const ORPHAN_THRESHOLD_MS = 30 * 60 * 1000; // 30 min — Opus runs can take 15+ min
 
 export async function startOrphanReaper(
   supabase: SupabaseClient,
@@ -27,7 +27,7 @@ export async function startOrphanReaper(
           .from('runs')
           .update({
             status: 'failed',
-            error: 'Orphaned — no update for 10 minutes',
+            error: 'Orphaned — no update for 30 minutes',
             finished_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })

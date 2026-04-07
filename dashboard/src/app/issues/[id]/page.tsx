@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
@@ -38,6 +39,8 @@ async function getIssue(id: string) {
     .single();
 
   if (!issue) return null;
+  const company = await getActiveCompany();
+  if (company && issue.company_id !== company.id) return null;
 
   // Fetch all agents for assignee dropdown + assignee name lookup
   const { data: allAgents } = await supabase

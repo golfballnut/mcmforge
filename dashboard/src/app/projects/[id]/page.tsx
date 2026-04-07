@@ -1,4 +1,5 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -49,6 +50,8 @@ async function getProject(id: string) {
     .single();
 
   if (!project) return null;
+  const company = await getActiveCompany();
+  if (company && project.company_id !== company.id) return null;
 
   // Issues for this project
   const { data: rawIssues } = await supabase
@@ -75,18 +78,16 @@ async function getProject(id: string) {
     agent_name: i.assignee_agent_id ? agentMap[i.assignee_agent_id] ?? null : null,
   }));
 
-  // Agents assigned to this project's company
-  let companyAgents: Agent[] = [];
-  if (project.company_id) {
-    const { data: agents } = await supabase
-      .from("agents")
-      .select("id, name, role, icon, status")
-      .eq("company_id", project.company_id)
-      .order("name");
-    companyAgents = (agents as Agent[]) || [];
-  }
+  // Agents assigned to this project
+  let projectAgents: Agent[] = [];
+  const { data: agents } = await supabase
+    .from("agents")
+    .select("id, name, role, icon, status")
+    .eq("project_id", id)
+    .order("name");
+  projectAgents = (agents as Agent[]) || [];
 
-  return { project: project as unknown as Project, issues: issuesWithAgents, agents: companyAgents };
+  return { project: project as unknown as Project, issues: issuesWithAgents, agents: projectAgents };
 }
 
 function formatRelativeTime(timestamp: string): string {

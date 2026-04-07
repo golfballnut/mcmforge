@@ -36,6 +36,8 @@ export interface AdapterExecuteResult {
   resultJson: Record<string, unknown> | null;
   summary: string | null;
   clearSession: boolean;
+  stdoutExcerpt: string | null;
+  stderrExcerpt: string | null;
 }
 
 export interface CLIAdapter {

@@ -1,22 +1,35 @@
-import { createClient } from "@/lib/supabase/server";
+import { createForgeClient } from "@/lib/supabase/forge-server";
+import { getActiveCompany } from "@/lib/get-active-company";
 import { approveItem, rejectItem } from "./actions";
 
 export const revalidate = 30;
 
 export default async function ApprovalsPage() {
-  const supabase = await createClient();
+  const supabase = await createForgeClient();
+  const company = await getActiveCompany();
 
-  const { data: pending } = await supabase
-    .from("approval_queue")
-    .select("*, company_registry(name), agents!approval_queue_requested_by_agent_id_fkey(name)")
+  let pendingQuery = supabase
+    .from("approvals")
+    .select("*, agent:agents!approvals_requested_by_agent_id_fkey(name)")
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 
-  const { data: history } = await supabase
-    .from("approval_queue")
-    .select("*, company_registry(name), agents!approval_queue_requested_by_agent_id_fkey(name)")
+  let historyQuery = supabase
+    .from("approvals")
+    .select("*, agent:agents!approvals_requested_by_agent_id_fkey(name)")
     .in("status", ["approved", "rejected"])
-    .order("decided_at", { ascending: false });
+    .order("decided_at", { ascending: false })
+    .limit(50);
+
+  if (company) {
+    pendingQuery = pendingQuery.eq("company_id", company.id);
+    historyQuery = historyQuery.eq("company_id", company.id);
+  }
+
+  const [{ data: pending }, { data: history }] = await Promise.all([
+    pendingQuery,
+    historyQuery,
+  ]);
 
   const pendingItems = pending ?? [];
   const historyItems = history ?? [];
@@ -32,21 +45,16 @@ export default async function ApprovalsPage() {
     });
   }
 
-  function formatCost(cost: number | null) {
-    if (cost == null) return null;
-    return `$${cost.toFixed(2)}`;
-  }
-
   return (
-    <div className="min-h-screen text-[#202124]">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6 md:mb-8">
-        <h1 className="text-xl md:text-2xl font-medium text-[#202124]">Approvals</h1>
+      <div className="flex items-center gap-3">
+        <h1 className="text-xl font-semibold text-[#e6edf3]">Approvals</h1>
         {pendingItems.length > 0 && (
-          <span className="flex items-center gap-1.5 bg-amber-50 text-amber-700 text-sm font-medium px-3 py-1 rounded-full border border-amber-200">
+          <span className="flex items-center gap-1.5 bg-[#3a2f00] text-[#d29922] text-sm font-medium px-3 py-1 rounded-full border border-[#d29922]/30">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d29922] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#d29922]" />
             </span>
             {pendingItems.length} pending
           </span>
@@ -54,120 +62,72 @@ export default async function ApprovalsPage() {
       </div>
 
       {/* Pending Approvals */}
-      <section className="mb-10">
-        <h2 className="text-lg font-medium text-[#1a73e8] mb-4">
-          Pending Approvals
+      <section>
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#8b949e] mb-3">
+          Pending
         </h2>
 
         {pendingItems.length === 0 ? (
-          <div className="bg-white border border-[#dadce0] rounded-xl p-8 text-center text-[#5f6368]">
+          <div className="border border-[#30363d] rounded-lg p-8 text-center text-[#8b949e] bg-[#0d1117]">
             No pending approvals
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-3">
             {pendingItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-white border border-amber-200 rounded-xl p-5"
+                className="bg-[#161b22] border border-[#d29922]/30 rounded-lg p-5"
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <h3 className="font-medium text-[#202124]">{item.title}</h3>
-                      <span className="text-xs bg-[#f1f3f4] text-[#5f6368] px-2 py-0.5 rounded-full border border-[#dadce0]">
-                        {item.approval_type}
+                      <span className="text-xs bg-[#21262d] text-[#8b949e] px-2 py-0.5 rounded-full border border-[#30363d]">
+                        {item.type}
                       </span>
-                      {item.company_registry?.name && (
-                        <span className="text-xs text-[#5f6368]">
-                          {item.company_registry.name}
-                        </span>
-                      )}
                     </div>
-                    {item.description && (
-                      <p className="text-sm text-[#5f6368] line-clamp-2">
-                        {item.description}
-                      </p>
-                    )}
                   </div>
-                  <div className="flex items-center gap-1.5 text-amber-600 shrink-0">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-                    </span>
-                    <span className="text-xs font-medium uppercase tracking-wide">
-                      Pending
-                    </span>
-                  </div>
+                  <span className="text-xs font-medium text-[#d29922]">Pending</span>
                 </div>
 
-                {/* Requester + payload */}
-                <div className="flex items-center gap-3 flex-wrap text-xs text-[#5f6368] mb-2">
-                  {(item as any).agents?.name && (
-                    <span className="flex items-center gap-1">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                      {(item as any).agents.name}
-                    </span>
+                <div className="flex items-center gap-3 text-xs text-[#8b949e] mb-3">
+                  {(item as { agent?: { name: string } | null }).agent?.name && (
+                    <span>{(item as { agent?: { name: string } | null }).agent!.name}</span>
                   )}
-                  {(item as any).payload && (
-                    <details className="w-full mt-1">
-                      <summary className="cursor-pointer text-[#1a73e8] hover:underline text-xs select-none">
-                        View payload
-                      </summary>
-                      <pre className="mt-1.5 p-2 bg-[#f1f3f4] rounded text-[10px] text-[#202124] overflow-x-auto max-h-32 whitespace-pre-wrap break-all">
-                        {JSON.stringify((item as any).payload, null, 2)}
-                      </pre>
-                    </details>
-                  )}
+                  <span>{formatDate(item.created_at)}</span>
                 </div>
 
-                <div className="flex items-center gap-4 flex-wrap text-sm">
-                  {formatCost(item.estimated_cost) && (
-                    <span className="text-[#5f6368]">
-                      Cost:{" "}
-                      <span className="font-medium text-[#202124]">
-                        {formatCost(item.estimated_cost)}
-                      </span>
-                    </span>
-                  )}
-                  {item.preview_url && (
-                    <a
-                      href={item.preview_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#1a73e8] hover:underline"
-                    >
-                      Preview
-                    </a>
-                  )}
-                  <span className="text-[#5f6368]">
-                    Submitted {formatDate(item.created_at)}
-                  </span>
-                </div>
+                {item.payload && (
+                  <details className="mb-3">
+                    <summary className="cursor-pointer text-[#58a6ff] hover:underline text-xs">
+                      View payload
+                    </summary>
+                    <pre className="mt-1.5 p-2 bg-[#0d1117] rounded text-[10px] text-[#c9d1d9] overflow-x-auto max-h-32 border border-[#30363d]">
+                      {JSON.stringify(item.payload, null, 2)}
+                    </pre>
+                  </details>
+                )}
 
-                {/* Approve / Reject Actions */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4 pt-4 border-t border-[#dadce0]">
+                <div className="flex items-center gap-3 pt-3 border-t border-[#30363d]">
                   <form action={approveItem}>
                     <input type="hidden" name="id" value={item.id} />
                     <button
                       type="submit"
-                      className="w-full sm:w-auto px-4 py-2 bg-[#34a853] hover:bg-green-600 text-white text-sm font-medium rounded-lg transition-colors"
+                      className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-sm font-medium rounded-md transition-colors"
                     >
                       Approve
                     </button>
                   </form>
-                  <form action={rejectItem} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <form action={rejectItem} className="flex items-center gap-2">
                     <input type="hidden" name="id" value={item.id} />
                     <input
                       type="text"
                       name="notes"
-                      placeholder="Rejection reason (optional)"
-                      className="px-3 py-2 bg-white border border-[#dadce0] rounded-lg text-sm text-[#202124] placeholder-[#5f6368] focus:outline-none focus:border-[#1a73e8] w-full sm:w-64"
+                      placeholder="Reason (optional)"
+                      className="px-3 py-1.5 bg-[#0d1117] border border-[#30363d] rounded-md text-sm text-[#c9d1d9] placeholder-[#484f58] focus:outline-none focus:border-[#58a6ff] w-48"
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg border border-red-200 hover:border-red-300 transition-colors"
+                      className="px-4 py-1.5 bg-[#3d1f1f] hover:bg-[#4d2525] text-[#f85149] text-sm font-medium rounded-md border border-[#f85149]/30 transition-colors"
                     >
                       Reject
                     </button>
@@ -181,89 +141,47 @@ export default async function ApprovalsPage() {
 
       {/* Decision History */}
       <section>
-        <h2 className="text-lg font-medium text-[#202124] mb-4">
-          Decision History
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#8b949e] mb-3">
+          History
         </h2>
 
         {historyItems.length === 0 ? (
-          <div className="bg-white border border-[#dadce0] rounded-xl p-8 text-center text-[#5f6368]">
+          <div className="border border-[#30363d] rounded-lg p-8 text-center text-[#8b949e] bg-[#0d1117]">
             No decisions yet
           </div>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             {historyItems.map((item) => {
               const approved = item.status === "approved";
               return (
                 <div
                   key={item.id}
-                  className="bg-white border border-[#dadce0] rounded-xl p-5"
+                  className="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex items-center gap-4"
                 >
-                  <div className="flex items-start justify-between gap-4 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <h3 className="font-medium text-[#202124]">{item.title}</h3>
-                        <span className="text-xs bg-[#f1f3f4] text-[#5f6368] px-2 py-0.5 rounded-full border border-[#dadce0]">
-                          {item.approval_type}
-                        </span>
-                        {item.company_registry?.name && (
-                          <span className="text-xs text-[#5f6368]">
-                            {item.company_registry.name}
-                          </span>
-                        )}
-                      </div>
-                      {item.description && (
-                        <p className="text-sm text-[#5f6368] line-clamp-1">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-                    <span
-                      className={`text-xs font-medium uppercase tracking-wide shrink-0 px-2.5 py-1 rounded-full ${
-                        approved
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : "bg-red-50 text-red-700 border border-red-200"
-                      }`}
-                    >
-                      {item.status}
+                  <span
+                    className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                      approved
+                        ? "bg-[#0f2d1f] text-[#3fb950] border border-[#3fb950]/30"
+                        : "bg-[#3d1f1f] text-[#f85149] border border-[#f85149]/30"
+                    }`}
+                  >
+                    {item.status}
+                  </span>
+                  <span className="text-xs text-[#8b949e] bg-[#21262d] px-2 py-0.5 rounded-full border border-[#30363d]">
+                    {item.type}
+                  </span>
+                  {(item as Record<string, unknown>).agent && (
+                    <span className="text-xs text-[#c9d1d9]">
+                      {((item as Record<string, unknown>).agent as { name: string }).name}
                     </span>
-                  </div>
-
-                  <div className="flex items-center gap-4 flex-wrap text-sm">
-                    {formatCost(item.estimated_cost) && (
-                      <span className="text-[#5f6368]">
-                        Cost:{" "}
-                        <span className="text-[#202124]">
-                          {formatCost(item.estimated_cost)}
-                        </span>
-                      </span>
-                    )}
-                    {item.preview_url && (
-                      <a
-                        href={item.preview_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#1a73e8] hover:underline"
-                      >
-                        Preview
-                      </a>
-                    )}
-                    {item.decided_by && (
-                      <span className="text-[#5f6368]">
-                        By{" "}
-                        <span className="text-[#202124]">{item.decided_by}</span>
-                      </span>
-                    )}
-                    {item.decided_at && (
-                      <span className="text-[#5f6368]">
-                        {formatDate(item.decided_at)}
-                      </span>
-                    )}
-                  </div>
-
-                  {item.decision_notes && (
-                    <p className="mt-2 text-sm text-[#5f6368] bg-[#f1f3f4] rounded-lg px-3 py-2">
-                      {item.decision_notes}
-                    </p>
+                  )}
+                  <span className="text-xs text-[#484f58] ml-auto">
+                    {formatDate(item.decided_at)}
+                  </span>
+                  {item.decision_note && (
+                    <span className="text-xs text-[#8b949e] max-w-[200px] truncate">
+                      {item.decision_note}
+                    </span>
                   )}
                 </div>
               );

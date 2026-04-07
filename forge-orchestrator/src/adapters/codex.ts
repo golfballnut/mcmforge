@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import * as os from 'node:os';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { CLIAdapter, AdapterExecuteInput, AdapterExecuteResult } from './types.js';
 import { runChildProcess } from '../utils/child-process.js';
 import { renderTemplate } from '../utils/template.js';
@@ -38,13 +38,17 @@ export const codexAdapter: CLIAdapter = {
     }
     const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
 
-    const args = ['--output-format', 'jsonl'];
-    if (model) args.push('--model', model);
-    if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
+    // Codex CLI: exec subcommand, prompt as argument (not stdin)
+    // --full-auto = auto-approve + workspace-write sandbox
+    const args = ['exec', '--full-auto', '--skip-git-repo-check'];
+    if (model) args.push('-m', model);
+    // Pass prompt as positional argument
+    args.push(fullPrompt);
 
     // Each agent gets its own CODEX_HOME for session isolation
     const codexHome = (config.codexHome as string) ||
       path.join(os.homedir(), '.codex', 'agents', input.agent.id);
+    mkdirSync(codexHome, { recursive: true });
 
     const env: Record<string, string> = {
       ...process.env as Record<string, string>,
@@ -54,6 +58,7 @@ export const codexAdapter: CLIAdapter = {
       FORGE_AGENT_NAME: input.agent.name,
       FORGE_COMPANY_ID: input.agent.companyId,
       FORGE_AGENT_HOME: input.agentHome,
+      FORGE_API_URL: process.env.FORGE_AGENT_API_URL || 'http://127.0.0.1:3200',
     };
 
     if (input.context.issueId) env.FORGE_ISSUE_ID = input.context.issueId as string;
@@ -67,7 +72,7 @@ export const codexAdapter: CLIAdapter = {
       args,
       cwd: input.cwd,
       env,
-      stdin: fullPrompt,
+      stdin: undefined,
       timeoutSec,
       signal: input.signal,
       onLog: input.onLog,
@@ -139,5 +144,7 @@ function parseCodexResult(
     resultJson,
     summary,
     clearSession: false,
+    stdoutExcerpt: proc.stdout?.slice(0, 2000) || null,
+    stderrExcerpt: proc.stderr?.slice(0, 2000) || null,
   };
 }

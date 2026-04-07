@@ -10,6 +10,8 @@ export interface ForgeConfig {
   claudeCommand: string;
   geminiCommand: string;
   codexCommand: string;
+  agentApiPort: number;
+  agentApiUrl: string;
   dryRun: boolean;
 }
 
@@ -40,6 +42,8 @@ export function loadConfig(): ForgeConfig {
     claudeCommand: optional('CLAUDE_COMMAND', 'claude'),
     geminiCommand: optional('GEMINI_COMMAND', 'gemini'),
     codexCommand: optional('CODEX_COMMAND', 'codex'),
+    agentApiPort: optionalInt('FORGE_AGENT_API_PORT', 3200),
+    agentApiUrl: optional('FORGE_AGENT_API_URL', 'http://127.0.0.1:3200'),
     dryRun: process.env.FORGE_DRY_RUN === 'true',
   };
 }

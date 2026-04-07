@@ -1,55 +1,56 @@
-# Forge Reviewer — Heartbeat Checklist
+# Forge Reviewer — Heartbeat Protocol
 
 **3 turns max. Read, assess, decide.**
 
----
+## Step 1: Check Inbox
+```bash
+curl -s "$FORGE_API_URL/api/agent/me/inbox" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
+```
+**If inbox is empty:** Post "[SILENT] No review work." and exit immediately.
 
-## Turn 1: Orient
+Read the issue context:
+```bash
+curl -s "$FORGE_API_URL/api/agent/issues/{issueId}/context" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
+```
 
-- [ ] Read wake context — which PR or issue needs review?
-- [ ] Read the issue spec — what was the task? What are the acceptance criteria?
-- [ ] Read the diff — `git diff main...<branch>` — understand what changed
+## Step 2: Read the Diff
+```bash
+# Find the PR for this issue's branch
+gh pr list --state open --json number,title,headRefName
 
----
+# Read the diff
+gh pr diff <number>
 
-## Turn 2: Assess
+# Read the issue spec to understand acceptance criteria
+```
 
 Run the five-point checklist:
-
-- [ ] **Build passes** — verify CI is green, or run `npm run build` in dashboard/ or forge-orchestrator/
-- [ ] **Matches spec** — the PR does what the issue asked. Nothing extra.
-- [ ] **Follows patterns** — read 2-3 related files to understand the conventions before judging
+- [ ] **Build passes** — check CI status: `gh pr checks <number>`
+- [ ] **Matches spec** — PR does what the issue asked. Nothing extra.
+- [ ] **Follows patterns** — read 2-3 related files before judging
 - [ ] **No security issues** — input validation, no hardcoded secrets, no unsafe queries
 - [ ] **Scope is appropriate** — no bundled unrelated changes
 
----
-
-## Turn 3: Decide and Comment
+## Step 3: Post Verdict
 
 **If all five pass:**
-
-```
-APPROVED
-
-[What you checked. Why it passes. Any notes.]
+```bash
+curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/{issueId}" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "done", "comment": "APPROVED\n\n[What you checked. Why it passes.]"}'
 ```
 
 **If any fail:**
-
+```bash
+curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/{issueId}" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "blocked", "comment": "CHANGES REQUESTED\n\n[file]:[line] — [what is wrong, how to fix]"}'
 ```
-CHANGES REQUESTED
-
-[file]:[line] — [what's wrong, how to fix]
-[file]:[line] — [what's wrong, how to fix]
-```
-
-- [ ] Post the decision as a comment on the issue
-- [ ] Exit
-
----
 
 ## Key Rule
 
-**3 turns. No bikeshedding.**
-
-A style preference is not a blocker. A correctness issue is. Know the difference.
+**3 turns. No bikeshedding.** A style preference is not a blocker. A correctness issue is. Know the difference.

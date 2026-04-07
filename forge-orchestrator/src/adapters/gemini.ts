@@ -37,9 +37,8 @@ export const geminiAdapter: CLIAdapter = {
     }
     const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
 
-    const args = ['--output-format', 'jsonl'];
+    const args = ['-p', fullPrompt, '--yolo'];
     if (model) args.push('--model', model);
-    if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
 
     const env: Record<string, string> = {
       ...process.env as Record<string, string>,
@@ -48,6 +47,7 @@ export const geminiAdapter: CLIAdapter = {
       FORGE_AGENT_NAME: input.agent.name,
       FORGE_COMPANY_ID: input.agent.companyId,
       FORGE_AGENT_HOME: input.agentHome,
+      FORGE_API_URL: process.env.FORGE_AGENT_API_URL || 'http://127.0.0.1:3200',
     };
 
     if (input.context.issueId) env.FORGE_ISSUE_ID = input.context.issueId as string;
@@ -61,7 +61,7 @@ export const geminiAdapter: CLIAdapter = {
       args,
       cwd: input.cwd,
       env,
-      stdin: fullPrompt,
+      stdin: undefined,
       timeoutSec,
       signal: input.signal,
       onLog: input.onLog,
@@ -133,5 +133,7 @@ function parseGeminiResult(
     resultJson,
     summary,
     clearSession: false,
+    stdoutExcerpt: proc.stdout?.slice(0, 2000) || null,
+    stderrExcerpt: proc.stderr?.slice(0, 2000) || null,
   };
 }

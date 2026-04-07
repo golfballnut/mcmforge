@@ -50,17 +50,32 @@ export const claudeAdapter: CLIAdapter = {
     if (model) args.push('--model', model);
     if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
 
+    // Determine agent role for isolation enforcement
+    const agentRole = (config.role as string) || 'engineer';
+
+    // Ensure CLAUDE_CODE_OAUTH_TOKEN propagates to child process
+    const oauthToken = process.env.CLAUDE_CODE_OAUTH_TOKEN;
+    if (!oauthToken) {
+      logger.warn('CLAUDE_CODE_OAUTH_TOKEN not set — Claude may fail to authenticate');
+    }
+
     const env: Record<string, string> = {
       ...process.env as Record<string, string>,
+      ...(oauthToken ? { CLAUDE_CODE_OAUTH_TOKEN: oauthToken } : {}),
       FORGE_RUN_ID: input.runId,
+      CLAUDE_TASK_ID: input.runId,  // Skip DirtSync interactive hooks
       FORGE_AGENT_ID: input.agent.id,
       FORGE_AGENT_NAME: input.agent.name,
       FORGE_COMPANY_ID: input.agent.companyId,
       FORGE_AGENT_HOME: input.agentHome,
+      FORGE_AGENT_ROLE: agentRole,
+      FORGE_API_URL: process.env.FORGE_AGENT_API_URL || 'http://127.0.0.1:3200',
     };
 
     if (input.context.issueId) env.FORGE_ISSUE_ID = input.context.issueId as string;
     if (input.context.wakeReason) env.FORGE_WAKE_REASON = input.context.wakeReason as string;
+
+    logger.info({ command, args: args.join(' '), cwd: input.cwd, hasToken: !!env.CLAUDE_CODE_OAUTH_TOKEN, promptLength: fullPrompt.length }, 'Spawning Claude CLI');
 
     const result = await runChildProcess({
       command,
@@ -73,6 +88,13 @@ export const claudeAdapter: CLIAdapter = {
       onLog: input.onLog,
       onSpawn: (pid) => input.onSpawn(pid),
     });
+
+    logger.info({
+      exitCode: result.exitCode,
+      stdoutLen: result.stdout?.length,
+      stderrLen: result.stderr?.length,
+      stdoutTail: result.stdout?.slice(-500),
+    }, 'Claude process raw output');
 
     return parseClaudeResult(result);
   },
@@ -119,10 +141,15 @@ function parseClaudeResult(proc: {
   }
 
   return {
-    exitCode: proc.exitCode,
+    // max_turns exit (code 1 but terminal_reason=max_turns/completed) = agent did work, treat as success
+    exitCode: (resultJson as any)?.terminal_reason === 'max_turns' || (resultJson as any)?.terminal_reason === 'completed' ? 0 : proc.exitCode,
     signal: proc.signal,
     timedOut: proc.timedOut,
-    errorMessage: proc.exitCode === 0 ? null : `Claude exited ${proc.exitCode}`,
+    errorMessage: proc.exitCode === 0
+      ? null
+      : (resultJson as any)?.terminal_reason === 'max_turns' || (resultJson as any)?.terminal_reason === 'completed'
+        ? null
+        : `Claude exited ${proc.exitCode}`,
     usage: { inputTokens, cachedInputTokens, outputTokens },
     sessionId,
     sessionParams: sessionId ? { sessionId, cwd: '' } : null,
@@ -133,5 +160,7 @@ function parseClaudeResult(proc: {
     resultJson,
     summary,
     clearSession: false,
+    stdoutExcerpt: proc.stdout?.slice(0, 2000) || null,
+    stderrExcerpt: proc.stderr?.slice(0, 2000) || null,
   };
 }

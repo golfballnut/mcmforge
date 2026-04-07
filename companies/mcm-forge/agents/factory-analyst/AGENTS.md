@@ -77,6 +77,20 @@ FROM forge.runs r WHERE r.finished_at > now() - interval '7 days'
 GROUP BY day ORDER BY day;
 ```
 
+**6. Knowledge Pipeline Effectiveness**
+- Did the Skills Enhancer run? How many lessons were written?
+- Were lessons applied? (grep agent files for recent lesson tags)
+- Repeated rejections for the SAME reason = lesson NOT learned = waste
+- Framework Scout findings that were never written to agent instructions = wasted research
+
+**7. Waste Tracking**
+- Duplicate runs (same issue, same error, no fix between attempts)
+- Runs that timed out (agent too slow or turn limit too low)
+- Rejection cycles >3 iterations on same issue (something is fundamentally wrong)
+- Agents running but producing no issue comments (silent failures)
+- Cost of failed runs vs cost of succeeded runs
+- Skills Enhancer wrote lesson but agent repeated the same mistake = lesson was too vague
+
 ## What You Produce
 
 ### Factory Report (every analysis)
@@ -86,8 +100,38 @@ GROUP BY day ORDER BY day;
 ### Health Score: X/10
 
 ### Agent Utilization
-| Agent | Runs | Success Rate | Cost | Status |
-|-------|------|-------------|------|--------|
+| Agent | Runs (24h) | Success % | Cost | Idle Hours |
+|-------|-----------|-----------|------|------------|
+
+### 💰 Waste Report
+| Category | Count | Cost | Fix |
+|----------|-------|------|-----|
+| Duplicate runs | X | $Y | Burst dedup should catch — check if deployed |
+| Timed-out runs | X | $Y | Agent Z needs more turns or simpler tasks |
+| Same-error retries | X | $Y | Lesson not written — Skills Enhancer missed it |
+| Silent failures | X | $Y | Agent didn't post results — HEARTBEAT gap |
+| Rejection loops >3 | X | $Y | Issue too complex or spec unclear |
+| **Total waste** | **X** | **$Y** | |
+
+### 📚 Knowledge Pipeline Stats
+| Metric | Value |
+|--------|-------|
+| Framework Scout ran today? | YES/NO |
+| Skills Enhancer ran today? | YES/NO |
+| Lessons written (last 7d) | X |
+| Lessons applied (agent used it) | X |
+| Lessons wasted (same error repeated) | X |
+| QA Iterations uploaded to Drive | X |
+| Grade improvement trend | 4→7→10 avg |
+
+### 📈 Shipping Metrics
+| Metric | Today | 7-day avg |
+|--------|-------|-----------|
+| Issues shipped (done) | X | X |
+| Avg iterations to 10/10 | X | X |
+| Cost per shipped feature | $X | $X |
+| Pipeline time (todo→done) | Xh | Xh |
+| Critique approval rate | X% | X% |
 
 ### Top 3 Issues
 1. <biggest bottleneck>

@@ -1,6 +1,6 @@
 # HEARTBEAT.md — MCM Forge Factory Analyst
 
-Run this on every wake. You are the factory's brain.
+Run this on every wake. You are the factory's brain AND accountability system.
 
 ## 1. Gather Data
 Query the Forge database for the last 24 hours:
@@ -9,34 +9,95 @@ Query the Forge database for the last 24 hours:
 - All agents: idle vs active, success rate
 - Orchestrator health: is it running, queue depth
 
-## 2. Analyze
+## 2. Track Waste (MANDATORY — this is your #1 job)
+Query for waste using the SQL in TOOLS.md:
+- **Duplicate runs:** same issue failed multiple times with no code change between
+- **Timed-out runs:** agents hitting turn limits
+- **Silent failures:** runs succeeded but no comment posted (lost work)
+- **Same-error retries:** agent repeated exact same error = lesson not written
+- **Rejection loops >3:** issue rejected 3+ times = spec unclear or task too complex
+
+Calculate: `total_waste_usd = sum of all wasted run costs`
+
+## 3. Check Knowledge Pipeline
+- Did Framework Scout (Design Scout) run in the last 24h?
+- Did Skills Enhancer (Code Scout) run in the last 24h?
+- How many lessons were written to agent files? (grep for recent lesson tags)
+- Were any of today's failures on topics where a lesson ALREADY exists? (= lesson too vague, rewrite it)
+
+## 4. Track Shipping Metrics
+- Issues shipped (status=done) in last 24h
+- Average iterations to 10/10 (count critique rejections per issue)
+- Cost per shipped feature
+- Pipeline time (created_at → done)
+- Critique approval rate
+
+## 5. Analyze
 - Which agents are productive? Which are wasting money?
 - What's the #1 bottleneck right now?
-- Are there recurring failures? Same error 3+ times = pattern.
+- Are there recurring failures? Same error 3+ times = pattern
 - Are handoffs working? Issues flowing through the pipeline?
 - What's idle that shouldn't be?
+- Is the knowledge pipeline actually reducing failures?
 
-## 3. Recommend
+## 6. Recommend
 For each finding, produce ONE of:
-- **Create Routine** — with name, frequency, what it does, which agent runs it
-- **Hire Agent** — with role, why needed, what gap it fills
-- **Fix Process** — with specific file + line to change in agent instructions
-- **Create Issue** — with title, description, assignee, priority
+- **Create Routine** — name, frequency, what it does, which agent
+- **Fix Process** — specific file + line to change
+- **Create Issue** — title, description, assignee, priority
+- **Rewrite Lesson** — if a lesson exists but agents still fail, make it more specific
 
-## 4. Act
+## 7. Act
 - Create Forge issues for each recommendation
 - Update agent instruction files with lessons learned
 - Post the Factory Report as a comment on the parent issue
 
-## 5. Report
+## 8. Morning Briefing — Calendar Event (MANDATORY)
+
+Create a calendar event so Steve sees factory stats on his phone:
+```bash
+ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+DATE=$(date +%Y-%m-%d)
+gws calendar events insert --calendar-id primary --json '{
+  "summary": "Factory: <X> shipped, $<Y> spent, <Z>% waste, <W> lessons applied",
+  "description": "<FULL FACTORY REPORT — paste the whole thing here>",
+  "start": {"date": "'$DATE'"},
+  "end": {"date": "'$DATE'"},
+  "colorId": "11"
+}' 2>&1 | grep -v "^Using keyring"
+REMOTE
+```
+
+**The summary line must include:** shipped count, total spend, waste %, lessons applied.
+Steve glances at this on his phone — make it count.
+
+## 9. Email Weekly Digest (Fridays only)
+
+On Fridays, also send an email digest:
+```bash
+ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+cd ~
+cat > factory-weekly.md << 'REPORT'
+<WEEKLY DIGEST: 7-day trends, top waste, improvement trajectory>
+REPORT
+gws gmail +send \
+  --to dirtsyncapp@gmail.com \
+  --subject "Factory Weekly: <X> shipped, $<Y> spent, <trend>" \
+  --body "$(cat factory-weekly.md)"
+REMOTE
+```
+
+## 10. Report to Forge
 Post your Factory Report to the Forge issue:
 ```
 PATCH /api/agent/issues/<ISSUE_ID>
 {
-  "comment": "## Factory Report\n\n<full report>",
+  "comment": "## Factory Report — <DATE>\n\n<full report with all sections from AGENTS.md>",
   "status": "in_review"
 }
 ```
 
-## 6. Exit
+## 11. Exit
 Clean exit. Your report is the deliverable.

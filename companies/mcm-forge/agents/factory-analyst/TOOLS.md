@@ -67,6 +67,95 @@ POST /api/agent/issues          — create new issues from recommendations
 - MCM Forge agents: `/Users/dirtsyncmini/MCMForge/companies/mcm-forge/agents/*/`
 - Each agent has: AGENTS.md, HEARTBEAT.md, SOUL.md, TOOLS.md
 
+## Waste Tracking Queries
+
+```sql
+-- Duplicate runs (same issue, multiple failed runs, no code change between)
+SELECT i.identifier, count(*) as failed_runs, sum(r.cost_usd)::numeric(10,2) as wasted_cost
+FROM forge.runs r 
+JOIN forge.issues i ON r.context_snapshot->>'issueId' = i.id::text
+WHERE r.status = 'failed' AND r.created_at > now() - interval '24 hours'
+GROUP BY i.identifier HAVING count(*) > 1
+ORDER BY wasted_cost DESC;
+
+-- Timed-out runs (ran full turns but didn't complete)
+SELECT a.name, count(*) as timeouts, sum(r.cost_usd)::numeric(10,2) as cost
+FROM forge.runs r JOIN forge.agents a ON r.agent_id = a.id
+WHERE r.status = 'failed' AND r.error LIKE '%turn%limit%'
+  AND r.created_at > now() - interval '7 days'
+GROUP BY a.name ORDER BY timeouts DESC;
+
+-- Silent failures (succeeded but no comment posted)
+SELECT r.id, a.name, i.identifier, r.finished_at
+FROM forge.runs r 
+JOIN forge.agents a ON r.agent_id = a.id
+LEFT JOIN forge.issues i ON r.context_snapshot->>'issueId' = i.id::text
+LEFT JOIN forge.issue_comments c ON c.issue_id = i.id AND c.created_by_run_id = r.id
+WHERE r.status = 'succeeded' AND c.id IS NULL
+  AND r.created_at > now() - interval '24 hours';
+
+-- Rejection loops (issue rejected 3+ times)
+SELECT i.identifier, i.title, 
+  count(*) FILTER (WHERE c.body LIKE '%REJECTED%') as rejections,
+  count(*) FILTER (WHERE c.body LIKE '%APPROVED%') as approvals
+FROM forge.issues i
+JOIN forge.issue_comments c ON c.issue_id = i.id
+WHERE c.body LIKE '%Grade:%'
+GROUP BY i.identifier, i.title
+HAVING count(*) FILTER (WHERE c.body LIKE '%REJECTED%') >= 3;
+
+-- Knowledge pipeline: did scouts run today?
+SELECT a.name, max(r.finished_at) as last_run, 
+  count(*) FILTER (WHERE r.created_at > now() - interval '24 hours') as runs_today
+FROM forge.runs r JOIN forge.agents a ON r.agent_id = a.id
+WHERE a.name IN ('Design Scout', 'Code Scout', 'Factory Analyst')
+GROUP BY a.name;
+
+-- Cost per shipped feature
+SELECT i.identifier, i.title,
+  count(r.*) as total_runs,
+  sum(r.cost_usd)::numeric(10,2) as total_cost,
+  EXTRACT(EPOCH FROM (max(r.finished_at) - min(r.created_at)))/3600 as hours_to_ship
+FROM forge.issues i
+JOIN forge.runs r ON r.context_snapshot->>'issueId' = i.id::text
+WHERE i.status = 'done'
+GROUP BY i.identifier, i.title
+ORDER BY total_cost DESC LIMIT 10;
+
+-- Grade progression per issue (from critique comments)
+SELECT i.identifier,
+  c.body,
+  c.created_at
+FROM forge.issue_comments c
+JOIN forge.issues i ON c.issue_id = i.id
+WHERE c.body LIKE '%Grade:%'
+ORDER BY i.identifier, c.created_at;
+```
+
+## Google Drive — QA Iterations Analysis
+
+```bash
+# Count iterations per issue
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+QA_FOLDER="1Vi2av_kjmCFDmV5dxgYwTQktfeUvgT1X"
+gws drive files list --params "q='${QA_FOLDER}' in parents and trashed=false" 2>&1 | grep -v "^Using keyring"
+```
+
+## Calendar Briefing
+
+Post daily stats as a calendar event so Steve sees them on his phone:
+```bash
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+gws calendar events insert --calendar-id primary --json '{
+  "summary": "Factory Report: X shipped, $Y spent, Z% waste",
+  "description": "<FULL REPORT HERE>",
+  "start": {"date": "YYYY-MM-DD"},
+  "end": {"date": "YYYY-MM-DD"},
+  "colorId": "11"
+}'
+```
+Use colorId "11" (tomato) for DirtSync factory reports.
+
 ## What You CANNOT Do
 - Write production app code
 - Run tests or take screenshots

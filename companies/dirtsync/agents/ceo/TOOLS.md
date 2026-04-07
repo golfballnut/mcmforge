@@ -36,6 +36,29 @@ PATCH /api/agent/issues/:id     — update status + add comment
 POST /api/agent/issues          — create subtask/new issue
 ```
 
+### Issue Lifecycle & Auto-Handoffs
+
+When creating subtasks, include `goal_id` to link to the parent sub-goal:
+```json
+POST /api/agent/issues
+{
+  "title": "...",
+  "assignee_agent_id": "<builder-id>",
+  "goal_id": "<sub-goal-uuid>",
+  "parent_id": "<parent-issue-id>",
+  "priority": "high"
+}
+```
+
+The orchestrator auto-creates handoff subtasks:
+| Agent sets status to | Auto-creates |
+|---------------------|-------------|
+| `in_review` | QA subtask → QA Rider |
+| `approved` | Ship subtask → Ship Engineer |
+| `done` | Goal completion check |
+
+**You do NOT need to manually create QA or Ship subtasks.** Just ensure the builder sets `in_review` when done.
+
 ## Project Structure
 ```
 DirtSync/

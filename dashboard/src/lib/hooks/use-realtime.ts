@@ -41,6 +41,45 @@ export function useRealtimeAgents(initialAgents: any[]) {
   return agents;
 }
 
+export function useRealtimeIssues(initialIssues: any[]) {
+  const [issues, setIssues] = useState(initialIssues);
+
+  useEffect(() => {
+    const supabase = createForgeBrowserClient();
+    const channel = supabase
+      .channel("issues-live")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "forge",
+          table: "issues",
+        },
+        (payload) => {
+          setIssues((prev) => {
+            if (payload.eventType === "INSERT") return [payload.new, ...prev];
+            if (payload.eventType === "UPDATE") {
+              return prev.map((i) =>
+                i.id === payload.new.id ? { ...i, ...payload.new } : i
+              );
+            }
+            if (payload.eventType === "DELETE") {
+              return prev.filter((i) => i.id !== payload.old.id);
+            }
+            return prev;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  return issues;
+}
+
 export function useRealtimeRuns(initialRuns: any[]) {
   const [runs, setRuns] = useState(initialRuns);
 

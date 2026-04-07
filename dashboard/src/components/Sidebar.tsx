@@ -137,6 +137,23 @@ function IconActivity() {
   );
 }
 
+function IconRuns() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function IconApprovals() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
 // ─── Project dot colors (cycle through these) ────────────────────────────────
 
 const PROJECT_COLORS = [
@@ -389,6 +406,12 @@ export default function Sidebar() {
             isActive={isActive("/issues")}
           />
           <NavLink
+            href="/runs"
+            icon={<IconRuns />}
+            label="Runs"
+            isActive={isActive("/runs")}
+          />
+          <NavLink
             href="/routines"
             icon={<IconRoutines />}
             label="Routines"
@@ -401,6 +424,12 @@ export default function Sidebar() {
             icon={<IconGoals />}
             label="Goals"
             isActive={isActive("/goals")}
+          />
+          <NavLink
+            href="/approvals"
+            icon={<IconApprovals />}
+            label="Approvals"
+            isActive={isActive("/approvals")}
           />
         </div>
 

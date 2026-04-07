@@ -76,6 +76,12 @@ DirtSync/
     └── DirtSyncUITests/            — UI tests
 ```
 
+## Visual Verification
+- **Mockuuups MCP** — generate device frame mockups for QA reports
+- **Playwright MCP** — screenshot reference apps for comparison
+  - Capture Waze nav HUD at same zoom → compare with DirtSync screenshot
+- Compare screenshots against Gold Star spec measurements
+
 ## What You CANNOT Do
 - Approve any feature without an attached screenshot
 - Mark `in_review` if build fails

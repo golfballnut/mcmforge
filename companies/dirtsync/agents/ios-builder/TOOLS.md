@@ -50,6 +50,12 @@ DirtSync/DirtSync/
     └── *.mbtiles                             — offline tiles
 ```
 
+## Documentation
+- **Context7 MCP** — query official docs before writing code
+  - SwiftUI: `resolve-library-id` → "apple/swiftui" → `query-docs` → "NavigationStack"
+  - MapLibre: `resolve-library-id` → "maplibre/maplibre-gl-native"
+  - Always check Context7 BEFORE guessing API usage
+
 ## What You CANNOT Do
 - Push to master
 - Modify all-trails.geojson (trail data pipeline only)

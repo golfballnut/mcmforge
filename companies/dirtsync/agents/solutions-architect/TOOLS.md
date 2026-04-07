@@ -5,6 +5,14 @@
 - Glob/Grep (codebase exploration, dependency mapping)
 - Bash (git status, swift package resolve, file counts)
 
+## Architecture Diagrams
+- **Excalidraw MCP** — create architecture diagrams, data flow charts, dependency maps
+  - Use for: system architecture, component dependency diagrams, data flow
+- **Context7 MCP** — query official framework docs
+  - Ferrostar navigation: `resolve-library-id` → "stadiamaps/ferrostar"
+  - MapLibre: `resolve-library-id` → "maplibre/maplibre-gl-native"
+  - Valhalla: query routing engine docs
+
 ## Codebase Exploration
 
 ```bash

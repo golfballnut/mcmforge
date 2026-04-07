@@ -1,59 +1,120 @@
-# HEARTBEAT.md — DirtSync Code Scout
+# HEARTBEAT.md — DirtSync Skills Enhancer (Code Scout)
 
-Run this on every wake. No shortcuts.
+Run this on every wake. You make agents smarter.
 
-## 1. Orient
-- Read the assigned issue via Forge API: `GET /api/agent/issues/:id/context`
-- Confirm: is there a specific file, feature, or analysis scope defined? If not, comment asking and exit.
-- Lock the issue: `POST /api/agent/issues/:id/checkout` (exit if 409 — another agent has it)
+## 1. Read Assignment
+- Read the issue and ALL comments
+- If routine (daily enhancement): follow the full scan below
+- If specific (one framework/agent): focus on that area only
 
-## 2. Define Scope
-- Identify the analysis type: code audit, architecture mapping, implementation draft, or test gap analysis
-- List the exact Swift files and directories to read
-- Confirm the output consumer: is this for the iOS Builder, Solutions Architect, or CEO?
+## 2. Gather Intelligence Sources
 
-## 2b. Plan (MANDATORY before any research)
-1. Write a plan: which files to read, what analysis approach, what could go wrong
-2. POST the plan as a comment on the issue:
-   ```
-   curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
-     -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-     -H "Content-Type: application/json" \
-     -d '{"comment": "## Research Plan\n\n**Files:** ...\n**Approach:** ...\n**Risk:** ..."}'
-   ```
-3. For trivial lookups (single file, obvious answer): note "Trivial lookup, skipping plan" in comment
-4. The plan IS your contract. Don't deviate without updating it.
+### A. Framework Scout Report (latest)
+```bash
+# Find latest framework report in Forge issues
+curl -s http://127.0.0.1:3200/api/agent/me/inbox \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" | python3 -c "
+import sys,json
+issues = json.load(sys.stdin)
+for i in issues:
+  if 'Framework' in i.get('title','') or 'Scout' in i.get('title',''):
+    print(f\"{i['identifier']}: {i['title']}\")
+"
+```
+Read the full issue with comments to get the Framework Scout's findings.
 
-## 3. Read Source Files
-- `cat` or read each file in scope — never analyze from memory
-- Record imports, dependencies, @Published properties, service calls, key methods
-- Note exact line numbers for any findings
+### B. QA Iterations (Google Drive)
+```bash
+ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+# List all issue folders in QA Iterations
+gws drive files list --params "q='1Vi2av_kjmCFDmV5dxgYwTQktfeUvgT1X' in parents and trashed=false" 2>&1 | grep -v "^Using keyring"
+REMOTE
+```
+For each issue folder, check if there are critique.md and fix-list.md files.
 
-## 4. Map Dependencies
-- Trace the dependency graph: what does this code depend on? What depends on it?
-- Identify build order: which files must exist before others can compile
-- Flag any circular dependencies or shared-state risks
+### C. Factory Analyst Reports
+Check recent FORGE issues from Factory Analyst for failure patterns.
 
-## 5. Produce Analysis
-- Structure output using the Analysis Report format from TOOLS.md
-- Include exact file paths, method names, and line references
-- Issues Found section must list concrete risks with line numbers, not vague concerns
+## 3. Detect Patterns
 
-## 6. Post and Update
-- Comment the full analysis on the issue via `PATCH /api/agent/issues/:id`
-- Update issue status to `done` in the same PATCH call
+Look for:
+- **Same rejection 2+ times** across different issues → permanent instruction
+- **Framework version gap** → version-specific instructions
+- **Build error pattern** → add to TOOLS.md "Common Errors" section
+- **New best practice** from reference repos → add to relevant agent
 
-## 7. Report Results (MANDATORY)
-1. POST your research findings as a comment on the issue — this is the DELIVERABLE:
-   ```
-   curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
-     -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-     -H "Content-Type: application/json" \
-     -d '{"comment": "## Results\n\n<structured report with sections per topic, measurements, sources>"}'
-   ```
-2. Format: structured report with sections per topic, measurements, sources
-3. If you're running low on turns, POST what you have — partial research is better than none
-4. PATCH issue status to `in_review` when research is complete
+## 4. Write Lessons into Agent Files
+
+**CRITICAL: Read the file FIRST, then edit. Never overwrite.**
+
+Agent instruction files on Mini:
+```
+/Users/dirtsyncmini/MCMForge/companies/dirtsync/agents/
+  ios-builder/    → AGENTS.md, HEARTBEAT.md, TOOLS.md
+  test-runner/    → AGENTS.md, HEARTBEAT.md, TOOLS.md
+  critique-agent/ → AGENTS.md, HEARTBEAT.md, TOOLS.md
+  qa-rider/       → AGENTS.md, HEARTBEAT.md, TOOLS.md
+```
+
+For each lesson:
+1. Read the target file
+2. Find the right section (or create a new ### section)
+3. Add the lesson with source tag
+4. Re-read the file to verify coherence
+
+```bash
+ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
+cd ~/MCMForge
+
+# Example: Add a lesson to iOS Builder
+cat >> companies/dirtsync/agents/ios-builder/AGENTS.md << 'LESSON'
+
+### Lesson: <Title> (Source: <where you learned this>)
+<Specific, actionable instruction with file paths and code examples>
+LESSON
+
+# Verify the edit
+tail -10 companies/dirtsync/agents/ios-builder/AGENTS.md
+REMOTE
+```
+
+## 5. Clear Agent Sessions
+
+After updating instructions, clear session_id so agents read the new files:
+```bash
+# Via Forge API or direct SQL
+curl -X PATCH http://127.0.0.1:3200/api/agent/issues/<ISSUE_ID> \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -d '{"comment": "Skills enhanced. Cleared sessions for: iOS Builder, Test Runner."}'
+```
+
+**IMPORTANT:** After writing lessons, the orchestrator should clear session_id for affected agents. Post which agents were updated in your report.
+
+## 6. Commit Changes
+
+```bash
+ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
+cd ~/MCMForge
+git add companies/dirtsync/agents/*/AGENTS.md companies/dirtsync/agents/*/TOOLS.md companies/dirtsync/agents/*/HEARTBEAT.md
+git commit -m "enhance: skills update from Code Scout — <date>
+
+<list of lessons added>
+
+Co-Authored-By: Code Scout <agent@mcmforge.com>"
+git push origin feature/d-and-c-fixes
+REMOTE
+```
+
+## 7. Post Report to Forge
+
+```
+PATCH /api/agent/issues/<ISSUE_ID>
+{
+  "comment": "## Skills Enhancement Report — <DATE>\n\n### Lessons Written\n| Agent | File | What | Source |\n...\n\n### Patterns Detected\n...\n\n### Sessions Cleared\n- <agent list>",
+  "status": "done"
+}
+```
 
 ## 8. Exit
-Clean exit. Don't start a new issue. Don't write implementation code.
+Clean exit. Agents are now smarter for their next run.

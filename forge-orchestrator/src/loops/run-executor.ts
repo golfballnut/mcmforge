@@ -425,8 +425,27 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
 
   if (!issues?.length) return;
 
+  // Throttle: collect which agents already have queued or running runs
+  const agentIds = [...new Set(issues.map((i) => i.assignee_agent_id as string))];
+  const { data: activeAgentRuns } = await supabase
+    .from('runs')
+    .select('agent_id')
+    .in('agent_id', agentIds)
+    .in('status', ['queued', 'running']);
+
+  const busyAgents = new Set((activeAgentRuns || []).map((r) => r.agent_id));
+
   for (const issue of issues) {
     const agentId = issue.assignee_agent_id as string;
+
+    // Skip if this agent already has work in progress — one issue at a time
+    if (busyAgents.has(agentId)) {
+      logger.debug({ issueId: issue.id, agentId }, 'Agent busy — skipping issue until current work completes');
+      continue;
+    }
+
+    // Mark this agent as busy so we don't assign a second issue in the same tick
+    busyAgents.add(agentId);
 
     logger.debug({ issueId: issue.id, agentId }, 'Creating wakeup for assigned issue');
 

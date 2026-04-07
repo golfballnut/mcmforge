@@ -27,12 +27,19 @@ curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
 1. Call `mcp__XcodeBuildMCP__session_show_defaults` to verify project/scheme/simulator
 2. If not configured: `mcp__XcodeBuildMCP__session_set_defaults` with project=DirtSync.xcodeproj, scheme=DirtSync, simulator=iPhone 16
 
-## 4. Screenshot Current State
+## 4. Screenshot Current State (MANDATORY — visuals are the deliverable)
 - Build: `mcp__XcodeBuildMCP__build_sim`
 - Launch: `mcp__XcodeBuildMCP__build_run_sim`
-- Navigate to the screen
-- Screenshot: `mcp__XcodeBuildMCP__screenshot`
-- If screen doesn't exist yet, note "NEW SCREEN"
+- Navigate to the screen you're specifying
+- Screenshot EVERY state you can reach:
+  - `mcp__XcodeBuildMCP__screenshot` → save to `docs/design/screenshots/<screen-name>-normal.png`
+  - Navigate to loading/empty/error states if possible and screenshot each
+- Get the UI hierarchy: `mcp__XcodeBuildMCP__snapshot_ui` → actual element positions and sizes
+- If screen doesn't exist yet, note "NEW SCREEN — no screenshot available"
+- **Screenshot Waze/Strava comparison** using Playwright:
+  - `mcp__plugin_playwright_playwright__browser_navigate` → browse Waze web (waze.com) or Strava web
+  - `mcp__plugin_playwright_playwright__browser_take_screenshot` → save to `docs/design/screenshots/<screen-name>-waze-reference.png`
+- Commit ALL screenshots to git so they persist
 
 ## 5. Extract Measurements from Code
 - Read the actual Swift view file for this screen
@@ -48,7 +55,19 @@ curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
 - Waze/Strava comparison: "Waze does X at Y size. We do Z."
 - Gold Star criteria: measurable, not subjective
 
-## 7. Report Results (MANDATORY)
+## 7. Push Visual to Figma (if available)
+- Use `figma-generate-design` skill to push the screen spec into Figma as a visual mockup
+- If Figma is not configured, skip this step — screenshots + spec are the minimum deliverable
+
+## 8. Upload to Google Drive
+- Upload screenshots to Google Drive DirtSync folder:
+  ```bash
+  gws drive files create --json '{"name": "<screen>-screenshot.png", "parents": ["1AxKejUmVOhrD69x8yxBw4hrVRLXf8i2e"]}' \
+    --upload docs/design/screenshots/<screen>-normal.png --upload-content-type "image/png"
+  ```
+- This makes visuals available to Steve on his phone
+
+## 9. Report Results (MANDATORY)
 POST results AND update issue status:
 ```
 curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \

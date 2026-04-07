@@ -1,56 +1,79 @@
-# HEARTBEAT.md — DirtSync Design Scout
+# HEARTBEAT.md — DirtSync Framework Scout (Design Scout)
 
-Run this on every wake. No shortcuts.
+Run this on every wake. You bring back intelligence that makes agents smarter.
 
-## 1. Orient
-- Read the assigned issue via Forge API: `GET /api/agent/issues/:id/context`
-- Confirm: does the issue have a clear research scope? If not, comment asking for it and exit.
-- Lock the issue: `POST /api/agent/issues/:id/checkout` (exit if 409 — another agent has it)
+## 1. Read Assignment
+- Read the issue and ALL comments
+- Determine scope: full daily scan, specific framework deep-dive, or competitor check
+- If routine (no specific issue), run the full daily scan below
 
-## 2. Define Scope
-- Identify the research type: codebase exploration, competitor UX, data gathering, or app store analysis
-- List the specific sources to check (file paths, URLs, app names, search queries)
-- Can I produce a useful report in this session? If too broad, comment asking CEO to narrow scope and exit.
+## 2. Version Check (EVERY run)
 
-## 2b. Plan (MANDATORY before any research)
-1. Write a plan: which sources to check, what approach, what could go wrong
-2. POST the plan as a comment on the issue:
-   ```
-   curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
-     -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-     -H "Content-Type: application/json" \
-     -d '{"comment": "## Research Plan\n\n**Sources:** ...\n**Approach:** ...\n**Risk:** ..."}'
-   ```
-3. For trivial lookups (single source, obvious answer): note "Trivial lookup, skipping plan" in comment
-4. The plan IS your contract. Don't deviate without updating it.
+Check our current versions vs latest:
+```bash
+# Our Ferrostar version
+grep -A2 'ferrostar' ~/DirtSync/DirtSync/DirtSync.xcodeproj/project.pbxproj 2>/dev/null || \
+grep 'ferrostar' ~/DirtSync/Package.resolved 2>/dev/null | head -5
 
-## 3. Gather
-- Execute each source in the scope list
-- Web searches: competitor apps, UX teardowns, app reviews
-- Codebase reads: views, components, services relevant to the topic
-- Record EVERY finding with its source before moving to the next
+# Our MapLibre version  
+grep -A2 'maplibre' ~/DirtSync/Package.resolved 2>/dev/null | head -5
+```
 
-## 4. Compile Report
-- Structure findings using the Research Report format from TOOLS.md
-- Findings section: numbered facts with citations only
-- Raw Data section: tables, counts, file paths, measurements
-- Patterns Observed: what the data shows, no opinions
+Then check latest releases via web search:
+- `maplibre/maplibre-native` latest release
+- `stadiamaps/ferrostar` latest release
+- `valhalla/valhalla` latest release
 
-## 5. Post and Update
-- Comment the full research report on the issue via `PATCH /api/agent/issues/:id`
-- Update issue status to `done` in the same PATCH call
+## 3. Study Reference Repos
 
-## 6. Report Results (MANDATORY)
-1. POST your research findings as a comment on the issue — this is the DELIVERABLE:
-   ```
-   curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
-     -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-     -H "Content-Type: application/json" \
-     -d '{"comment": "## Results\n\n<structured report with sections per topic, measurements, sources>"}'
-   ```
-2. Format: structured report with sections per topic, measurements, sources
-3. If you're running low on turns, POST what you have — partial research is better than none
-4. PATCH issue status to `in_review` when research is complete
+**MapLibre patterns:**
+- Search GitHub for Swift repos using `MLNMapView` with good patterns
+- Look at how they handle: offline tiles, custom layers, camera animations
+- Check `maplibre/maplibre-native` /platform/ios/app/ for demo patterns
+
+**Ferrostar patterns:**
+- Read `stadiamaps/ferrostar` /apple/DemoApp/ — their recommended HUD approach
+- Check their CHANGELOG for recent additions
+- Look at how they handle: rerouting, voice, state machine transitions
+
+**Valhalla patterns:**
+- Check for new costing models, trail-specific options
+- Look at offline routing setups
+- Any new alternates API improvements?
+
+## 4. Apple Tools Scan
+
+Search for:
+- Latest Xcode release notes (testing, profiling, build improvements)
+- SwiftUI updates relevant to maps/navigation/overlays
+- XCUITest new capabilities (screenshot comparison, accessibility)
+- Swift Testing framework adoption status
+- Core Location API updates
+
+## 5. Compile Report
+
+Post to Forge issue using this format:
+```
+PATCH /api/agent/issues/<ISSUE_ID>
+{
+  "comment": "## Framework Report — <DATE>\n\n### Version Check\n| Framework | Ours | Latest | Gap |\n...\n\n### Breaking Changes\n...\n\n### New Features to Adopt\n...\n\n### Best Practices from Repos\n...\n\n### Apple Tools Update\n...",
+  "status": "in_review"
+}
+```
+
+## 6. Upload to Drive
+
+Save the report to Google Drive so the Skills Enhancer and Factory Analyst can reference it:
+```bash
+ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+cat > /tmp/framework-report.md << 'REPORT'
+<FULL REPORT HERE>
+REPORT
+gws drive +upload --file /tmp/framework-report.md --parent 1gjlNaOpZz-dpk8yOV9AA8CpFPhrgc51r 2>&1 | grep -v "^Using keyring"
+REMOTE
+```
+(Parent folder: DirtSync Research — `1gjlNaOpZz-dpk8yOV9AA8CpFPhrgc51r`)
 
 ## 7. Exit
-Clean exit. Don't start a new issue. Don't add design opinions to the report after posting.
+Clean exit. Your report feeds the Skills Enhancer.

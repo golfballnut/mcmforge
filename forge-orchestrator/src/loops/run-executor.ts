@@ -325,6 +325,12 @@ async function executeRun(
       })
       .eq('id', agent.id);
 
+    // O-2: Auto-heal ERROR status — if agent was in error and just succeeded, log the recovery
+    if (status === 'succeeded' && agent.status === 'error') {
+      await supabase.from('agents').update({ status: 'idle' }).eq('id', agent.id);
+      logger.info({ agentId: agent.id }, 'Auto-healed ERROR status');
+    }
+
     if (result.usage && (result.usage.inputTokens > 0 || result.usage.outputTokens > 0)) {
       await recordCost(supabase, {
         companyId: run.company_id,
@@ -346,6 +352,17 @@ async function executeRun(
 
     // Auto-handoffs on successful runs
     if (status === 'succeeded') {
+      // Assembly line handoffs — order matters
+      try {
+        await checkForTestRunnerHandoff(supabase, run);
+      } catch (err) {
+        logger.error({ err, runId: run.id }, 'Test Runner handoff check failed');
+      }
+      try {
+        await checkForCritiqueHandoff(supabase, run);
+      } catch (err) {
+        logger.error({ err, runId: run.id }, 'Critique handoff check failed');
+      }
       try {
         await checkForQAHandoff(supabase, run);
       } catch (err) {
@@ -502,6 +519,18 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
       continue;
     }
 
+    // O-1: Per-issue dedup — skip if a run is already queued/running for this issue
+    const { data: activeRun } = await supabase
+      .from('runs')
+      .select('id')
+      .eq('context_snapshot->>issueId', issue.id)
+      .in('status', ['running', 'queued'])
+      .maybeSingle();
+    if (activeRun) {
+      logger.debug({ issueId: issue.id, agentId }, 'Issue already has active run — skipping dispatch');
+      continue;
+    }
+
     // Mark this agent as busy so we don't assign a second issue in the same tick
     busyAgents.add(agentId);
 
@@ -530,6 +559,118 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
       await lockIssueExecution(supabase, issue.id, runId);
     }
   }
+}
+
+/**
+ * After iOS Builder marks an issue 'in_review', auto-create a test run subtask
+ * assigned to the company's 'Test Runner' agent. The Test Runner builds on Mini,
+ * runs XCUITests, takes screenshots, and emails results.
+ */
+async function checkForTestRunnerHandoff(supabase: SupabaseClient, run: any) {
+  const issueId = run.context_snapshot?.issueId;
+  if (!issueId) return;
+
+  // Only iOS Builder triggers Test Runner handoff
+  const { data: agent } = await supabase
+    .from('agents')
+    .select('name')
+    .eq('id', run.agent_id)
+    .single();
+
+  if (!agent || agent.name !== 'iOS Builder') return;
+
+  const { data: issue } = await supabase
+    .from('issues')
+    .select('id, title, status, description, company_id, project_id')
+    .eq('id', issueId)
+    .single();
+
+  if (!issue || issue.status !== 'in_review') return;
+
+  // Find the Test Runner agent
+  const { data: testRunner } = await supabase
+    .from('agents')
+    .select('id')
+    .eq('company_id', issue.company_id)
+    .eq('name', 'Test Runner')
+    .single();
+
+  if (!testRunner) {
+    logger.warn({ companyId: issue.company_id }, 'No Test Runner agent found — falling back to QA Rider');
+    return;  // Falls through to checkForQAHandoff
+  }
+
+  // Idempotency
+  const { data: existing } = await supabase
+    .from('issues')
+    .select('id')
+    .eq('parent_id', issue.id)
+    .eq('assignee_agent_id', testRunner.id)
+    .limit(1);
+
+  if (existing && existing.length > 0) {
+    logger.debug({ issueId: issue.id }, 'Test Runner subtask already exists — skipping');
+    return;
+  }
+
+  const { data: company } = await supabase
+    .from('companies')
+    .select('issue_prefix, issue_counter')
+    .eq('id', issue.company_id)
+    .single();
+
+  const { data: updated } = await supabase
+    .from('companies')
+    .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+    .eq('id', issue.company_id)
+    .select('issue_counter')
+    .single();
+
+  const issueNumber = updated?.issue_counter || 1;
+  const identifier = `${company?.issue_prefix}-${issueNumber}`;
+
+  const description = [
+    `## Test Run: ${issue.title}`,
+    '',
+    `**Parent issue:** ${issue.id}`,
+    '',
+    '### Your Job',
+    '1. SSH to Mini, pull the branch, build',
+    '2. Run the relevant XCUITests',
+    '3. Take screenshots',
+    '4. Email screenshots to dirtsyncapp@gmail.com',
+    '5. Post results to this issue',
+    '',
+    '### Context',
+    'Read all comments on the parent issue for the iOS Builder\'s changes and branch name.',
+    '',
+    issue.description || '',
+  ].join('\n');
+
+  const { data: testIssue, error } = await supabase.from('issues').insert({
+    company_id: issue.company_id,
+    project_id: issue.project_id,
+    title: `Test: ${issue.title}`,
+    description,
+    status: 'todo',
+    priority: 'high',
+    assignee_agent_id: testRunner.id,
+    parent_id: issue.id,
+    issue_number: issueNumber,
+    identifier,
+    origin_kind: 'test_handoff',
+    origin_id: run.agent_id,
+  }).select('id, identifier').single();
+
+  if (error) {
+    logger.error({ error, issueId: issue.id }, 'Failed to create Test Runner subtask');
+    return;
+  }
+
+  logger.info(
+    { testIssueId: testIssue?.id, identifier: testIssue?.identifier, parentIssue: issue.id },
+    'Test Runner subtask created — assignment detector will wake Test Runner',
+  );
 }
 
 /**
@@ -725,6 +866,119 @@ async function checkForShipHandoff(supabase: SupabaseClient, run: any) {
   logger.info(
     { shipIssueId: shipIssue?.id, identifier: shipIssue?.identifier, parentIssue: issue.id },
     'Ship subtask created — assignment detector will wake Ship Engineer',
+  );
+}
+
+/**
+ * After Test Runner marks an issue as 'in_review', auto-create a critique subtask
+ * assigned to the company's 'Critique Agent'. The Critique Agent grades the
+ * screenshot 10/10 or rejects with specific fixes.
+ */
+async function checkForCritiqueHandoff(supabase: SupabaseClient, run: any) {
+  const issueId = run.context_snapshot?.issueId;
+  if (!issueId) return;
+
+  // Only Test Runner triggers critique handoff
+  const { data: agent } = await supabase
+    .from('agents')
+    .select('name')
+    .eq('id', run.agent_id)
+    .single();
+
+  if (!agent || agent.name !== 'Test Runner') return;
+
+  // Confirm the issue is now in_review
+  const { data: issue } = await supabase
+    .from('issues')
+    .select('id, title, status, description, company_id, project_id')
+    .eq('id', issueId)
+    .single();
+
+  if (!issue || issue.status !== 'in_review') return;
+
+  // Find the Critique Agent for this company
+  const { data: critiqueAgent } = await supabase
+    .from('agents')
+    .select('id')
+    .eq('company_id', issue.company_id)
+    .eq('name', 'Critique Agent')
+    .single();
+
+  if (!critiqueAgent) {
+    logger.warn({ companyId: issue.company_id }, 'No Critique Agent found — skipping critique handoff');
+    return;
+  }
+
+  // Idempotency: check if critique subtask already exists
+  const { data: existing } = await supabase
+    .from('issues')
+    .select('id')
+    .eq('parent_id', issue.id)
+    .eq('assignee_agent_id', critiqueAgent.id)
+    .limit(1);
+
+  if (existing && existing.length > 0) {
+    logger.debug({ issueId: issue.id }, 'Critique subtask already exists — skipping');
+    return;
+  }
+
+  // Increment issue counter
+  const { data: company } = await supabase
+    .from('companies')
+    .select('issue_prefix, issue_counter')
+    .eq('id', issue.company_id)
+    .single();
+
+  const { data: updated } = await supabase
+    .from('companies')
+    .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+    .eq('id', issue.company_id)
+    .select('issue_counter')
+    .single();
+
+  const issueNumber = updated?.issue_counter || 1;
+  const identifier = `${company?.issue_prefix}-${issueNumber}`;
+
+  const description = [
+    `## Critique: ${issue.title}`,
+    '',
+    `**Parent issue:** ${issue.id}`,
+    '',
+    '### Your Job',
+    'Grade the screenshot from the Test Runner against the Gold Star spec.',
+    'Read all comments on the parent issue for the Test Runner\'s results and screenshot.',
+    'Apply your full element-by-element review. Social Media Test required.',
+    'If 10/10: mark approved. If <10/10: mark todo with specific fix list.',
+    '',
+    '### Gold Star Spec',
+    'See `companies/dirtsync/NAV-JOURNEY-SPECS.md` for measurements.',
+    '',
+    issue.description || '',
+  ].join('\n');
+
+  const { data: critiqueIssue, error } = await supabase.from('issues').insert({
+    company_id: issue.company_id,
+    project_id: issue.project_id,
+    title: `Critique: ${issue.title}`,
+    description,
+    status: 'todo',
+    priority: 'high',
+    assignee_agent_id: critiqueAgent.id,
+    parent_id: issue.id,
+    issue_number: issueNumber,
+    identifier,
+    origin_kind: 'critique_handoff',
+    origin_id: run.agent_id,
+  }).select('id, identifier').single();
+
+  if (error) {
+    logger.error({ error, issueId: issue.id }, 'Failed to create critique subtask');
+    return;
+  }
+
+  logger.info(
+    { critiqueIssueId: critiqueIssue?.id, identifier: critiqueIssue?.identifier, parentIssue: issue.id },
+    'Critique subtask created — assignment detector will wake Critique Agent',
   );
 }
 

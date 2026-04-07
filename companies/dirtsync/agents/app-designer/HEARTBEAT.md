@@ -23,23 +23,13 @@ curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
   -d '{"comment": "## Plan\n\n**Screen:** <which one>\n**Approach:** Read current spec, extract measurements from code, add Waze comparison, write 5 states\n**File:** docs/design/app-screen-specs.md"}'
 ```
 
-## 3. Xcode MCP Setup (MANDATORY before any build)
-1. Call `mcp__XcodeBuildMCP__session_show_defaults` to verify project/scheme/simulator
-2. If not configured: `mcp__XcodeBuildMCP__session_set_defaults` with project=DirtSync.xcodeproj, scheme=DirtSync, simulator=iPhone 16
-
-## 4. Screenshot Current State (MANDATORY — visuals are the deliverable)
-- Build: `mcp__XcodeBuildMCP__build_sim`
-- Launch: `mcp__XcodeBuildMCP__build_run_sim`
-- Navigate to the screen you're specifying
-- Screenshot EVERY state you can reach:
-  - `mcp__XcodeBuildMCP__screenshot` → save to `docs/design/screenshots/<screen-name>-normal.png`
-  - Navigate to loading/empty/error states if possible and screenshot each
-- Get the UI hierarchy: `mcp__XcodeBuildMCP__snapshot_ui` → actual element positions and sizes
-- If screen doesn't exist yet, note "NEW SCREEN — no screenshot available"
-- **Screenshot Waze/Strava comparison** using Playwright:
-  - `mcp__plugin_playwright_playwright__browser_navigate` → browse Waze web (waze.com) or Strava web
-  - `mcp__plugin_playwright_playwright__browser_take_screenshot` → save to `docs/design/screenshots/<screen-name>-waze-reference.png`
-- Commit ALL screenshots to git so they persist
+## 3. Research Reference (NO simulator — design phase is vision, not current state)
+- **DO NOT open Xcode or the simulator during design.** Simulator screenshots are for QA, not design.
+- Read the Swift code to understand what EXISTS (file structure, data models, colors)
+- Use Playwright to screenshot Waze/Strava web apps for reference:
+  - `mcp__plugin_playwright_playwright__browser_navigate` → browse reference app
+  - `mcp__plugin_playwright_playwright__browser_take_screenshot` → save to `docs/design/screenshots/<screen-name>-reference.png`
+- Use Context7 to look up iOS HIG and SwiftUI patterns
 
 ## 5. Extract Measurements from Code
 - Read the actual Swift view file for this screen
@@ -55,9 +45,10 @@ curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
 - Waze/Strava comparison: "Waze does X at Y size. We do Z."
 - Gold Star criteria: measurable, not subjective
 
-## 7. Push Visual to Figma (if available)
-- Use `figma-generate-design` skill to push the screen spec into Figma as a visual mockup
-- If Figma is not configured, skip this step — screenshots + spec are the minimum deliverable
+## 7. Push Visual to Figma (THIS IS YOUR PRIMARY VISUAL OUTPUT)
+- Use `figma-generate-design` skill to create the screen mockup in Figma
+- This is what Steve reviews — the visual, not the markdown
+- If Figma is not configured, the spec + reference screenshots are the fallback
 
 ## 8. Upload to Google Drive
 - Upload screenshots to Google Drive DirtSync folder:

@@ -44,5 +44,15 @@ PATCH /api/agent/issues/<ISSUE_ID>
 }
 ```
 
-## 6. Exit
-Clean exit. The builder reads your rejection and iterates.
+## 6. Handoff (if APPROVED)
+If you graded 10/10, the orchestrator auto-creates a Ship Engineer subtask. 
+The Ship Engineer will read your approval comment and create the PR.
+You don't need to create the subtask manually — the auto-handoff handles it.
+
+## 7. Rejection Loop (if REJECTED)
+When you set status to `todo`, the iOS Builder auto-wakes via the orchestrator's 
+`checkAssignedIssues`. It reads your rejection comment (the fix list) and iterates.
+The cycle continues: Builder fixes → Test Runner re-tests → you re-grade → until 10/10.
+
+## 8. Exit
+Clean exit. Your verdict drives the next step automatically.

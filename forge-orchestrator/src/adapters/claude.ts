@@ -115,6 +115,7 @@ function parseClaudeResult(proc: {
   let cachedInputTokens = 0;
   let outputTokens = 0;
   let resultJson: Record<string, unknown> | null = null;
+  let lastAssistantMessage: string | null = null;
 
   for (const line of proc.stdout.split('\n')) {
     if (!line.trim()) continue;
@@ -126,18 +127,38 @@ function parseClaudeResult(proc: {
       if (event.type === 'system' && event.model) {
         model = event.model;
       }
+      // Capture assistant text messages as fallback summary
+      if (event.type === 'assistant' && event.message?.content) {
+        const textParts = (event.message.content as any[])
+          .filter((c: any) => c.type === 'text')
+          .map((c: any) => c.text);
+        if (textParts.length > 0) {
+          lastAssistantMessage = textParts.join('\n').slice(0, 2000);
+        }
+      }
       if (event.type === 'result') {
         resultJson = event;
         summary = event.result || event.summary || null;
-        costUsd = event.total_cost_usd ?? null;
+        costUsd = event.total_cost_usd ?? event.costUSD ?? null;
         inputTokens = event.usage?.input_tokens ?? 0;
         cachedInputTokens = event.usage?.cache_read_input_tokens ?? 0;
         outputTokens = event.usage?.output_tokens ?? 0;
         sessionId = event.session_id ?? sessionId;
+
+        // Also check modelUsage for cost (newer Claude format)
+        if (!costUsd && event.modelUsage) {
+          const models = Object.values(event.modelUsage) as any[];
+          costUsd = models.reduce((sum: number, m: any) => sum + (m.costUSD ?? 0), 0) || null;
+        }
       }
     } catch {
       // Not JSON, skip
     }
+  }
+
+  // Fallback: use last assistant message if result field was empty (e.g., max_turns)
+  if (!summary && lastAssistantMessage) {
+    summary = lastAssistantMessage;
   }
 
   return {

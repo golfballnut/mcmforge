@@ -379,7 +379,16 @@ async function executeRun(
     }
 
     // Auto-continue: if issue is still in_progress after run, re-wake agent to keep working
-    if (issueId && status === 'succeeded') {
+    // BUT: skip if the agent reported nothing to do (prevents infinite CEO wake loops)
+    const summaryLower = (result.summary || '').toLowerCase();
+    const nothingToDo = isSilent
+      || summaryLower.includes('no action needed')
+      || summaryLower.includes('nothing to do')
+      || summaryLower.includes('waiting for')
+      || summaryLower.includes('all systems nominal')
+      || summaryLower.includes('inbox empty');
+
+    if (issueId && status === 'succeeded' && !nothingToDo) {
       try {
         const { data: currentIssue } = await supabase
           .from('issues')
@@ -403,6 +412,8 @@ async function executeRun(
       } catch (err) {
         logger.debug({ err }, 'Auto-continue check failed');
       }
+    } else if (nothingToDo) {
+      logger.info({ issueId, agent: agent.name }, 'Auto-continue skipped: agent reported nothing to do');
     }
 
     // Index the run result for FTS5 cross-session search

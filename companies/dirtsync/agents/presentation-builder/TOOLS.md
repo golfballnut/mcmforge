@@ -5,6 +5,17 @@
 - File read/write (design specs, artifact staging)
 - Bash (file path resolution, gws commands)
 
+## IMPORTANT: gws Auth
+gws CLI is authenticated on Mini. Env vars set in orchestrator .env:
+- GOOGLE_WORKSPACE_CLI_CLIENT_ID
+- GOOGLE_WORKSPACE_CLI_CLIENT_SECRET
+- GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file
+Credentials at ~/.config/gws/credentials.json
+
+## Visual Tools for Slides
+- **Mockuuups MCP** — put screenshots in device frames for professional slides
+- **Excalidraw MCP** — create flow diagrams and wireframes to embed in slides
+
 ## Account
 `dirtsyncapp@gmail.com`
 

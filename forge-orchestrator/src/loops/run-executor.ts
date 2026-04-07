@@ -378,6 +378,33 @@ async function executeRun(
       }
     }
 
+    // Auto-continue: if issue is still in_progress after run, re-wake agent to keep working
+    if (issueId && status === 'succeeded') {
+      try {
+        const { data: currentIssue } = await supabase
+          .from('issues')
+          .select('status, assignee_agent_id')
+          .eq('id', issueId)
+          .single();
+
+        if (currentIssue && currentIssue.status === 'in_progress' && currentIssue.assignee_agent_id) {
+          await createWakeup(supabase, {
+            companyId: run.company_id,
+            agentId: currentIssue.assignee_agent_id,
+            source: 'assignment',
+            triggerDetail: `Continue: ${run.trigger_detail || 'in-progress issue'}`,
+            reason: 'Issue still in_progress after last run. Continue working.',
+            payload: { issueId, wakeReason: 'continue_work' },
+            idempotencyKey: `continue-${issueId}-${run.id}`,
+            priority: run.priority ?? 1,
+          });
+          logger.info({ issueId, agent: agent.name }, 'Auto-continue: issue still in_progress, re-waking agent');
+        }
+      } catch (err) {
+        logger.debug({ err }, 'Auto-continue check failed');
+      }
+    }
+
     // Index the run result for FTS5 cross-session search
     const indexableText = result.summary || (result.resultJson as any)?.result || '';
     if (indexableText && !isSilent) {
@@ -483,7 +510,8 @@ async function checkAssignedIssues(supabase: SupabaseClient) {
         issueId: issue.id,
         projectId: issue.project_id ?? null,
       },
-      idempotencyKey: `assignment-${issue.id}`,
+      // Use date-hour so the same issue can re-trigger each hour (not permanently blocked)
+      idempotencyKey: `assignment-${issue.id}-${new Date().toISOString().slice(0, 13)}`,
       priority: runPriority,
     });
 

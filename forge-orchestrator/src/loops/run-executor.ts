@@ -358,6 +358,26 @@ async function executeRun(
       }
     }
 
+    // Auto-post run results as issue comment (agent may not have done this)
+    const issueId = run.context_snapshot?.issueId;
+    const runSummary = isSilent ? null : (result.summary || resultText);
+    if (issueId && runSummary && status === 'succeeded') {
+      try {
+        await autoPostRunComment(supabase, run, agent, runSummary, result.costUsd);
+      } catch (err) {
+        logger.debug({ err, runId: run.id }, 'Auto-post comment failed');
+      }
+    }
+
+    // Auto-wake parent issue owner when subtask completes
+    if (issueId && status === 'succeeded') {
+      try {
+        await wakeParentIssueOwner(supabase, run, issueId);
+      } catch (err) {
+        logger.debug({ err, runId: run.id }, 'Wake parent owner failed');
+      }
+    }
+
     // Index the run result for FTS5 cross-session search
     const indexableText = result.summary || (result.resultJson as any)?.result || '';
     if (indexableText && !isSilent) {
@@ -723,6 +743,90 @@ async function maybeRetryRun(supabase: SupabaseClient, run: any, agent: any, err
   logger.info(
     { runId: run.id, retryRunId: retryRun?.id, retryCount: nextRetry, backoffMs, notBefore },
     'Retry run queued with backoff',
+  );
+}
+
+/**
+ * Auto-post the run's summary as a comment on the linked issue.
+ * This ensures the pipeline always has handoff data even if the agent forgot to POST.
+ */
+async function autoPostRunComment(
+  supabase: SupabaseClient,
+  run: any,
+  agent: any,
+  summary: string,
+  costUsd: number | null,
+) {
+  const issueId = run.context_snapshot?.issueId;
+  if (!issueId) return;
+
+  // Check if the agent already posted a comment (don't duplicate)
+  const { data: existing } = await supabase
+    .from('issue_comments')
+    .select('id')
+    .eq('issue_id', issueId)
+    .eq('created_by_run_id', run.id)
+    .limit(1);
+
+  if (existing?.length) return; // Agent already posted
+
+  const costStr = costUsd ? ` | Cost: $${costUsd.toFixed(2)}` : '';
+  const body = `**${agent.name}** completed run${costStr}\n\n${summary.slice(0, 1500)}`;
+
+  await supabase.from('issue_comments').insert({
+    company_id: run.company_id,
+    issue_id: issueId,
+    author_agent_id: agent.id,
+    created_by_run_id: run.id,
+    body,
+  });
+
+  logger.debug({ issueId, agentName: agent.name }, 'Auto-posted run results as issue comment');
+}
+
+/**
+ * When a subtask completes, wake the owner of the parent issue so they can review.
+ * This keeps the pipeline flowing: scout finishes → CEO wakes to review.
+ */
+async function wakeParentIssueOwner(supabase: SupabaseClient, run: any, issueId: string) {
+  // Find the issue and its parent
+  const { data: issue } = await supabase
+    .from('issues')
+    .select('id, title, parent_id')
+    .eq('id', issueId)
+    .single();
+
+  if (!issue?.parent_id) return;
+
+  // Find the parent issue and its assignee
+  const { data: parent } = await supabase
+    .from('issues')
+    .select('id, title, assignee_agent_id, status')
+    .eq('id', issue.parent_id)
+    .single();
+
+  if (!parent?.assignee_agent_id) return;
+  if (parent.status === 'done') return;
+
+  // Wake the parent's assignee to review the subtask output
+  await createWakeup(supabase, {
+    companyId: run.company_id,
+    agentId: parent.assignee_agent_id,
+    source: 'assignment',
+    triggerDetail: `Subtask completed: ${issue.title}`,
+    reason: `Your subtask "${issue.title}" has been completed. Review the results and continue with the parent issue "${parent.title}".`,
+    payload: {
+      issueId: parent.id,
+      completedSubtaskId: issue.id,
+      wakeReason: 'subtask_completed',
+    },
+    idempotencyKey: `subtask-complete-${issue.id}-${run.id}`,
+    priority: 2,
+  });
+
+  logger.info(
+    { parentIssueId: parent.id, completedSubtask: issue.title, parentAgent: parent.assignee_agent_id },
+    'Woke parent issue owner — subtask completed',
   );
 }
 

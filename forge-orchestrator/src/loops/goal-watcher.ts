@@ -1,5 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { ForgeConfig } from '../config.js';
+import { createWakeup } from '../services/wakeup.js';
 import { logger } from '../utils/logger.js';
 
 export async function startGoalWatcher(
@@ -30,7 +31,13 @@ export async function startGoalWatcher(
           .select('id, status')
           .eq('goal_id', goal.id);
 
-        // Skip goals with no linked issues
+        // Scout trigger: sub-goal with 0 issues → wake CEO to break it down
+        if ((!issues || issues.length === 0) && goal.parent_id) {
+          await triggerScoutResearch(supabase, goal);
+          continue;
+        }
+
+        // Skip goals with no linked issues (company-level goals without sub-goals)
         if (!issues?.length) continue;
 
         // Check if ALL issues are done
@@ -126,5 +133,67 @@ async function checkParentGoals(
     }
 
     logger.info({ parentId, title: parent.title }, 'Parent goal auto-completed — all sub-goals done');
+  }
+}
+
+/**
+ * When a sub-goal has 0 linked issues, wake the company's CEO to break it down.
+ * CEO receives the sub-goal context and produces knowledge-rich issues via scout delegation.
+ * Idempotency: one wakeup per goal (key: `goal-breakdown-{goalId}`).
+ */
+async function triggerScoutResearch(
+  supabase: SupabaseClient,
+  goal: { id: string; title: string; parent_id: string | null },
+) {
+  // Find the company for this goal
+  const { data: goalRow } = await supabase
+    .from('goals')
+    .select('company_id')
+    .eq('id', goal.id)
+    .single();
+
+  if (!goalRow) return;
+
+  // Find the CEO agent for this company
+  const { data: ceo } = await supabase
+    .from('agents')
+    .select('id, name')
+    .eq('company_id', goalRow.company_id)
+    .eq('role', 'ceo')
+    .limit(1)
+    .single();
+
+  if (!ceo) {
+    logger.debug({ goalId: goal.id }, 'No CEO agent found — skipping scout trigger');
+    return;
+  }
+
+  const runId = await createWakeup(supabase, {
+    companyId: goalRow.company_id,
+    agentId: ceo.id,
+    source: 'routine',
+    triggerDetail: `Break down sub-goal: ${goal.title}`,
+    reason: `Sub-goal "${goal.title}" has no linked issues. Research the codebase and create specific, knowledge-rich issues for this sub-goal. Delegate to scouts first, then create issues with file paths, acceptance criteria, and technical context. Link all issues to goal_id: ${goal.id}`,
+    payload: {
+      goalId: goal.id,
+      goalTitle: goal.title,
+      parentGoalId: goal.parent_id,
+      wakeReason: 'goal_breakdown',
+    },
+    idempotencyKey: `goal-breakdown-${goal.id}`,
+    priority: 2, // high — sub-goal breakdown is important
+  });
+
+  if (runId) {
+    // Mark the goal as in_progress so we don't re-trigger
+    await supabase
+      .from('goals')
+      .update({ status: 'in_progress', updated_at: new Date().toISOString() })
+      .eq('id', goal.id);
+
+    logger.info(
+      { goalId: goal.id, goalTitle: goal.title, ceoAgent: ceo.name, runId },
+      'Scout trigger fired — CEO woken to break down sub-goal',
+    );
   }
 }

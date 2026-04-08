@@ -20,6 +20,43 @@
    ssh dirtsyncmini@100.125.184.57 'xcrun simctl boot 1C53DE6B-2574-43FF-BF29-C1C5ACF5A526 2>/dev/null; echo "Simulator ready"'
    ```
 
+## PLAN FIRST (MANDATORY before any code changes)
+
+After reading the issue and all comments, BEFORE writing any code:
+
+### 1. Read current state
+SSH to Mini, read every target file. Understand what exists today.
+
+### 2. Write a plan
+```
+## Build Plan — DIRA-<N>
+
+**What Steve wants:** <1 sentence from the issue/comments>
+
+**Files I will modify:**
+| File | Change | Why |
+|------|--------|-----|
+| TurnCardView.swift | Add glassmorphism background | Steve's 8→10 feedback |
+| MapOverlayStack.swift | Add recenter button | Steve requested |
+
+**Approach:** <how you'll implement this, in order>
+
+**Risk:** <what could go wrong>
+
+**Estimated iterations:** <1-3 for polish, 3-5 for new features>
+```
+
+### 3. Post the plan to the issue
+```
+PATCH /api/agent/issues/:id
+{ "comment": "<your build plan>" }
+```
+
+### 4. Then start the inner loop
+Do NOT skip the plan. Steve and the COO read these to verify approach before you burn turns.
+
+---
+
 ## BAIL-OUT RULES (check BEFORE every step)
 
 **Stop immediately and post to the issue if:**

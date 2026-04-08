@@ -20,6 +20,28 @@
    ssh dirtsyncmini@100.125.184.57 'xcrun simctl boot 1C53DE6B-2574-43FF-BF29-C1C5ACF5A526 2>/dev/null; echo "Simulator ready"'
    ```
 
+## BAIL-OUT RULES (check BEFORE every step)
+
+**Stop immediately and post to the issue if:**
+- SSH to Mini fails 2x → post "Mini unreachable" → mark blocked
+- Permission denied on any tool → post what you need → mark blocked
+- Build fails with the SAME error after 2 fix attempts → post the error → mark blocked
+- Missing file/tool that you cannot create → post what's missing → mark blocked
+- You don't understand the spec → post questions → mark blocked
+
+**DO NOT burn turns retrying something that's fundamentally broken. Ask for help.**
+
+## Progress Posts (after EVERY iteration)
+
+After each iteration, post a brief update to the Forge issue:
+```
+PATCH /api/agent/issues/:id
+{
+  "comment": "## Iteration <N>/8\n**Build:** PASS/FAIL\n**Tests:** X/Y\n**Grade:** X/10\n**Screenshot:** ~/screenshot-iteration-<N>.png\n**Next:** <what you'll fix>"
+}
+```
+This lets us monitor progress in real-time. Do NOT skip this.
+
 ## Inner Loop (MAX 8 ITERATIONS)
 
 For iteration = 1 to 8:

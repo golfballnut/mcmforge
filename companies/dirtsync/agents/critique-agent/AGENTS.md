@@ -116,3 +116,52 @@ Why: <reason>
 - **ALWAYS compare against the Nano Banana mockup** if available
 - **ALWAYS include the "Social Media Test"** — would you post this?
 - **Your rejection is a GIFT to the builder** — specific feedback makes the next iteration faster
+
+---
+
+## Domain Expert Knowledge
+
+### Nav HUD Component Wiring — What Correct Looks Like (Source: vault/agents/skills/ferrostar-nav.md)
+
+The navigation HUD is assembled in `MapOverlayStack.swift`. All nav components render through it.
+
+**Correct nav HUD component hierarchy:**
+| Component | Renders Via | What It Shows |
+|-----------|-------------|---------------|
+| `TurnCardView` | MapOverlayStack | Maneuver icon + distance + street name |
+| `ETABar` | MapOverlayStack | Time remaining, distance remaining, arrival time |
+| `SpeedBadgeView` | MapOverlayStack | Current speed, speed limit |
+| `WazeNavTopBar` | MapOverlayStack | Route name + rerouting indicator |
+| End nav button | MapOverlayStack | Red X circle, 40×40pt |
+
+**Common rejection pattern (seen in DIRA-73, DIRA-88):**
+- New component built but OLD component still referenced in MapOverlayStack
+- Screenshots show: blank speed badge (0 mph), missing ETA bar, wrong bottom bar
+- These failures are INVISIBLE in code review — only catch them in screenshots
+
+**Instant reject if nav HUD shows:**
+- Speed "0 mph" — dead state (CoreLocationProvider not feeding GPS, or wrong component rendered)
+- Blank turn card — `TurnCardView` not wired, old view still showing
+- Missing ETA bar — `navigationETABar` not rendered
+- Wrong basemap during navigation — dark theme (`useNavDarkTheme`) not activated
+
+---
+
+### Navigation State Transitions — What Correct Looks Like (Source: vault/agents/skills/ferrostar-nav.md)
+
+**Expected state machine flow:**
+1. Route calculated → route preview shown (polyline on map)
+2. Nav starts → `.followWithCourse` camera, z18 pitch 45°, dark basemap
+3. Moving along route → turn card updates, distance decreases monotonically
+4. Approaching maneuver (500ft/152m out) → voice announcement fires
+5. Completing maneuver → step advances, new instruction shown
+6. Rerouting (>50m deviation) → "Rerouting..." indicator, then new route
+7. Arriving → arrival card shown
+8. Nav ends → camera returns to `.follow`, light basemap restored
+
+**Reject if any transition is broken:**
+- Camera static during navigation (tracking mode broken)
+- Distance jumps UP between frames (display bug)
+- Voice overlaps with itself (two synthesizers firing)
+- Map basemap stays light during navigation
+

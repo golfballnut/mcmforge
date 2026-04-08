@@ -141,3 +141,129 @@ app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'mi'"))
 - **Test on Mini timings** — use 20-25s timeouts, not 5-10s
 - **One test per behavior** — don't bundle multiple verifications
 - **Include expected failures** — use `XCTExpectFailure` for known edge cases
+
+---
+
+## Domain Expert Knowledge
+
+### GPX Route Creation — How to Generate Test Tracks (Source: vault/agents/skills/gpx-route-creator.md)
+
+When a test requires GPS simulation on a real trail, generate a GPX file from Supabase trail geometry. DO NOT make up coordinates.
+
+**Trail data source:** Supabase `trail_lines` table — `coordinates` column (JSONB array of `[lng, lat]` pairs)
+
+**Query to get trail geometry:**
+```sql
+SELECT trail_name, difficulty, distance_miles, coordinates,
+       jsonb_array_length(coordinates) as num_points
+FROM trail_lines
+WHERE trail_system = 'Burning Rock' AND coordinates IS NOT NULL
+ORDER BY trail_name;
+```
+
+**Chain trails via intersections:**
+```sql
+SELECT trail_names, lat, lng, trail_count
+FROM trail_intersections
+WHERE trail_system = 'Burning Rock'
+ORDER BY trail_count DESC;
+```
+
+**Pre-built script:** `scripts/generate_gpx_routes.py` handles the full pipeline:
+```bash
+python3 scripts/generate_gpx_routes.py --system "Burning Rock" --type all --count 5 --poi-categories fuel restaurant
+```
+
+**GPX output directory:** `DirtSync/DirtSyncUITests/GPXRoutes/`
+**Naming:** `{system-slug}-{route-type}-{number}.gpx` (e.g., `burning-rock-trail-only-1.gpx`)
+
+**CRITICAL coordinate gotchas:**
+- Supabase coordinates are `[lng, lat]` (PostGIS order) → GPX needs `lat` and `lon` attributes — SWAP them
+- Supabase coordinates and MBTiles geometry can be 100m+ offset (different pipelines)
+- GPX test tracks MUST use coordinates from `all-trails.geojson` (the MBTiles source), NOT Supabase
+
+**GPX spec:**
+- Speed: 15 MPH simulated = 1 waypoint per second = ~22ft spacing
+- Version: GPX 1.1
+- Timestamps: monotonically increasing ISO 8601 (`2026-01-01T12:00:00Z`)
+- Target length: 5mi ± 1mi
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="DirtSync Route Generator">
+  <trk>
+    <name>Burning Rock Trail-Only Route 1</name>
+    <trkseg>
+      <trkpt lat="37.7312" lon="-81.3456">
+        <time>2026-01-01T12:00:00Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+```
+
+**Gold-verified test coordinates:**
+- Burning Rock: `37.68, -81.30` (MBTiles has trail data here)
+- Kidds Dairy Farm: `37.818, -78.387` (MBTiles has trail data here)
+- DO NOT test at random coordinates — no trail data = blank results
+
+---
+
+### Ferrostar Navigation — What to Test (Source: vault/agents/skills/ferrostar-nav.md)
+
+**GPS simulation during Ferrostar navigation:**
+- `--uitesting-navigate` triggers `startNavigationForTesting()` which uses CoreLocationProvider
+- During active Ferrostar navigation, `simctl` GPX is the CORRECT way to inject GPS
+- `SimulatedLocationProvider` overrides CoreLocation internally — map view does NOT receive updates
+- NEVER use `SimulatedLocationProvider` for testing navigation visuals
+
+**Feed GPS to simulator (15 MPH = 6.7 m/s):**
+```bash
+DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 16" | head -1 | grep -oE '[A-F0-9-]{36}')
+xcrun simctl location "$DEVICE_ID" start ~/DirtSync/DirtSyncUITests/GPXRoutes/<track>.gpx
+```
+
+**Navigation state thresholds to test:**
+- Step advance: at 35mph, steps fire at 40m entry / 20m exit
+- Wrong-direction detection: reverse on route → "U-turn" alert within 30m + 5 seconds
+- Rerouting: deviate >50m → reroute fires within 5 seconds
+- Voice announcements: trigger at 500ft (152m) before each maneuver
+- Distance must monotonically decrease (never jump UP — test this)
+
+**Camera state during navigation:**
+- Map must follow user with course (`.followWithCourse` mode)
+- `setCenterCoordinate` must NOT be called directly during nav — it kills tracking mode
+- Zoom: z18, Pitch: 45°
+
+---
+
+### Trail Data Architecture — What Tests Can Rely On (Source: vault/agents/skills/trail-data-pipeline.md)
+
+**Trail detection (in-memory GeoJSON):**
+- `TrailDataService.shared.trails` — 1112 features loaded at app startup from `all-trails.geojson`
+- On-trail threshold: distance < 100m to nearest trail segment = "on trail"
+- Off-trail: CLGeocoder road name (rate limited: 1 call/5s, 50m minimum movement)
+
+**Test coordinate facts:**
+- Burning Rock MBTiles: trail data at `37.68, -81.30`
+- Kidds Dairy MBTiles: trail data at `37.818, -78.387`
+- `UITestingRouteFactory.swift` uses Kidds Dairy coords: `37.818, -78.386`
+
+**Speed thresholds (auto-recording):**
+- Auto-recording starts: >5 mph sustained for 3 seconds
+- Auto-pause: <2.4 mph for 30 seconds
+- Min GPS accuracy: 20m (worse readings filtered)
+
+---
+
+### TDD Rules — Mandatory for Every Test Written (Source: vault/agents/skills/tdd-workflow.md)
+
+1. **Red Phase:** Write test → confirm it FAILS → capture failure output
+2. **Green Phase:** Builder writes code → confirm test PASSES → capture success output
+3. **PR must include:** list of tests added, before (red) output, after (green) output
+
+**Minimum coverage per PR:**
+- At least 1 test per changed behavior
+- Bug fixes must add a regression test
+- New features: happy path + 1 edge case
+

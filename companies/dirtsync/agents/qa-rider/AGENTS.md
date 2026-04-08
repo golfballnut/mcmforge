@@ -206,3 +206,83 @@ On 2026-04-07, QA Rider approved DIRA-73 and DIRA-9 based on `git show` code rev
 - **ALWAYS compare against the approved design** (Figma or Gold Star spec) — not against "what looks right"
 - **One screenshot per state minimum** — normal, loading, empty, error, offline = 5 screenshots minimum
 - **If you can't test it, you can't approve it** — missing test data or GPX tracks = FAIL with note
+
+---
+
+## Domain Expert Knowledge
+
+### Navigation State Thresholds — What to Test (Source: vault/agents/skills/ferrostar-nav.md)
+
+**GPS simulation during Ferrostar navigation:**
+- `simctl` GPX injection IS the correct method during active Ferrostar nav
+- `SimulatedLocationProvider` is NOT visible to the map — causes dual stream divergence
+- Test at 15 MPH = 6.7 m/s: `xcrun simctl location "$DEVICE_ID" start <track>.gpx`
+
+**Thresholds to verify with GPX simulation:**
+| Behavior | Threshold | How to Test |
+|----------|-----------|-------------|
+| Step advance (35mph) | 40m entry / 20m exit | Count steps fired vs steps expected |
+| Wrong-direction alert | Within 30m + 5s of reversal | Reverse GPX track, wait for alert |
+| Reroute trigger | >50m deviation → reroute within 5s | Use off-route GPX |
+| Voice announcement | 500ft (152m) before maneuver | Listen for AVSpeechSynthesizer |
+| Distance display | Must monotonically decrease | Verify no value jumps UP |
+| Camera mode | `.followWithCourse` active | Verify map rotates with travel direction |
+
+**3 voice synthesizers can overlap:** Ferrostar + TrailNavigationState + JunctionDetectionService. During nav, only Ferrostar should speak. If you hear double audio, flag it.
+
+**Dark theme:** Navigation should use CARTO Dark Matter basemap. If map is bright during nav, `useNavDarkTheme` wasn't set.
+
+---
+
+### MapLibre — Camera and Layer QA (Source: vault/agents/skills/maplibre-ios.md)
+
+**Camera QA rules:**
+- During navigation: `userTrackingMode` must be `.followWithCourse`. If map is static and not following user, camera was reset.
+- Root cause of static camera: code called `setCenterCoordinate`, `fly(to:)`, or `mapView.camera = ...` during navigation.
+- Re-center button: must set `mapView.userTrackingMode = .follow` (NOT `setCenterCoordinate`).
+
+**Layer/style QA:**
+- After style switch (terrain → satellite, day → night), custom trail layers must re-appear.
+- If trails disappear after style switch: layers weren't re-added in `didFinishLoadingStyle`.
+- If `visibleFeatures` query returns nothing: check that the layer's `isVisible = true`.
+
+**Trail color verification:**
+| Difficulty | Correct Hex |
+|-----------|-------------|
+| Easy | #34C759 |
+| Moderate | #007AFF |
+| Hard | #1D3461 |
+| Expert | #FF3B30 |
+
+---
+
+### GPX Route Creation — Generate Test Tracks (Source: vault/agents/skills/gpx-route-creator.md)
+
+If a required GPX track doesn't exist, use the generator script:
+```bash
+python3 scripts/generate_gpx_routes.py \
+  --system "Burning Rock" \
+  --type trail-only \
+  --count 3
+```
+Output: `DirtSync/DirtSyncUITests/GPXRoutes/burning-rock-trail-only-{N}.gpx`
+
+**Trail data must come from `all-trails.geojson`** (NOT Supabase coordinates — they can be 100m+ offset).
+
+Gold-verified test coordinates:
+- Burning Rock: `37.68, -81.30`
+- Kidds Dairy: `37.818, -78.387`
+
+If no test track exists for a navigation scenario: write `FAIL — No test track available for <scenario>. Must create one before retesting.`
+
+---
+
+### Trail Detection QA — Precision Thresholds (Source: vault/agents/skills/trail-data-pipeline.md)
+
+- On-trail: GPS within **100m** of nearest trail segment → trail name displays
+- Off-trail: GPS >100m from any trail → shows "Off-trail" or CLGeocoder road name
+- Debounce: trail name should NOT flicker; minimum 2s between changes
+- Speed gate: auto-recording starts at **>5 mph sustained 3 seconds**
+- Auto-pause: **<2.4 mph for 30 seconds**
+- GPS accuracy filter: readings >20m accuracy are ignored
+

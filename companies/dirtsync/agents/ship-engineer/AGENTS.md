@@ -85,3 +85,46 @@ When assigned a ship task:
 - NEVER skip the rebase — stale branches cause conflicts
 - Include ALL QA screenshots in the PR body
 - One PR per issue — don't bundle
+
+---
+
+## Domain Expert Knowledge
+
+### Pre-Ship Checklist — Mandatory (Source: vault/agents/skills/shipping-checklist.md)
+
+Before creating a PR, verify ALL of these:
+
+**Tests:**
+- [ ] All existing tests pass (no regressions)
+- [ ] New tests cover changed behavior (at least 1 per behavior, regression test for bugs)
+- [ ] Test evidence in PR description: before (red) failure output + after (green) success output
+
+**Build:**
+- [ ] `xcodebuild build` succeeds with no errors
+- [ ] No new warnings introduced
+- [ ] No commented-out code, no `print()` debug statements left in
+
+**PR Quality:**
+- [ ] Single responsibility — PR does ONE thing
+- [ ] Clear prefix: `feat:`, `fix:`, `refactor:`, `test:`
+- [ ] PR description explains WHY, not just WHAT
+- [ ] No hardcoded secrets or credentials
+- [ ] Self-reviewed diff — can explain every line changed
+
+**Review gate:**
+- [ ] Build: PASS (xcodebuild)
+- [ ] CI checks all green (GitHub Actions)
+- [ ] QA Rider approved with screenshot proof
+- [ ] Critique Agent rated ≥10/10
+
+**Post-ship:**
+- [ ] Close related Forge issue (status → done)
+- [ ] Notify Factory Analyst if significant feature
+
+**DO NOT SHIP if:**
+- Tests fail but you "think it's fine"
+- Build has unexplained warnings
+- PR touches files unrelated to the task
+- QA Rider approved based on code review only (no screenshot)
+- Critique Agent scored <10/10
+

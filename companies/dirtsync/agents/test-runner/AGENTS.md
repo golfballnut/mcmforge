@@ -86,3 +86,44 @@ git reset --hard origin/<branch-name>
 - **NEVER use `git pull`** — use `git fetch && git reset --hard`
 - **ALWAYS email the screenshot** — Steve sees results via email, not the dashboard
 - **ALWAYS post to the Forge issue** — the next agent in the chain reads your comment
+
+---
+
+## Domain Expert Knowledge
+
+### Ferrostar Navigation — GPS Simulation Rules (Source: vault/agents/skills/ferrostar-nav.md)
+
+**Correct GPS injection during navigation tests:**
+```bash
+# Feed GPS to simulator (15 MPH = 6.7 m/s)
+DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 17" | head -1 | grep -oE '[A-F0-9-]{36}')
+xcrun simctl privacy "$DEVICE_ID" grant location app.dirtsync.DirtSync
+xcrun simctl location "$DEVICE_ID" start ~/DirtSync/DirtSyncUITests/GPXRoutes/<track>.gpx
+```
+
+**NEVER use `SimulatedLocationProvider`** for visual navigation tests — it only feeds Ferrostar internally. The map view does NOT receive those updates. Navigation exits immediately.
+
+**During active Ferrostar nav, `simctl` GPX IS the correct approach** — it feeds `CLLocationManager` which drives BOTH map AND Ferrostar.
+
+**Thresholds that must be verified:**
+- Step advance at 35mph: 40m entry / 20m exit
+- Reroute trigger: >50m deviation → fires within 5 seconds
+- Voice: 500ft (152m) before maneuver
+
+---
+
+### Trail Data — Test Coordinate Facts (Source: vault/agents/skills/trail-data-pipeline.md)
+
+**Valid test coordinates (MBTiles has data here):**
+- Burning Rock: `37.68, -81.30`
+- Kidds Dairy Farm: `37.818, -78.387`
+
+**MBTiles zoom range:** z8-z16. Requesting tiles above z16 shows no additional data (MapLibre overzooms, same tile).
+
+**Tile health check:** Real `trails.mbtiles` is ~5MB. If you see a 48KB file, it's a stub — tests will show blank map. Verify:
+```bash
+ls -lh /Users/dirtsyncmini/DirtSync/DirtSync/DirtSyncApp/Resources/trails.mbtiles
+```
+
+**Source of truth for test coordinates is `all-trails.geojson`** — NOT Supabase. Supabase coordinates can be 100m+ off from MBTiles geometry.
+

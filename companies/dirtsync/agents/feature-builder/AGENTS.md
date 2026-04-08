@@ -84,6 +84,54 @@ DirtSync/DirtSyncApp/
 
 See HEARTBEAT.md for the full loop protocol.
 
+## Nav HUD Components (Steve's Requirements)
+
+### 1. Trail Header Bar (ALWAYS VISIBLE — even when no turn card)
+Shows the rider which trail they're currently on. This is what makes DirtSync a TRAIL app.
+```
+┌──────────────────────────────────────────────┐
+│ 🟢 Burning Rock Trail #L  ·  Easy  ·  2.3 mi │
+│ Burning Rock Trail System                     │
+└──────────────────────────────────────────────┘
+```
+- Difficulty color dot: Green=Easy, Blue=Moderate, Black=Hard, Black/Red=Expert, Gold=Single Track
+- Trail name from TrailDetectionService (in-memory detection from all-trails.geojson)
+- System name smaller underneath
+- Updates when rider crosses from one trail to another
+
+### 2. Destination in ETA Bar
+ETA bar must show WHERE the rider is going, not just time/distance:
+```
+To Burning Rock Trailhead
+3 min · 1.1 mi · Arriving 10:25 AM
+[progress bar]                    [^] [X]
+```
+
+### 3. Recenter Button
+When rider pans the map to look around, a recenter button appears (like Waze compass icon).
+Tapping it restores `userTrackingMode = .followWithCourse` — beacon snaps back to center, map rotates with heading.
+- CRITICAL: NEVER call `setCenterCoordinate` — it kills tracking mode silently
+- Use `mapView.userTrackingMode = .followWithCourse` to recenter
+- Button only visible when user has panned away (tracking mode lost)
+
+### 4. Zoom +/- Buttons
+Riders wear gloves — can't pinch to zoom. Need physical buttons:
+- (+) button: zoom in one level
+- (-) button: zoom out one level
+- Position: right side, vertically stacked
+- Use `mapView.setZoomLevel(current + 1, animated: true)`
+
+### Trail Difficulty Colors (OFFICIAL — matches real trail signage)
+| Difficulty | Color | Hex |
+|-----------|-------|-----|
+| Easy | Green | #34C759 |
+| Moderate | Blue | #007AFF |
+| Hard | Black | #000000 |
+| Expert | Black/Red | #000000 + #FF3B30 accent |
+| Single Track | Gold | #FFD700 |
+
+These match Hatfield-McCoy, Burning Rock, and national trail signage. Do NOT use navy or other custom colors.
+
 ## Gold Star Spec Measurements (Nav HUD)
 
 ### Element Dimensions
@@ -111,8 +159,9 @@ See HEARTBEAT.md for the full loop protocol.
 | End button | #FF3B30 | iOS red |
 | Trail Easy | #34C759 | — |
 | Trail Moderate | #007AFF | — |
-| Trail Hard | #1D3461 | — |
-| Trail Expert | #FF3B30 | — |
+| Trail Hard | #000000 (Black) | — |
+| Trail Expert | #000000/#FF3B30 (Black/Red) | — |
+| Trail Single Track | #FFD700 (Gold) | — |
 
 ### The 10/10 Bar
 A screenshot is 10/10 when:
@@ -278,7 +327,7 @@ layer.lineColor = NSExpression(
     in: [
         NSExpression(forConstantValue: "easy"): NSExpression(forConstantValue: UIColor(hex: "#34C759")),
         NSExpression(forConstantValue: "moderate"): NSExpression(forConstantValue: UIColor(hex: "#007AFF")),
-        NSExpression(forConstantValue: "hard"): NSExpression(forConstantValue: UIColor(hex: "#1D3461")),
+        NSExpression(forConstantValue: "hard"): NSExpression(forConstantValue: UIColor(hex: "#000000")),
         NSExpression(forConstantValue: "expert"): NSExpression(forConstantValue: UIColor(hex: "#FF3B30")),
     ],
     default: NSExpression(forConstantValue: UIColor.gray)

@@ -121,6 +121,19 @@ Summary must include:
 
 For every **non-trivial bug** you hit this run (source parser broke, classification rule fired wrong, dedup missed a duplicate), append an entry to the TOP of `companies/mcm-forge/agents/changelog-expert/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. One entry per non-trivial bug, newest at top. Commit with your work.
 
-## 8. Exit
+## 8. Close Your Issue (MANDATORY before exit)
+
+The routine scheduler created an issue for this run. After posting the summary, close it to prevent zombie issues stacking on the board:
+
+```bash
+curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "done"}'
+  # Use "cancelled" if all fetches failed and nothing was filed
+```
+
+## 9. Exit
 
 Clean exit. The daily summary is the deliverable. Do NOT poll for more work.

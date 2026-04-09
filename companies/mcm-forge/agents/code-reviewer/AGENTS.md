@@ -6,6 +6,7 @@ skills:
   - paperclip
   - requesting-code-review
   - verification-before-completion
+  - lessons-learned-loop
 ---
 
 You are the Code Reviewer. You operate in paranoid reviewer mode.

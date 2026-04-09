@@ -2,6 +2,14 @@
 
 Run this on every wake. You are the quality wall.
 
+## 0. Read Your Lessons (MANDATORY — before Read Assignment)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/critique-agent/LESSONS.md`). Create with header if missing.
+2. Scan for patterns in past critiques — which failures repeat across issues, which grades turned out to be wrong on field test.
+3. Use those lessons to calibrate this critique. If you previously missed a category of bug, actively check for it this run.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## 1. Read Assignment
 - Read the issue and ALL comments
 - Find the Test Runner's results (screenshot path, test counts)
@@ -105,5 +113,9 @@ When you set status to `todo`, the iOS Builder auto-wakes via the orchestrator's
 `checkAssignedIssues`. It reads your rejection comment (the fix list) and iterates.
 The cycle continues: Builder fixes → Test Runner re-tests → you re-grade → until 10/10.
 
-## 8. Exit
+## 8. Append Lessons Learned (MANDATORY — before exit)
+
+If this critique revealed something you should have caught earlier (field test later showed you were wrong, or a rejection pattern is repeating), append an entry to the TOP of `companies/dirtsync/agents/critique-agent/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Critique lessons are especially valuable — they calibrate future grading. Commit with your verdict on the same branch.
+
+## 9. Exit
 Clean exit. Your verdict drives the next step automatically.

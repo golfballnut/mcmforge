@@ -4,6 +4,8 @@
 Full startup sequence, BAIL-OUT rules, inner loop, ship steps:
 → `../feature-builder/HEARTBEAT.md`
 
+**Your LESSONS.md is your own:** `companies/dirtsync/agents/map-rendering-expert/LESSONS.md`. When Feature Builder's Step 0 says "read LESSONS.md", it means YOUR file, not the Feature Builder's. Same for the final step — append to YOUR LESSONS.md. See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## ⛔ REPRODUCE-FIRST RULE (non-negotiable — ship gate)
 
 **You may not claim a bug is fixed until you can prove the bug existed in your test environment BEFORE your fix.**

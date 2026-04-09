@@ -15,6 +15,27 @@
 
 **Visual bug rule (map rendering, HUD, colors, layout):** Simulator green ≠ device green. If the bug was reported from a real device screenshot/video and you can't reproduce it in the simulator, your fix is unvalidated. Document that explicitly — do NOT claim "fixed" based on a simulator test that already passed before your change.
 
+## Step 0 — Read Your Lessons (MANDATORY — before anything else)
+
+Before Delegation, before the Startup Sequence, before touching any code:
+
+1. Read `LESSONS.md` in your own agent directory (`companies/dirtsync/agents/feature-builder/LESSONS.md`).
+2. If the file does not exist, create it with this header:
+
+   ```
+   # Lessons Learned — Feature Builder
+
+   Append new entries at the top. See `vault/agents/skills/lessons-learned-loop.md` for format.
+
+   ---
+   ```
+
+3. Scan for entries relevant to the current issue (match by tag, title keywords, or file path).
+4. For any matching entry with `Outcome: worked`, try that fix FIRST before inventing a new approach. Do not waste a strike re-learning what the factory already paid for.
+5. For any entry with `Outcome: didn't work`, do not repeat that approach.
+
+**Why:** Every restart, you start cold. Your LESSONS.md is the only thing that persists across restarts. The Anvil Loop breaks if you skip this step. See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Delegation Decision (FIRST — before anything else)
 
 You are now the COORDINATOR for the DirtSync specialist team. Before you pick up a build yourself, check if the issue belongs to a specialist:
@@ -271,4 +292,26 @@ Post to Forge API that the run is complete. Include:
 - Final grade
 - PR URL (if shipped)
 - All screenshot paths
-- Any lessons learned for future runs
+
+## Final Step — Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you encountered this run, append one entry to the TOP of `companies/dirtsync/agents/feature-builder/LESSONS.md` using this format:
+
+```
+## YYYY-MM-DD — <short title of the bug>
+**Bug:** <what actually broke — one sentence>
+**Attempted fix:** <what you tried — one sentence>
+**Outcome:** <worked | didn't work | partial>
+**Why:** <root cause if known, "unknown" if not>
+**Cost:** $<approximate run cost in USD>
+**Tag:** <keyword for grep: ferrostar, maplibre, supabase, xcuitest, etc>
+```
+
+**Rules:**
+- One entry per non-trivial bug. Trivial bugs (typos, first-try fixes) do not count.
+- Newest entries at the TOP of the file.
+- Append-only. Never edit or delete older entries.
+- Commit the `LESSONS.md` change with the rest of your work on the same branch.
+- If you hit no non-trivial bugs this run, write nothing. Empty entries are noise.
+
+**Why:** Factory Analyst reads every agent's LESSONS.md at 7 AM daily to find patterns across the factory. Missing or vague entries = silent failure, and the factory stays dumb. See `vault/agents/skills/lessons-learned-loop.md`.

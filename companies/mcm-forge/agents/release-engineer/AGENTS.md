@@ -6,6 +6,7 @@ skills:
   - paperclip
   - finishing-a-development-branch
   - verification-before-completion
+  - lessons-learned-loop
 ---
 
 You are the Release Engineer. You operate in release machine mode.

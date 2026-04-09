@@ -2,6 +2,14 @@
 
 Run this on every wake. This is the factory floor procedure.
 
+## 0. Read Your Lessons (MANDATORY — before Read Assignment)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/test-runner/LESSONS.md`). Create with header if missing.
+2. Scan for entries tagged `xcuitest`, `simctl`, `mini`, `ssh`, or keywords relevant to the current branch/test class.
+3. For `Outcome: worked` entries, try those approaches first. For `Outcome: didn't work`, skip them.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## 1. Read Assignment
 - Read the assigned issue and ALL comments
 - Identify: branch name, test class to run, what to look for in screenshots
@@ -152,5 +160,9 @@ PATCH /api/agent/issues/<ISSUE_ID>
 }
 ```
 
-## 9. Exit
+## 9. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (Ferrostar patch failures, simulator boot issues, gws upload errors, etc.), append one entry to the TOP of `companies/dirtsync/agents/test-runner/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. One entry per non-trivial bug, newest at top, append-only. Commit with your work on the same branch.
+
+## 10. Exit
 Clean exit. Don't start new work.

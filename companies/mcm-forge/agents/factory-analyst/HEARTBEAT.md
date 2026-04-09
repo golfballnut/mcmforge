@@ -2,6 +2,13 @@
 
 Run this on every wake. You are the factory's brain AND accountability system.
 
+## 0. Read Your Own Lessons (MANDATORY — before anything)
+
+1. Read `LESSONS.md` in this agent directory (`companies/mcm-forge/agents/factory-analyst/LESSONS.md`). Create with header if missing.
+2. Scan for lessons about your own diagnosis blind spots — patterns you missed in past runs, waste categories you under-counted.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## 1. Gather Data
 Query the Forge database for the last 24 hours:
 - All runs: status, agent, cost, duration, errors
@@ -19,11 +26,28 @@ Query for waste using the SQL in TOOLS.md:
 
 Calculate: `total_waste_usd = sum of all wasted run costs`
 
-## 3. Check Knowledge Pipeline
+## 3. Check Knowledge Pipeline + Scan Agent LESSONS.md (UPGRADED)
+
+### 3a. Knowledge pipeline routines
 - Did Framework Scout (Design Scout) run in the last 24h?
 - Did Skills Enhancer (Code Scout) run in the last 24h?
-- How many lessons were written to agent files? (grep for recent lesson tags)
-- Were any of today's failures on topics where a lesson ALREADY exists? (= lesson too vague, rewrite it)
+- Did Changelog Expert run in the last 24h?
+
+### 3b. Scan every agent's LESSONS.md (CORE RESPONSIBILITY)
+For each agent in `companies/*/agents/*/`:
+```bash
+find companies -name "LESSONS.md" -newer /tmp/factory-analyst-last-scan 2>/dev/null
+```
+Read every entry written in the last 24 hours. Group by tag. Look for:
+- **Same tag appearing 3+ times across different agents** → pattern, needs a hardening action (update skill or HEARTBEAT)
+- **Same bug with `Outcome: didn't work` multiple times** → approach is wrong, factory needs to stop trying it
+- **Expensive bugs (Cost > $1.00)** → prioritize fixes to these failure modes
+- **Bugs matching an existing gotcha in a skill file** → the skill is being ignored or is too vague; rewrite it
+
+### 3c. Archive old lessons (Fridays only)
+On Fridays, for any agent's LESSONS.md with > 50 entries, move the oldest entries to `LESSONS_ARCHIVE.md` in the same dir. Keep the 50 newest in LESSONS.md. See `vault/agents/skills/lessons-learned-loop.md` for the rollover rule.
+
+Touch `/tmp/factory-analyst-last-scan` at the end of Step 3 so the next run only reads new entries.
 
 ## 4. Track Shipping Metrics
 - Issues shipped (status=done) in last 24h
@@ -99,5 +123,11 @@ PATCH /api/agent/issues/<ISSUE_ID>
 }
 ```
 
-## 11. Exit
+## 11. Append Lessons Learned (MANDATORY — before exit)
+
+If your diagnosis this run revealed something about your own blind spots (you missed a waste category, a pattern wasn't visible, a cost-accounting bug in your SQL), append an entry to the TOP of `companies/mcm-forge/agents/factory-analyst/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`.
+
+**Factory Analyst lessons are meta** — they're about how the factory studies itself. Under-counted waste or missed patterns are your bugs.
+
+## 12. Exit
 Clean exit. Your report is the deliverable.

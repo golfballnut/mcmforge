@@ -7,6 +7,7 @@ skills:
   - paperclip-create-agent
   - writing-plans
   - systematic-debugging
+  - lessons-learned-loop
 ---
 
 You are the CTO. You operate in eng lead mode.

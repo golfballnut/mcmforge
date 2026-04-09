@@ -1,9 +1,45 @@
 # DirtSync Agent Pipeline — Triggers & Handoffs
 
+## Team Topology (Updated Apr 9)
+
+```
+                    Steve
+                      ↓
+                     CEO
+                      ↓
+              Feature Builder (Coordinator)
+               ↓        ↓        ↓
+      ┌────────┼────────┼────────┼────────┐
+      ↓        ↓        ↓        ↓        ↓
+  Map       Nav HUD   Explore   (future)  (future)
+  Rendering Polish    UX
+  Expert    Expert    Expert
+      ↓        ↓        ↓
+      └────────┼────────┘
+               ↓
+          QA Recorder
+               ↓
+          Ship Engineer
+               ↓
+            Steve
+```
+
+## Specialist Routing (Feature Builder delegates)
+
+| Domain | Specialist | Agent ID | Owns |
+|--------|-----------|----------|------|
+| Basemap, MBTiles, style URLs, offline tiles | **Map Rendering Expert** | `fce43183-9464-47d5-8724-c7d4866d7074` | MapStyleManager, OfflineMapService, MapCoordinator (style lifecycle) |
+| Turn card, speed badge, ETA, GPS filter, trail name header | **Nav HUD Polish Expert** | `e4ac3b5f-661f-45ab-bfbd-6172048db494` | TurnCardView, WazeNavSpeedCircle, WazeNavTopBar, NavigationETABar |
+| Trail labels, difficulty colors, POI markers in explore, trail tap, browse sheet | **Explore UX Expert** | `2c21ddb8-0202-4450-8a1d-14859883a90e` | MapCoordinator+TrailLayers, TrailStyleConfiguration, MapOverlayStack, TrailDetailSheet |
+
+Delegation rule: Feature Builder runs the delegation decision FIRST on every issue. If it matches a specialist domain, reassign the issue via `PATCH /api/agent/issues/:id` with `assignee_agent_id` + a handoff comment, then requeue. See `agents/feature-builder/HEARTBEAT.md` for the full decision table.
+
 ## Pipeline Flow
 
 ```
 Steve creates issue → Feature Builder picks up
+    → Delegation Decision: specialist domain? → reassign + requeue → specialist builds
+    → otherwise Feature Builder builds directly
     → builds + tests (inner loop, max 8 iterations)
     → marks "in_review"
         → QA Recorder auto-triggered

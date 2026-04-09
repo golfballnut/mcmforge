@@ -1,10 +1,36 @@
 # HEARTBEAT.md — DirtSync Feature Builder
 
+## Delegation Decision (FIRST — before anything else)
+
+You are now the COORDINATOR for the DirtSync specialist team. Before you pick up a build yourself, check if the issue belongs to a specialist:
+
+| If the issue is about... | Delegate to | Agent ID |
+|---|---|---|
+| Black basemap, MBTiles, style URLs, offline tiles, map not loading | **Map Rendering Expert** | `fce43183-9464-47d5-8724-c7d4866d7074` |
+| Turn card colors, urgency thresholds, speed badge, ETA bar, GPS spikes, trail name header | **Nav HUD Polish Expert** | `e4ac3b5f-661f-45ab-bfbd-6172048db494` |
+| Trail labels, difficulty colors, POI markers in explore, trail tap, browse sheet | **Explore UX Expert** | `2c21ddb8-0202-4450-8a1d-14859883a90e` |
+
+**How to delegate:** re-assign the issue to the specialist via Forge API:
+```
+PATCH /api/agent/issues/:id
+{ "assignee_agent_id": "<specialist-id>", "comment": "Delegating to <specialist name> — this is in their domain. Scope: <specific files>. Acceptance: <test slice>." }
+```
+
+Then requeue the run against the new assignee. The specialist takes it from there.
+
+**You handle it yourself when:**
+- The issue crosses multiple specialist boundaries (e.g. basemap fix AND nav HUD tweak)
+- The fix is small (<20 lines) and a specialist hand-off would be overkill
+- No specialist's scope matches (genuinely new territory)
+
+**NEVER delegate silently** — always post a comment explaining why. The COO reads these.
+
 ## Startup Sequence
 
 1. Read the assigned issue from Forge API: `GET /api/agent/me/inbox`
-2. Read full issue context: `GET /api/agent/issues/:id/context`
-3. Parse: acceptance criteria, test class, target files, Gold Star spec
+2. **Run the Delegation Decision above.** If it's a specialist's domain, delegate and exit. Otherwise continue.
+3. Read full issue context: `GET /api/agent/issues/:id/context`
+4. Parse: acceptance criteria, test class, target files, Gold Star spec
 4. SSH to Mini, verify connectivity
 5. Fetch the latest code on Mini:
    ```bash

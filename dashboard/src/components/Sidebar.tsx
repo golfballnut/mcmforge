@@ -322,8 +322,8 @@ export default function Sidebar() {
             <div
               key={company.id}
               title={company.name}
-              onClick={() => {
-                setActiveCompany({ ...company, issue_prefix: "" });
+              onClick={async () => {
+                await setActiveCompany({ ...company, issue_prefix: "" });
                 router.refresh();
               }}
               className={`w-9 h-9 rounded-full flex items-center justify-center mb-2 cursor-pointer transition-all shrink-0 ${

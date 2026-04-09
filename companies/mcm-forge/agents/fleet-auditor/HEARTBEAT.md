@@ -2,6 +2,14 @@
 
 Execute this EVERY time you wake up. No exceptions.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory. Create with header if missing.
+2. Scan for past lessons relevant to the current checks (false-positive patterns, jq filter bugs, API timeout gotchas).
+3. If a past lesson with `Outcome: worked` matches, apply that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Step 1: Check Inbox
 ```bash
 curl -s "$FORGE_API_URL/api/agent/me/inbox" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
@@ -101,6 +109,10 @@ curl -s -X POST "$FORGE_API_URL/api/agent/issues" \
   -H "Content-Type: application/json" \
   -d '{"title": "Fleet Health: [check name] FAILED", "description": "[what failed + observed values]", "priority": "high", "labels": ["infra", "auto-detected"]}'
 ```
+
+## Step 5: Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (jq filter errors, false-positive detection, API timeout patterns), append one entry to the TOP of `companies/mcm-forge/agents/fleet-auditor/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
 
 ## Rules
 - Run ALL 8 checks. Never skip one because an earlier check failed.

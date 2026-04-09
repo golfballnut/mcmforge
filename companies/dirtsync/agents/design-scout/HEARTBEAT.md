@@ -1,5 +1,13 @@
 # HEARTBEAT.md — Trail Data Auditor
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/design-scout/LESSONS.md`). Create with header if missing.
+2. Scan for past lessons relevant to the current task (e.g. Supabase query failures, join key mismatches, schema column names).
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Startup
 1. Read issue from Forge API: `GET /api/agent/me/inbox`
 2. Get issue context: `GET /api/agent/issues/:id/context`
@@ -57,3 +65,7 @@ PATCH /api/agent/issues/:id
 - Supabase query fails 2x → post error → mark blocked
 - No issue assigned → post "no assignment" → exit cleanly
 - Query returns >1000 rows → add LIMIT, don't process all
+
+## Final Step — Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/design-scout/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

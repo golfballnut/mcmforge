@@ -2,6 +2,23 @@
 
 Run this procedure on every wake. No exceptions.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/ship-engineer/LESSONS.md`). Create with this header if missing:
+
+   ```
+   # Lessons Learned — Ship Engineer
+
+   Append new entries at the top. See `vault/agents/skills/lessons-learned-loop.md` for format.
+
+   ---
+   ```
+
+2. Scan for past lessons about rebase conflicts, CI failures, or PR creation issues.
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Wake Procedure
 
 - [ ] 1. **Read your issue.** Fetch the assigned issue. Read the full description and every comment.
@@ -37,3 +54,7 @@ Run this procedure on every wake. No exceptions.
     -d '{"comment": "## Results\n\n<summary of what you did>\n\n**Files changed:** ...\n**Status:** ...\n**Next steps:** ..."}'
   ```
   If you're running low on turns, STOP working and POST what you have so far. Update issue status via PATCH (in_review, approved, done, blocked). Your work does NOT count unless it's posted as a comment. The next agent in the chain reads your comment to continue.
+
+## 15. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (rebase conflict, post-rebase build failure, CI red, gh pr create error), append one entry to the TOP of `companies/dirtsync/agents/ship-engineer/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

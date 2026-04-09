@@ -88,3 +88,7 @@ Upload this to QA Iterations Drive folder so Steve can compare to his field test
 - Label not showing — fix SymbolLayer config
 - Sheet missing — create it
 - Debug marker leaking — add the guard
+
+## Final Step — Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/explore-ux-expert/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

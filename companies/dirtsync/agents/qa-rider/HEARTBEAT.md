@@ -1,5 +1,22 @@
 # HEARTBEAT.md — QA Recorder
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/qa-rider/LESSONS.md`). Create with this header if missing:
+
+   ```
+   # Lessons Learned — QA Recorder
+
+   Append new entries at the top. See `vault/agents/skills/lessons-learned-loop.md` for format.
+
+   ---
+   ```
+
+2. Scan for past lessons about recording failures, Drive upload issues, or simulator boot problems.
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Startup
 1. Read issue from Forge API: `GET /api/agent/me/inbox`
 2. Get issue context: `GET /api/agent/issues/:id/context`
@@ -56,3 +73,7 @@ PATCH /api/agent/issues/:id
 - Recording fails → take screenshot only, still post results
 - Tests won't run (build fail) → post error to issue → mark blocked
 - NEVER exit without posting to the issue
+
+## Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (recording failed to start, Drive upload timeout, gws PATH missing, test build failure), append one entry to the TOP of `companies/dirtsync/agents/qa-rider/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

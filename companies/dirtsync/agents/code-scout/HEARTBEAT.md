@@ -1,5 +1,13 @@
 # HEARTBEAT.md — Gold Star Gap Scanner
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/code-scout/LESSONS.md`). Create with header if missing.
+2. Scan for past lessons relevant to the current task (e.g. SSH failures, grep pattern mismatches, ID naming convention gotchas).
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Startup
 1. Read issue from Forge API: `GET /api/agent/me/inbox`
 2. Get issue context: `GET /api/agent/issues/:id/context`
@@ -48,3 +56,7 @@ PATCH /api/agent/issues/:id
 ## BAIL-OUT RULES
 - SSH fails 2x → post error → mark blocked
 - No files found → post "repo may not be synced" → mark blocked
+
+## Final Step — Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/code-scout/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

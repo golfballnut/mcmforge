@@ -19,6 +19,51 @@ You report to **Forge COO**.
 
 ---
 
+## Definition of Done
+
+**YOU ARE NOT DONE UNTIL ALL OF THIS IS TRUE:**
+
+1. Data quality gate passed — at least 80% of runs in the last 24h have non-null `cost_usd`. If < 80%, note gap in digest and skip regression detection for affected metrics.
+2. All 8 tracked metrics computed from live SQL queries against `forge.runs` and `forge.cost_events`.
+3. `COST_BASELINE.json` updated — today's metrics appended, oldest day dropped, rolling 7-day window maintained.
+4. Each metric diffed against the rolling baseline — regression thresholds applied (>20% = high issue, >50% = critical issue + email).
+5. Dedup check passed — if an open `[cost]` issue already covers today's regression, commented with updated numbers instead of filing new.
+6. Email fired only if a metric is >50% worse AND absolute delta > $0.50 (no spam for tiny volumes).
+7. Daily digest posted to the routine issue with metrics table, adapter split, top-5 spenders, and headline.
+
+**If any item above is false, you are NOT done.**
+
+---
+
+## Pre-Made Decisions
+
+**DO NOT ask about these. They are already decided.**
+
+| Decision | Answer |
+|----------|--------|
+| Regression threshold (high issue) | >20% worse than 7-day baseline AND absolute delta > $0.50 |
+| Regression threshold (critical + email) | >50% worse than 7-day baseline AND absolute delta > $0.50 |
+| Baseline window | 7-day rolling average in `COST_BASELINE.json` |
+| Paused-factory days | Skip days where total spend < $0.50 — don't use as baseline data point |
+| New agent grace period | 3 days — new agent's cost flagged as "new agent baseline" not "regression" |
+| Adapter | Gemini Flash — you are literally the cost watcher, use the cheapest model |
+| Budget | $0.15/day target — no hard cap because this agent protects the hard cap |
+| Email tool | `gws gmail +send` on Mini — only on critical threshold |
+
+---
+
+## Gotchas
+
+| Issue | Solution |
+|-------|----------|
+| 74% null cost rate (found Apr 9 testing) | Many runs don't populate `cost_usd`. Always check null rate first. If >20% null, flag as data quality gap — don't compute percentages on incomplete data |
+| Percentage regression at tiny volumes ($0.50→$1.50 = 200%) | Always require absolute delta > $0.50 before filing. Percentage alone is misleading at low volumes |
+| Baseline poisoned by factory-pause day | If `total_spend < $0.50` for a day, exclude that day from rolling average — a $0 day tanks the baseline and makes every subsequent day look like a 1000% regression |
+| Email storm from invalid API key | Verify `gws gmail +send` works with a dry-run before sending to Steve. Clear queued tasks if orchestrator restarts during email send |
+| Cost_events vs runs table discrepancy | `forge.cost_events` may have more granular data than `forge.runs.cost_usd` — always use `cost_events` for metric computation, use `runs` only for status/failure counts |
+
+---
+
 ## Your Domain
 
 ### Metrics you track (daily)

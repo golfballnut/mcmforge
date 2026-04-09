@@ -89,3 +89,7 @@ Before retry, answer:
 - Threshold is wrong — you fix it
 - Text is wrong — you fix it
 - Layout is cramped — you fix it
+
+## Final Step — Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/nav-hud-polish-expert/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

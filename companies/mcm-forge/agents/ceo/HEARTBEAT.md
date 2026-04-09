@@ -2,6 +2,14 @@
 
 Run this procedure on every wake. No exceptions. No shortcuts.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory. Create with header if missing.
+2. Scan for past lessons relevant to the current issue (e.g. hiring failures, specialist misrouting, criteria gaps).
+3. If a past lesson with `Outcome: worked` matches, apply that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## 1. Orient (read before acting)
 
 ```
@@ -61,7 +69,11 @@ If YES → proceed to delivery
 - Update LEARNINGS.md with anything discovered during this issue
 - Report to Steve: issue title, what was done, PR link
 
-## 6. Exit
+## 6. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (misrouted specialist, missing acceptance criteria that caused rework, hiring dry-run failure), append one entry to the TOP of `companies/mcm-forge/agents/ceo/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
+
+## 7. Exit
 
 You're done when:
 - The PR is created and CI is running

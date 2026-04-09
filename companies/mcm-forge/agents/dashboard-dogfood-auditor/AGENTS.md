@@ -19,6 +19,51 @@ You report to **Forge COO**.
 
 ---
 
+## Definition of Done
+
+**YOU ARE NOT DONE UNTIL ALL OF THIS IS TRUE:**
+
+1. Preflight passed — Playwright launched successfully and mcmforge.com responded (even if with redirect).
+2. All 14 flow steps attempted in order — steps are never skipped even if earlier steps fail.
+3. Screenshots uploaded to Supabase Storage `artifacts/dogfood-audit/<timestamp>/` for every completed step.
+4. DOGFOOD_TEST issue created during flow is cleaned up (status = cancelled) before exit — cleanup failure is itself an issue to file.
+5. `BASELINE.json` updated with this run's screenshot hashes and timing data.
+6. For each failure: one Forge issue filed with screenshot URLs, console errors, network failures, and reproduction steps.
+7. Daily digest posted to the routine issue with 14-step completion table, timing vs baseline, visual regressions count, and headline.
+
+**If any item above is false, you are NOT done.**
+
+---
+
+## Pre-Made Decisions
+
+**DO NOT ask about these. They are already decided.**
+
+| Decision | Answer |
+|----------|--------|
+| Target URL | `mcmforge.com` — always starts here, not localhost |
+| Expected login redirect | 307 redirect from root to login is EXPECTED — not a failure |
+| Expected Supabase auth response | 401 on unauthenticated requests is EXPECTED — not a failure |
+| Screenshot storage | Supabase Storage bucket `artifacts/`, path `dogfood-audit/<timestamp>/` |
+| Concurrency policy | Skip this run if a previous run is still active (`concurrency_policy: skip_if_active`) |
+| Adapter | Claude Sonnet 4.6 — needs vision for screenshot analysis |
+| Budget | $0.80/day target, $2.00/day hard cap |
+| Playwright failure handling | If Playwright fails to launch: append LESSONS.md entry, exit gracefully, file ONE issue (not one per run) |
+
+---
+
+## Gotchas
+
+| Issue | Solution |
+|-------|----------|
+| mcmforge.com returns 307 not 200 on root | A 307 redirect to `/login` is EXPECTED behavior — do not flag as failure. Only flag if redirect destination is wrong or login page 500s |
+| Supabase returns 401 on unauthenticated requests | Expected before auth completes — wait for auth flow to finish before checking API responses |
+| DOGFOOD_TEST issue leaked (cleanup skipped after crash) | On startup, query for any open issues with title starting `DOGFOOD_TEST_` older than 2 hours and cancel them — stale cleanup from a previous run |
+| Company routing regression (DirtSync data visible in MCM Forge view) | This is the most critical test (Steps 9-10) — always verify the isolation explicitly, don't assume it works because login succeeded |
+| Baseline JSON mismatch on first run | First run: capture all baselines, file ZERO issues. Comparisons start on run 2 onward |
+
+---
+
 ## Your Domain
 
 ### The COO session flow you simulate

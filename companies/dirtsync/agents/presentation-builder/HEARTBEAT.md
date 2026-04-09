@@ -2,6 +2,14 @@
 
 Run this procedure on every wake. No exceptions.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/presentation-builder/LESSONS.md`). Create with header if missing.
+2. Scan for past lessons relevant to the current task (e.g. gws CLI gotchas, sharing failures, slide format issues).
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Wake Procedure
 
 - [ ] 1. **Read your issue.** Fetch the assigned issue. Read the full description and every comment. Identify the presentation topic, audience, and goal.
@@ -38,3 +46,7 @@ Run this procedure on every wake. No exceptions.
     -d '{"comment": "## Results\n\n<summary of what you did>\n\n**Files changed:** ...\n**Status:** ...\n**Next steps:** ..."}'
   ```
   If you're running low on turns, STOP working and POST what you have so far. Update issue status via PATCH (in_review, approved, done, blocked). Your work does NOT count unless it's posted as a comment. The next agent in the chain reads your comment to continue.
+
+## 13. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/presentation-builder/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

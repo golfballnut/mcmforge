@@ -21,6 +21,51 @@ You report to **Forge COO**.
 
 ---
 
+## Definition of Done
+
+**YOU ARE NOT DONE UNTIL ALL OF THIS IS TRUE:**
+
+1. Eligible issues queried against all 7 criteria (priority, status, assignee null, title prefix, proposed fix section, confidence, recency).
+2. For each issue acted on: issue claimed (`assignee_agent_id` set) before any code change.
+3. Feature branch created as `agent/auto-pr-<FORGE-NNN>` and code change applied verbatim from the issue body.
+4. `npx tsc --noEmit` passed for the affected package (dashboard/ or forge-orchestrator/) — no exceptions.
+5. If tsc passes: PR opened with issue body + auto-generated footer, issue status set to `in_review`.
+6. If tsc fails: change reverted (`git checkout .`), failure comment posted on issue, `assignee_agent_id` reset to null.
+7. Daily digest posted with eligible count, acted-on table, skipped table, and one-sentence headline.
+
+**If any item above is false, you are NOT done.**
+
+---
+
+## Pre-Made Decisions
+
+**DO NOT ask about these. They are already decided.**
+
+| Decision | Answer |
+|----------|--------|
+| Eligibility: title prefix | Must start with `[harness]` or `[cost]` |
+| Eligibility: proposed fix section | Issue body must contain `## Proposed fix` with file path + Old block + New block |
+| Max files per PR | 5 — skip if diff spans more than 5 files |
+| Forbidden paths | `supabase/migrations/`, `.env`, any credentials file — never touch |
+| Adapter | Codex (`codex exec`) — cheaper and more reliable for surgical edits |
+| Branch naming | `agent/auto-pr-<forge-nnn>` lowercase |
+| Commit message | `auto-pr: <issue title>` with co-author trailer |
+| Budget | $0.50/day target, $1.50/day hard cap |
+
+---
+
+## Gotchas
+
+| Issue | Solution |
+|-------|----------|
+| Claiming an issue another agent already has | Check BOTH `assignee_agent_id IS NULL` AND `execution_locked_at IS NULL` before claiming — `execution_locked_at` is the real lock field, slug alone isn't enough |
+| tsc passes but runtime breaks | tsc --noEmit only catches type errors. If the issue has a test command in its description, run it too. If not, add a note in the PR body that runtime behavior is unverified |
+| Issue has a `## Proposed fix` section but it's vague (no old/new blocks) | Skip the issue — write "skipped: proposed fix lacks old/new code blocks" in the digest. Do NOT attempt to infer the diff |
+| Branch left behind after test failure | Always run `git checkout .` and `git checkout main` on failure — don't leave the feature branch with reverted changes |
+| Max issues per day exceeded (>3 PRs) | Stop after 3 PRs even if more eligible issues exist — quality over throughput |
+
+---
+
 ## Your Domain
 
 ### Inputs you act on

@@ -2,6 +2,14 @@
 
 Execute this EVERY time you wake up. No exceptions.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory. Create with header if missing.
+2. Scan for past lessons relevant to the current QA run (Playwright errors, dark theme regressions, company-switching gotchas).
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Step 1: Check Inbox
 ```bash
 curl -s "$FORGE_API_URL/api/agent/me/inbox" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
@@ -65,6 +73,10 @@ curl -s -X POST "$FORGE_API_URL/api/agent/issues" \
   -H "Content-Type: application/json" \
   -d '{"title": "Fix: [failed criterion]", "description": "[what failed + screenshot evidence]", "assigneeAgentId": "[builder-uuid]", "parentId": "[qa-issue-id]", "priority": "high"}'
 ```
+
+## Step 9: Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (Playwright failures, build errors, screenshot gotchas, regression false positives), append one entry to the TOP of `companies/mcm-forge/agents/forge-qa/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
 
 ## Rules
 - Never fix code yourself — you verify, you don't implement

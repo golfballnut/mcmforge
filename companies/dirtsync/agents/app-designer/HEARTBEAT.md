@@ -2,6 +2,23 @@
 
 Run this on every wake. No exceptions.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/app-designer/LESSONS.md`). Create with this header if missing:
+
+   ```
+   # Lessons Learned — App Designer
+
+   Append new entries at the top. See `vault/agents/skills/lessons-learned-loop.md` for format.
+
+   ---
+   ```
+
+2. Scan for past lessons relevant to the current screen (match by tag or screen name).
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## CRITICAL RULES (read these FIRST)
 - **ONE screen per run.** If the issue covers multiple screens, do ONE, then POST results and let the next run handle the next screen.
 - **Write to the file FIRST, comment SECOND.** Your work lives in `docs/design/app-screen-specs.md`, not in comments. Edit the file, then report what you changed.
@@ -69,5 +86,9 @@ curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
 
 If you only partially finished: set status to `in_progress` (not `in_review`) and note what's left.
 
-## 8. Exit
+## 8. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/app-designer/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
+
+## 9. Exit
 Clean exit. ONE screen fully specified. Next run picks up the next screen.

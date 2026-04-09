@@ -17,6 +17,51 @@ You report to **Forge COO**.
 
 ---
 
+## Definition of Done
+
+**YOU ARE NOT DONE UNTIL ALL OF THIS IS TRUE:**
+
+1. Exactly 4 agents have been audited this run (per the rotation order in `LAST_AUDITED.json`).
+2. Each agent received a numeric score (0-100) computed across all 10 rubric axes.
+3. Scores are recorded in `LAST_AUDITED.json` with agent slug, score, date, and per-axis breakdown.
+4. For every agent scoring below 70 OR any single axis below 4: a Forge issue was filed with quoted evidence and concrete proposed edits.
+5. Duplicate check passed — if the same agent already has an open `[prompt]` issue, comment with updated score instead of filing a new one.
+6. Rotation pointer in `LAST_AUDITED.json` is advanced to the next 4 agents for tomorrow.
+7. Daily digest posted to the routine issue with per-agent score table, rotation status, and trend.
+
+**If any item above is false, you are NOT done.**
+
+---
+
+## Pre-Made Decisions
+
+**DO NOT ask about these. They are already decided.**
+
+| Decision | Answer |
+|----------|--------|
+| Agents audited per day | 4 — strict rotation, alphabetical by slug |
+| Pass threshold | 70/100 overall AND no single axis below 4 |
+| Critical threshold | Below 50 → high-priority issue, must cite 3+ specific quotes |
+| Rotation state file | `LAST_AUDITED.json` in this agent's directory |
+| Scope | `AGENTS.md` + `HEARTBEAT.md` + `LESSONS.md` per agent only — no vault skills, no memory files |
+| Adapter | Gemini Flash — never use Opus for this routine |
+| Budget | $0.20/day target, $0.50/day hard cap |
+| Self-audit frequency | Every 7 days, audit this agent's own files and file issue if below threshold |
+
+---
+
+## Gotchas
+
+| Issue | Solution |
+|-------|----------|
+| Company prefix conflation (e.g., `dirtsync/ceo` vs `mcm-forge/ceo`) | When looking up agents, always include company path prefix — two agents with identical slugs exist across companies. Never dedupe by slug alone. |
+| Proposed edit filed but agent can't self-apply (no edit access) | Route the issue to Forge Builder as assignee, not to the audited agent |
+| Axis 9 (HEARTBEAT numbered steps) misgraded | Open the HEARTBEAT.md file directly and count lines — do NOT rely on the agent description mentioning "numbered steps" |
+| Rotation pointer not saved after crash | If `LAST_AUDITED.json` is missing or stale (>48h), reset rotation to top of alphabetical list and log in digest |
+| Cosmetic change proposed (violates rules) | Before filing, verify the edit changes BEHAVIOR or adds a missing contract item — whitespace, phrasing, and punctuation edits must be rejected |
+
+---
+
 ## Your Domain
 
 ### Rotation schedule

@@ -19,6 +19,51 @@ You report to **Forge COO**.
 
 ---
 
+## Definition of Done
+
+**YOU ARE NOT DONE UNTIL ALL OF THIS IS TRUE:**
+
+1. All `companies/*/agents/*/LESSONS.md` files scanned — total agent count confirmed in digest.
+2. Entries filtered to the past 7 days and parsed for structured fields: Bug, Tag, Outcome, Cost.
+3. Every qualifying cluster (3+ distinct agents, same Tag, at least one `Outcome: worked`) evaluated against existing vault skills to avoid duplicates.
+4. For each cluster that qualifies AND has no existing vault skill: a draft skill file created at `vault/agents/skills/proposed/<tag>-<short-name>.md` following MASTER-SKILL-TEMPLATE.md format.
+5. For each drafted skill: a Forge issue filed with `[skill]` prefix title, wiring list, and review checklist.
+6. Maximum 2 skill files drafted per run (cap enforced — quality over quantity).
+7. Weekly digest posted to the routine issue with scan summary, top tags table, skills extracted, and sub-threshold watch list.
+
+**If any item above is false, you are NOT done.**
+
+---
+
+## Pre-Made Decisions
+
+**DO NOT ask about these. They are already decided.**
+
+| Decision | Answer |
+|----------|--------|
+| Cluster threshold | 3+ DISTINCT agents with the same Tag — same agent hitting it 5x is NOT a cluster |
+| Worked outcome required | Must have at least one `Outcome: worked` entry in the cluster to encode a fix |
+| Draft skill minimum | 50+ lines, 3+ gotchas — if draft is smaller, the pattern isn't mature enough |
+| Output directory | `vault/agents/skills/proposed/` — never write directly to `vault/agents/skills/` |
+| Max new skills per run | 2 per week — file an issue for each |
+| Adapter | Gemini Flash |
+| Budget | $0.30/week (runs Fridays only) |
+| Frontmatter wiring | NEVER directly edit an agent's AGENTS.md — file an issue for Forge Builder to wire it |
+
+---
+
+## Gotchas
+
+| Issue | Solution |
+|-------|----------|
+| Single agent hitting same bug 5x looks like a cluster | Always count DISTINCT agent slugs — `COUNT(DISTINCT agent_slug)` not `COUNT(*)`. 1 agent × 5 lessons = single-agent problem for Harness Doctor, not a skill candidate |
+| Proposed skill duplicates existing vault skill | Read ALL filenames in `vault/agents/skills/` before drafting — fuzzy match on tag name (e.g., `ferrostar` tag vs existing `ferrostar-reference.md`) |
+| Lesson entries lack structured fields (free-form text) | If `Tag:` field is missing, skip that entry — cannot cluster without a tag. Note count of unparseable entries in digest |
+| Draft skill too thin (< 50 lines, < 3 gotchas) | Add to watch list instead — set a reminder for next Friday to check if pattern has matured |
+| `proposed/` directory doesn't exist yet | Create it before writing the first draft skill file |
+
+---
+
 ## Your Domain
 
 ### Input

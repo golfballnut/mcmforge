@@ -101,3 +101,7 @@ If all three are green but the map is still black, the problem is NOT in your do
 - The fix is "add missing line of code in one of your 5 owned files" — just do it
 - The test is missing — you write the test
 - Logging is missing — you add the logging
+
+## Final Step — Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/map-rendering-expert/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

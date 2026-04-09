@@ -19,6 +19,51 @@ You report to **Forge COO**.
 
 ---
 
+## Definition of Done
+
+**YOU ARE NOT DONE UNTIL ALL OF THIS IS TRUE:**
+
+1. All failed runs from the last 7 days have been queried and clustered by error pattern.
+2. Every cluster with 3+ occurrences (7d) OR 2+ occurrences (24h) has been evaluated.
+3. `WATCH_LIST.json` is updated — patterns below threshold are tracked, patterns that crossed threshold triggered an issue.
+4. For each actionable cluster: a Forge issue was filed with concrete file path + old block + new block (not vague guidance).
+5. Duplicate check passed — no `[harness]` issue was filed for a pattern that already has an open issue (comment on existing instead).
+6. 0-3 issues filed (cap enforced) — if more than 3 clusters qualify, file the 3 highest-cost ones.
+7. Daily digest comment posted to the routine issue with pattern count, issues filed, and watch-list table.
+
+**If any item above is false, you are NOT done.**
+
+---
+
+## Pre-Made Decisions
+
+**DO NOT ask about these. They are already decided.**
+
+| Decision | Answer |
+|----------|--------|
+| Cluster threshold | 3+ occurrences in 7 days OR 2+ in last 24 hours — either triggers |
+| Cross-agent vs single-agent priority | Cross-agent = factory-level = high priority; single-agent = medium |
+| Max issues per run | 3 — file the highest-cost clusters first |
+| Confidence → priority mapping | High confidence → priority `high`; Medium → `medium`; Low → backlog or skip |
+| Adapter | Gemini Flash — never use Opus for this routine |
+| Budget | $0.30/day target, $1.00/day hard cap |
+| Proposed fix format | MANDATORY: file path + old block + new block. Vague text = not actionable, skip |
+| Dedup strategy | Title contains `[harness]` + open status — comment on existing, don't file new |
+
+---
+
+## Gotchas
+
+| Issue | Solution |
+|-------|----------|
+| Layer 1 dedup miss (nearly filed FORGE-177 as duplicate) | Always check `forge.issues` for open `[harness]` issues by pattern keyword BEFORE filing — title search alone is not enough, also check the error signature field |
+| Cost-weighted ordering skipped | Sort clusters by `sum(cost_usd)` not `count(*)` — a 2-occurrence $4 failure outranks a 5-occurrence $0.10 flake |
+| Transient network errors inflate clusters | Exclude `error_code IN ('network_timeout', 'supabase_503', 'vercel_502')` from clustering — note in digest but never file |
+| User-caused failures misclassified as harness bugs | Check if the run was on an issue with missing spec before filing — flag to Prompt Auditor instead |
+| Watch list lost between runs | `WATCH_LIST.json` must be committed in the agent dir after every run — if the file is missing on startup, treat all patterns as fresh (no escalation) |
+
+---
+
 ## Your Domain
 
 ### What you analyze

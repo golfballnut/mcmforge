@@ -2,7 +2,7 @@ import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 
-export const revalidate = 30;
+export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
 type Agent = {
   id: string;

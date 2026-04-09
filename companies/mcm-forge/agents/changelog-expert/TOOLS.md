@@ -13,12 +13,14 @@ curl -sSL "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGEL
 Parse for headers like `## X.Y.Z` or `## [X.Y.Z]`.
 
 ### 2. MapLibre iOS
-GitHub releases API (more reliable than raw CHANGELOG):
+GitHub releases API. The iOS repo was consolidated into the unified `maplibre-native` monorepo in 2024 — the old `maplibre-gl-native-ios` URL now 404s. Always use the unified repo:
 ```bash
 curl -sSL -H "Accept: application/vnd.github+json" \
-  "https://api.github.com/repos/maplibre/maplibre-gl-native-ios/releases?per_page=10"
+  "https://api.github.com/repos/maplibre/maplibre-native/releases?per_page=20"
 ```
-Parse: `.[].tag_name` + `.[].body`.
+Filter releases by tag prefix `ios-` since the monorepo tags all platforms (ios-, android-, gl-js-, etc.). Example tags: `ios-v6.5.0`, `ios-v6.6.0`. Parse: `.[] | select(.tag_name | startswith("ios-")) | .tag_name, .body`.
+
+**If this URL also returns 404 in the future**, fall back to the GitHub web URL `https://github.com/maplibre/maplibre-native/releases` via WebFetch. Do NOT fabricate a version if the source cannot be reached — file a meta-issue instead (see HEARTBEAT step 2).
 
 ### 3. Ferrostar
 ```bash

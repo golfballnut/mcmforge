@@ -3,7 +3,7 @@ import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const revalidate = 30;
+export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
 type Project = {
   id: string;

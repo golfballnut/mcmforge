@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
 
-export const revalidate = 15;
+export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
 interface Issue {
   id: string;

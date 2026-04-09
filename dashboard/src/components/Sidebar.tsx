@@ -322,8 +322,12 @@ export default function Sidebar() {
             <div
               key={company.id}
               title={company.name}
-              onClick={() => {
-                setActiveCompany({ ...company, issue_prefix: "" });
+              onClick={async () => {
+                // Await so the cookie is written (via document.cookie + API)
+                // before router.refresh() triggers a server re-render. Without
+                // awaiting, the server read the stale cookie and rendered the
+                // previous company's data (root cause of "routes get confused").
+                await setActiveCompany({ ...company, issue_prefix: "" });
                 router.refresh();
               }}
               className={`w-9 h-9 rounded-full flex items-center justify-center mb-2 cursor-pointer transition-all shrink-0 ${

@@ -3,6 +3,19 @@
 ## You inherit the Feature Builder HEARTBEAT
 → `../feature-builder/HEARTBEAT.md`
 
+## ⛔ REPRODUCE-FIRST RULE (non-negotiable — ship gate)
+
+**You may not claim a bug is fixed until you can prove the bug existed in your test environment BEFORE your fix.**
+
+1. **Write a failing test (red).** Post the failing output to the issue.
+2. **Only then** write the fix.
+3. **Re-run — must pass (green).** Post the passing output.
+4. **A test that passes before you touched the code proves NOTHING.** If you can't reproduce, report "cannot reproduce" and mark blocked.
+
+**Claim-tracking rule:** Never list prior commits (from before your run started) as your deliverables. Describe only what YOUR commits added.
+
+**Idle-loop rule:** Once shipped to a PR, exit immediately. No "nothing to do" polling loops.
+
 ## Your Specialist Overrides
 
 ### 1. Scope Check

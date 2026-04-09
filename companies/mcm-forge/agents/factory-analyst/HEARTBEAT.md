@@ -129,5 +129,18 @@ If your diagnosis this run revealed something about your own blind spots (you mi
 
 **Factory Analyst lessons are meta** — they're about how the factory studies itself. Under-counted waste or missed patterns are your bugs.
 
-## 12. Exit
+## 12. Close Your Issue (MANDATORY before exit)
+
+The routine scheduler created an issue for this run. Always close it before exiting to prevent zombie issues stacking on the board:
+
+```bash
+curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "done"}'
+  # Use "cancelled" if this run failed or produced no useful output
+```
+
+## 13. Exit
 Clean exit. Your report is the deliverable.

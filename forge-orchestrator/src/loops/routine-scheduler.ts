@@ -75,6 +75,15 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
   const issueNumber = updated?.issue_counter ?? company.issue_counter + 1;
   const identifier = `${company.issue_prefix}-${issueNumber}`;
 
+  // Dedup guard: cancel any prior open issues from the same routine with the same title
+  const cancelled = await closeOpenPriorIssues(supabase, routine.company_id, routine.title);
+  if (cancelled > 0) {
+    logger.info(
+      { routineId: routine.id, routineTitle: routine.title, cancelled },
+      'Closed prior open issues before firing routine',
+    );
+  }
+
   // Concurrency check: if policy is 'skip_if_active', bail if agent is already running
   if (routine.concurrency_policy === 'skip_if_active') {
     const { data: agent } = await supabase
@@ -172,6 +181,27 @@ async function fireRoutine(supabase: SupabaseClient, routine: any) {
 
   // Advance the schedule
   await advanceNextRunAt(supabase, routine);
+}
+
+export async function closeOpenPriorIssues(
+  supabase: SupabaseClient,
+  companyId: string,
+  title: string,
+): Promise<number> {
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from('issues')
+    .update({ status: 'cancelled', cancelled_at: now, updated_at: now })
+    .eq('company_id', companyId)
+    .eq('title', title)
+    .in('status', ['todo', 'in_progress'])
+    .select('id');
+
+  if (error) {
+    logger.warn({ error, companyId, title }, 'Failed to close prior open issues');
+    return 0;
+  }
+  return data?.length ?? 0;
 }
 
 async function advanceNextRunAt(supabase: SupabaseClient, routine: any) {

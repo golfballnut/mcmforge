@@ -102,6 +102,21 @@ curl -s -X POST "$FORGE_API_URL/api/agent/issues" \
   -d '{"title": "Fleet Health: [check name] FAILED", "description": "[what failed + observed values]", "priority": "high", "labels": ["infra", "auto-detected"]}'
 ```
 
+## Final Step — Close Your Issue (MANDATORY before exit)
+
+The routine scheduler created an issue for this run. Mark it done (all pass) or cancelled (any fail) before exiting:
+
+```bash
+curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "done"}'
+  # Use "cancelled" if any check failed
+```
+
+This prevents zombie issues from stacking up on the board.
+
 ## Rules
 - Run ALL 8 checks. Never skip one because an earlier check failed.
 - [SILENT] ONLY when all 8 pass. One failure = full report.

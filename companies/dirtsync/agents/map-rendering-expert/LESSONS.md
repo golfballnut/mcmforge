@@ -4,6 +4,19 @@ Append new entries at the top. See `vault/agents/skills/lessons-learned-loop.md`
 
 ---
 
+2026-04-09 — BM3 real offline basemap (third attempt — THE fix)
+
+Bug: BM1 shipped a test helper. BM1c gated a remote URL on isConnected (still remote). BM2 switched default to liberty (still remote, just different CDN). All three were placebos — every bundled style file referenced remote URLs.
+Fix: dirtsync-offline-style.json uses ONLY a background color (#2c3e2d) + empty sources block. Zero remote URLs. MapLibre loads it in <100ms with no network fetch, fires didFinishLoadingStyle immediately. MapCoordinator then adds trails.mbtiles programmatically (as it already did for every other style).
+Why: MapLibre's style JSON load is the trigger for didFinishLoadingStyle. If the style JSON itself has remote references that fail, nothing renders — not even local MBTiles. The entire render pipeline is gated on successfully loading the style JSON's declared sources.
+Architecture decision: Do NOT declare the mbtiles:// source in the style JSON. Declare it programmatically in MapCoordinator.addMBTilesTrailLayers() AFTER didFinishLoadingStyle fires. This is the existing pattern — it already works. The offline style's only job is to provide a valid, network-free style structure so the callback fires.
+Evidence: testBM3_OfflineModeRendersTrailsWithNoNetwork PASS. backgroundRatio=0.92 trailRatio=0.08. Screenshot: dark green bg + blue/gold/black trail lines from MBTiles. "No connection — offline mode" banner confirmed. Commit: 42966913.
+Lesson: "bundled" does not mean "offline" unless you GREP the JSON for https:// and get zero hits. Always verify. Don't trust filenames. liberty-style-offline.json is NOT offline — it references tiles.openfreemap.org. Name is a lie.
+Placebo pattern: BM1/BM1c/BM2 all "fixed" the wrong thing because they each looked at what was easy to change (URL string, boolean flag, CDN choice) without asking "what actually triggers didFinishLoadingStyle to fire?" The answer: loading a style JSON with no failing remote references.
+Tag: basemap, maplibre, mbtiles, offline, bm3, placebo-pattern, didFinishLoadingStyle
+
+---
+
 2026-04-09 — BM2 REAL basemap fix (after BM1/BM1c placebos)
 
 Bug: Basemap rendered black on real device. BM1 shipped a test helper. BM1c gated a

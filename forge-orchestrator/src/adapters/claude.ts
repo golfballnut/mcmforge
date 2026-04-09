@@ -37,7 +37,11 @@ export const claudeAdapter: CLIAdapter = {
         }
       }
     }
-    const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
+    const attachmentBlock = input.context.attachmentContext as string | undefined;
+    const taskSection = attachmentBlock
+      ? `\n\n--- TASK ---\n${prompt}\n\n${attachmentBlock}`
+      : `\n\n--- TASK ---\n${prompt}`;
+    const fullPrompt = systemContext ? `${systemContext}${taskSection}` : prompt + (attachmentBlock ? `\n\n${attachmentBlock}` : '');
 
     const args = ['--print', '-', '--output-format', 'stream-json', '--verbose'];
     if (input.sessionId) {

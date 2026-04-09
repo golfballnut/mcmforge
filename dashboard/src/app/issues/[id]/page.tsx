@@ -3,6 +3,7 @@ import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
+import { AttachmentList, AttachmentThumbnails } from "@/components/AttachmentList";
 
 export const revalidate = 15;
 
@@ -27,6 +28,15 @@ interface Comment {
   author_agent_id: string | null;
   created_at: string;
   author_name?: string | null;
+}
+
+interface Attachment {
+  id: string;
+  filename: string;
+  mime_type: string;
+  size_bytes: number;
+  storage_path: string;
+  comment_id: string | null;
 }
 
 async function getIssue(id: string) {
@@ -72,7 +82,16 @@ async function getIssue(id: string) {
     }
   }
 
-  return { issue: issue as Issue, assigneeName, comments, agents: agentList };
+  // Fetch attachments for the issue
+  const { data: rawAttachments } = await supabase
+    .from("issue_attachments")
+    .select("id, filename, mime_type, size_bytes, storage_path, comment_id")
+    .eq("issue_id", id)
+    .order("created_at", { ascending: true });
+
+  const attachments = (rawAttachments ?? []) as Attachment[];
+
+  return { issue: issue as Issue, assigneeName, comments, agents: agentList, attachments };
 }
 
 function formatRelativeTime(timestamp: string): string {
@@ -133,7 +152,7 @@ export default async function IssueDetailPage({
 
   if (!result) notFound();
 
-  const { issue, assigneeName, comments, agents } = result;
+  const { issue, assigneeName, comments, agents, attachments } = result;
   const statusCfg = STATUS_CONFIG[issue.status] ?? STATUS_CONFIG.backlog;
   const priorityCfg = PRIORITY_CONFIG[issue.priority] ?? PRIORITY_CONFIG.medium;
 
@@ -180,6 +199,14 @@ export default async function IssueDetailPage({
               </div>
             ) : (
               <p className="text-sm text-[#8b949e] italic">No description provided.</p>
+            )}
+            {/* Issue-level attachments (not tied to a comment) */}
+            {attachments.filter((a) => !a.comment_id).length > 0 && (
+              <div className="mt-4 pt-4 border-t border-[#30363d]">
+                <p className="text-xs text-[#8b949e] mb-2 uppercase tracking-wide font-medium">Attachments</p>
+                <AttachmentThumbnails attachments={attachments.filter((a) => !a.comment_id)} />
+                <AttachmentList attachments={attachments.filter((a) => !a.comment_id)} />
+              </div>
             )}
           </div>
 
@@ -233,6 +260,13 @@ export default async function IssueDetailPage({
                   {/* Comment body */}
                   <div className="px-4 py-3 text-sm text-[#e6edf3] leading-relaxed whitespace-pre-wrap">
                     {comment.body}
+                    {/* Comment-level attachments */}
+                    {attachments.filter((a) => a.comment_id === comment.id).length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-[#30363d]">
+                        <AttachmentThumbnails attachments={attachments.filter((a) => a.comment_id === comment.id)} />
+                        <AttachmentList attachments={attachments.filter((a) => a.comment_id === comment.id)} />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))

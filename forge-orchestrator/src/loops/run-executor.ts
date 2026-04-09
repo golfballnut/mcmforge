@@ -7,6 +7,7 @@ import { recordCost } from '../services/cost-ledger.js';
 import { releaseIssueExecution, lockIssueExecution } from '../services/issue-lifecycle.js';
 import { createWakeup } from '../services/wakeup.js';
 import { indexRunResult, searchAgentHistory } from '../services/session-search.js';
+import { getIssueAttachments, buildAttachmentContext } from '../services/issueAttachments.js';
 import { logger } from '../utils/logger.js';
 
 const activeRuns = new Map<string, { pid: number; abortController: AbortController }>();
@@ -232,10 +233,23 @@ async function executeRun(
       logger.debug({ err }, 'Failed to fetch goals — continuing without');
     }
 
+    // Inject attachment context — agents should know about attached files
+    let attachmentContext = '';
+    const issueIdForAttachments = run.context_snapshot?.issueId as string | undefined;
+    if (issueIdForAttachments) {
+      try {
+        const attachments = await getIssueAttachments(supabase, issueIdForAttachments);
+        attachmentContext = buildAttachmentContext(attachments);
+      } catch (err) {
+        logger.debug({ err }, 'Failed to fetch attachments — continuing without');
+      }
+    }
+
     const contextWithHistory = {
       ...(run.context_snapshot || {}),
       recentHistory: historyContext || undefined,
       goalContext: goalContext || undefined,
+      attachmentContext: attachmentContext || undefined,
     };
 
     const result = await adapter.execute({

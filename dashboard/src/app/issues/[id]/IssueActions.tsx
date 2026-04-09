@@ -5,7 +5,11 @@ import {
   updateIssuePriority,
   assignIssue,
   addComment,
+  saveAttachments,
 } from "./actions";
+import { AttachmentUploader } from "@/components/AttachmentUploader";
+import { AttachmentList } from "@/components/AttachmentList";
+import type { UploadedAttachment } from "@/lib/storage";
 
 // ── Status dropdown ──────────────────────────────────────────────────────────
 
@@ -130,16 +134,35 @@ export function CommentForm({
 }) {
   const [pending, startTransition] = useTransition();
   const [body, setBody] = useState("");
+  const [stagedFiles, setStagedFiles] = useState<UploadedAttachment[]>([]);
+
+  function handleFileUploaded(attachment: UploadedAttachment) {
+    setStagedFiles((prev) => [...prev, attachment]);
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = body.trim();
-    if (!trimmed) return;
+    if (!trimmed && stagedFiles.length === 0) return;
+    const filesToSave = [...stagedFiles];
     startTransition(async () => {
-      await addComment(issueId, companyId ?? "", trimmed);
+      const commentId = await addComment(issueId, companyId ?? "", trimmed || "(attachment)");
+      if (filesToSave.length > 0) {
+        await saveAttachments(issueId, commentId, filesToSave);
+      }
       setBody("");
+      setStagedFiles([]);
     });
   }
+
+  // Convert staged UploadedAttachment to display format (no id yet)
+  const stagedForDisplay = stagedFiles.map((f, i) => ({
+    id: `staged-${i}`,
+    filename: f.filename,
+    mime_type: f.mime_type,
+    size_bytes: f.size_bytes,
+    storage_path: f.storage_path,
+  }));
 
   return (
     <form onSubmit={handleSubmit} className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
@@ -151,11 +174,23 @@ export function CommentForm({
         disabled={pending}
         className="w-full px-4 py-3 bg-transparent text-sm text-[#e6edf3] placeholder-[#8b949e] resize-none focus:outline-none disabled:opacity-50"
       />
+      {stagedForDisplay.length > 0 && (
+        <div className="px-4 pb-2">
+          <AttachmentList attachments={stagedForDisplay} />
+        </div>
+      )}
+      <div className="px-4 pb-3">
+        <AttachmentUploader
+          issueId={issueId}
+          onUploaded={handleFileUploaded}
+          disabled={pending}
+        />
+      </div>
       <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#30363d]">
         <span className="text-xs text-[#8b949e]">Markdown supported</span>
         <button
           type="submit"
-          disabled={pending || !body.trim()}
+          disabled={pending || (!body.trim() && stagedFiles.length === 0)}
           className="px-3 py-1.5 bg-[#00d4aa] text-[#0d1117] text-xs font-medium rounded hover:bg-[#00e4b8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {pending ? "Posting..." : "Comment"}

@@ -7,6 +7,7 @@ import { recordCost } from '../services/cost-ledger.js';
 import { releaseIssueExecution, lockIssueExecution } from '../services/issue-lifecycle.js';
 import { createWakeup } from '../services/wakeup.js';
 import { indexRunResult, searchAgentHistory } from '../services/session-search.js';
+import { getRunArtifacts, classifyOutcome } from '../services/artifactCollector.js';
 import { logger } from '../utils/logger.js';
 
 const activeRuns = new Map<string, { pid: number; abortController: AbortController }>();
@@ -279,7 +280,7 @@ async function executeRun(
       },
     });
 
-    const status = result.timedOut ? 'timed_out'
+    let status = result.timedOut ? 'timed_out'
       : (result.exitCode === 0 ? 'succeeded' : 'failed');
 
     // Detect [SILENT] marker — agent had nothing to report
@@ -290,10 +291,28 @@ async function executeRun(
       logger.info({ runId: run.id, agent: agent.name }, 'Silent run — agent had nothing to report');
     }
 
+    // Artifact check + outcome_class classification
+    const artifacts = await getRunArtifacts(supabase, run.id);
+    const { outcomeClass, reason: outcomeReason } = classifyOutcome(
+      result.timedOut ?? false,
+      result.exitCode ?? null,
+      artifacts,
+    );
+
+    // Override status for silent_failure and idle_loop_exit
+    if (status === 'succeeded' && (outcomeClass === 'silent_failure' || outcomeClass === 'idle_loop_exit')) {
+      status = 'failed';
+      logger.warn(
+        { runId: run.id, agent: agent.name, outcomeClass, reason: outcomeReason },
+        'Run claimed success but classified as non-productive — overriding to failed',
+      );
+    }
+
     await supabase
       .from('runs')
       .update({
         status,
+        outcome_class: outcomeClass,
         exit_code: result.exitCode,
         signal: result.signal,
         timed_out: result.timedOut,

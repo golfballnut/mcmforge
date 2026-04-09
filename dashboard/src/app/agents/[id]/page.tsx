@@ -19,6 +19,7 @@ type Agent = {
   adapter_type: string | null;
   adapter_config: Record<string, unknown> | null;
   last_heartbeat_at: string | null;
+  last_audited_at: string | null;
   reports_to: string | null;
   skills: string[] | null;
   created_at: string;
@@ -890,12 +891,25 @@ export default async function AgentDetailPage({
         </div>
 
         {/* Action buttons */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <AgentActions
-            agentId={id}
-            companyId={agent.company_id}
-            status={agent.status}
-          />
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <AgentActions
+              agentId={id}
+              companyId={agent.company_id}
+              status={agent.status}
+              lastAuditedAt={agent.last_audited_at ?? null}
+            />
+          </div>
+          {agent.last_audited_at ? (
+            <span className="text-xs text-[#8b949e]">
+              Audited{" "}
+              <span title={new Date(agent.last_audited_at).toLocaleString()}>
+                {formatRelativeTime(agent.last_audited_at)}
+              </span>
+            </span>
+          ) : (
+            <span className="text-xs text-[#484f58]">Never audited</span>
+          )}
         </div>
       </div>
 

@@ -34,6 +34,16 @@ export async function deleteAgent(agentId: string) {
   redirect("/agents");
 }
 
+export async function markAudited(agentId: string) {
+  const supabase = await createForgeClient();
+  await supabase.from("agents").update({
+    last_audited_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }).eq("id", agentId);
+  revalidatePath(`/agents/${agentId}`);
+  revalidatePath("/agents");
+}
+
 export async function triggerHeartbeat(agentId: string, companyId: string) {
   const supabase = await createForgeClient();
   await supabase.from("runs").insert({

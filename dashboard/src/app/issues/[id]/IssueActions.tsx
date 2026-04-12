@@ -5,6 +5,7 @@ import {
   updateIssuePriority,
   assignIssue,
   addComment,
+  uploadIssueAttachment,
 } from "./actions";
 
 // ── Status dropdown ──────────────────────────────────────────────────────────
@@ -116,6 +117,75 @@ export function AssigneeDropdown({
         </option>
       ))}
     </select>
+  );
+}
+
+// ── Attachment upload ────────────────────────────────────────────────────────
+
+const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+export function AttachmentUpload({ issueId }: { issueId: string }) {
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState<{ kind: "success" | "error"; text: string } | null>(null);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setMessage({ kind: "error", text: "Only PNG, JPG, GIF, or WebP images are allowed." });
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setMessage({ kind: "error", text: "File exceeds 10MB limit." });
+      return;
+    }
+
+    setMessage(null);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    startTransition(async () => {
+      const res = await uploadIssueAttachment(issueId, formData);
+      if (res?.error) {
+        setMessage({ kind: "error", text: res.error });
+      } else {
+        setMessage({ kind: "success", text: `Uploaded ${file.name}` });
+      }
+    });
+  }
+
+  return (
+    <div className="mb-6">
+      <label
+        className={`inline-flex items-center gap-2 px-3 py-1.5 bg-[#161b22] border border-[#30363d] rounded text-xs text-[#e6edf3] cursor-pointer hover:border-[#00d4aa] transition-colors ${
+          pending ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
+        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+        {pending ? "Uploading..." : "Upload screenshot"}
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/gif,image/webp"
+          className="hidden"
+          disabled={pending}
+          onChange={handleChange}
+        />
+      </label>
+      {message && (
+        <p
+          className={`mt-2 text-xs ${
+            message.kind === "success" ? "text-[#3fb950]" : "text-[#f85149]"
+          }`}
+        >
+          {message.text}
+        </p>
+      )}
+    </div>
   );
 }
 

@@ -2,7 +2,7 @@ import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
+import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm, AttachmentUpload } from "./IssueActions";
 
 export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
@@ -182,6 +182,9 @@ export default async function IssueDetailPage({
               <p className="text-sm text-[#8b949e] italic">No description provided.</p>
             )}
           </div>
+
+          {/* Attachment upload */}
+          <AttachmentUpload issueId={issue.id} />
 
           {/* Tabs */}
           <div className="border-b border-[#30363d] mb-6">

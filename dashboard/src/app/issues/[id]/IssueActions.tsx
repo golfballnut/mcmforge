@@ -128,32 +128,67 @@ const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 export function AttachmentUpload({ issueId }: { issueId: string }) {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ kind: "success" | "error"; text: string } | null>(null);
+  const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const files = Array.from(e.target.files ?? []);
     e.target.value = "";
-    if (!file) return;
+    if (files.length === 0) return;
 
-    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      setMessage({ kind: "error", text: "Only PNG, JPG, GIF, or WebP images are allowed." });
-      return;
+    const valid: File[] = [];
+    const rejected: string[] = [];
+    for (const file of files) {
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        rejected.push(`${file.name} (invalid type)`);
+        continue;
+      }
+      if (file.size > MAX_UPLOAD_BYTES) {
+        rejected.push(`${file.name} (exceeds 10MB)`);
+        continue;
+      }
+      valid.push(file);
     }
-    if (file.size > MAX_UPLOAD_BYTES) {
-      setMessage({ kind: "error", text: "File exceeds 10MB limit." });
+
+    if (valid.length === 0) {
+      setMessage({ kind: "error", text: `No valid files. Rejected: ${rejected.join(", ")}` });
       return;
     }
 
     setMessage(null);
-    const formData = new FormData();
-    formData.append("file", file);
+    let completed = 0;
+    setProgress({ current: 0, total: valid.length });
 
     startTransition(async () => {
-      const res = await uploadIssueAttachment(issueId, formData);
-      if (res?.error) {
-        setMessage({ kind: "error", text: res.error });
-      } else {
-        setMessage({ kind: "success", text: `Uploaded ${file.name}` });
-      }
+      const results = await Promise.all(
+        valid.map(async (file) => {
+          const formData = new FormData();
+          formData.append("file", file);
+          try {
+            const res = await uploadIssueAttachment(issueId, formData);
+            completed += 1;
+            setProgress({ current: completed, total: valid.length });
+            return { file, error: res?.error ?? null };
+          } catch (err) {
+            completed += 1;
+            setProgress({ current: completed, total: valid.length });
+            return { file, error: err instanceof Error ? err.message : "Upload failed" };
+          }
+        }),
+      );
+
+      const succeeded = results.filter((r) => !r.error);
+      const failed = results.filter((r) => r.error);
+      setProgress(null);
+
+      const parts: string[] = [];
+      if (succeeded.length > 0) parts.push(`Uploaded ${succeeded.length} file${succeeded.length === 1 ? "" : "s"}`);
+      if (failed.length > 0) parts.push(`${failed.length} failed: ${failed.map((f) => f.file.name).join(", ")}`);
+      if (rejected.length > 0) parts.push(`Rejected: ${rejected.join(", ")}`);
+
+      setMessage({
+        kind: failed.length > 0 || rejected.length > 0 ? "error" : "success",
+        text: parts.join(" · "),
+      });
     });
   }
 
@@ -167,10 +202,15 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
         </svg>
-        {pending ? "Uploading..." : "Upload screenshot"}
+        {pending
+          ? progress
+            ? `Uploading ${progress.current} of ${progress.total}...`
+            : "Uploading..."
+          : "Upload screenshots"}
         <input
           type="file"
           accept="image/png,image/jpeg,image/gif,image/webp"
+          multiple
           className="hidden"
           disabled={pending}
           onChange={handleChange}

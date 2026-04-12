@@ -46,18 +46,28 @@ export async function assignIssue(issueId: string, agentId: string | null) {
   revalidatePath(`/issues/${issueId}`);
 }
 
-const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
+const ALLOWED_IMAGE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/webp",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+];
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_VIDEO_UPLOAD_BYTES = 50 * 1024 * 1024;
 const ALLOWED_CATEGORIES = ["user_upload", "testing", "comparison", "video"];
 
 export async function uploadIssueAttachment(issueId: string, formData: FormData) {
   const file = formData.get("file") as File | null;
   if (!file) return { error: "No file provided" };
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    return { error: "Only PNG, JPG, GIF, or WebP images are allowed" };
+    return { error: "Only PNG, JPG, GIF, WebP, or MP4/WebM/MOV videos are allowed" };
   }
-  if (file.size > MAX_UPLOAD_BYTES) {
-    return { error: "File exceeds 10MB limit" };
+  const limit = file.type.startsWith("video/") ? MAX_VIDEO_UPLOAD_BYTES : MAX_UPLOAD_BYTES;
+  if (file.size > limit) {
+    return { error: `File exceeds ${limit / (1024 * 1024)}MB limit` };
   }
 
   const categoryRaw = (formData.get("category") as string | null) ?? "user_upload";

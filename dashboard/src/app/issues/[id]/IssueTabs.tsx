@@ -186,6 +186,7 @@ export function IssueTabs({
             <div className="flex flex-wrap gap-3">
               {filteredAttachments.map((att) => {
                 const isImage = att.mime_type?.startsWith("image/");
+                const isVideo = att.mime_type?.startsWith("video/");
                 return (
                   <a
                     key={att.id}
@@ -203,6 +204,22 @@ export function IssueTabs({
                         className="block w-full h-auto"
                         style={{ maxWidth: "200px" }}
                       />
+                    ) : isVideo ? (
+                      <div className="relative bg-black" style={{ width: "200px", height: "140px" }}>
+                        <video
+                          src={att.url}
+                          className="block w-full h-full object-cover"
+                          preload="metadata"
+                          muted
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-12 h-12 rounded-full bg-black/60 flex items-center justify-center">
+                            <svg className="w-6 h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     ) : (
                       <div className="p-6 text-center text-xs text-[#8b949e]">File</div>
                     )}

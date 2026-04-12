@@ -122,8 +122,20 @@ export function AssigneeDropdown({
 
 // ── Attachment upload ────────────────────────────────────────────────────────
 
-const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
+const ALLOWED_IMAGE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/webp",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+];
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_VIDEO_UPLOAD_BYTES = 50 * 1024 * 1024;
+function maxBytesFor(type: string) {
+  return type.startsWith("video/") ? MAX_VIDEO_UPLOAD_BYTES : MAX_UPLOAD_BYTES;
+}
 
 const CATEGORY_OPTIONS = [
   { value: "user_upload", label: "User Upload" },
@@ -150,8 +162,10 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
         rejected.push(`${file.name} (invalid type)`);
         continue;
       }
-      if (file.size > MAX_UPLOAD_BYTES) {
-        rejected.push(`${file.name} (exceeds 10MB)`);
+      const limit = maxBytesFor(file.type);
+      if (file.size > limit) {
+        const mb = limit / (1024 * 1024);
+        rejected.push(`${file.name} (exceeds ${mb}MB)`);
         continue;
       }
       valid.push(file);
@@ -219,7 +233,7 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
           : "Upload screenshots"}
         <input
           type="file"
-          accept="image/png,image/jpeg,image/gif,image/webp"
+          accept="image/png,image/jpeg,image/gif,image/webp,video/mp4,video/webm,video/quicktime"
           multiple
           className="hidden"
           disabled={pending}

@@ -151,7 +151,7 @@ export default async function IssueDetailPage({
       </div>
 
       {/* Main layout: 2/3 + 1/3 */}
-      <div className="flex gap-6 items-start">
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Left: content */}
         <div className="flex-1 min-w-0">
           {/* Title */}
@@ -244,7 +244,7 @@ export default async function IssueDetailPage({
         </div>
 
         {/* Right: properties panel */}
-        <div className="w-72 shrink-0">
+        <div className="w-full lg:w-72 shrink-0">
           <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-4">
             <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
               Properties

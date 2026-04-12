@@ -155,7 +155,7 @@ export default async function IssueDetailPage({
         {/* Left: content */}
         <div className="flex-1 min-w-0">
           {/* Title */}
-          <h1 className="text-2xl font-semibold text-[#e6edf3] leading-tight mb-4">
+          <h1 className="text-2xl font-semibold text-[#e6edf3] leading-tight mb-4 break-words">
             {issue.title}
           </h1>
 

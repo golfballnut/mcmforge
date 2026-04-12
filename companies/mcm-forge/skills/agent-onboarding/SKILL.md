@@ -317,6 +317,37 @@ Agent Onboarded: <Agent Name>
 - Status: idle (ready for work)
 ```
 
+## Gold Standard Checklist (Apr 2026)
+
+An agent is GOLD when ALL of these are true:
+
+- [ ] AGENTS.md < 10K chars (identity only — domain knowledge in skills)
+- [ ] Has at least 1 skill referenced in frontmatter
+- [ ] HEARTBEAT has bail-out rules (max iterations, blocker detection)
+- [ ] HEARTBEAT has MANDATORY result posting step (PATCH Forge API)
+- [ ] HEARTBEAT has test-driven acceptance (for builders — which tests to run)
+- [ ] Prompt template includes issue context + API curl command
+- [ ] First run completes and posts a comment to the issue
+- [ ] No silent failures (summary is NOT null after succeeded run)
+- [ ] Prompt template is NOT null in database
+
+## Identity + Skills Pattern (Meta-Harness)
+
+**AGENTS.md = identity only (<10K).** Who you are, stack, project structure, rules.
+**Skills = procedures (2-5K each).** Loaded on demand, reusable across agents.
+
+Example — Feature Builder:
+- AGENTS.md (7K): identity, stack, architecture, rules
+- Skills: `dirtsync-frameworks`, `gold-star-testing`, `nav-hud-spec`
+
+This pattern reduces context per run (cheaper, faster) while keeping knowledge available when needed.
+
+**Anti-pattern:** 25K monolith AGENTS.md with embedded specs, framework knowledge, and procedures. Extract to skills.
+
+## Auto-Handoff Pipeline
+
+Feature Builder → marks `in_review` → QA Recorder auto-triggered → records video + uploads to Drive → marks `done`
+
 ## CONSEQUENCES
 
 - Missing AGENTS.md = orchestrator injects empty prompt = agent hallucinates
@@ -325,6 +356,9 @@ Agent Onboarded: <Agent Name>
 - Skipping dry run = first real issue may burn budget on garbage
 - Two agents on same file = they revert each other's work
 - No plan gate = rework when approach is wrong = wasted budget
-- Generic domain section = B+ output = Steve sends it back = double cost
+- AGENTS.md > 10K = bloated context = expensive runs = slower agent
+- No skills referenced = agent can't load procedures on demand
+- Missing result posting = silent failure = work is lost
 - Wrong adapter (Gemini for builder) = no MCP tools = can't build/test
 - Missing auto-handoff knowledge = agent doesn't set correct status = pipeline stalls
+- NULL prompt_template = agent gets generic prompt = no task context

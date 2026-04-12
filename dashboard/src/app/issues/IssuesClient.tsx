@@ -189,12 +189,12 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
       ) : (
         <div className="border border-[#30363d] rounded-lg overflow-hidden">
           {/* Column headers */}
-          <div className="grid grid-cols-[120px_1fr_130px_140px_100px] gap-0 px-4 py-2 bg-[#161b22] border-b border-[#30363d]">
-            <span className="text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">ID</span>
+          <div className="grid grid-cols-[1fr_130px] sm:grid-cols-[120px_1fr_130px_140px_100px] gap-0 px-4 py-2 bg-[#161b22] border-b border-[#30363d]">
+            <span className="hidden sm:block text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">ID</span>
             <span className="text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Title</span>
             <span className="text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Status</span>
-            <span className="text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Assignee</span>
-            <span className="text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider text-right">Created</span>
+            <span className="hidden sm:block text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Assignee</span>
+            <span className="hidden sm:block text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider text-right">Created</span>
           </div>
 
           {/* Issue rows */}
@@ -202,10 +202,10 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
             <Link
               key={issue.id}
               href={`/issues/${issue.id}`}
-              className="grid grid-cols-[120px_1fr_130px_140px_100px] gap-0 px-4 py-3 bg-[#0d1117] border-b border-[#21262d] hover:bg-[#161b22] transition-colors group last:border-b-0"
+              className="grid grid-cols-[1fr_130px] sm:grid-cols-[120px_1fr_130px_140px_100px] gap-0 px-4 py-3 bg-[#0d1117] border-b border-[#21262d] hover:bg-[#161b22] transition-colors group last:border-b-0"
             >
               {/* Identifier */}
-              <div className="flex items-center">
+              <div className="hidden sm:flex items-center">
                 <span className="font-mono text-xs text-[#8b949e] group-hover:text-[#58a6ff] transition-colors">
                   {issue.identifier ?? "\u2014"}
                 </span>
@@ -223,7 +223,7 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
               </div>
 
               {/* Assignee */}
-              <div className="flex items-center">
+              <div className="hidden sm:flex items-center">
                 {issue.agent_name ? (
                   <span className="text-xs text-[#8b949e] truncate">{issue.agent_name}</span>
                 ) : (
@@ -232,7 +232,7 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
               </div>
 
               {/* Date */}
-              <div className="flex items-center justify-end">
+              <div className="hidden sm:flex items-center justify-end">
                 <span className="text-xs text-[#8b949e]">{formatRelativeTime(issue.created_at)}</span>
               </div>
             </Link>

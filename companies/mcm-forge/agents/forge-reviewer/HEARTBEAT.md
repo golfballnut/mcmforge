@@ -2,6 +2,14 @@
 
 **3 turns max. Read, assess, decide.**
 
+## Step 0: Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory. Create with header if missing.
+2. Scan for past lessons relevant to the current review (e.g. false-approval patterns, known deceptive CI passes, edge cases in security checks).
+3. If a past lesson with `Outcome: worked` matches, apply that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Step 1: Check Inbox
 ```bash
 curl -s "$FORGE_API_URL/api/agent/me/inbox" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
@@ -50,6 +58,10 @@ curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/{issueId}" \
   -H "Content-Type: application/json" \
   -d '{"status": "blocked", "comment": "CHANGES REQUESTED\n\n[file]:[line] — [what is wrong, how to fix]"}'
 ```
+
+## Step 4: Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (false positive on CI, missed security issue on first pass, spec mismatch you initially missed), append one entry to the TOP of `companies/mcm-forge/agents/forge-reviewer/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
 
 ## Key Rule
 

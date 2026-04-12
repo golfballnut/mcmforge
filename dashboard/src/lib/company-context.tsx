@@ -12,14 +12,14 @@ export interface Company {
 interface CompanyContextType {
   activeCompany: Company | null;
   companies: Company[];
-  setActiveCompany: (company: Company) => void;
+  setActiveCompany: (company: Company) => Promise<void>;
   loading: boolean;
 }
 
 const CompanyContext = createContext<CompanyContextType>({
   activeCompany: null,
   companies: [],
-  setActiveCompany: () => {},
+  setActiveCompany: async () => {},
   loading: true,
 });
 
@@ -53,15 +53,32 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-  const setActiveCompany = (company: Company) => {
+  const setActiveCompany = async (company: Company) => {
     setActiveCompanyState(company);
     localStorage.setItem("forge-active-company", company.slug);
-    // Also set cookie for server components
-    fetch("/api/company", {
-      method: "POST",
-      body: JSON.stringify({ slug: company.slug }),
-      headers: { "Content-Type": "application/json" },
-    });
+
+    // Set cookie synchronously on the client so the very next server request
+    // (including router.refresh()) sees the new company. The API POST below
+    // only acts as a backup persistence path — the document.cookie write is
+    // what prevents the race condition where router.refresh() runs before
+    // the POST completes and the server reads a stale cookie.
+    if (typeof document !== "undefined") {
+      const maxAge = 60 * 60 * 24 * 365; // 1 year, matches API route
+      document.cookie = `forge-active-company=${company.slug}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    }
+
+    // Await the API call so callers can reliably chain router.refresh() after.
+    // Failures here are non-blocking — the document.cookie write above already
+    // did the job for the next request.
+    try {
+      await fetch("/api/company", {
+        method: "POST",
+        body: JSON.stringify({ slug: company.slug }),
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch {
+      // Network error — cookie is already set via document.cookie, safe to ignore.
+    }
   };
 
   return (

@@ -1,59 +1,62 @@
-# HEARTBEAT.md — DirtSync Code Scout
+# HEARTBEAT.md — Gold Star Gap Scanner
 
-Run this on every wake. No shortcuts.
+## 0. Read Your Lessons (MANDATORY — before anything else)
 
-## 1. Orient
-- Read the assigned issue via Forge API: `GET /api/agent/issues/:id/context`
-- Confirm: is there a specific file, feature, or analysis scope defined? If not, comment asking and exit.
-- Lock the issue: `POST /api/agent/issues/:id/checkout` (exit if 409 — another agent has it)
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/code-scout/LESSONS.md`). Create with header if missing.
+2. Scan for past lessons relevant to the current task (e.g. SSH failures, grep pattern mismatches, ID naming convention gotchas).
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
 
-## 2. Define Scope
-- Identify the analysis type: code audit, architecture mapping, implementation draft, or test gap analysis
-- List the exact Swift files and directories to read
-- Confirm the output consumer: is this for the iOS Builder, Solutions Architect, or CEO?
+See `vault/agents/skills/lessons-learned-loop.md`.
 
-## 2b. Plan (MANDATORY before any research)
-1. Write a plan: which files to read, what analysis approach, what could go wrong
-2. POST the plan as a comment on the issue:
-   ```
-   curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
-     -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-     -H "Content-Type: application/json" \
-     -d '{"comment": "## Research Plan\n\n**Files:** ...\n**Approach:** ...\n**Risk:** ..."}'
-   ```
-3. For trivial lookups (single file, obvious answer): note "Trivial lookup, skipping plan" in comment
-4. The plan IS your contract. Don't deviate without updating it.
+## Startup
+1. Read issue from Forge API: `GET /api/agent/me/inbox`
+2. Get issue context: `GET /api/agent/issues/:id/context`
 
-## 3. Read Source Files
-- `cat` or read each file in scope — never analyze from memory
-- Record imports, dependencies, @Published properties, service calls, key methods
-- Note exact line numbers for any findings
+## Scan Loop
 
-## 4. Map Dependencies
-- Trace the dependency graph: what does this code depend on? What depends on it?
-- Identify build order: which files must exist before others can compile
-- Flag any circular dependencies or shared-state risks
+### Step 1: Inventory Accessibility IDs in Components
+SSH to Mini and grep all accessibilityIdentifier calls:
+```bash
+ssh dirtsyncmini@100.125.184.57 'cd /Users/dirtsyncmini/DirtSync && grep -rn "accessibilityIdentifier" DirtSync/DirtSyncApp/ | grep -v ".build/"'
+```
 
-## 5. Produce Analysis
-- Structure output using the Analysis Report format from TOOLS.md
-- Include exact file paths, method names, and line references
-- Issues Found section must list concrete risks with line numbers, not vague concerns
+### Step 2: Inventory Test Assertions
+```bash
+ssh dirtsyncmini@100.125.184.57 'cd /Users/dirtsyncmini/DirtSync && grep -rn "accessibilityIdentifier\|XCTAssert\|\.exists" DirtSync/DirtSyncUITests/GoldStar*.swift'
+```
 
-## 6. Post and Update
-- Comment the full analysis on the issue via `PATCH /api/agent/issues/:id`
-- Update issue status to `done` in the same PATCH call
+### Step 3: Compare — Find Untested IDs
+Cross-reference: which IDs in Step 1 are NOT referenced in Step 2?
 
-## 7. Report Results (MANDATORY)
-1. POST your research findings as a comment on the issue — this is the DELIVERABLE:
-   ```
-   curl -X PATCH $FORGE_API_URL/api/agent/issues/$FORGE_ISSUE_ID \
-     -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-     -H "Content-Type: application/json" \
-     -d '{"comment": "## Results\n\n<structured report with sections per topic, measurements, sources>"}'
-   ```
-2. Format: structured report with sections per topic, measurements, sources
-3. If you're running low on turns, POST what you have — partial research is better than none
-4. PATCH issue status to `in_review` when research is complete
+### Step 4: Check State Coverage
+For each test, does it check both `element.exists` AND `!element.exists`?
+Nav elements should be tested in both nav and free-ride modes.
 
-## 8. Exit
-Clean exit. Don't start a new issue. Don't write implementation code.
+### Step 5: Check Data Accuracy
+Which tests only check `.exists` but not `.label` content?
+Flag: "testS3_SpeedBadge_Present checks exists but not the speed value"
+
+### Step 6: List Untested Screens
+```bash
+ssh dirtsyncmini@100.125.184.57 'cd /Users/dirtsyncmini/DirtSync && ls DirtSync/DirtSyncApp/Views/*.swift DirtSync/DirtSyncApp/Components/*.swift 2>/dev/null'
+```
+Compare against test file names — which Views/Components have no Gold Star suite?
+
+### Step 7: Post Results (MANDATORY)
+```
+PATCH /api/agent/issues/:id
+{
+  "comment": "## Gold Star Gap Scan\n\n### Untested IDs\n...\n\n### Recommended Tests\n...",
+  "status": "done"
+}
+```
+
+**If you exit without posting results, the run is FAILED.**
+
+## BAIL-OUT RULES
+- SSH fails 2x → post error → mark blocked
+- No files found → post "repo may not be synced" → mark blocked
+
+## Final Step — Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run, append one entry to the TOP of `companies/dirtsync/agents/code-scout/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.

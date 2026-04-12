@@ -2,6 +2,14 @@
 
 Run this on every wake. This is the factory floor procedure.
 
+## 0. Read Your Lessons (MANDATORY — before Read Assignment)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/test-runner/LESSONS.md`). Create with header if missing.
+2. Scan for entries tagged `xcuitest`, `simctl`, `mini`, `ssh`, or keywords relevant to the current branch/test class.
+3. For `Outcome: worked` entries, try those approaches first. For `Outcome: didn't work`, skip them.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## 1. Read Assignment
 - Read the assigned issue and ALL comments
 - Identify: branch name, test class to run, what to look for in screenshots
@@ -76,7 +84,59 @@ echo "SCREENSHOT DONE"
 REMOTE
 ```
 
-## 6. Email Screenshot to Steve (MANDATORY)
+## 6. Upload to Google Drive — QA Iterations (MANDATORY)
+
+Upload screenshot + iteration metadata so agents can learn from fix history.
+
+```bash
+ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+# Create issue subfolder (idempotent — check first)
+PARENT_FOLDER="1Vi2av_kjmCFDmV5dxgYwTQktfeUvgT1X"  # DirtSync/QA Iterations
+ISSUE_ID="<ISSUE_ID>"
+
+# Check if folder exists
+EXISTING=$(gws drive files list --params "q=name='${ISSUE_ID}' and '${PARENT_FOLDER}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false" 2>&1 | grep -v "^Using keyring" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('files',[{}])[0].get('id',''))" 2>/dev/null)
+
+if [ -z "$EXISTING" ]; then
+  ISSUE_FOLDER=$(gws drive files create --json "{\"name\": \"${ISSUE_ID}\", \"mimeType\": \"application/vnd.google-apps.folder\", \"parents\": [\"${PARENT_FOLDER}\"]}" 2>&1 | grep -v "^Using keyring" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+else
+  ISSUE_FOLDER="$EXISTING"
+fi
+
+# Count existing versions to determine version number
+VERSION=$(gws drive files list --params "q='${ISSUE_FOLDER}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false" 2>&1 | grep -v "^Using keyring" | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('files',[]))+ 1)" 2>/dev/null)
+VERSION=${VERSION:-1}
+
+# Create version subfolder: v1-grade-pending, v2-grade-pending, etc.
+VER_FOLDER=$(gws drive files create --json "{\"name\": \"v${VERSION}-grade-pending\", \"mimeType\": \"application/vnd.google-apps.folder\", \"parents\": [\"${ISSUE_FOLDER}\"]}" 2>&1 | grep -v "^Using keyring" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+
+# Upload screenshot
+cd ~
+gws drive +upload --file test-screenshot.png --parent "$VER_FOLDER" 2>&1 | grep -v "^Using keyring"
+
+echo "UPLOADED: QA Iterations/${ISSUE_ID}/v${VERSION}/"
+echo "FOLDER_ID: $VER_FOLDER"
+REMOTE
+```
+
+**Folder structure in Drive:**
+```
+DirtSync/QA Iterations/
+  DIRA-73/
+    v1-grade-4/
+      screenshot.png      ← Critique graded 4/10
+    v2-grade-10/
+      screenshot.png      ← Critique approved, shipped
+  DIRA-8/
+    v1-grade-7/
+      screenshot.png
+```
+
+After Critique Agent grades, it renames the folder (e.g., `v1-grade-pending` → `v1-grade-4`).
+
+## 7. Email Screenshot to Steve (MANDATORY)
 
 ```bash
 ssh dirtsyncmini@100.125.184.57 << 'REMOTE'
@@ -84,21 +144,25 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 cd ~
 gws gmail +send \
   --to dirtsyncapp@gmail.com \
-  --subject "<ISSUE_ID>: <TITLE> — Test Results from Mini" \
-  --body "<RESULTS_SUMMARY>" \
+  --subject "<ISSUE_ID> v<VERSION>: <TITLE> — Test Results from Mini" \
+  --body "<RESULTS_SUMMARY>\n\nDrive: QA Iterations/<ISSUE_ID>/v<VERSION>/" \
   --attach test-screenshot.png
 REMOTE
 ```
 
-## 7. Post Results to Forge Issue (MANDATORY)
+## 8. Post Results to Forge Issue (MANDATORY)
 
 ```
 PATCH /api/agent/issues/<ISSUE_ID>
 {
-  "comment": "## Test Results\n\n**Branch:** <branch>\n**Tests:** <passed>/<total>\n**Build:** PASS\n**Screenshot:** Emailed to Steve\n\n### Test Details\n<per-test results>\n\n**Verdict:** PASS / FAIL",
-  "status": "in_review"  // or "blocked" if tests fail
+  "comment": "## Test Results — v<VERSION>\n\n**Branch:** <branch>\n**Tests:** <passed>/<total>\n**Build:** PASS\n**Screenshot:** Emailed + uploaded to Drive (QA Iterations/<ISSUE_ID>/v<VERSION>/)\n\n### Test Details\n<per-test results>\n\n**Verdict:** PASS / FAIL",
+  "status": "in_review"
 }
 ```
 
-## 8. Exit
+## 9. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (Ferrostar patch failures, simulator boot issues, gws upload errors, etc.), append one entry to the TOP of `companies/dirtsync/agents/test-runner/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. One entry per non-trivial bug, newest at top, append-only. Commit with your work on the same branch.
+
+## 10. Exit
 Clean exit. Don't start new work.

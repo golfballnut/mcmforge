@@ -2,7 +2,7 @@ import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import { approveItem, rejectItem } from "./actions";
 
-export const revalidate = 30;
+export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
 export default async function ApprovalsPage() {
   const supabase = await createForgeClient();

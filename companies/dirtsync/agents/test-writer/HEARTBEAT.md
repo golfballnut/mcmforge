@@ -2,6 +2,14 @@
 
 Run this on every wake. Tests come BEFORE code.
 
+## 0. Read Your Lessons (MANDATORY — before Read Assignment)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/test-writer/LESSONS.md`). Create with header if missing.
+2. Scan for entries tagged `xcuitest`, `xctest`, or with test-writing keywords relevant to the current issue.
+3. If a past lesson says an approach `worked`, try it first. If `didn't work`, skip it.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## 1. Read Assignment
 - Read the issue and all comments
 - Identify the Gold Star spec or acceptance criteria
@@ -53,3 +61,7 @@ Post your results as a comment:
 
 **Status:** Ready for iOS Builder (write code to pass these tests)
 ```
+
+## 7. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (test helper gotchas, XCUITest selector failures, assertion pattern issues), append an entry to the TOP of `companies/dirtsync/agents/test-writer/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. One entry per non-trivial bug, newest at top, append-only. Commit with your work on the same branch.

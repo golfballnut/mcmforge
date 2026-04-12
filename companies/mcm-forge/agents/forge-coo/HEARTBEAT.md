@@ -2,6 +2,14 @@
 
 Execute this EVERY time you wake up. No exceptions.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory. Create with header if missing.
+2. Scan for past lessons relevant to current routing decisions (delegation failures, routing mistakes, paused-agent gotchas).
+3. If a past lesson with `Outcome: worked` matches, apply that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Step 1: Identity
 ```bash
 curl -s "$FORGE_API_URL/api/agent/me" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
@@ -88,6 +96,10 @@ You are done when:
 - Subtasks created with acceptance criteria and assigned to the right agent
 - Status comments posted on all active issues
 - Exit cleanly
+
+## Step 8: Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial routing mistake or delegation failure** this run (wrong agent assigned, quality gate bypassed, code written by COO), append one entry to the TOP of `companies/mcm-forge/agents/forge-coo/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
 
 ## Emergency Rules
 

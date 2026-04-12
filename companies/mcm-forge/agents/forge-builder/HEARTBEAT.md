@@ -2,6 +2,14 @@
 
 Execute this EVERY time you wake up. No exceptions.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory. Create with header if missing.
+2. Scan for past lessons relevant to the current issue (cookie bugs, adapter mismatches, Supabase client gotchas).
+3. If a past lesson with `Outcome: worked` matches, try that approach first.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## Step 1: Check Inbox
 ```bash
 curl -s "$FORGE_API_URL/api/agent/me/inbox" -H "X-Forge-Agent-Id: $FORGE_AGENT_ID"
@@ -60,6 +68,10 @@ curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/{issueId}" \
     "comment": "Implemented [what]. Branch: agent/[slug]. PR #[number]. Build passes. [any notes]."
   }'
 ```
+
+## Step 9: Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (build failures, cookie races, Supabase schema issues, adapter mismatches), append one entry to the TOP of `companies/mcm-forge/agents/forge-builder/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
 
 ## Rules
 - Never push to main directly

@@ -1,49 +1,66 @@
-# TOOLS.md — DirtSync Code Scout
+# TOOLS.md — DirtSync Skills Enhancer (Code Scout)
 
-> **Note:** Code Scout runs on Codex (GPT-5.4, NOT Claude). No MCP tools available.
-> Tools: bash (read-only), file read, grep, git log/diff only.
+> **Runs on Claude Sonnet** with file read/write, Bash, and Forge API.
 
 ## Available Tools
-- Bash read-only (find, grep, cat, git log, git diff — NO writes, NO commits)
-- File read (Swift source files, test files, package manifests)
-- Grep (dependency mapping, pattern detection across codebase)
+- **File read/write** — read agent instruction files, write lessons into them
+- **Bash** — SSH to Mini for file edits, git commits, Drive access
+- **Forge API** — read Framework Scout reports, Factory Analyst reports, post enhancement report
+- **Grep** — search for patterns across agent instruction files
 
-## Code Analysis Commands
+## Agent Instruction Files (on Mini)
 
-```bash
-# Read a specific file
-cat ~/DirtSync/DirtSync/Services/NavigationService.swift
-
-# Find all imports (dependency map)
-grep "^import" ~/DirtSync/DirtSync/Services/NavigationService.swift
-
-# Find callers of a service
-grep -rn "NavigationService.shared" ~/DirtSync/DirtSync --include="*.swift"
-
-# Map service-to-service dependencies
-grep -rn "\.shared\." ~/DirtSync/DirtSync/Services --include="*.swift"
-
-# Find all @Published properties in a ViewModel
-grep -n "@Published" ~/DirtSync/DirtSync/ViewModels/NavigationViewModel.swift
-
-# List all Swift files in a directory
-find ~/DirtSync/DirtSync/Services -name "*.swift" | sort
-
-# Check test coverage gaps
-find ~/DirtSync/DirtSyncTests -name "*.swift" | sort
+```
+/Users/dirtsyncmini/MCMForge/companies/dirtsync/agents/
+├── ios-builder/
+│   ├── AGENTS.md      ← Framework patterns, code conventions, common errors
+│   ├── HEARTBEAT.md   ← Step-by-step build procedure, mandatory checks
+│   ├── SOUL.md        ← Voice and principles (rarely update)
+│   └── TOOLS.md       ← Available tools, API references, version info
+├── test-runner/
+│   ├── AGENTS.md      ← Test patterns, simulator commands, known issues
+│   ├── HEARTBEAT.md   ← Test procedure, screenshot, email, Drive upload
+│   └── TOOLS.md       ← Build commands, simulator commands, gws
+├── critique-agent/
+│   ├── AGENTS.md      ← Gold Star specs, color tables, measurement tolerances
+│   ├── HEARTBEAT.md   ← Grading procedure, Drive tagging, verdict format
+│   └── TOOLS.md       ← Spec locations, Forge API, Drive commands
+├── qa-rider/
+│   ├── AGENTS.md      ← QA patterns, test matrix, framework-specific checks
+│   └── TOOLS.md       ← Test tools, xcodebuild, simctl
+└── ship-engineer/
+    ├── AGENTS.md      ← PR creation, rebase, code review checklist
+    └── TOOLS.md       ← gh CLI, git commands
 ```
 
-## Git Analysis (read-only)
+## Google Drive — QA Iterations
 
 ```bash
-# Recent changes to a file
-git -C ~/DirtSync log --oneline -10 -- DirtSync/Services/NavigationService.swift
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+QA_FOLDER="1Vi2av_kjmCFDmV5dxgYwTQktfeUvgT1X"
 
-# Diff of recent changes
-git -C ~/DirtSync diff HEAD~1 -- DirtSync/Services/NavigationService.swift
+# List issue folders
+gws drive files list --params "q='${QA_FOLDER}' in parents and trashed=false" 2>&1 | grep -v "^Using keyring"
 
-# Who last changed a file
-git -C ~/DirtSync log --format="%h %an %s" -5 -- DirtSync/Services/TrailDetectionService.swift
+# List versions for an issue
+ISSUE_FOLDER_ID="<from above>"
+gws drive files list --params "q='${ISSUE_FOLDER_ID}' in parents and trashed=false" 2>&1 | grep -v "^Using keyring"
+
+# Download a critique or fix list
+gws drive files get --file-id FILE_ID --params "alt=media" 2>&1 | grep -v "^Using keyring"
+```
+
+## Pattern Detection Queries
+
+```bash
+# Find common rejection reasons across issues
+ssh dirtsyncmini@100.125.184.57 'cd ~/MCMForge && grep -r "REJECTED" companies/dirtsync/agents/critique-agent/ 2>/dev/null'
+
+# Check what lessons already exist
+ssh dirtsyncmini@100.125.184.57 'cd ~/MCMForge && grep "### Lesson:" companies/dirtsync/agents/*/AGENTS.md 2>/dev/null'
+
+# Find all framework version references
+ssh dirtsyncmini@100.125.184.57 'cd ~/MCMForge && grep -rn "ferrostar\|maplibre\|valhalla" companies/dirtsync/agents/*/TOOLS.md 2>/dev/null'
 ```
 
 ## Forge API
@@ -54,60 +71,14 @@ Headers:
   X-Forge-Agent-Id: $FORGE_AGENT_ID
   X-Forge-Run-Id: $FORGE_RUN_ID
 
-GET  /api/agent/me/inbox           — assigned analysis tasks
-GET  /api/agent/issues/:id/context — analysis brief + design spec
-PATCH /api/agent/issues/:id        — post analysis report, update status
-```
-
-### Status flow
-- `todo` → `in_progress` when analysis starts
-- `in_progress` → `done` when analysis report posted as issue comment
-
-## Project Structure
-```
-~/DirtSync/DirtSync/
-├── Views/          — SwiftUI views (Navigation, Map, Rides, Settings)
-├── Components/     — Reusable UI components
-├── ViewModels/     — MVVM view models (@Published, @ObservableObject)
-├── Services/       — Business logic singletons (.shared pattern)
-├── Models/         — Data models (Swift structs/classes)
-└── Resources/
-    ├── all-trails.geojson    — 1,259 trails, READ-ONLY
-    └── *.mbtiles             — offline map tiles, READ-ONLY
-
-~/DirtSync/DirtSyncTests/     — XCTest unit tests
-```
-
-## Analysis Report Format
-
-```markdown
-## Analysis: <File or Feature>
-**File:** `~/DirtSync/DirtSync/<path>`
-
-### Purpose
-<one sentence>
-
-### Dependencies
-- `<ServiceName>.shared` — <why it's used>
-
-### Data Flow
-View → ViewModel → Service → DataSource
-
-### Key Methods
-| Method | Purpose | Calls |
-|--------|---------|-------|
-| `methodName()` | <what it does> | `ServiceA.method()` |
-
-### Issues Found
-- <potential bug or tech debt with line reference>
-
-### Reusable Components
-- `<ComponentName>` at `<path>` — could be reused for <use case>
+GET  /api/agent/me/inbox
+GET  /api/agent/issues/:id/context
+PATCH /api/agent/issues/:id        — post enhancement report
 ```
 
 ## What You CANNOT Do
-- Write or edit any Swift source files (iOS Builder's job)
-- Create git commits or branches
-- Access MCP tools (XcodeBuildMCP, Supabase, Playwright)
-- Produce design specs or implementation plans (Architect's job)
-- Run xcodebuild or simulator commands
+- Write production Swift code
+- Run tests or take screenshots
+- Delete existing agent instructions (only add/update)
+- Skip reading the source intelligence before writing
+- Write lessons without source tags

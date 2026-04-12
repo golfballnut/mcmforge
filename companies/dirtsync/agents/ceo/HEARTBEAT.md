@@ -2,6 +2,23 @@
 
 Run this procedure on every wake. No exceptions. No shortcuts.
 
+## 0. Read Your Lessons (MANDATORY — before anything else)
+
+1. Read `LESSONS.md` in this agent directory (`companies/dirtsync/agents/ceo/LESSONS.md`). Create with this header if missing:
+
+   ```
+   # Lessons Learned — DirtSync CEO
+
+   Append new entries at the top. See `vault/agents/skills/lessons-learned-loop.md` for format.
+
+   ---
+   ```
+
+2. Scan for past lessons about delegation failures, agent routing mistakes, or acceptance criteria gaps.
+3. If a past lesson with `Outcome: worked` matches the current issue type, apply it.
+
+See `vault/agents/skills/lessons-learned-loop.md`.
+
 ## 1. Orient
 
 ```
@@ -81,7 +98,11 @@ If YES → proceed to delivery
 - Create PR against `master`: `gh pr create --title "..." --body "..."`
 - Update issue status to `done`
 
-## 8. Exit
+## 8. Append Lessons Learned (MANDATORY — before exit)
+
+For every **non-trivial bug** you hit this run (routing mistake, wrong acceptance criteria, agent stuck loop), append one entry to the TOP of `companies/dirtsync/agents/ceo/LESSONS.md` using the format in `vault/agents/skills/lessons-learned-loop.md`. Commit with your work.
+
+## 9. Exit
 
 Done when: PR created, issue updated, result reported. Don't start new work in same session.
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AgentActions } from "./AgentActions";
 
-export const revalidate = 30;
+export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 

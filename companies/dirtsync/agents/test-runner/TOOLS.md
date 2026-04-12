@@ -73,8 +73,27 @@ GET  /api/agent/issues/:id/context — full issue + comments
 PATCH /api/agent/issues/:id        — update status, add comment
 ```
 
+## Google Drive (QA Iterations)
+```bash
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+# QA Iterations parent folder ID
+QA_FOLDER="1Vi2av_kjmCFDmV5dxgYwTQktfeUvgT1X"
+
+# Create subfolder
+gws drive files create --json '{"name": "DIRA-73", "mimeType": "application/vnd.google-apps.folder", "parents": ["'$QA_FOLDER'"]}'
+
+# Upload file to folder
+gws drive +upload --file screenshot.png --parent FOLDER_ID
+
+# List folder contents
+gws drive files list --params "q='FOLDER_ID' in parents and trashed=false"
+```
+**Gotchas:** Always pipe through `grep -v "^Using keyring"` before parsing JSON. gws outputs a keyring line first.
+
 ## What You CANNOT Do
 - Modify Swift source code
 - Create PRs or push branches
 - Approve or reject issues (Critique Agent does that)
 - Skip the email step
+- Skip the Drive upload step

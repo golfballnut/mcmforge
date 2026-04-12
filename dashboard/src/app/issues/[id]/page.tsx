@@ -2,9 +2,9 @@ import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
+import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm, AttachmentUpload } from "./IssueActions";
 
-export const revalidate = 15;
+export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
 interface Issue {
   id: string;
@@ -27,6 +27,15 @@ interface Comment {
   author_agent_id: string | null;
   created_at: string;
   author_name?: string | null;
+}
+
+interface Attachment {
+  id: string;
+  filename: string;
+  mime_type: string | null;
+  storage_path: string;
+  created_at: string;
+  url: string;
 }
 
 async function getIssue(id: string) {
@@ -72,7 +81,26 @@ async function getIssue(id: string) {
     }
   }
 
-  return { issue: issue as Issue, assigneeName, comments, agents: agentList };
+  // Fetch attachments
+  const { data: rawAttachments } = await supabase
+    .from("issue_attachments")
+    .select("*")
+    .eq("issue_id", id)
+    .order("created_at", { ascending: false });
+
+  const attachments: Attachment[] = (rawAttachments ?? []).map((a) => {
+    const { data: urlData } = supabase.storage.from("artifacts").getPublicUrl(a.storage_path);
+    return {
+      id: a.id,
+      filename: a.filename,
+      mime_type: a.mime_type,
+      storage_path: a.storage_path,
+      created_at: a.created_at,
+      url: urlData.publicUrl,
+    };
+  });
+
+  return { issue: issue as Issue, assigneeName, comments, agents: agentList, attachments };
 }
 
 function formatRelativeTime(timestamp: string): string {
@@ -133,7 +161,7 @@ export default async function IssueDetailPage({
 
   if (!result) notFound();
 
-  const { issue, assigneeName, comments, agents } = result;
+  const { issue, assigneeName, comments, agents, attachments } = result;
   const statusCfg = STATUS_CONFIG[issue.status] ?? STATUS_CONFIG.backlog;
   const priorityCfg = PRIORITY_CONFIG[issue.priority] ?? PRIORITY_CONFIG.medium;
 
@@ -151,11 +179,11 @@ export default async function IssueDetailPage({
       </div>
 
       {/* Main layout: 2/3 + 1/3 */}
-      <div className="flex gap-6 items-start">
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Left: content */}
         <div className="flex-1 min-w-0">
           {/* Title */}
-          <h1 className="text-2xl font-semibold text-[#e6edf3] leading-tight mb-4">
+          <h1 className="text-2xl font-semibold text-[#e6edf3] leading-tight mb-4 break-words">
             {issue.title}
           </h1>
 
@@ -182,6 +210,53 @@ export default async function IssueDetailPage({
               <p className="text-sm text-[#8b949e] italic">No description provided.</p>
             )}
           </div>
+
+          {/* Attachment upload */}
+          <AttachmentUpload issueId={issue.id} />
+
+          {/* Attachments */}
+          {attachments.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
+                Attachments ({attachments.length})
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {attachments.map((att) => {
+                  const isImage = att.mime_type?.startsWith("image/");
+                  return (
+                    <a
+                      key={att.id}
+                      href={att.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden hover:border-[#00d4aa] transition-colors"
+                      style={{ maxWidth: "200px" }}
+                    >
+                      {isImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={att.url}
+                          alt={att.filename}
+                          className="block w-full h-auto"
+                          style={{ maxWidth: "200px" }}
+                        />
+                      ) : (
+                        <div className="p-6 text-center text-xs text-[#8b949e]">File</div>
+                      )}
+                      <div className="px-2 py-1.5 border-t border-[#30363d]">
+                        <div className="text-xs text-[#e6edf3] truncate" title={att.filename}>
+                          {att.filename}
+                        </div>
+                        <div className="text-[10px] text-[#8b949e]">
+                          {formatRelativeTime(att.created_at)}
+                        </div>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Tabs */}
           <div className="border-b border-[#30363d] mb-6">
@@ -244,7 +319,7 @@ export default async function IssueDetailPage({
         </div>
 
         {/* Right: properties panel */}
-        <div className="w-72 shrink-0">
+        <div className="w-full lg:w-72 shrink-0">
           <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-4">
             <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
               Properties

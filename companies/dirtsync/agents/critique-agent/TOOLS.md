@@ -40,9 +40,31 @@ PATCH /api/agent/issues/:id        — post critique + update status
 - `approved` — 10/10, ready for Ship Engineer
 - `todo` — rejected, back to iOS Builder with fix list
 
+## Google Drive — QA Iterations (tag with grade)
+```bash
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+# QA Iterations parent folder ID
+QA_FOLDER="1Vi2av_kjmCFDmV5dxgYwTQktfeUvgT1X"
+
+# Rename version folder with grade
+gws drive files update --file-id FOLDER_ID --json '{"name": "v1-grade-4"}'
+
+# Upload critique report
+gws drive +upload --file /tmp/critique.md --parent FOLDER_ID
+
+# Upload fix list (on rejection)
+gws drive +upload --file /tmp/fix-list.md --parent FOLDER_ID
+
+# List files in folder
+gws drive files list --params "q='FOLDER_ID' in parents and trashed=false"
+```
+**Gotchas:** Always pipe through `grep -v "^Using keyring"` before parsing JSON.
+
 ## What You CANNOT Do
 - Write or modify any code
 - Run tests or take screenshots
 - Approve anything below 10/10
 - Skip the element-by-element review table
 - Skip the Social Media Test
+- Skip the Drive grade tagging

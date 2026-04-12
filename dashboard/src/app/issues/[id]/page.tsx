@@ -2,7 +2,8 @@ import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm, AttachmentUpload } from "./IssueActions";
+import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
+import { IssueTabs } from "./IssueTabs";
 
 export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
@@ -36,6 +37,7 @@ interface Attachment {
   storage_path: string;
   created_at: string;
   url: string;
+  category: string | null;
 }
 
 async function getIssue(id: string) {
@@ -97,23 +99,11 @@ async function getIssue(id: string) {
       storage_path: a.storage_path,
       created_at: a.created_at,
       url: urlData.publicUrl,
+      category: a.category ?? null,
     };
   });
 
   return { issue: issue as Issue, assigneeName, comments, agents: agentList, attachments };
-}
-
-function formatRelativeTime(timestamp: string): string {
-  const diff = Date.now() - new Date(timestamp).getTime();
-  const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return `${seconds}s ago`;
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
-  return new Date(timestamp).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function formatDate(timestamp: string): string {
@@ -211,108 +201,7 @@ export default async function IssueDetailPage({
             )}
           </div>
 
-          {/* Attachment upload */}
-          <AttachmentUpload issueId={issue.id} />
-
-          {/* Attachments */}
-          {attachments.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
-                Attachments ({attachments.length})
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {attachments.map((att) => {
-                  const isImage = att.mime_type?.startsWith("image/");
-                  return (
-                    <a
-                      key={att.id}
-                      href={att.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden hover:border-[#00d4aa] transition-colors"
-                      style={{ maxWidth: "200px" }}
-                    >
-                      {isImage ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={att.url}
-                          alt={att.filename}
-                          className="block w-full h-auto"
-                          style={{ maxWidth: "200px" }}
-                        />
-                      ) : (
-                        <div className="p-6 text-center text-xs text-[#8b949e]">File</div>
-                      )}
-                      <div className="px-2 py-1.5 border-t border-[#30363d]">
-                        <div className="text-xs text-[#e6edf3] truncate" title={att.filename}>
-                          {att.filename}
-                        </div>
-                        <div className="text-[10px] text-[#8b949e]">
-                          {formatRelativeTime(att.created_at)}
-                        </div>
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Tabs */}
-          <div className="border-b border-[#30363d] mb-6">
-            <div className="flex gap-0">
-              {["Comments", "Sub-issues", "Activity"].map((tab, i) => (
-                <button
-                  key={tab}
-                  className={`px-4 py-2.5 text-sm border-b-2 transition-colors ${
-                    i === 0
-                      ? "border-[#00d4aa] text-[#e6edf3] font-medium"
-                      : "border-transparent text-[#8b949e] hover:text-[#e6edf3]"
-                  }`}
-                >
-                  {tab}
-                  {tab === "Comments" && comments.length > 0 && (
-                    <span className="ml-1.5 text-xs bg-[#30363d] text-[#8b949e] px-1.5 py-0.5 rounded-full">
-                      {comments.length}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Comments */}
-          <div className="space-y-4 mb-6">
-            {comments.length === 0 ? (
-              <p className="text-sm text-[#8b949e] py-4 text-center">No comments yet.</p>
-            ) : (
-              comments.map((comment) => (
-                <div
-                  key={comment.id}
-                  className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden"
-                >
-                  {/* Comment header */}
-                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#0d1117]">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-[#00d4aa] flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-[#0d1117]">
-                          {(comment.author_name ?? "A")[0].toUpperCase()}
-                        </span>
-                      </div>
-                      <span className="text-sm font-medium text-[#e6edf3]">
-                        {comment.author_name ?? "Agent"}
-                      </span>
-                    </div>
-                    <span className="text-xs text-[#8b949e]">{formatRelativeTime(comment.created_at)}</span>
-                  </div>
-                  {/* Comment body */}
-                  <div className="px-4 py-3 text-sm text-[#e6edf3] leading-relaxed whitespace-pre-wrap">
-                    {comment.body}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <IssueTabs issueId={issue.id} comments={comments} attachments={attachments} />
 
           {/* Comment input */}
           <CommentForm issueId={issue.id} companyId={issue.company_id} />

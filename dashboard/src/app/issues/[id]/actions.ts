@@ -48,6 +48,7 @@ export async function assignIssue(issueId: string, agentId: string | null) {
 
 const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const ALLOWED_CATEGORIES = ["user_upload", "testing", "comparison", "video"];
 
 export async function uploadIssueAttachment(issueId: string, formData: FormData) {
   const file = formData.get("file") as File | null;
@@ -58,6 +59,9 @@ export async function uploadIssueAttachment(issueId: string, formData: FormData)
   if (file.size > MAX_UPLOAD_BYTES) {
     return { error: "File exceeds 10MB limit" };
   }
+
+  const categoryRaw = (formData.get("category") as string | null) ?? "user_upload";
+  const category = ALLOWED_CATEGORIES.includes(categoryRaw) ? categoryRaw : "user_upload";
 
   const upload = await uploadAttachment(formData);
   if ("error" in upload && upload.error) return { error: upload.error };
@@ -72,6 +76,7 @@ export async function uploadIssueAttachment(issueId: string, formData: FormData)
     mime_type: file.type,
     size_bytes: file.size,
     storage_path: storagePath,
+    category,
   });
 
   if (error) return { error: error.message };

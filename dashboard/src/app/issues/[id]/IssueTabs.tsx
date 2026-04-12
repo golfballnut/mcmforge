@@ -207,6 +207,11 @@ export function IssueTabs({
                       <div className="p-6 text-center text-xs text-[#8b949e]">File</div>
                     )}
                     <div className="px-2 py-1.5 border-t border-[#30363d]">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="inline-block px-1.5 py-0.5 bg-[#30363d] text-[#8b949e] text-[9px] uppercase tracking-wide rounded">
+                          {(att.category ?? "user_upload").replace("_", " ")}
+                        </span>
+                      </div>
                       <div className="text-xs text-[#e6edf3] truncate" title={att.filename}>
                         {att.filename}
                       </div>

@@ -125,10 +125,18 @@ export function AssigneeDropdown({
 const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
+const CATEGORY_OPTIONS = [
+  { value: "user_upload", label: "User Upload" },
+  { value: "testing", label: "Testing" },
+  { value: "comparison", label: "Comparison" },
+  { value: "video", label: "Video" },
+];
+
 export function AttachmentUpload({ issueId }: { issueId: string }) {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ kind: "success" | "error"; text: string } | null>(null);
   const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
+  const [category, setCategory] = useState<string>("user_upload");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
@@ -163,6 +171,7 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
         valid.map(async (file) => {
           const formData = new FormData();
           formData.append("file", file);
+          formData.append("category", category);
           try {
             const res = await uploadIssueAttachment(issueId, formData);
             completed += 1;
@@ -194,6 +203,7 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
 
   return (
     <div className="mb-6">
+      <div className="flex items-center gap-2 flex-wrap">
       <label
         className={`inline-flex items-center gap-2 px-3 py-1.5 bg-[#161b22] border border-[#30363d] rounded text-xs text-[#e6edf3] cursor-pointer hover:border-[#00d4aa] transition-colors ${
           pending ? "opacity-50 cursor-not-allowed" : ""
@@ -216,6 +226,19 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
           onChange={handleChange}
         />
       </label>
+        <select
+          disabled={pending}
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="px-2 py-1.5 bg-[#161b22] border border-[#30363d] rounded text-xs text-[#e6edf3] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#00d4aa] disabled:opacity-50"
+        >
+          {CATEGORY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value} className="bg-[#161b22] text-[#e6edf3]">
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
       {message && (
         <p
           className={`mt-2 text-xs ${

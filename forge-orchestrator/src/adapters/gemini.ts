@@ -118,6 +118,12 @@ function parseGeminiResult(
     }
   }
 
+  // O-3: Calculate cost from tokens when not provided by CLI output
+  // Gemini Flash pricing: $0.075/1M input, $0.30/1M output
+  if (costUsd === null && (inputTokens > 0 || outputTokens > 0)) {
+    costUsd = (inputTokens / 1_000_000) * 0.075 + (outputTokens / 1_000_000) * 0.30;
+  }
+
   return {
     exitCode: proc.exitCode,
     signal: proc.signal,

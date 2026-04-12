@@ -129,6 +129,12 @@ function parseCodexResult(
     }
   }
 
+  // O-3: Calculate cost from tokens when not provided by CLI output
+  // GPT-4o-class pricing as fallback: $2.50/1M input, $10.00/1M output
+  if (costUsd === null && (inputTokens > 0 || outputTokens > 0)) {
+    costUsd = (inputTokens / 1_000_000) * 2.50 + (outputTokens / 1_000_000) * 10.00;
+  }
+
   return {
     exitCode: proc.exitCode,
     signal: proc.signal,

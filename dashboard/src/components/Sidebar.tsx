@@ -312,7 +312,7 @@ export default function Sidebar() {
       <div className="w-12 bg-[#010409] border-r border-[#21262d] flex flex-col items-center py-3 shrink-0">
         {/* MCM Forge logo */}
         <div className="w-8 h-8 rounded-lg bg-[#00d4aa] flex items-center justify-center mb-4 shrink-0">
-          <span className="text-[#010409] font-bold text-sm leading-none">M</span>
+          <span className="text-[#010409] font-bold text-sm leading-none">{(ctxCompany?.name ?? "MCM Forge").charAt(0).toUpperCase()}</span>
         </div>
 
         {/* Company icons */}

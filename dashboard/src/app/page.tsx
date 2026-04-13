@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import DashboardClient from "./DashboardClient";
@@ -256,11 +257,13 @@ export default async function HomePage() {
           value={stats.pendingApprovals}
           accent={approvalAccent}
         />
-        <StatCard
-          label="Knowledge Health"
-          value={`${knowledgeHealth.coverage}%`}
-          accent={knowledgeHealth.coverage >= 50 ? "#3fb950" : knowledgeHealth.coverage >= 25 ? "#d29922" : "#f85149"}
-        />
+        <Link href="/knowledge" className="block">
+          <StatCard
+            label="Knowledge Health"
+            value={`${knowledgeHealth.coverage}%`}
+            accent={knowledgeHealth.coverage >= 50 ? "#3fb950" : knowledgeHealth.coverage >= 25 ? "#d29922" : "#f85149"}
+          />
+        </Link>
       </div>
 
       {/* Agent Performance */}

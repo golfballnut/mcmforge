@@ -150,6 +150,83 @@ all_stories_done() {
 }
 
 # ============================================================
+# TRUST-1: Flight recorder — post agent output to Forge issue
+# ============================================================
+post_flight_log() {
+  local issue_id="$1"
+  local story_id="$2"
+  local status="$3"
+  local output="$4"
+
+  if [[ -z "$SUPABASE_KEY" || "$issue_id" == "none" || "$issue_id" == "null" ]]; then
+    return
+  fi
+
+  # Get company_id for the issue
+  local company_id
+  company_id=$(curl -s "$SUPABASE_URL/rest/v1/issues?id=eq.$issue_id&select=company_id" \
+    -H "apikey: $SUPABASE_KEY" \
+    -H "Authorization: Bearer $SUPABASE_KEY" \
+    -H "Accept-Profile: forge" \
+    | jq -r '.[0].company_id // empty')
+
+  if [[ -z "$company_id" ]]; then
+    return
+  fi
+
+  # Truncate output to last 2000 chars (Supabase row limit)
+  local truncated
+  if [[ ${#output} -gt 2000 ]]; then
+    truncated="...(truncated)\n\n${output: -2000}"
+  else
+    truncated="$output"
+  fi
+
+  # Escape for JSON
+  local escaped
+  escaped=$(echo "$truncated" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))" 2>/dev/null || echo '""')
+
+  local body="## Flight Log — $story_id ($(date +%H:%M:%S))\n\n**Status:** $status\n\n\`\`\`\n${truncated}\n\`\`\`"
+
+  curl -s -o /dev/null "$SUPABASE_URL/rest/v1/issue_comments" \
+    -X POST \
+    -H "apikey: $SUPABASE_KEY" \
+    -H "Authorization: Bearer $SUPABASE_KEY" \
+    -H "Content-Type: application/json" \
+    -H "Content-Profile: forge" \
+    -d "$(jq -n --arg cid "$company_id" --arg iid "$issue_id" --arg body "$body" \
+      '{company_id:$cid, issue_id:$iid, body:$body, author_user_id:"drill-loop"}')" \
+    && echo "  Flight log posted to issue $issue_id"
+}
+
+# ============================================================
+# TRUST-2: Test is the judge — run verify command before marking done
+# ============================================================
+run_verify() {
+  local story_id="$1"
+  local verify_cmd
+  verify_cmd=$(jq -r --arg id "$story_id" '.stories[] | select(.id == $id) | .verify // ""' "$DRILL_FILE")
+
+  if [[ -z "$verify_cmd" ]]; then
+    echo "  No verify command — skipping automated verification"
+    return 0
+  fi
+
+  echo "  Running verify: $verify_cmd"
+  local verify_output
+  verify_output=$(eval "$verify_cmd" 2>&1) || {
+    echo "  VERIFY FAILED (exit code $?)"
+    echo "  Output: $verify_output"
+    echo ""
+    echo "  Agent claimed COMPLETE but test says NO. Story stays open."
+    return 1
+  }
+
+  echo "  VERIFY PASSED"
+  return 0
+}
+
+# ============================================================
 # Helper: update Forge issue status
 # ============================================================
 update_forge_issue() {
@@ -426,27 +503,49 @@ PRBODY
   # Check for completion
   if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>"; then
     echo ""
-    echo "Story $STORY_ID COMPLETED"
-    mark_story_done "$STORY_ID"
+    echo "Story $STORY_ID — agent claims COMPLETE"
 
-    # Update Forge issue to done
+    # TRUST-2: Run verify command BEFORE marking done
     FORGE_ISSUE_ID=$(get_story_field "$STORY_ID" "forgeIssueId")
-    update_forge_issue "$FORGE_ISSUE_ID" "done"
+    if run_verify "$STORY_ID"; then
+      echo "Story $STORY_ID VERIFIED + COMPLETED"
+      mark_story_done "$STORY_ID"
+      update_forge_issue "$FORGE_ISSUE_ID" "done"
 
-    # Append to progress
-    echo "" >> "$PROGRESS_FILE"
-    echo "## $(date) — $STORY_ID: $STORY_TITLE" >> "$PROGRESS_FILE"
-    echo "- Status: COMPLETED" >> "$PROGRESS_FILE"
-    echo "- Specialist: $SPECIALIST" >> "$PROGRESS_FILE"
-    echo "- Forge issue: $FORGE_ISSUE_ID → done" >> "$PROGRESS_FILE"
-    echo "---" >> "$PROGRESS_FILE"
+      # TRUST-1: Post flight log — PASSED
+      post_flight_log "$FORGE_ISSUE_ID" "$STORY_ID" "COMPLETED + VERIFIED" "$OUTPUT"
+
+      # Append to progress
+      echo "" >> "$PROGRESS_FILE"
+      echo "## $(date) — $STORY_ID: $STORY_TITLE" >> "$PROGRESS_FILE"
+      echo "- Status: COMPLETED + VERIFIED" >> "$PROGRESS_FILE"
+      echo "- Specialist: $SPECIALIST" >> "$PROGRESS_FILE"
+      echo "- Forge issue: $FORGE_ISSUE_ID → done" >> "$PROGRESS_FILE"
+      echo "---" >> "$PROGRESS_FILE"
+    else
+      echo "Story $STORY_ID FAILED VERIFICATION — stays open"
+
+      # TRUST-1: Post flight log — FAILED VERIFY
+      post_flight_log "$FORGE_ISSUE_ID" "$STORY_ID" "AGENT CLAIMED DONE — TEST SAYS NO" "$OUTPUT"
+
+      # Append to progress
+      echo "" >> "$PROGRESS_FILE"
+      echo "## $(date) — $STORY_ID: $STORY_TITLE" >> "$PROGRESS_FILE"
+      echo "- Status: FAILED VERIFICATION — agent claimed done but test failed" >> "$PROGRESS_FILE"
+      echo "- Specialist: $SPECIALIST" >> "$PROGRESS_FILE"
+      echo "---" >> "$PROGRESS_FILE"
+    fi
   elif echo "$OUTPUT" | grep -q "<promise>BLOCKED"; then
     REASON=$(echo "$OUTPUT" | grep -o '<promise>BLOCKED:.*</promise>' | sed 's/<promise>BLOCKED: //' | sed 's/<\/promise>//')
     echo ""
     echo "Story $STORY_ID BLOCKED: $REASON"
 
+    FORGE_ISSUE_ID=$(get_story_field "$STORY_ID" "forgeIssueId")
+
+    # TRUST-1: Post flight log — BLOCKED
+    post_flight_log "$FORGE_ISSUE_ID" "$STORY_ID" "BLOCKED: $REASON" "$OUTPUT"
+
     # Update notes in drill file
-    local tmp_file="${DRILL_FILE}.tmp"
     jq --arg id "$STORY_ID" --arg note "BLOCKED: $REASON" '
       .stories = [.stories[] |
         if .id == $id then .notes = $note
@@ -462,6 +561,11 @@ PRBODY
   else
     echo ""
     echo "Story $STORY_ID did not signal completion. Continuing to next iteration..."
+
+    FORGE_ISSUE_ID=$(get_story_field "$STORY_ID" "forgeIssueId")
+
+    # TRUST-1: Post flight log — INCOMPLETE
+    post_flight_log "$FORGE_ISSUE_ID" "$STORY_ID" "INCOMPLETE (no completion signal)" "$OUTPUT"
 
     # Append to progress
     echo "" >> "$PROGRESS_FILE"

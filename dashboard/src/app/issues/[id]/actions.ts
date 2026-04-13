@@ -5,6 +5,15 @@ import { uploadAttachment } from "@/app/actions";
 
 export async function updateIssueStatus(issueId: string, status: string) {
   const supabase = await createForgeClient();
+
+  // Fetch previous status for the event log
+  const { data: prev } = await supabase
+    .from("issues")
+    .select("status")
+    .eq("id", issueId)
+    .single();
+  const oldStatus = prev?.status ?? null;
+
   const updates: Record<string, unknown> = {
     status,
     updated_at: new Date().toISOString(),
@@ -14,6 +23,17 @@ export async function updateIssueStatus(issueId: string, status: string) {
   if (status === "cancelled") updates.cancelled_at = new Date().toISOString();
 
   await supabase.from("issues").update(updates).eq("id", issueId);
+
+  // Log status change event
+  await supabase.from("issue_events").insert({
+    issue_id: issueId,
+    event_type: "status_change",
+    actor_type: "user",
+    actor_id: "steve",
+    old_value: oldStatus,
+    new_value: status,
+  });
+
   revalidatePath(`/issues/${issueId}`);
 }
 
@@ -93,4 +113,36 @@ export async function uploadIssueAttachment(issueId: string, formData: FormData)
 
   revalidatePath(`/issues/${issueId}`);
   return { success: true, url: upload.url, filename: file.name };
+}
+
+export async function toggleCriterion(issueId: string, index: number, verified: boolean) {
+  const supabase = await createForgeClient();
+  const { data: issue } = await supabase
+    .from("issues")
+    .select("acceptance_criteria")
+    .eq("id", issueId)
+    .single();
+
+  if (!issue?.acceptance_criteria || !Array.isArray(issue.acceptance_criteria)) return;
+
+  const criteria = [...issue.acceptance_criteria];
+  if (index >= 0 && index < criteria.length) {
+    criteria[index] = { ...criteria[index], verified };
+  }
+
+  await supabase.from("issues").update({
+    acceptance_criteria: criteria,
+    updated_at: new Date().toISOString(),
+  }).eq("id", issueId);
+
+  await supabase.from("issue_events").insert({
+    issue_id: issueId,
+    event_type: "criteria_verified",
+    actor_type: "user",
+    actor_id: "steve",
+    new_value: criteria[index]?.criterion ?? `criterion ${index}`,
+    metadata: { index, verified },
+  });
+
+  revalidatePath(`/issues/${issueId}`);
 }

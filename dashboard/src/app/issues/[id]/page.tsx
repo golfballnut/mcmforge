@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
 import { IssueTabs } from "./IssueTabs";
+import { AcceptanceCriteria } from "./AcceptanceCriteria";
 
 export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
@@ -111,21 +112,49 @@ async function getIssue(id: string) {
     };
   });
 
-  return { issue: issue as Issue, assigneeName, assigneeSkills, comments, agents: agentList, attachments };
+  // Fetch activity events
+  const { data: rawEvents } = await supabase
+    .from("issue_events")
+    .select("id, event_type, actor_type, actor_id, old_value, new_value, metadata, created_at")
+    .eq("issue_id", id)
+    .order("created_at", { ascending: true });
+
+  const events = (rawEvents ?? []) as {
+    id: string;
+    event_type: string;
+    actor_type: string;
+    actor_id: string | null;
+    old_value: string | null;
+    new_value: string | null;
+    metadata: Record<string, unknown> | null;
+    created_at: string;
+  }[];
+
+  return { issue: issue as Issue, assigneeName, assigneeSkills, comments, agents: agentList, attachments, events };
 }
 
-function normalizeCriteria(raw: unknown): string[] {
+interface CriterionItem {
+  criterion: string;
+  verified: boolean;
+}
+
+function normalizeCriteria(raw: unknown): CriterionItem[] {
   if (Array.isArray(raw)) {
-    return raw.map((item) => (typeof item === "string" ? item : typeof item === "object" && item && "text" in item ? String((item as { text: unknown }).text) : String(item))).filter(Boolean);
+    return raw.map((item) => {
+      if (typeof item === "object" && item && "criterion" in item) {
+        return { criterion: String((item as { criterion: unknown }).criterion), verified: !!(item as { verified?: unknown }).verified };
+      }
+      if (typeof item === "string") return { criterion: item, verified: false };
+      if (typeof item === "object" && item && "text" in item) return { criterion: String((item as { text: unknown }).text), verified: false };
+      return { criterion: String(item), verified: false };
+    }).filter((c) => c.criterion.length > 0);
   }
   if (typeof raw === "string" && raw.trim().length > 0) {
     try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) return normalizeCriteria(parsed);
-    } catch {
-      /* fall through */
-    }
-    return raw.split(/\r?\n/).map((s) => s.replace(/^[-*\d.\s[\]x]+/i, "").trim()).filter(Boolean);
+    } catch { /* fall through */ }
+    return raw.split(/\r?\n/).map((s) => s.replace(/^[-*\d.\s[\]x]+/i, "").trim()).filter(Boolean).map((s) => ({ criterion: s, verified: false }));
   }
   return [];
 }
@@ -175,7 +204,7 @@ export default async function IssueDetailPage({
 
   if (!result) notFound();
 
-  const { issue, assigneeName, assigneeSkills, comments, agents, attachments } = result;
+  const { issue, assigneeName, assigneeSkills, comments, agents, attachments, events } = result;
   const statusCfg = STATUS_CONFIG[issue.status] ?? STATUS_CONFIG.backlog;
   const priorityCfg = PRIORITY_CONFIG[issue.priority] ?? PRIORITY_CONFIG.medium;
   const criteria = normalizeCriteria(issue.acceptance_criteria);
@@ -228,23 +257,7 @@ export default async function IssueDetailPage({
           </div>
 
           {criteria.length > 0 && (
-            <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 mb-6">
-              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
-                Acceptance Criteria
-              </h3>
-              <ul className="space-y-2">
-                {criteria.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-[#e6edf3]">
-                    <input
-                      type="checkbox"
-                      disabled
-                      className="mt-1 w-3.5 h-3.5 accent-[#3fb950] shrink-0 cursor-default"
-                    />
-                    <span className="leading-relaxed break-words">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <AcceptanceCriteria issueId={issue.id} criteria={criteria} />
           )}
 
           {issue.verify_command && (
@@ -269,7 +282,7 @@ export default async function IssueDetailPage({
             </div>
           )}
 
-          <IssueTabs issueId={issue.id} comments={comments} attachments={attachments} />
+          <IssueTabs issueId={issue.id} comments={comments} attachments={attachments} events={events} />
 
           {/* Comment input */}
           <CommentForm issueId={issue.id} companyId={issue.company_id} />

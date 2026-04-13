@@ -20,6 +20,17 @@ interface Attachment {
   category: string | null;
 }
 
+interface IssueEvent {
+  id: string;
+  event_type: string;
+  actor_type: string;
+  actor_id: string | null;
+  old_value: string | null;
+  new_value: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+}
+
 type Tab = "comments" | "subissues" | "activity" | "attachments";
 type AttachmentSubtab = "all" | "user_upload" | "testing" | "comparison" | "video";
 
@@ -44,14 +55,28 @@ function formatRelativeTime(timestamp: string): string {
   return new Date(timestamp).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+const EVENT_CONFIG: Record<string, { icon: string; label: string; color: string }> = {
+  status_change:     { icon: "\u{1F504}", label: "Status changed", color: "#58a6ff" },
+  assignment_change: { icon: "\u{1F464}", label: "Assignee changed", color: "#a371f7" },
+  comment_added:     { icon: "\u{1F4AC}", label: "Comment added", color: "#8b949e" },
+  attachment_added:  { icon: "\u{1F4CE}", label: "Attachment added", color: "#8b949e" },
+  pr_merged:         { icon: "\u{1F680}", label: "PR merged", color: "#3fb950" },
+  review_approved:   { icon: "\u2705", label: "Review approved", color: "#3fb950" },
+  review_rejected:   { icon: "\u274C", label: "Review rejected", color: "#f85149" },
+  criteria_verified: { icon: "\u2611\uFE0F", label: "Criterion verified", color: "#3fb950" },
+  knowledge_created: { icon: "\u{1F4D6}", label: "Knowledge created", color: "#d29922" },
+};
+
 export function IssueTabs({
   issueId,
   comments,
   attachments,
+  events,
 }: {
   issueId: string;
   comments: Comment[];
   attachments: Attachment[];
+  events: IssueEvent[];
 }) {
   const [active, setActive] = useState<Tab>("comments");
   const [subtab, setSubtab] = useState<AttachmentSubtab>("all");
@@ -64,7 +89,7 @@ export function IssueTabs({
   const tabs: { value: Tab; label: string; count?: number }[] = [
     { value: "comments", label: "Comments", count: comments.length },
     { value: "subissues", label: "Sub-issues" },
-    { value: "activity", label: "Activity" },
+    { value: "activity", label: "Activity", count: events.length },
     { value: "attachments", label: "Attachments", count: attachments.length },
   ];
 
@@ -137,7 +162,50 @@ export function IssueTabs({
 
       {/* Activity */}
       {active === "activity" && (
-        <p className="text-sm text-[#8b949e] py-4 text-center">No activity yet.</p>
+        <div className="space-y-0 mb-6">
+          {events.length === 0 ? (
+            <p className="text-sm text-[#8b949e] py-4 text-center">No activity yet.</p>
+          ) : (
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-4 top-0 bottom-0 w-px bg-[#30363d]" />
+              {events.map((event) => {
+                const cfg = EVENT_CONFIG[event.event_type] ?? { icon: "\u{1F4CC}", label: event.event_type.replace(/_/g, " "), color: "#8b949e" };
+                return (
+                  <div key={event.id} className="relative flex items-start gap-3 py-3 pl-9">
+                    {/* Dot on timeline */}
+                    <div
+                      className="absolute left-2.5 top-4 w-3 h-3 rounded-full border-2 border-[#0d1117]"
+                      style={{ backgroundColor: cfg.color }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm">{cfg.icon}</span>
+                        <span className="text-sm font-medium text-[#e6edf3]">{cfg.label}</span>
+                        {event.old_value && event.new_value && (
+                          <span className="text-xs text-[#8b949e]">
+                            <span className="line-through">{event.old_value}</span>
+                            {" \u2192 "}
+                            <span style={{ color: cfg.color }}>{event.new_value}</span>
+                          </span>
+                        )}
+                        {!event.old_value && event.new_value && (
+                          <span className="text-xs" style={{ color: cfg.color }}>{event.new_value}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-[#8b949e]">
+                          {event.actor_id ?? event.actor_type}
+                        </span>
+                        <span className="text-xs text-[#484f58]">{formatRelativeTime(event.created_at)}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Attachments */}

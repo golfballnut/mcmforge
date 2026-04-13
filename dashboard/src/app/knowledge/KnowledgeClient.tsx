@@ -162,23 +162,36 @@ function IngestionForm() {
           Ingest External URL
         </span>
       </div>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="flex-1 min-w-0">
-          <input
-            name="url"
-            type="url"
-            required
-            placeholder="Paste a URL to add external knowledge..."
-            className="w-full px-3 py-2 rounded-md text-sm bg-[#0d1117] border border-[#30363d] text-[#e6edf3] placeholder-[#484f58] outline-none focus:border-[#58a6ff] transition-colors"
-          />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="flex-1 min-w-0">
+            <input
+              name="url"
+              type="url"
+              required
+              placeholder="Paste a URL (GitHub issues, releases, files, or any page)..."
+              className="w-full px-3 py-2 rounded-md text-sm bg-[#0d1117] border border-[#30363d] text-[#e6edf3] placeholder-[#484f58] outline-none focus:border-[#58a6ff] transition-colors"
+            />
+          </div>
         </div>
-        <div className="sm:w-48">
-          <input
-            name="tags"
-            type="text"
-            placeholder="maplibre, routing, ios"
-            className="w-full px-3 py-2 rounded-md text-sm bg-[#0d1117] border border-[#30363d] text-[#e6edf3] placeholder-[#484f58] outline-none focus:border-[#58a6ff] transition-colors font-mono"
-          />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="flex-1 min-w-0">
+            <input
+              name="title"
+              type="text"
+              placeholder="Title (optional — auto-generated from URL)"
+              className="w-full px-3 py-2 rounded-md text-sm bg-[#0d1117] border border-[#30363d] text-[#e6edf3] placeholder-[#484f58] outline-none focus:border-[#58a6ff] transition-colors"
+            />
+          </div>
+          <div className="sm:w-48">
+            <input
+              name="tags"
+              type="text"
+              required
+              placeholder="maplibre, routing, ios"
+              className="w-full px-3 py-2 rounded-md text-sm bg-[#0d1117] border border-[#30363d] text-[#e6edf3] placeholder-[#484f58] outline-none focus:border-[#58a6ff] transition-colors font-mono"
+            />
+          </div>
         </div>
         <button
           type="submit"

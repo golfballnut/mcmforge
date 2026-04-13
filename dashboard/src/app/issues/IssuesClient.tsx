@@ -18,6 +18,7 @@ interface Issue {
   created_at: string;
   completed_at: string | null;
   agent_name?: string | null;
+  agent_skills?: string[] | null;
 }
 
 type FilterMode = "open" | "closed" | "all";
@@ -212,9 +213,17 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
               </div>
 
               {/* Title + priority badge */}
-              <div className="flex items-center gap-2 min-w-0 pr-4">
-                <span className="text-sm text-[#e6edf3] truncate">{issue.title}</span>
-                <PriorityBadge priority={issue.priority} />
+              <div className="flex flex-col min-w-0 pr-4 justify-center">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-sm text-[#e6edf3] truncate">{issue.title}</span>
+                  <PriorityBadge priority={issue.priority} />
+                </div>
+                {/* Mobile-only specialist line */}
+                {issue.agent_name && (
+                  <span className="sm:hidden text-[11px] text-[#8b949e] truncate mt-0.5">
+                    {issue.agent_name}
+                  </span>
+                )}
               </div>
 
               {/* Status */}
@@ -222,10 +231,30 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
                 <StatusPill status={issue.status} />
               </div>
 
-              {/* Assignee */}
-              <div className="hidden sm:flex items-center">
+              {/* Assignee (desktop) — name + skills badges */}
+              <div className="hidden sm:flex flex-col justify-center min-w-0 pr-2">
                 {issue.agent_name ? (
-                  <span className="text-xs text-[#8b949e] truncate">{issue.agent_name}</span>
+                  <>
+                    <span className="text-xs text-[#e6edf3] truncate">{issue.agent_name}</span>
+                    {issue.agent_skills && issue.agent_skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {issue.agent_skills.slice(0, 2).map((skill) => (
+                          <span
+                            key={skill}
+                            className="inline-flex items-center px-1.5 py-0 rounded text-[9px] font-medium bg-[#1f3358] text-[#58a6ff] border border-[#30363d] max-w-full truncate"
+                            title={skill}
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {issue.agent_skills.length > 2 && (
+                          <span className="text-[9px] text-[#8b949e]">
+                            +{issue.agent_skills.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <span className="text-xs text-[#484f58]">Unassigned</span>
                 )}

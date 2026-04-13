@@ -18,6 +18,7 @@ interface Issue {
   created_at: string;
   completed_at: string | null;
   agent_name?: string | null;
+  agent_skills?: string[] | null;
 }
 
 async function getIssues(companyId: string): Promise<Issue[]> {
@@ -33,20 +34,21 @@ async function getIssues(companyId: string): Promise<Issue[]> {
   // Collect unique assignee agent IDs
   const agentIds = [...new Set(issues.map((i) => i.assignee_agent_id).filter(Boolean))];
 
-  let agentMap: Record<string, string> = {};
+  let agentMap: Record<string, { name: string; skills: string[] | null }> = {};
   if (agentIds.length > 0) {
     const { data: agents } = await supabase
       .from("agents")
-      .select("id, name")
+      .select("id, name, skills")
       .in("id", agentIds);
     if (agents) {
-      agentMap = Object.fromEntries(agents.map((a) => [a.id, a.name]));
+      agentMap = Object.fromEntries(agents.map((a) => [a.id, { name: a.name, skills: a.skills }]));
     }
   }
 
   return issues.map((issue) => ({
     ...issue,
-    agent_name: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id] ?? null : null,
+    agent_name: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id]?.name ?? null : null,
+    agent_skills: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id]?.skills ?? null : null,
   }));
 }
 

@@ -20,6 +20,11 @@ interface Issue {
   origin_kind: string | null;
   created_at: string;
   completed_at: string | null;
+  verify_command?: string | null;
+  acceptance_criteria?: unknown;
+  branch_name?: string | null;
+  pr_url?: string | null;
+  proof_summary?: string | null;
 }
 
 interface Comment {
@@ -53,17 +58,20 @@ async function getIssue(id: string) {
   const company = await getActiveCompany();
   if (company && issue.company_id !== company.id) return null;
 
-  // Fetch all agents for assignee dropdown + assignee name lookup
+  // Fetch all agents for assignee dropdown + assignee name/skills lookup
   const { data: allAgents } = await supabase
     .from("agents")
-    .select("id, name")
+    .select("id, name, skills")
     .order("name", { ascending: true });
 
-  const agentList = (allAgents ?? []) as { id: string; name: string }[];
-  const agentMap = Object.fromEntries(agentList.map((a) => [a.id, a.name]));
+  const agentList = (allAgents ?? []) as { id: string; name: string; skills: string[] | null }[];
+  const agentMap = Object.fromEntries(agentList.map((a) => [a.id, a]));
 
   const assigneeName = issue.assignee_agent_id
-    ? (agentMap[issue.assignee_agent_id] ?? null)
+    ? (agentMap[issue.assignee_agent_id]?.name ?? null)
+    : null;
+  const assigneeSkills = issue.assignee_agent_id
+    ? (agentMap[issue.assignee_agent_id]?.skills ?? null)
     : null;
 
   // Fetch comments with author names
@@ -78,7 +86,7 @@ async function getIssue(id: string) {
     for (const c of rawComments) {
       comments.push({
         ...c,
-        author_name: c.author_agent_id ? agentMap[c.author_agent_id] ?? null : null,
+        author_name: c.author_agent_id ? agentMap[c.author_agent_id]?.name ?? null : null,
       });
     }
   }
@@ -103,7 +111,23 @@ async function getIssue(id: string) {
     };
   });
 
-  return { issue: issue as Issue, assigneeName, comments, agents: agentList, attachments };
+  return { issue: issue as Issue, assigneeName, assigneeSkills, comments, agents: agentList, attachments };
+}
+
+function normalizeCriteria(raw: unknown): string[] {
+  if (Array.isArray(raw)) {
+    return raw.map((item) => (typeof item === "string" ? item : typeof item === "object" && item && "text" in item ? String((item as { text: unknown }).text) : String(item))).filter(Boolean);
+  }
+  if (typeof raw === "string" && raw.trim().length > 0) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return normalizeCriteria(parsed);
+    } catch {
+      /* fall through */
+    }
+    return raw.split(/\r?\n/).map((s) => s.replace(/^[-*\d.\s[\]x]+/i, "").trim()).filter(Boolean);
+  }
+  return [];
 }
 
 function formatDate(timestamp: string): string {
@@ -151,9 +175,11 @@ export default async function IssueDetailPage({
 
   if (!result) notFound();
 
-  const { issue, assigneeName, comments, agents, attachments } = result;
+  const { issue, assigneeName, assigneeSkills, comments, agents, attachments } = result;
   const statusCfg = STATUS_CONFIG[issue.status] ?? STATUS_CONFIG.backlog;
   const priorityCfg = PRIORITY_CONFIG[issue.priority] ?? PRIORITY_CONFIG.medium;
+  const criteria = normalizeCriteria(issue.acceptance_criteria);
+  const skills = assigneeSkills ?? [];
 
   return (
     <div className="min-h-screen">
@@ -201,6 +227,48 @@ export default async function IssueDetailPage({
             )}
           </div>
 
+          {criteria.length > 0 && (
+            <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 mb-6">
+              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
+                Acceptance Criteria
+              </h3>
+              <ul className="space-y-2">
+                {criteria.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-[#e6edf3]">
+                    <input
+                      type="checkbox"
+                      disabled
+                      className="mt-1 w-3.5 h-3.5 accent-[#3fb950] shrink-0 cursor-default"
+                    />
+                    <span className="leading-relaxed break-words">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {issue.verify_command && (
+            <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 mb-6">
+              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
+                Verify Command
+              </h3>
+              <pre className="bg-[#0d1117] border border-[#30363d] rounded p-3 overflow-x-auto">
+                <code className="text-xs text-[#e6edf3] font-mono whitespace-pre">{issue.verify_command}</code>
+              </pre>
+            </div>
+          )}
+
+          {issue.proof_summary && (
+            <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 mb-6">
+              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">
+                Proof Summary
+              </h3>
+              <div className="text-sm text-[#e6edf3] leading-relaxed whitespace-pre-wrap">
+                {issue.proof_summary}
+              </div>
+            </div>
+          )}
+
           <IssueTabs issueId={issue.id} comments={comments} attachments={attachments} />
 
           {/* Comment input */}
@@ -229,6 +297,42 @@ export default async function IssueDetailPage({
                 agents={agents}
               />
             </PropertyRow>
+
+            {skills.length > 0 && (
+              <PropertyRow label="Skills">
+                <div className="flex flex-wrap gap-1 justify-end">
+                  {skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="inline-block text-[10px] px-1.5 py-0.5 bg-[#0d1117] border border-[#30363d] text-[#8b949e] rounded font-mono"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </PropertyRow>
+            )}
+
+            {issue.branch_name && (
+              <PropertyRow label="Branch">
+                <span className="inline-block text-[11px] px-1.5 py-0.5 bg-[#0d1117] border border-[#30363d] text-[#58a6ff] rounded font-mono break-all">
+                  {issue.branch_name}
+                </span>
+              </PropertyRow>
+            )}
+
+            {issue.pr_url && (
+              <PropertyRow label="PR">
+                <a
+                  href={issue.pr_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#58a6ff] hover:underline break-all"
+                >
+                  {issue.pr_url.replace(/^https?:\/\/(www\.)?github\.com\//, "")}
+                </a>
+              </PropertyRow>
+            )}
 
             <PropertyRow label="Project">
               {issue.project_id ? (

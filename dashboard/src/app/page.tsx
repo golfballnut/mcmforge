@@ -139,6 +139,47 @@ async function getStats(companyId: string) {
   };
 }
 
+async function getKnowledgeHealth(companyId: string) {
+  const supabase = await createForgeClient();
+
+  // Count total knowledge entries for this company
+  const { count: totalCount } = await supabase
+    .from("knowledge")
+    .select("id", { count: "exact", head: true })
+    .eq("company_id", companyId);
+
+  const total = totalCount ?? 0;
+
+  // Count done issues for this company
+  const { count: doneCount } = await supabase
+    .from("issues")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "done")
+    .eq("company_id", companyId);
+
+  const doneIssues = doneCount ?? 0;
+
+  // Count unique issue IDs referenced in knowledge source_issue_ids
+  const { data: knowledgeRows } = await supabase
+    .from("knowledge")
+    .select("source_issue_ids")
+    .eq("company_id", companyId);
+
+  const synthesizedIds = new Set<string>();
+  for (const row of knowledgeRows ?? []) {
+    if (Array.isArray(row.source_issue_ids)) {
+      for (const id of row.source_issue_ids) {
+        synthesizedIds.add(String(id));
+      }
+    }
+  }
+  const synthesized = synthesizedIds.size;
+
+  const coverage = doneIssues > 0 ? Math.round((synthesized / doneIssues) * 100) : 0;
+
+  return { total, coverage };
+}
+
 function StatCard({
   label,
   value,
@@ -171,11 +212,12 @@ export default async function HomePage() {
   const companyId = company?.id ?? "";
   const companyName = company?.name ?? "MCM Forge";
 
-  const [agents, recentRuns, stats, agentPerf] = await Promise.all([
+  const [agents, recentRuns, stats, agentPerf, knowledgeHealth] = await Promise.all([
     getAgents(companyId),
     getRecentRuns(companyId),
     getStats(companyId),
     getAgentPerformance(companyId),
+    getKnowledgeHealth(companyId),
   ]);
 
   const latestRunMap = buildLatestRunMap(recentRuns);
@@ -201,7 +243,7 @@ export default async function HomePage() {
       </div>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         <StatCard label="Agents Enabled" value={stats.enabledAgents} />
         <StatCard
           label="Tasks in Progress"
@@ -213,6 +255,11 @@ export default async function HomePage() {
           label="Pending Approvals"
           value={stats.pendingApprovals}
           accent={approvalAccent}
+        />
+        <StatCard
+          label="Knowledge Health"
+          value={`${knowledgeHealth.coverage}%`}
+          accent={knowledgeHealth.coverage >= 50 ? "#3fb950" : knowledgeHealth.coverage >= 25 ? "#d29922" : "#f85149"}
         />
       </div>
 

@@ -25,6 +25,15 @@ curl -s "$SUPA_URL/rest/v1/issues?company_id=eq.$COMPANY_ID&status=eq.todo&selec
 
 If you see issues, you're connected. If empty or error, STOP and fix auth.
 
+**How to "Post to issue"** — use this for EVERY step that says "Post to issue":
+```bash
+curl -s "$SUPA_URL/rest/v1/issue_comments" -X POST \
+  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" \
+  -H "Content-Type: application/json" -H "Content-Profile: forge" \
+  -d "{\"issue_id\":\"<ISSUE_ID>\", \"company_id\":\"$COMPANY_ID\", \"body\":\"<YOUR_COMMENT>\"}"
+```
+**CRITICAL:** `company_id` is required (NOT NULL). Omitting it will silently fail.
+
 ---
 
 ## Step 0.5: Search Knowledge Base

@@ -39,13 +39,90 @@ export async function updateIssueStatus(issueId: string, status: string) {
 
 export async function addComment(issueId: string, companyId: string, body: string) {
   const supabase = await createForgeClient();
-  await supabase.from("issue_comments").insert({
+  const { data } = await supabase.from("issue_comments").insert({
     company_id: companyId,
     issue_id: issueId,
     body,
     author_user_id: "steve",
-  });
+  }).select("id").single();
   revalidatePath(`/issues/${issueId}`);
+  return { commentId: data?.id ?? null };
+}
+
+export async function addCommentWithAttachments(
+  issueId: string,
+  companyId: string,
+  body: string,
+  formData: FormData,
+) {
+  const supabase = await createForgeClient();
+
+  // 1. Create the comment
+  const { data } = await supabase.from("issue_comments").insert({
+    company_id: companyId,
+    issue_id: issueId,
+    body,
+    author_user_id: "steve",
+  }).select("id").single();
+
+  const commentId = data?.id ?? null;
+  if (!commentId) return { error: "Failed to create comment" };
+
+  // 2. Upload each file and link to comment
+  const files = formData.getAll("files") as File[];
+  const categories = formData.getAll("categories") as string[];
+
+  const errors: string[] = [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (!file || !(file instanceof File) || file.size === 0) continue;
+
+    const singleFormData = new FormData();
+    singleFormData.append("file", file);
+    const cat = categories[i] ?? "user_upload";
+    singleFormData.append("category", cat);
+
+    const result = await uploadIssueAttachmentWithComment(issueId, commentId, singleFormData);
+    if (result?.error) errors.push(`${file.name}: ${result.error}`);
+  }
+
+  revalidatePath(`/issues/${issueId}`);
+  return { commentId, errors: errors.length > 0 ? errors : null };
+}
+
+async function uploadIssueAttachmentWithComment(issueId: string, commentId: string, formData: FormData) {
+  const file = formData.get("file") as File | null;
+  if (!file) return { error: "No file provided" };
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return { error: "Only PNG, JPG, GIF, WebP, or MP4/WebM/MOV videos are allowed" };
+  }
+  const limit = file.type.startsWith("video/") ? MAX_VIDEO_UPLOAD_BYTES : MAX_UPLOAD_BYTES;
+  if (file.size > limit) {
+    return { error: `File exceeds ${limit / (1024 * 1024)}MB limit` };
+  }
+
+  const categoryRaw = (formData.get("category") as string | null) ?? "user_upload";
+  const category = ALLOWED_CATEGORIES.includes(categoryRaw) ? categoryRaw : "user_upload";
+
+  const upload = await uploadAttachment(formData);
+  if ("error" in upload && upload.error) return { error: upload.error };
+  if (!("url" in upload) || !upload.url) return { error: "Upload failed" };
+
+  const storagePath = new URL(upload.url).pathname.split("/artifacts/").pop() ?? upload.url;
+
+  const supabase = await createForgeClient();
+  const { error } = await supabase.from("issue_attachments").insert({
+    issue_id: issueId,
+    comment_id: commentId,
+    filename: file.name,
+    mime_type: file.type,
+    size_bytes: file.size,
+    storage_path: storagePath,
+    category,
+  });
+
+  if (error) return { error: error.message };
+  return { success: true };
 }
 
 export async function updateIssuePriority(issueId: string, priority: string) {

@@ -44,6 +44,7 @@ interface Attachment {
   created_at: string;
   url: string;
   category: string | null;
+  comment_id: string | null;
 }
 
 async function getIssue(id: string) {
@@ -111,6 +112,7 @@ async function getIssue(id: string) {
       created_at: a.created_at,
       url: urlData.publicUrl,
       category: a.category ?? null,
+      comment_id: a.comment_id ?? null,
     };
   });
 

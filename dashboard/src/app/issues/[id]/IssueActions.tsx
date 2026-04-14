@@ -1,10 +1,11 @@
 "use client";
-import { useTransition, useState } from "react";
+import { useTransition, useState, useRef, useCallback } from "react";
 import {
   updateIssueStatus,
   updateIssuePriority,
   assignIssue,
   addComment,
+  addCommentWithAttachments,
   uploadIssueAttachment,
 } from "./actions";
 
@@ -270,6 +271,29 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
 
 // ── Comment form ─────────────────────────────────────────────────────────────
 
+interface PendingFile {
+  file: File;
+  category: string;
+  previewUrl: string | null;
+}
+
+const COMMENT_CATEGORY_OPTIONS = [
+  { value: "pass", label: "Pass \u2713" },
+  { value: "fail", label: "Fail \u2717" },
+  { value: "user_upload", label: "User Upload" },
+  { value: "testing", label: "Testing" },
+];
+
+const COMMENT_ALLOWED_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/webp",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+];
+
 export function CommentForm({
   issueId,
   companyId,
@@ -279,19 +303,91 @@ export function CommentForm({
 }) {
   const [pending, startTransition] = useTransition();
   const [body, setBody] = useState("");
+  const [files, setFiles] = useState<PendingFile[]>([]);
+  const [fileCategory, setFileCategory] = useState("user_upload");
+  const [dragOver, setDragOver] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = useCallback(
+    (incoming: File[]) => {
+      setError(null);
+      const valid: PendingFile[] = [];
+      const rejected: string[] = [];
+      for (const f of incoming) {
+        if (!COMMENT_ALLOWED_TYPES.includes(f.type)) {
+          rejected.push(`${f.name} (invalid type)`);
+          continue;
+        }
+        const limit = f.type.startsWith("video/") ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+        if (f.size > limit) {
+          rejected.push(`${f.name} (too large)`);
+          continue;
+        }
+        const previewUrl = f.type.startsWith("image/") ? URL.createObjectURL(f) : null;
+        valid.push({ file: f, category: fileCategory, previewUrl });
+      }
+      if (rejected.length > 0) setError(`Rejected: ${rejected.join(", ")}`);
+      if (valid.length > 0) setFiles((prev) => [...prev, ...valid]);
+    },
+    [fileCategory],
+  );
+
+  function removeFile(index: number) {
+    setFiles((prev) => {
+      const removed = prev[index];
+      if (removed?.previewUrl) URL.revokeObjectURL(removed.previewUrl);
+      return prev.filter((_, i) => i !== index);
+    });
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setDragOver(false);
+    const dropped = Array.from(e.dataTransfer.files);
+    if (dropped.length > 0) addFiles(dropped);
+  }
+
+  function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const selected = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (selected.length > 0) addFiles(selected);
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = body.trim();
-    if (!trimmed) return;
+    if (!trimmed && files.length === 0) return;
+    const commentBody = trimmed || "(attached files)";
+
     startTransition(async () => {
-      await addComment(issueId, companyId ?? "", trimmed);
+      if (files.length > 0) {
+        const formData = new FormData();
+        for (const pf of files) {
+          formData.append("files", pf.file);
+          formData.append("categories", pf.category);
+        }
+        await addCommentWithAttachments(issueId, companyId ?? "", commentBody, formData);
+      } else {
+        await addComment(issueId, companyId ?? "", commentBody);
+      }
+      // Clean up preview URLs
+      for (const pf of files) {
+        if (pf.previewUrl) URL.revokeObjectURL(pf.previewUrl);
+      }
       setBody("");
+      setFiles([]);
+      setError(null);
     });
   }
 
+  const canSubmit = !pending && (body.trim().length > 0 || files.length > 0);
+
   return (
-    <form onSubmit={handleSubmit} className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden"
+    >
       <textarea
         rows={3}
         placeholder="Leave a comment..."
@@ -300,14 +396,128 @@ export function CommentForm({
         disabled={pending}
         className="w-full px-4 py-3 bg-transparent text-sm text-[#e6edf3] placeholder-[#8b949e] resize-none focus:outline-none disabled:opacity-50"
       />
-      <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#30363d]">
-        <span className="text-xs text-[#8b949e]">Markdown supported</span>
+
+      {/* Drop zone + file previews */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+        className={`mx-4 mb-2 border-2 border-dashed rounded-lg transition-colors ${
+          dragOver
+            ? "border-[#00d4aa] bg-[#00d4aa]/5"
+            : files.length > 0
+            ? "border-[#30363d] bg-[#0d1117]"
+            : "border-[#30363d]"
+        }`}
+      >
+        {files.length > 0 ? (
+          <div className="p-3">
+            <div className="flex flex-wrap gap-2 mb-2">
+              {files.map((pf, idx) => (
+                <div
+                  key={idx}
+                  className="relative group bg-[#161b22] border border-[#30363d] rounded overflow-hidden"
+                  style={{ width: "80px", height: "80px" }}
+                >
+                  {pf.previewUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={pf.previewUrl}
+                      alt={pf.file.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-6 h-6 text-[#8b949e]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  )}
+                  {/* Category badge */}
+                  <span
+                    className="absolute bottom-0.5 left-0.5 px-1 py-px text-[8px] uppercase tracking-wide rounded font-semibold"
+                    style={{
+                      backgroundColor:
+                        pf.category === "pass" ? "#3fb95030" :
+                        pf.category === "fail" ? "#f8514930" : "#30363d",
+                      color:
+                        pf.category === "pass" ? "#3fb950" :
+                        pf.category === "fail" ? "#f85149" : "#8b949e",
+                    }}
+                  >
+                    {pf.category === "pass" ? "\u2713" : pf.category === "fail" ? "\u2717" : pf.category.replace("_", " ")}
+                  </span>
+                  {/* Remove button */}
+                  <button
+                    type="button"
+                    onClick={() => removeFile(idx)}
+                    className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-[#f85149] text-white text-[10px] leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-[#8b949e]">
+              Drop more files or click &quot;Attach&quot; below
+            </p>
+          </div>
+        ) : (
+          <div className="py-4 text-center">
+            <p className="text-xs text-[#8b949e]">
+              Drag &amp; drop images or videos here
+            </p>
+          </div>
+        )}
+      </div>
+
+      {error && (
+        <p className="mx-4 mb-2 text-xs text-[#f85149]">{error}</p>
+      )}
+
+      {/* Bottom toolbar */}
+      <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#30363d] gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={pending}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#0d1117] border border-[#30363d] rounded text-xs text-[#8b949e] hover:text-[#e6edf3] hover:border-[#00d4aa] transition-colors disabled:opacity-50"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+            </svg>
+            Attach
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/gif,image/webp,video/mp4,video/webm,video/quicktime"
+            multiple
+            className="hidden"
+            disabled={pending}
+            onChange={handleFileInput}
+          />
+          <select
+            value={fileCategory}
+            onChange={(e) => setFileCategory(e.target.value)}
+            disabled={pending}
+            className="px-2 py-1.5 bg-[#0d1117] border border-[#30363d] rounded text-xs text-[#e6edf3] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#00d4aa] disabled:opacity-50"
+          >
+            {COMMENT_CATEGORY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value} className="bg-[#161b22] text-[#e6edf3]">
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <span className="text-xs text-[#8b949e]">Markdown supported</span>
+        </div>
         <button
           type="submit"
-          disabled={pending || !body.trim()}
+          disabled={!canSubmit}
           className="px-3 py-1.5 bg-[#00d4aa] text-[#0d1117] text-xs font-medium rounded hover:bg-[#00e4b8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {pending ? "Posting..." : "Comment"}
+          {pending ? "Posting..." : files.length > 0 ? `Comment (${files.length} file${files.length === 1 ? "" : "s"})` : "Comment"}
         </button>
       </div>
     </form>

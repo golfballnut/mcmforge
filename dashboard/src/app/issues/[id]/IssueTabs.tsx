@@ -18,6 +18,7 @@ interface Attachment {
   created_at: string;
   url: string;
   category: string | null;
+  comment_id: string | null;
 }
 
 interface IssueEvent {
@@ -130,31 +131,97 @@ export function IssueTabs({
           {comments.length === 0 ? (
             <p className="text-sm text-[#8b949e] py-4 text-center">No comments yet.</p>
           ) : (
-            comments.map((comment) => (
-              <div
-                key={comment.id}
-                className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden"
-              >
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#0d1117]">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                      comment.author_name?.startsWith("COO") ? "bg-[#58a6ff]" : "bg-[#00d4aa]"
-                    }`}>
-                      <span className="text-[10px] font-bold text-[#0d1117]">
-                        {(comment.author_name ?? "A")[0].toUpperCase()}
+            comments.map((comment) => {
+              const commentAttachments = attachments.filter((a) => a.comment_id === comment.id);
+              return (
+                <div
+                  key={comment.id}
+                  className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden"
+                >
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#0d1117]">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                        comment.author_name?.startsWith("COO") ? "bg-[#58a6ff]" : "bg-[#00d4aa]"
+                      }`}>
+                        <span className="text-[10px] font-bold text-[#0d1117]">
+                          {(comment.author_name ?? "A")[0].toUpperCase()}
+                        </span>
+                      </div>
+                      <span className="text-sm font-medium text-[#e6edf3]">
+                        {comment.author_name ?? "Agent"}
                       </span>
                     </div>
-                    <span className="text-sm font-medium text-[#e6edf3]">
-                      {comment.author_name ?? "Agent"}
-                    </span>
+                    <span className="text-xs text-[#8b949e]">{formatRelativeTime(comment.created_at)}</span>
                   </div>
-                  <span className="text-xs text-[#8b949e]">{formatRelativeTime(comment.created_at)}</span>
+                  <div className="px-4 py-3 text-sm text-[#e6edf3] leading-relaxed whitespace-pre-wrap">
+                    {comment.body}
+                  </div>
+                  {commentAttachments.length > 0 && (
+                    <div className="px-4 pb-3 flex flex-wrap gap-2">
+                      {commentAttachments.map((att) => {
+                        const isImage = att.mime_type?.startsWith("image/");
+                        const isVideo = att.mime_type?.startsWith("video/");
+                        const categoryColor =
+                          att.category === "pass" ? "#3fb950" :
+                          att.category === "fail" ? "#f85149" : undefined;
+                        return (
+                          <a
+                            key={att.id}
+                            href={att.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative block bg-[#0d1117] border border-[#30363d] rounded-lg overflow-hidden hover:border-[#00d4aa] transition-colors group"
+                            style={{ maxWidth: "180px" }}
+                          >
+                            {isImage ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={att.url}
+                                alt={att.filename}
+                                className="block w-full h-auto"
+                                style={{ maxWidth: "180px", maxHeight: "140px", objectFit: "cover" }}
+                              />
+                            ) : isVideo ? (
+                              <div className="relative bg-black" style={{ width: "180px", height: "120px" }}>
+                                <video
+                                  src={att.url}
+                                  className="block w-full h-full object-cover"
+                                  preload="metadata"
+                                  muted
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                  <div className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="p-4 text-center text-xs text-[#8b949e]">{att.filename}</div>
+                            )}
+                            {att.category && (
+                              <span
+                                className="absolute top-1.5 right-1.5 px-1.5 py-0.5 text-[9px] uppercase tracking-wide rounded font-semibold"
+                                style={{
+                                  backgroundColor: categoryColor ? `${categoryColor}20` : "#30363d",
+                                  color: categoryColor ?? "#8b949e",
+                                  border: `1px solid ${categoryColor ?? "#30363d"}`,
+                                }}
+                              >
+                                {att.category === "pass" ? "Pass \u2713" :
+                                 att.category === "fail" ? "Fail \u2717" :
+                                 att.category.replace("_", " ")}
+                              </span>
+                            )}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-                <div className="px-4 py-3 text-sm text-[#e6edf3] leading-relaxed whitespace-pre-wrap">
-                  {comment.body}
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}

@@ -32,10 +32,12 @@ interface IssueEvent {
 }
 
 type Tab = "comments" | "subissues" | "activity" | "attachments";
-type AttachmentSubtab = "all" | "user_upload" | "testing" | "comparison" | "video";
+type AttachmentSubtab = "all" | "user_upload" | "testing" | "comparison" | "video" | "pass" | "fail";
 
-const ATTACHMENT_SUBTABS: { value: AttachmentSubtab; label: string }[] = [
+const ATTACHMENT_SUBTABS: { value: AttachmentSubtab; label: string; color?: string }[] = [
   { value: "all", label: "All" },
+  { value: "pass", label: "Pass", color: "#3fb950" },
+  { value: "fail", label: "Fail", color: "#f85149" },
   { value: "user_upload", label: "User Uploads" },
   { value: "testing", label: "Testing" },
   { value: "comparison", label: "Comparisons" },

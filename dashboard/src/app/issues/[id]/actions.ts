@@ -77,7 +77,7 @@ const ALLOWED_IMAGE_TYPES = [
 ];
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const MAX_VIDEO_UPLOAD_BYTES = 50 * 1024 * 1024;
-const ALLOWED_CATEGORIES = ["user_upload", "testing", "comparison", "video"];
+const ALLOWED_CATEGORIES = ["user_upload", "testing", "comparison", "video", "pass", "fail"];
 
 export async function uploadIssueAttachment(issueId: string, formData: FormData) {
   const file = formData.get("file") as File | null;

@@ -104,11 +104,17 @@ async function uploadIssueAttachmentWithComment(issueId: string, commentId: stri
   const categoryRaw = (formData.get("category") as string | null) ?? "user_upload";
   const category = ALLOWED_CATEGORIES.includes(categoryRaw) ? categoryRaw : "user_upload";
 
-  const upload = await uploadAttachment(formData);
-  if ("error" in upload && upload.error) return { error: upload.error };
-  if (!("url" in upload) || !upload.url) return { error: "Upload failed" };
+  // Upload file directly to Supabase Storage (not via shared server action — can't call server actions from server actions on Vercel)
+  const { createClient } = await import("@/lib/supabase/server");
+  const storageClient = await createClient();
+  const ext = file.name.split(".").pop() || "bin";
+  const storagePath = `task-attachments/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-  const storagePath = new URL(upload.url).pathname.split("/artifacts/").pop() ?? upload.url;
+  const { error: uploadError } = await storageClient.storage
+    .from("artifacts")
+    .upload(storagePath, file, { contentType: file.type, upsert: false });
+
+  if (uploadError) return { error: uploadError.message };
 
   const supabase = await createForgeClient();
   const { error } = await supabase.from("issue_attachments").insert({

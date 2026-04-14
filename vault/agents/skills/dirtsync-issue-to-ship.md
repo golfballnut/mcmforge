@@ -343,6 +343,36 @@ curl -s "$SUPA_URL/rest/v1/issue_events" -X POST \
 
 ---
 
+## Step 15.5: Propose Skill + Knowledge Improvements (SELF-IMPROVING)
+
+Before you stop, reflect: **did you hit any obstacle NOT covered by the skill or knowledge base?**
+
+If YES — post a skill improvement proposal to the issue:
+```
+## Step 15.5: Skill Improvement Proposal
+
+### Obstacle encountered
+[What went wrong that the skill/KB didn't prepare you for]
+
+### What I did to solve it
+[The workaround or fix you discovered]
+
+### Proposed skill change
+[Exact step or rule that should be added/modified in dirtsync-issue-to-ship.md]
+
+### Proposed knowledge entry
+- Title: [short, searchable]
+- Tags: [2-5 tags]
+- Confidence: proven | suspected
+- Body: [root cause + what worked + what didn't]
+```
+
+If NO obstacles — post: "## Step 15.5: No skill gaps encountered."
+
+**WHY:** Every obstacle you overcome makes the next agent smarter. The COO reviews your proposal and either patches the skill or files it as knowledge. This is how the factory learns.
+
+---
+
 ## Rules (HARD)
 
 1. Every step must post to the Forge issue. No exceptions.
@@ -351,3 +381,5 @@ curl -s "$SUPA_URL/rest/v1/issue_events" -X POST \
 4. Never claim done without screenshots proving every acceptance criterion.
 5. One issue at a time. Finish it or stop.
 6. If you're stuck, post "BLOCKED: [reason]" to the issue and STOP.
+7. NEVER include API keys, tokens, passwords, or credentials in issue comments, knowledge entries, or attachments. If you encounter a secret, reference it by env var name only (e.g., "$SUPA_KEY").
+8. Video proof is REQUIRED for all location/HUD/map features. Screenshots alone are not sufficient — the field test is the final gate.

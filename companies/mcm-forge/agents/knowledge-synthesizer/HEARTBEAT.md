@@ -126,6 +126,27 @@ curl -s "$SUPA_URL/rest/v1/issue_events" -X POST \
   -d '{"issue_id":"<ISSUE_ID>","event_type":"knowledge_created","actor_type":"routine","actor_id":"knowledge-synthesizer","new_value":"<KNOWLEDGE_ID>"}'
 ```
 
+## Step 6.5: Process Skill Improvement Proposals
+
+Search issue comments for "Step 15.5: Skill Improvement Proposal" entries:
+
+```bash
+curl -s "$SUPA_URL/rest/v1/issue_comments?body=like.*Skill Improvement Proposal*&select=issue_id,body,created_at&order=created_at.desc&limit=20" \
+  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" -H "Accept-Profile: forge"
+```
+
+For each proposal:
+1. Extract the proposed knowledge entry (title, tags, body, confidence)
+2. Create it in `forge.knowledge` with `source_type: 'agent_lesson'`
+3. Flag the proposed SKILL CHANGE for COO review — create a Forge issue:
+   - Title: `[skill-patch] <short description of proposed change>`
+   - Description: the agent's full proposal
+   - Priority: medium
+   - Tags: `skill-patch`, `self-improving`
+   - Assign to COO for review
+
+**NEVER auto-patch skill files.** Only the COO patches skills. Your job is to surface the proposal as an issue.
+
 ## Step 7: Post Daily Digest
 
 Post summary to own Forge issue:

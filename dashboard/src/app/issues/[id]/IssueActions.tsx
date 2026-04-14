@@ -138,6 +138,8 @@ function maxBytesFor(type: string) {
 }
 
 const CATEGORY_OPTIONS = [
+  { value: "pass", label: "Pass ✓" },
+  { value: "fail", label: "Fail ✗" },
   { value: "user_upload", label: "User Upload" },
   { value: "testing", label: "Testing" },
   { value: "comparison", label: "Comparison" },

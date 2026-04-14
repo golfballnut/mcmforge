@@ -87,7 +87,9 @@ async function getIssue(id: string) {
     for (const c of rawComments) {
       comments.push({
         ...c,
-        author_name: c.author_agent_id ? agentMap[c.author_agent_id]?.name ?? null : null,
+        author_name: c.author_agent_id
+          ? agentMap[c.author_agent_id]?.name ?? null
+          : c.author_user_id ? "COO (Steve)" : null,
       });
     }
   }

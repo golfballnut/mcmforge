@@ -58,7 +58,7 @@ export async function ingestUrl(formData: FormData) {
       } else if (section === "releases") {
         // GitHub releases
         const apiRes = await fetch(
-          `https://api.github.com/repos/${owner}/${repo}/releases?per_page=5`,
+          `https://api.github.com/repos/${owner}/${repo}/releases?per_page=30`,
           { headers: { "User-Agent": "MCMForge/1.0", Accept: "application/vnd.github.v3+json" } }
         );
         if (!apiRes.ok) return { error: `GitHub API error: ${apiRes.status}` };

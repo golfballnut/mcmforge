@@ -18,8 +18,6 @@ export async function ingestUrl(formData: FormData) {
         .filter(Boolean)
     : [];
 
-  if (tags.length === 0) return { error: "At least one tag is required — agents search by tags" };
-
   let title: string;
   let textContent: string;
 
@@ -118,12 +116,54 @@ export async function ingestUrl(formData: FormData) {
   const company = await getActiveCompany();
   if (!company) return { error: "No active company" };
 
+  // Auto-generate tags from content if none provided
+  const TAG_KEYWORDS: Record<string, string[]> = {
+    "maplibre": ["maplibre", "mgl", "mlnmap", "mlnshape", "mlnsource", "mlnstyle", "mlnlayer"],
+    "ferrostar": ["ferrostar", "ferronavigation"],
+    "valhalla": ["valhalla", "routing", "route"],
+    "navigation": ["navigation", "nav", "turn-by-turn", "turncard", "route"],
+    "poi": ["poi", "waypoint", "trailhead", "proximity"],
+    "trail-detection": ["traildetection", "ontrail", "off-trail", "offtrail"],
+    "hud": ["hud", "hudview", "turncardview", "speedbadge"],
+    "mapbox": ["mapbox", "satellite", "basemap", "tile"],
+    "ios": ["ios", "swift", "xcode", "xcuitest", "uikit", "swiftui"],
+    "supabase": ["supabase", "postgres", "rls", "postgrest"],
+    "gpx": ["gpx", "gps", "location", "coordinate"],
+    "ride-recording": ["ride", "recording", "breadcrumb", "track"],
+    "zoom": ["zoom", "minzoom", "maxzoom"],
+    "difficulty": ["difficulty", "easy", "moderate", "hard", "expert"],
+    "clustering": ["cluster", "clustering", "clusterradius"],
+  };
+
+  let finalTags = [...tags];
+  if (finalTags.length === 0) {
+    const searchText = `${title} ${textContent}`.toLowerCase();
+    for (const [tag, keywords] of Object.entries(TAG_KEYWORDS)) {
+      if (keywords.some((kw) => searchText.includes(kw))) {
+        finalTags.push(tag);
+      }
+    }
+    // Also extract from GitHub repo name
+    const urlObj2 = new URL(url);
+    const pathParts2 = urlObj2.pathname.split("/").filter(Boolean);
+    if (pathParts2.length >= 2) {
+      const repoName = pathParts2[1].toLowerCase();
+      if (!finalTags.includes(repoName) && repoName.length > 2) {
+        finalTags.push(repoName);
+      }
+    }
+    // Dedupe
+    finalTags = [...new Set(finalTags)];
+  }
+
+  if (finalTags.length === 0) finalTags = ["external", "untagged"];
+
   const supabase = await createForgeClient();
   const { error } = await supabase.from("knowledge").insert({
     company_id: company.id,
     title: `[external] ${title}`,
     body: `## Source\n${url}\n\n## Content\n${textContent}`,
-    tags,
+    tags: finalTags,
     source_type: "manual",
     confidence: "suspected",
     source_issue_ids: [],

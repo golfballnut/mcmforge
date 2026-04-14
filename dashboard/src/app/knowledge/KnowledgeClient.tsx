@@ -187,8 +187,7 @@ function IngestionForm() {
             <input
               name="tags"
               type="text"
-              required
-              placeholder="maplibre, routing, ios"
+              placeholder="auto-tagged (or override: maplibre, routing)"
               className="w-full px-3 py-2 rounded-md text-sm bg-[#0d1117] border border-[#30363d] text-[#e6edf3] placeholder-[#484f58] outline-none focus:border-[#58a6ff] transition-colors font-mono"
             />
           </div>

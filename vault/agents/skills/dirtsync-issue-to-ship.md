@@ -122,6 +122,27 @@ Read the file(s) mentioned in the issue description. Understand the current beha
 
 ---
 
+## Step 4.5: REPRODUCE THE BUG — RED (mandatory for visual/HUD/map bugs)
+
+**You MUST prove the bug exists on current master BEFORE writing any fix.**
+
+1. Build current master (no changes yet)
+2. Run on simulator with Steve's real GPX if available (check `DirtSync/DirtSyncUITests/GPXRoutes/`)
+3. Screenshot the EXACT failure moment — the frame where the bug is visible
+4. Upload as **"fail"** category attachment
+
+```bash
+xcrun simctl io $SIM screenshot qa-screenshots/<issue-slug>-RED-before-fix.png
+```
+
+**If you CANNOT reproduce the bug:** STOP. Post "BLOCKED: Cannot reproduce on master" and wait for COO.
+
+**WHY:** If you never see the bug, you can't know your fix addresses it. TDD rule: you must see RED before GREEN. This is the visual equivalent.
+
+**Post to issue:** "## Step 4.5: Bug reproduced (RED)\n- Screenshot: [filename] — shows [what's wrong]\n- GPS point: [coordinates or GPX point number]\n- This is the baseline. My fix must make THIS specific frame correct."
+
+---
+
 ## Step 5: Make the Fix
 
 Edit the code. Keep changes minimal — only fix what the issue describes.
@@ -168,8 +189,42 @@ xcrun simctl io $SIM screenshot qa-screenshots/<issue-slug>-<criterion>.png
 ```
 
 **READ the screenshot yourself.** Does it prove the criterion?
-- YES → continue
+- YES → continue to Step 8.5
 - NO → go back to Step 5 and fix
+
+---
+
+## Step 8.5: VISUAL CRITIC — Independent Verification (mandatory for visual/HUD/map bugs)
+
+**You CANNOT grade your own visual work.** Confirmation bias means you see what you expect.
+
+Compare your Step 4.5 RED screenshot (before fix) against your Step 8 GREEN screenshot (after fix):
+
+1. **Same GPS point, same zoom level, same scenario.** The ONLY difference should be the fix.
+2. For EACH acceptance criterion, answer honestly:
+   - RED screenshot: does it show the bug? [YES/NO]
+   - GREEN screenshot: does it show the bug fixed? [YES/NO]
+   - Is the beacon position consistent with the HUD name? [YES/NO]
+   - Would a stranger looking at the GREEN screenshot say this is correct? [YES/NO]
+
+**HARD RULES for the critic check:**
+- If the HUD says a trail name, the beacon MUST be visually on or very near that trail's line on the map
+- If the HUD says "Off-trail", the beacon MUST be visually away from all trail lines
+- If the HUD says a road name, the beacon MUST be visually on a road
+- If ANY of these don't match → the fix is WRONG → go back to Step 5
+- "Close enough" is NOT a pass. Either the visual matches or it doesn't.
+
+**Post to issue:**
+```
+## Step 8.5: Visual Critic
+- RED (before): [filename] — bug visible: [YES/NO + what's wrong]
+- GREEN (after): [filename] — bug fixed: [YES/NO + what's correct]
+- Beacon position matches HUD name: [YES/NO]
+- Stranger test: would someone with no context say this looks right? [YES/NO]
+- Verdict: PASS / FAIL
+```
+
+**If verdict is FAIL:** Go back to Step 5. Do NOT proceed. Do NOT rationalize.
 
 **UPLOAD each screenshot to the Forge issue as an attachment:**
 ```bash

@@ -13,6 +13,7 @@ export async function createIssue(formData: FormData) {
   const assignee_agent_id = (formData.get("assignee_agent_id") as string) || null;
   const project_id = (formData.get("project_id") as string) || null;
   const company_id = (formData.get("company_id") as string) || null;
+  const parent_id = (formData.get("parent_id") as string) || null;
 
   if (!title?.trim()) {
     throw new Error("Title is required");
@@ -73,6 +74,7 @@ export async function createIssue(formData: FormData) {
       company_id: company_id || null,
       identifier,
       origin_kind: "manual",
+      parent_id: parent_id || null,
     })
     .select("id")
     .single();

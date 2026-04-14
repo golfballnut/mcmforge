@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { AttachmentUpload } from "./IssueActions";
 
 interface Comment {
@@ -31,6 +32,31 @@ interface IssueEvent {
   metadata: Record<string, unknown> | null;
   created_at: string;
 }
+
+interface SubIssue {
+  id: string;
+  identifier: string | null;
+  title: string;
+  status: string;
+  priority: string;
+  assignee_agent_id: string | null;
+}
+
+const SUB_STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  backlog:     { label: "Backlog",     color: "#8b949e", bg: "rgba(139,148,158,0.15)" },
+  todo:        { label: "Todo",        color: "#58a6ff", bg: "rgba(88,166,255,0.15)" },
+  in_progress: { label: "In Progress", color: "#d29922", bg: "rgba(210,153,34,0.15)" },
+  in_review:   { label: "In Review",   color: "#a371f7", bg: "rgba(163,113,247,0.15)" },
+  done:        { label: "Done",        color: "#3fb950", bg: "rgba(63,185,80,0.15)" },
+  cancelled:   { label: "Cancelled",   color: "#f85149", bg: "rgba(248,81,73,0.15)" },
+};
+
+const SUB_PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
+  critical: { label: "Critical", color: "#f85149" },
+  high:     { label: "High",     color: "#d29922" },
+  medium:   { label: "Medium",   color: "#8b949e" },
+  low:      { label: "Low",      color: "#8b949e" },
+};
 
 type Tab = "comments" | "subissues" | "activity" | "attachments";
 type AttachmentSubtab = "all" | "user_upload" | "testing" | "comparison" | "video" | "pass" | "fail";
@@ -75,11 +101,13 @@ export function IssueTabs({
   comments,
   attachments,
   events,
+  subIssues,
 }: {
   issueId: string;
   comments: Comment[];
   attachments: Attachment[];
   events: IssueEvent[];
+  subIssues: SubIssue[];
 }) {
   const [active, setActive] = useState<Tab>("comments");
   const [subtab, setSubtab] = useState<AttachmentSubtab>("all");
@@ -91,7 +119,7 @@ export function IssueTabs({
 
   const tabs: { value: Tab; label: string; count?: number }[] = [
     { value: "comments", label: "Comments", count: comments.length },
-    { value: "subissues", label: "Sub-issues" },
+    { value: "subissues", label: "Sub-issues", count: subIssues.length },
     { value: "activity", label: "Activity", count: events.length },
     { value: "attachments", label: "Attachments", count: attachments.length },
   ];
@@ -228,7 +256,93 @@ export function IssueTabs({
 
       {/* Sub-issues */}
       {active === "subissues" && (
-        <p className="text-sm text-[#8b949e] py-4 text-center">No sub-issues.</p>
+        <div className="mb-6">
+          {subIssues.length === 0 ? (
+            <p className="text-sm text-[#8b949e] py-4 text-center">No sub-issues.</p>
+          ) : (
+            <>
+              {/* Progress bar */}
+              {(() => {
+                const doneCount = subIssues.filter((s) => s.status === "done" || s.status === "cancelled").length;
+                const total = subIssues.length;
+                const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+                return (
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs text-[#8b949e]">
+                        {doneCount}/{total} complete
+                      </span>
+                      <span className="text-xs text-[#8b949e]">{pct}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-[#21262d] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#3fb950] rounded-full transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Sub-issue rows */}
+              <div className="space-y-1">
+                {subIssues.map((sub) => {
+                  const sCfg = SUB_STATUS_CONFIG[sub.status] ?? SUB_STATUS_CONFIG.backlog;
+                  const pCfg = SUB_PRIORITY_CONFIG[sub.priority] ?? SUB_PRIORITY_CONFIG.medium;
+                  return (
+                    <div
+                      key={sub.id}
+                      className="flex items-center gap-3 px-3 py-2.5 bg-[#161b22] border border-[#30363d] rounded-lg hover:border-[#484f58] transition-colors"
+                    >
+                      {/* Identifier badge */}
+                      <span className="text-[11px] font-mono text-[#8b949e] shrink-0">
+                        {sub.identifier ?? sub.id.slice(0, 8)}
+                      </span>
+
+                      {/* Title (linked) */}
+                      <Link
+                        href={`/issues/${sub.id}`}
+                        className="flex-1 min-w-0 text-sm text-[#e6edf3] hover:text-[#58a6ff] transition-colors truncate"
+                      >
+                        {sub.title}
+                      </Link>
+
+                      {/* Priority badge */}
+                      <span
+                        className="text-[10px] font-medium shrink-0"
+                        style={{ color: pCfg.color }}
+                      >
+                        {pCfg.label}
+                      </span>
+
+                      {/* Status pill */}
+                      <span
+                        className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full shrink-0 font-medium"
+                        style={{ color: sCfg.color, backgroundColor: sCfg.bg }}
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ backgroundColor: sCfg.color }}
+                        />
+                        {sCfg.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Create sub-issue link */}
+          <div className="mt-4">
+            <Link
+              href={`/issues/new?parent_id=${issueId}`}
+              className="text-sm text-[#58a6ff] hover:underline"
+            >
+              + Create sub-issue
+            </Link>
+          </div>
+        </div>
       )}
 
       {/* Activity */}

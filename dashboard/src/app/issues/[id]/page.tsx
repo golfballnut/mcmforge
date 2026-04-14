@@ -26,6 +26,22 @@ interface Issue {
   branch_name?: string | null;
   pr_url?: string | null;
   proof_summary?: string | null;
+  parent_id?: string | null;
+}
+
+interface SubIssue {
+  id: string;
+  identifier: string | null;
+  title: string;
+  status: string;
+  priority: string;
+  assignee_agent_id: string | null;
+}
+
+interface ParentIssue {
+  id: string;
+  identifier: string | null;
+  title: string;
 }
 
 interface Comment {
@@ -134,7 +150,29 @@ async function getIssue(id: string) {
     created_at: string;
   }[];
 
-  return { issue: issue as Issue, assigneeName, assigneeSkills, comments, agents: agentList, attachments, events };
+  // Fetch child issues (sub-issues)
+  const { data: rawSubIssues } = await supabase
+    .from("issues")
+    .select("id, identifier, title, status, priority, assignee_agent_id")
+    .eq("parent_id", id)
+    .order("created_at", { ascending: true });
+
+  const subIssues: SubIssue[] = (rawSubIssues ?? []) as SubIssue[];
+
+  // Fetch parent issue if this issue has a parent_id
+  let parentIssue: ParentIssue | null = null;
+  if (issue.parent_id) {
+    const { data: parentData } = await supabase
+      .from("issues")
+      .select("id, identifier, title")
+      .eq("id", issue.parent_id)
+      .single();
+    if (parentData) {
+      parentIssue = parentData as ParentIssue;
+    }
+  }
+
+  return { issue: issue as Issue, assigneeName, assigneeSkills, comments, agents: agentList, attachments, events, subIssues, parentIssue };
 }
 
 interface CriterionItem {
@@ -208,7 +246,7 @@ export default async function IssueDetailPage({
 
   if (!result) notFound();
 
-  const { issue, assigneeName, assigneeSkills, comments, agents, attachments, events } = result;
+  const { issue, assigneeName, assigneeSkills, comments, agents, attachments, events, subIssues, parentIssue } = result;
   const statusCfg = STATUS_CONFIG[issue.status] ?? STATUS_CONFIG.backlog;
   const priorityCfg = PRIORITY_CONFIG[issue.priority] ?? PRIORITY_CONFIG.medium;
   const criteria = normalizeCriteria(issue.acceptance_criteria);
@@ -226,6 +264,26 @@ export default async function IssueDetailPage({
         </svg>
         <span className="font-mono text-[#8b949e]">{issue.identifier ?? id.slice(0, 8)}</span>
       </div>
+
+      {/* Parent link */}
+      {parentIssue && (
+        <div className="flex items-center gap-2 text-sm mb-4 px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-lg">
+          <span className="text-[#8b949e]">Parent:</span>
+          <Link
+            href={`/issues/${parentIssue.id}`}
+            className="text-[#58a6ff] hover:underline font-mono"
+          >
+            {parentIssue.identifier ?? parentIssue.id.slice(0, 8)}
+          </Link>
+          <span className="text-[#8b949e]">—</span>
+          <Link
+            href={`/issues/${parentIssue.id}`}
+            className="text-[#e6edf3] hover:text-[#58a6ff] transition-colors truncate"
+          >
+            {parentIssue.title}
+          </Link>
+        </div>
+      )}
 
       {/* Main layout: 2/3 + 1/3 */}
       <div className="flex flex-col lg:flex-row gap-6 items-start">
@@ -286,7 +344,7 @@ export default async function IssueDetailPage({
             </div>
           )}
 
-          <IssueTabs issueId={issue.id} comments={comments} attachments={attachments} events={events} />
+          <IssueTabs issueId={issue.id} comments={comments} attachments={attachments} events={events} subIssues={subIssues} />
 
           {/* Comment input */}
           <CommentForm issueId={issue.id} companyId={issue.company_id} />

@@ -26,7 +26,12 @@ const SELECT_CLASS =
 
 const LABEL_CLASS = "block text-xs font-medium text-[#8b949e] mb-1.5 uppercase tracking-wide";
 
-export default async function NewIssuePage() {
+export default async function NewIssuePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ parent_id?: string }>;
+}) {
+  const { parent_id: parentId } = await searchParams;
   const company = await getActiveCompany();
   const companyId = company?.id ?? "";
   const { agents, projects } = await getFormData(companyId);
@@ -122,6 +127,7 @@ export default async function NewIssuePage() {
 
         {/* Company — auto-set from active company */}
         <input type="hidden" name="company_id" value={companyId} />
+        {parentId && <input type="hidden" name="parent_id" value={parentId} />}
         {company && (
           <div>
             <span className={LABEL_CLASS}>Company</span>

@@ -1,5 +1,6 @@
 "use server";
 import { createForgeClient } from "@/lib/supabase/forge-server";
+import { createClient as createStorageClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { uploadAttachment } from "@/app/actions";
 
@@ -105,8 +106,7 @@ async function uploadIssueAttachmentWithComment(issueId: string, commentId: stri
   const category = ALLOWED_CATEGORIES.includes(categoryRaw) ? categoryRaw : "user_upload";
 
   // Upload file directly to Supabase Storage (not via shared server action — can't call server actions from server actions on Vercel)
-  const { createClient } = await import("@/lib/supabase/server");
-  const storageClient = await createClient();
+  const storageClient = await createStorageClient();
   const ext = file.name.split(".").pop() || "bin";
   const storagePath = `task-attachments/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 

@@ -143,6 +143,29 @@ xcrun simctl io $SIM screenshot qa-screenshots/<issue-slug>-RED-before-fix.png
 
 ---
 
+## Step 4.75: Write the Failing Test FIRST (TDD — mandatory)
+
+**Before writing ANY fix code, write a test that defines what "fixed" means.**
+
+1. Write a test that asserts the CORRECT behavior (the behavior that doesn't exist yet)
+2. Run it — it MUST FAIL (RED)
+3. If it passes, your test is wrong — it's not testing the bug. Fix the test.
+4. Post the test name and the failure message to the issue
+
+```bash
+# Example: run just your new test
+xcodebuild test -scheme DirtSync -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+  -only-testing:DirtSyncTests/YourNewTestClass/testYourNewTest 2>&1 | tail -10
+```
+
+**The test is the contract.** It says "when THIS input happens, THIS output is expected." Your fix in Step 5 must make this test pass — nothing more, nothing less.
+
+**If you can't write a test:** Some visual/map bugs can't be unit tested. In that case, write the test assertion as a COMMENT in the test file describing what you would assert, and rely on Step 8.5 visual critic as the verification. But TRY to write a real test first.
+
+**Post to issue:** "## Step 4.75: Failing test written (RED)\n- Test: [TestClass/testName]\n- Assertion: [what it checks]\n- Result: FAIL — [failure message]\n- This test defines done. Step 5 fix must make it pass."
+
+---
+
 ## Step 5: Make the Fix
 
 Edit the code. Keep changes minimal — only fix what the issue describes.
@@ -161,6 +184,28 @@ xcodebuild build -scheme DirtSync -destination "platform=iOS Simulator,name=iPho
 **If build FAILS:** Fix the error. Do not continue until build passes.
 
 **Post to issue:** "## Step 6: Build\n- Status: PASS / FAIL\n- Errors: [if any]"
+
+---
+
+## Step 6.5: Run Your Failing Test — It Must Now PASS (GREEN)
+
+Run the test you wrote in Step 4.75:
+```bash
+xcodebuild test -scheme DirtSync -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+  -only-testing:DirtSyncTests/YourNewTestClass/testYourNewTest 2>&1 | tail -10
+```
+
+- **PASS** → your fix works. Continue to Step 7.
+- **FAIL** → your fix is wrong. Go back to Step 5. Do NOT continue.
+
+Also run the full test suite to check for regressions:
+```bash
+xcodebuild test -scheme DirtSync -destination "platform=iOS Simulator,name=iPhone 16 Pro" 2>&1 | tail -20
+```
+
+**If ANY existing test fails:** Fix it before continuing. Your fix must not break anything else.
+
+**Post to issue:** "## Step 6.5: Test verification (GREEN)\n- [TestName]: was RED in Step 4.75, now PASS\n- Full suite: X/X pass, 0 failures"
 
 ---
 

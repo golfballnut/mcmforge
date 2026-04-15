@@ -198,6 +198,72 @@ export async function uploadIssueAttachment(issueId: string, formData: FormData)
   return { success: true, url: upload.url, filename: file.name };
 }
 
+// ── Direct-upload variants (browser uploads to Supabase Storage, sends only metadata here) ──
+
+export async function addCommentWithAttachmentPaths(
+  issueId: string,
+  companyId: string,
+  body: string,
+  attachments: { storagePath: string; filename: string; mimeType: string; sizeBytes: number; category: string }[],
+) {
+  const supabase = await createForgeClient();
+
+  // 1. Create the comment
+  const { data } = await supabase.from("issue_comments").insert({
+    company_id: companyId,
+    issue_id: issueId,
+    body,
+    author_user_id: "steve",
+  }).select("id").single();
+
+  const commentId = data?.id ?? null;
+  if (!commentId) return { error: "Failed to create comment" };
+
+  // 2. Create attachment records (files already uploaded to storage from browser)
+  const errors: string[] = [];
+  for (const att of attachments) {
+    const { error } = await supabase.from("issue_attachments").insert({
+      issue_id: issueId,
+      comment_id: commentId,
+      filename: att.filename,
+      mime_type: att.mimeType,
+      size_bytes: att.sizeBytes,
+      storage_path: att.storagePath,
+      category: att.category,
+    });
+    if (error) errors.push(`${att.filename}: ${error.message}`);
+  }
+
+  revalidatePath(`/issues/${issueId}`);
+  return { commentId, errors: errors.length > 0 ? errors : null };
+}
+
+export async function uploadIssueAttachmentRecord(
+  issueId: string,
+  storagePath: string,
+  filename: string,
+  mimeType: string,
+  sizeBytes: number,
+  category: string,
+) {
+  const validCategory = ALLOWED_CATEGORIES.includes(category) ? category : "user_upload";
+
+  const supabase = await createForgeClient();
+  const { error } = await supabase.from("issue_attachments").insert({
+    issue_id: issueId,
+    filename,
+    mime_type: mimeType,
+    size_bytes: sizeBytes,
+    storage_path: storagePath,
+    category: validCategory,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/issues/${issueId}`);
+  return { success: true };
+}
+
 export async function toggleCriterion(issueId: string, index: number, verified: boolean) {
   const supabase = await createForgeClient();
   const { data: issue } = await supabase

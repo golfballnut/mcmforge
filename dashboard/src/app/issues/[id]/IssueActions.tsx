@@ -5,9 +5,10 @@ import {
   updateIssuePriority,
   assignIssue,
   addComment,
-  addCommentWithAttachments,
-  uploadIssueAttachment,
+  addCommentWithAttachmentPaths,
+  uploadIssueAttachmentRecord,
 } from "./actions";
+import { createClient as createBrowserSupabase } from "@/lib/supabase/client";
 
 // ── Status dropdown ──────────────────────────────────────────────────────────
 
@@ -184,13 +185,22 @@ export function AttachmentUpload({ issueId }: { issueId: string }) {
     setProgress({ current: 0, total: valid.length });
 
     startTransition(async () => {
+      const supabase = createBrowserSupabase();
       const results = await Promise.all(
         valid.map(async (file) => {
-          const formData = new FormData();
-          formData.append("file", file);
-          formData.append("category", category);
           try {
-            const res = await uploadIssueAttachment(issueId, formData);
+            // Upload directly to Supabase Storage from browser (bypasses Vercel 4.5MB body limit)
+            const ext = file.name.split(".").pop() || "bin";
+            const storagePath = `task-attachments/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+            const { error: uploadError } = await supabase.storage
+              .from("artifacts")
+              .upload(storagePath, file, { contentType: file.type, upsert: false });
+            if (uploadError) throw new Error(uploadError.message);
+
+            // Create DB record via server action (tiny JSON payload)
+            const res = await uploadIssueAttachmentRecord(
+              issueId, storagePath, file.name, file.type, file.size, category
+            );
             completed += 1;
             setProgress({ current: completed, total: valid.length });
             return { file, error: res?.error ?? null };
@@ -362,12 +372,33 @@ export function CommentForm({
 
     startTransition(async () => {
       if (files.length > 0) {
-        const formData = new FormData();
+        // Upload files directly to Supabase Storage from browser (bypasses Vercel 4.5MB body limit)
+        const supabase = createBrowserSupabase();
+        const attachments: { storagePath: string; filename: string; mimeType: string; sizeBytes: number; category: string }[] = [];
+
         for (const pf of files) {
-          formData.append("files", pf.file);
-          formData.append("categories", pf.category);
+          const ext = pf.file.name.split(".").pop() || "bin";
+          const storagePath = `task-attachments/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+          const { error: uploadError } = await supabase.storage
+            .from("artifacts")
+            .upload(storagePath, pf.file, { contentType: pf.file.type, upsert: false });
+
+          if (uploadError) {
+            setError(`Upload failed for ${pf.file.name}: ${uploadError.message}`);
+            return;
+          }
+
+          attachments.push({
+            storagePath,
+            filename: pf.file.name,
+            mimeType: pf.file.type,
+            sizeBytes: pf.file.size,
+            category: pf.category,
+          });
         }
-        await addCommentWithAttachments(issueId, companyId ?? "", commentBody, formData);
+
+        // Send only metadata to server action (tiny JSON, no file bytes)
+        await addCommentWithAttachmentPaths(issueId, companyId ?? "", commentBody, attachments);
       } else {
         await addComment(issueId, companyId ?? "", commentBody);
       }

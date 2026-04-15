@@ -160,7 +160,30 @@ xcodebuild test -scheme DirtSync -destination "platform=iOS Simulator,name=iPhon
 
 **The test is the contract.** It says "when THIS input happens, THIS output is expected." Your fix in Step 5 must make this test pass — nothing more, nothing less.
 
-**If you can't write a test:** Some visual/map bugs can't be unit tested. In that case, write the test assertion as a COMMENT in the test file describing what you would assert, and rely on Step 8.5 visual critic as the verification. But TRY to write a real test first.
+**CRITICAL: Test RENDERING, not configuration.** For ANY visual feature (labels, colors, markers, layout, visibility), your test MUST be an XCUITest that:
+1. Launches the app
+2. Navigates to the relevant screen
+3. Asserts the element is ACTUALLY VISIBLE on screen
+
+```swift
+// WRONG — tests config, passes even when cleanup hides the label:
+XCTAssertEqual(labelsLayer.minimumZoomLevel, 10) // ✅ but USELESS
+
+// RIGHT — tests what the user actually sees:
+let app = XCUIApplication()
+app.launch()
+// zoom to level 10
+XCTAssert(app.staticTexts["Burning Rock"].waitForExistence(timeout: 10)) // Actually visible?
+```
+
+Unit tests that check property values (zoom level, color, font size) DO NOT prove the user can see the feature. A cleanup pass, a z-order issue, an opacity override, or a layout bug can hide it. **If the user sees it, the test must see it. If the test only checks config, it proves nothing.**
+
+**When to use which test type:**
+- **XCUITest (required):** anything visible — labels, markers, buttons, banners, HUD elements, colors
+- **Unit test (supplemental):** logic — trail detection distance, hysteresis timing, ride recording state
+- **Both:** most features need both. The unit test proves the logic. The XCUITest proves the user sees the result.
+
+**If you can't write an XCUITest:** Explain specifically WHY (e.g., "requires GPS simulation that XCUITest can't trigger"). The COO will decide if Step 8.5 visual critic is sufficient. "It's hard" is not a valid reason.
 
 **Post to issue:** "## Step 4.75: Failing test written (RED)\n- Test: [TestClass/testName]\n- Assertion: [what it checks]\n- Result: FAIL — [failure message]\n- This test defines done. Step 5 fix must make it pass."
 

@@ -36,9 +36,37 @@ curl -s "$SUPA_URL/rest/v1/issue_comments" -X POST \
 
 ---
 
+## Step 0.25: Read Your Run Ratings
+
+**BEFORE anything else**, check your recent ratings. These are scored 1-10 with tagged reasons why you lost points. Do NOT repeat the same gaps.
+
+```bash
+# Replace $AGENT_ID with your agent ID from the issue assignment
+curl -s "$SUPA_URL/rest/v1/run_ratings?agent_id=eq.$AGENT_ID&select=score,gaps,notes,created_at&order=created_at.desc&limit=5" \
+  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" -H "Accept-Profile: forge" | python3 -m json.tool
+```
+
+**If any rating has gaps, read each one and commit to avoiding it:**
+- `wrong-basemap` → Test on satellite (the ACTUAL user default), not offline
+- `config-test-not-render` → Write XCUITest that launches app, not unit test checking constants
+- `no-screenshot` → Post RED and GREEN screenshots before claiming done
+- `no-red-green` → Reproduce bug FIRST (RED), then fix (GREEN), compare
+- `wrong-specialist` → Check if a domain specialist exists for this issue's tags
+- `missed-knowledge` → Read the auto-injected knowledge comment on the issue
+- `no-xcuitest` → Visual features require XCUITest, not unit tests
+- `stale-branch` → Verify branch has all recent merges before starting
+- `excess-iterations` → Diagnose root cause before iterating. 5+ attempts = step back and think
+- `claimed-victory` → Watch the test output. Read every line. Don't assume pass.
+
+**If your last run scored below 7, post a comment to the issue explaining what you'll do differently this time.**
+
+---
+
 ## Step 0.5: Search Knowledge Base
 
-Before reading the issue, check if prior knowledge exists for the problem area:
+Before reading the issue, check if prior knowledge exists for the problem area.
+
+**NOTE:** Knowledge may already be auto-injected as a "Required Reading" comment on the issue. Read the issue comments FIRST — if a Knowledge Bot comment exists, that's your pre-loaded context. Only search manually if you need additional entries.
 ```bash
 # Search by tags relevant to your issue (adjust tags for your domain)
 curl -s "$SUPA_URL/rest/v1/knowledge?tags=cs.{RELEVANT_TAG}&confidence=neq.disproven&select=title,body,tags,confidence" \

@@ -127,6 +127,35 @@ Rules added to `dirtsync-issue-to-ship.md`:
 | Step 15.5 skill improvement proposals | ENFORCED in skill |
 | Cross-agent lesson sharing | NOT BUILT |
 | Tag new knowledge entries | LIVE (auto-tagging) |
+| **Run ratings & gap tagging** | **LIVE** |
+| **Agent reads ratings before every session** | **ENFORCED in skill (Step 0.25)** |
+
+---
+
+### Step 7: Run Rating & Audit Loop
+**Status: LIVE (Apr 15, 2026)**
+
+Every agent run gets rated 1-10 with structured gap tags explaining why it wasn't 10/10. Agents read their last 5 ratings before starting any new work.
+
+**Auto-rating (system):**
+- Failed runs → score 3, tagged `claimed-victory`
+- Timed out runs → score 3, tagged `excess-iterations`
+- Runs with no attachments → score 7, tagged `no-screenshot`
+- Perfect runs (no auto-detectable gaps) → not auto-rated, COO rates manually
+
+**Manual rating (COO):**
+- After reviewing a PR, COO rates the run and tags specific gaps
+- Gap taxonomy: 15 structured tags (e.g., `wrong-basemap`, `config-test-not-render`, `missed-knowledge`)
+- Stored in `forge.run_ratings` with GIN index on gaps for pattern analysis
+
+**Agent behavior:**
+- Step 0.25 (before knowledge search): read last 5 ratings
+- If any gap tag appears: agent commits to avoiding it and explains how
+- If last run scored <7: agent posts a comment explaining what they'll do differently
+
+**Tables:** `forge.run_ratings`, `forge.gap_taxonomy` (15 tags)
+**Trigger:** `trg_auto_rate_run` on `forge.runs` UPDATE (terminal status transitions)
+**Skill:** Step 0.25 added to `dirtsync-issue-to-ship.md`
 
 ---
 
@@ -168,6 +197,14 @@ Rules added to `dirtsync-issue-to-ship.md`:
 ## Changelog
 
 All workflow changes, newest first. Each entry = one shipped improvement.
+
+### 2026-04-15 — Run Rating & Audit Loop (LIVE)
+**What:** Every agent run gets rated 1-10 with structured gap tags. Auto-rating catches obvious gaps (no screenshot, timeout, failure). COO manually rates nuanced gaps. Agents read their last 5 ratings before every session (Step 0.25 in skill).
+**Why:** Same class of bug kept repeating (config test instead of render test, wrong basemap, no visual proof). Without structured feedback, agents can't learn from past failures. Now they see "last run scored 6/10 because wrong-basemap" before starting.
+**Tables added:** `forge.run_ratings` (with GIN index on gaps), `forge.gap_taxonomy` (15 structured tags)
+**Trigger:** `trg_auto_rate_run` on `forge.runs` UPDATE (terminal status transitions)
+**Skill updated:** Step 0.25 added to `dirtsync-issue-to-ship.md` — read ratings before anything else
+**Gap taxonomy:** wrong-basemap, config-test-not-render, no-screenshot, no-red-green, wrong-specialist, missed-knowledge, no-xcuitest, stale-branch, no-regression, claimed-victory, excess-iterations, scope-explosion, no-knowledge-search, wrong-test-environment, silent-failure-missed
 
 ### 2026-04-15 — Auto-Specialist Routing (LIVE)
 **What:** Extended the auto-knowledge trigger to recommend the right specialist agent based on issue tags. Four cases: specialist active, specialist paused (with activation SQL), no specialist but knowledge exists, unknown domain warning.

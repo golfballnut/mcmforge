@@ -262,6 +262,46 @@ Unit tests that check property values (zoom level, color, font size) DO NOT prov
 
 ---
 
+## Step 4.8: Test Audit — Grade Your Test BEFORE Fixing (MANDATORY)
+
+**STOP. Do NOT write any fix code yet.** Your test from Step 4.75 defines what "done" means. If the test is wrong, your fix will be wrong. Audit it now.
+
+**Go through every checkbox. If ANY is unchecked, rewrite the test before proceeding.**
+
+```
+## Step 4.8: Test Audit
+- [ ] TEST TYPE: Is this an XCUITest that launches the app? (If visual feature, unit test = FAIL this audit)
+- [ ] BASEMAP: Does the test run on satellite basemap? (Must match Step 0.75 pre-flight)
+- [ ] RENDERS NOT CONFIG: Does the test assert something VISIBLE on screen (element exists, text contains)? Not a property check (zoomLevel == 10, opacity > 0)?
+- [ ] SURVIVES CLEANUP: Could a cleanup pass, z-order change, or opacity override make this test pass while the bug is still visible? If yes → test is wrong
+- [ ] ASYNC READY: Does the test wait for tiles to load, style to apply, cleanup to run? (sleep/waitForExistence, not immediate assertion)
+- [ ] ALL CRITERIA: Does the test cover ALL acceptance criteria? Not just the first one?
+- [ ] MEANINGFUL NAME: Does the test name describe the expected behavior? (testSystemNameLabelVisibleAtOverviewZoom, not testLabels)
+- [ ] WOULD FAIL: Did this test ACTUALLY fail in Step 4.75? (If it passed immediately, it's not testing the bug)
+```
+
+**Red flag patterns — if your test has ANY of these, it's WRONG:**
+- `XCTAssertEqual(*.minimumZoomLevel, *)` — checks config, not rendering
+- `XCTAssertEqual(*.textOpacity, *)` — checks property, cleanup can change it after
+- `XCTAssertEqual(layerID, "system-name-labels")` — checks a string literal against itself
+- `XCTAssertNotNil(style.layer(withIdentifier:))` — layer exists but may be invisible
+- Any test that doesn't call `app.launch()` for a visual feature
+
+**If audit fails:** Rewrite the test. Return to Step 4.75. Do NOT proceed to Step 5.
+
+**Post to issue:**
+```
+## Step 4.8: Test Audit
+- Test type: XCUITest / Unit test
+- Basemap: satellite / offline
+- Tests rendering: YES / NO (what it asserts)
+- Survives cleanup: YES — test would still catch the bug after cleanup runs
+- Red flags found: NONE / [list]
+- Verdict: PASS — proceeding to fix / FAIL — rewriting test
+```
+
+---
+
 ## Step 5: Make the Fix
 
 Edit the code. Keep changes minimal — only fix what the issue describes.

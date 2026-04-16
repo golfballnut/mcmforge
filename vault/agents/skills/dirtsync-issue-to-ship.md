@@ -62,6 +62,28 @@ curl -s "$SUPA_URL/rest/v1/run_ratings?agent_id=eq.$AGENT_ID&select=score,gaps,n
 
 ---
 
+## Step 0.4: Read Specialist's Lessons (if you're not the specialist)
+
+Check the routing comment on the issue (posted by Knowledge Bot). If it names a specialist that is NOT you (e.g., "Map Rendering Expert covers this domain but is paused"), you MUST read their LESSONS.md before starting:
+
+```bash
+# Example: Map Rendering Expert's lessons
+cat companies/dirtsync/agents/map-rendering-expert/LESSONS.md
+```
+
+**Specialist LESSONS.md locations:**
+| Specialist | Path |
+|-----------|------|
+| Map Rendering Expert | `companies/dirtsync/agents/map-rendering-expert/LESSONS.md` |
+| Nav HUD Polish Expert | `companies/dirtsync/agents/nav-hud-polish-expert/LESSONS.md` |
+| Explore UX Expert | `companies/dirtsync/agents/explore-ux-expert/LESSONS.md` |
+
+These lessons contain hard-won domain knowledge from previous failures. If the specialist learned "MapLibre silently drops layers added before didFinishLoadingStyle" — you need to know that BEFORE writing code, not after 5 failed iterations.
+
+**If no routing comment exists or you ARE the recommended specialist:** skip this step.
+
+---
+
 ## Step 0.5: Search Knowledge Base
 
 Before reading the issue, check if prior knowledge exists for the problem area.
@@ -82,6 +104,31 @@ If results come back:
 If no results: proceed normally. Your work will become knowledge for the next agent.
 
 **Post to issue:** "## Step 0.5: Knowledge search\n- Tags searched: [tags]\n- Relevant entries found: [count]\n- Key insight applied: [summary or 'none']"
+
+---
+
+## Step 0.75: Environment Pre-Flight
+
+**BEFORE writing any code or test**, confirm your test environment matches what the user actually sees. Post this checklist to the issue:
+
+```
+## Step 0.75: Environment Pre-Flight
+- Default basemap: satellite (mapbox-satellite-style.json)
+- Test basemap: [satellite / offline / both]
+- Simulator: iPhone 16 Pro (iOS 18.x)
+- Zoom level for this bug: [z8-z12 / z14+ / all]
+- Style JSON has glyphs URL: [yes / MISSING — fix first]
+- Branch base: master at commit [sha]
+- All recent PRs merged to master: [yes / no — list missing]
+```
+
+**Rules:**
+- If the issue involves labels, text, or symbols: verify the style JSON has a `glyphs` URL
+- If the issue involves map rendering: test on SATELLITE (the actual user default), not offline
+- If the issue involves location/GPS: use GPX test track, not static screenshots
+- If you don't know what environment the user sees: **ASK, don't guess**
+
+**If any pre-flight item is wrong (missing glyphs, stale branch, wrong basemap), fix it BEFORE writing the test.**
 
 ---
 

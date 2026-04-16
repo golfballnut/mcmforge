@@ -159,6 +159,28 @@ Every agent run gets rated 1-10 with structured gap tags explaining why it wasn'
 
 ---
 
+### Step 8: Skill Gap Detection — Auto-Improvement Loop
+**Status: LIVE (Apr 15, 2026)**
+
+When the same gap tag appears 2+ times in 14 days across any agent's runs, the system auto-creates a skill improvement issue. This closes the loop: failures → ratings → pattern detection → skill patch → fewer failures.
+
+**How it works:**
+1. `forge.fn_detect_skill_gaps()` scans `run_ratings` for recurring gap tags
+2. If a gap appears 2+ times and no open issue exists → creates a `[skill-gap]` issue
+3. Issue includes: occurrences, affected agents, worst/avg score, remediation steps
+4. Priority auto-scales: 2-3 occurrences = medium, 3-5 = high, 5+ = critical
+5. Factory Analyst calls this function daily
+
+**Key distinction:**
+- Gap appears **once** → agent mistake → LESSONS.md handles it
+- Gap appears **2+ times** → skill gap → skill needs patching
+
+**Function:** `forge.fn_detect_skill_gaps()` (returns count of issues created)
+**View:** `forge.v_skill_gaps` (live dashboard of current recurring gaps)
+**Duplicate prevention:** Checks for existing open `[skill-gap]` issues before creating
+
+---
+
 ## Key Rules (Hard)
 
 1. **No cold starts.** Every issue gets knowledge before anyone touches it.
@@ -197,6 +219,13 @@ Every agent run gets rated 1-10 with structured gap tags explaining why it wasn'
 ## Changelog
 
 All workflow changes, newest first. Each entry = one shipped improvement.
+
+### 2026-04-15 — Skill Gap Detection (LIVE)
+**What:** When a gap tag appears 2+ times in 14 days, auto-creates a skill improvement issue. Closes the loop: failures become skill patches.
+**Why:** LESSONS.md handles one-off mistakes. Recurring gaps mean the skill itself is incomplete. Without this, the same class of bug repeats forever.
+**Function:** `forge.fn_detect_skill_gaps()` — Factory Analyst calls daily
+**View:** `forge.v_skill_gaps` — live dashboard of recurring gaps
+**Priority scaling:** 2-3x = medium, 3-5x = high, 5+ = critical
 
 ### 2026-04-15 — Run Rating & Audit Loop (LIVE)
 **What:** Every agent run gets rated 1-10 with structured gap tags. Auto-rating catches obvious gaps (no screenshot, timeout, failure). COO manually rates nuanced gaps. Agents read their last 5 ratings before every session (Step 0.25 in skill).

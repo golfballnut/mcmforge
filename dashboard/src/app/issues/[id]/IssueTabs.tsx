@@ -169,6 +169,7 @@ export function IssueTabs({
                   <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#0d1117]">
                     <div className="flex items-center gap-2">
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                        comment.author_name === "Knowledge Bot" ? "bg-[#8b949e]" :
                         comment.author_name?.startsWith("COO") ? "bg-[#58a6ff]" : "bg-[#00d4aa]"
                       }`}>
                         <span className="text-[10px] font-bold text-[#0d1117]">

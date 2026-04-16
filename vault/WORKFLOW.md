@@ -220,6 +220,26 @@ When the same gap tag appears 2+ times in 14 days across any agent's runs, the s
 
 All workflow changes, newest first. Each entry = one shipped improvement.
 
+### 2026-04-15 — Issue Step Tracker + Dashboard (LIVE)
+**What:** Structured `step_tracker` jsonb on every issue. Agents PATCH completion at each step. Dashboard shows tags, knowledge count, recommended agent, and a step progress bar with 16 segments. `fn_check_skipped_steps()` detects required steps that were skipped. `v_issues_with_skips` view ranks in-progress issues by skip count.
+**Why:** All workflow data was buried in unstructured markdown comments. Couldn't detect skipped steps, couldn't show progress, couldn't cross-check environment pre-flight against actual screenshots. Now every step is structured data.
+**Columns added:** `step_tracker`, `recommended_agent_id`, `recommended_agent_name`, `knowledge_entry_count` on `forge.issues`
+**Functions:** `fn_check_skipped_steps(uuid)`, `v_issues_with_skips` view
+**Dashboard:** Tags, knowledge badges, recommended agent badge, step progress bar with per-step indicators
+
+### 2026-04-15 — Test Audit Gate Step 4.8 (LIVE)
+**What:** 8-point self-audit checklist + red flag pattern list. Agent must grade their test BEFORE writing any fix code. If audit fails, rewrite the test.
+**Why:** DIRA-177's test checked `minimumZoomLevel == 10` (config) instead of testing visibility (rendering). The audit catches: config-not-render, missing app.launch(), no async wait, wrong basemap, test covers only first criterion.
+**Red flags:** `XCTAssertEqual(*.minimumZoomLevel, *)`, `XCTAssertNotNil(style.layer(withIdentifier:))`, any test without `app.launch()` for visual features
+
+### 2026-04-15 — 5 Workflow Gap Fixes (LIVE)
+**What:** (1) Step 5 iteration cap at 3 with stuck protocol, (2) Step 2 manual tagging removed (trigger handles it), (3) Step 7 enforces pre-flight basemap, (4) Step 12 bans git add -A + adds secret scan, (5) Step 15.5 fires on failures too.
+**Why:** Each gap was a silent failure mode discovered through the audit.
+
+### 2026-04-15 — Cross-Agent Lessons + Environment Pre-Flight (LIVE)
+**What:** Step 0.4 (read specialist's LESSONS.md if you're the generalist) + Step 0.75 (verify basemap, glyphs URL, branch freshness before writing code).
+**Why:** Feature Builder doing map work didn't read Map Rendering Expert's 4 lessons about style loading. Agent tested on offline basemap but user sees satellite.
+
 ### 2026-04-15 — Skill Gap Detection (LIVE)
 **What:** When a gap tag appears 2+ times in 14 days, auto-creates a skill improvement issue. Closes the loop: failures become skill patches.
 **Why:** LESSONS.md handles one-off mistakes. Recurring gaps mean the skill itself is incomplete. Without this, the same class of bug repeats forever.

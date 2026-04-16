@@ -161,14 +161,12 @@ curl -s "$SUPA_URL/rest/v1/issues?id=eq.<ISSUE_ID>" -X PATCH \
   -d '{"status":"in_progress"}'
 ```
 
-**Tag the issue** for knowledge base indexing. Extract 2-5 tags from the title and description:
+**Tags:** Already auto-set by the Knowledge Bot trigger on issue creation. Do NOT overwrite them. If you think a tag is missing, APPEND to the existing array:
 ```bash
-curl -s "$SUPA_URL/rest/v1/issues?id=eq.<ISSUE_ID>" -X PATCH \
-  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" \
-  -H "Content-Type: application/json" -H "Content-Profile: forge" \
-  -d '{"tags":["<tag1>","<tag2>","<tag3>"]}'
+# Only if a tag is genuinely missing — check existing tags first
+curl -s "$SUPA_URL/rest/v1/issues?id=eq.<ISSUE_ID>&select=tags" \
+  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" -H "Accept-Profile: forge"
 ```
-Common tags: `maplibre`, `poi`, `trail-detection`, `hud`, `ride-recording`, `breadcrumb`, `zoom`, `difficulty`, `controls`, `search-bar`, `navigation`
 
 ---
 
@@ -268,7 +266,14 @@ Unit tests that check property values (zoom level, color, font size) DO NOT prov
 
 Edit the code. Keep changes minimal — only fix what the issue describes.
 
-**Post to issue:** "## Step 5: Changes made\n- [file:line] — [what changed and why]\n- [file:line] — [what changed and why]"
+**Iteration cap: 3 attempts.** If you've tried 3 times and the test still fails:
+1. STOP coding
+2. Post to issue: "STUCK after 3 iterations. Attempts: [list what you tried]"
+3. Diagnose ROOT CAUSE — don't retry the same approach. Ask: "Why does this keep failing? What assumption am I making that's wrong?"
+4. Check knowledge base and specialist LESSONS.md for this failure pattern
+5. If still stuck after diagnosis: mark BLOCKED and wait for COO
+
+**Post to issue:** "## Step 5: Changes made\n- [file:line] — [what changed and why]\n- [file:line] — [what changed and why]\n- Iteration: [1/2/3]"
 
 ---
 
@@ -307,7 +312,9 @@ xcodebuild test -scheme DirtSync -destination "platform=iOS Simulator,name=iPhon
 
 ---
 
-## Step 7: Run on Simulator
+## Step 7: Run on Simulator (MUST match Step 0.75 environment)
+
+**Use the basemap and zoom level you confirmed in Step 0.75.** If you said "test on satellite" — the simulator MUST load satellite. If you said "zoom z10" — zoom to z10. Do NOT test on a different environment than what you pre-flighted.
 
 ```bash
 SIM=$(xcrun simctl list devices | grep "iPhone 16 Pro" | grep -v Max | head -1 | grep -oE '[A-F0-9-]{36}')
@@ -315,6 +322,8 @@ xcrun simctl boot $SIM 2>/dev/null
 xcrun simctl install $SIM /Users/stevemcmillian/Library/Developer/Xcode/DerivedData/DirtSync-*/Build/Products/Debug-iphonesimulator/DirtSync.app
 xcrun simctl launch $SIM app.dirtsync.DirtSync --uitesting
 ```
+
+**Verify basemap loaded correctly before taking screenshots.** If you see dark green background but pre-flight said satellite — STOP and fix the style loading before proceeding.
 
 Play GPX if needed:
 ```bash
@@ -487,12 +496,20 @@ curl -s "$SUPA_URL/rest/v1/issues?id=eq.<ISSUE_ID>" -X PATCH \
 
 ## Step 12: Commit
 
+**NEVER use `git add -A` or `git add .`** — these can commit secrets (.env), build artifacts, screenshots, and node_modules. Add ONLY the files you changed:
+
 ```bash
-git add -A
+git add <file1.swift> <file2.swift> <testfile.swift>
+git diff --cached --stat  # Verify ONLY your files are staged
 git commit -m "fix: <issue-title>"
 ```
 
-**Post to issue:** "## Step 12: Committed [hash]"
+**Before committing, check for secrets:**
+```bash
+git diff --cached | grep -iE "api.key|token|password|secret|Bearer" && echo "STOP: possible secret in diff" || echo "Clean"
+```
+
+**Post to issue:** "## Step 12: Committed [hash]\n- Files: [list of files added]"
 
 ---
 
@@ -543,7 +560,9 @@ curl -s "$SUPA_URL/rest/v1/issue_events" -X POST \
 
 ## Step 15.5: Propose Skill + Knowledge Improvements (SELF-IMPROVING)
 
-Before you stop, reflect: **did you hit any obstacle NOT covered by the skill or knowledge base?**
+**This step fires on EVERY outcome — success, rejection, AND blocked.** Failed runs have the most to teach. If you're blocked or rejected, this step is MANDATORY, not optional.
+
+Reflect: **did you hit any obstacle NOT covered by the skill or knowledge base?**
 
 If YES — post a skill improvement proposal to the issue:
 ```

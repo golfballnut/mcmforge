@@ -34,6 +34,33 @@ curl -s "$SUPA_URL/rest/v1/issue_comments" -X POST \
 ```
 **CRITICAL:** `company_id` is required (NOT NULL). Omitting it will silently fail.
 
+**How to "Track step"** — use this at EVERY step to update the structured tracker:
+```bash
+# Merge step data into step_tracker. Replace STEP_ID and DATA.
+curl -s "$SUPA_URL/rest/v1/issues?id=eq.<ISSUE_ID>" -X PATCH \
+  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" \
+  -H "Content-Type: application/json" -H "Content-Profile: forge" \
+  -d "{\"step_tracker\": $(curl -s \"$SUPA_URL/rest/v1/issues?id=eq.<ISSUE_ID>&select=step_tracker\" \
+    -H \"apikey: $SUPA_KEY\" -H \"Authorization: Bearer $SUPA_KEY\" -H \"Accept-Profile: forge\" \
+    | python3 -c \"import sys,json; t=json.loads(sys.stdin.read())[0]['step_tracker'] or {}; t['STEP_ID']={'done':True}; print(json.dumps(t))\")}"
+```
+**Shortcut** — use this Python one-liner to update a step with extra data:
+```bash
+python3 -c "
+import json,subprocess,sys
+ISSUE_ID='<ISSUE_ID>'
+STEP='STEP_ID'
+DATA={'done':True}  # Add extra fields: {'done':True,'basemap':'satellite','test':'testName'}
+# Fetch current tracker
+r=subprocess.run(['curl','-s','$SUPA_URL/rest/v1/issues?id=eq.'+ISSUE_ID+'&select=step_tracker','-H','apikey: $SUPA_KEY','-H','Authorization: Bearer $SUPA_KEY','-H','Accept-Profile: forge'],capture_output=True,text=True)
+tracker=json.loads(r.stdout)[0].get('step_tracker') or {}
+tracker[STEP]=DATA
+# Patch
+subprocess.run(['curl','-s','$SUPA_URL/rest/v1/issues?id=eq.'+ISSUE_ID,'-X','PATCH','-H','apikey: $SUPA_KEY','-H','Authorization: Bearer $SUPA_KEY','-H','Content-Type: application/json','-H','Content-Profile: forge','-d',json.dumps({'step_tracker':tracker})])
+"
+```
+**CRITICAL:** Track EVERY step. The COO dashboard shows a progress bar and flags skipped steps. If you skip tracking, it looks like you skipped the step itself.
+
 ---
 
 ## Step 0.25: Read Your Run Ratings

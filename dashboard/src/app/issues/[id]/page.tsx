@@ -308,6 +308,53 @@ export default async function IssueDetailPage({
             )}
           </div>
 
+          {/* Tags + Knowledge + Routing (auto-injected by trigger) */}
+          {((issue as Record<string, unknown>).tags as string[] | null)?.length ? (
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              {((issue as Record<string, unknown>).tags as string[]).map((tag: string) => (
+                <span key={tag} className="text-xs px-2 py-0.5 bg-[#1f2937] border border-[#374151] text-[#60a5fa] rounded-full">
+                  {tag}
+                </span>
+              ))}
+              {((issue as Record<string, unknown>).knowledge_entry_count as number) > 0 && (
+                <span className="text-xs px-2 py-0.5 bg-[#1a2332] border border-[#1e3a5f] text-[#3fb950] rounded">
+                  {(issue as Record<string, unknown>).knowledge_entry_count} knowledge entries injected
+                </span>
+              )}
+              {(issue as Record<string, unknown>).recommended_agent_name && (
+                <span className="text-xs px-2 py-0.5 bg-[#1a2332] border border-[#1e3a5f] text-[#d29922] rounded">
+                  Recommended: {(issue as Record<string, unknown>).recommended_agent_name as string}
+                </span>
+              )}
+            </div>
+          ) : null}
+
+          {/* Step Progress Bar */}
+          {(() => {
+            const tracker = (issue as Record<string, unknown>).step_tracker as Record<string, { done?: boolean }> | null;
+            if (!tracker || Object.keys(tracker).length === 0) return null;
+            const allSteps = ['0.25','0.4','0.5','0.75','1','4.5','4.75','4.8','5','6.5','8','8.5','11','12','13','15.5'];
+            const completed = allSteps.filter(s => tracker[s]?.done);
+            const pct = Math.round((completed.length / allSteps.length) * 100);
+            return (
+              <div className="mb-4">
+                <div className="flex items-center justify-between text-xs text-[#8b949e] mb-1">
+                  <span>Step Progress</span>
+                  <span>{completed.length}/{allSteps.length} steps ({pct}%)</span>
+                </div>
+                <div className="w-full h-2 bg-[#21262d] rounded-full overflow-hidden">
+                  <div className="h-full bg-[#3fb950] rounded-full transition-all" style={{ width: `${pct}%` }} />
+                </div>
+                <div className="flex gap-1 mt-1">
+                  {allSteps.map(s => (
+                    <div key={s} title={`Step ${s}: ${tracker[s]?.done ? 'done' : 'pending'}`}
+                      className={`h-1.5 flex-1 rounded-sm ${tracker[s]?.done ? 'bg-[#3fb950]' : 'bg-[#21262d]'}`} />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Description */}
           <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 mb-6">
             {issue.description ? (

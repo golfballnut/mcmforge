@@ -220,6 +220,15 @@ When the same gap tag appears 2+ times in 14 days across any agent's runs, the s
 
 All workflow changes, newest first. Each entry = one shipped improvement.
 
+### 2026-04-15 — Modular Skill Architecture (LIVE)
+**What:** Split monolithic 600-line skill into 6 phases (~100 lines each). Agents load one phase at a time, reducing context burn. Logic-only issues skip Phase 3 (visual proof).
+**Files:** `vault/agents/skills/dirtsync/` — index.md, 00-pre-setup.md through 05-post-ship.md
+
+### 2026-04-15 — Pre-Approval Gate + Stuck Agent Detection (LIVE)
+**What:** `fn_pre_approve_check(issue_id)` runs 8 gates before COO can approve: required steps completed, test audit passed, screenshots uploaded, PR created, criteria verified, tests green, correct basemap, knowledge consumed. `v_stuck_agents` flags in_progress issues with no step update >30min. `v_approval_readiness` shows all in_review issues ranked by gate status.
+**Why:** COO was reviewing blind — no structured way to know if the agent cut corners. Now any FAIL gate blocks approval with the specific reason.
+**Tested:** DIRA-174 in-progress shows 2/8 PASS (basemap + knowledge), 6 FAIL (TDD steps not yet reached). Gates flip as agent progresses.
+
 ### 2026-04-15 — Issue Step Tracker + Dashboard (LIVE)
 **What:** Structured `step_tracker` jsonb on every issue. Agents PATCH completion at each step. Dashboard shows tags, knowledge count, recommended agent, and a step progress bar with 16 segments. `fn_check_skipped_steps()` detects required steps that were skipped. `v_issues_with_skips` view ranks in-progress issues by skip count.
 **Why:** All workflow data was buried in unstructured markdown comments. Couldn't detect skipped steps, couldn't show progress, couldn't cross-check environment pre-flight against actual screenshots. Now every step is structured data.

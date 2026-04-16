@@ -4,6 +4,24 @@
 
 ---
 
+## Pre-Ship Gate Check
+
+**BEFORE any shipping step, verify your tracker is complete.** The COO runs an automated audit when you mark in_review. Missing steps = automatic rejection.
+
+Check these are tracked (query your own tracker if unsure):
+- `step_4.5` — RED screenshot (required for visual issues)
+- `step_4.75` — failing test with test name
+- `step_4.8` — test audit with verdict
+- `step_5` — fix with iteration count
+- `step_6.5` — GREEN test + regression results
+- `step_8` — screenshots uploaded (required for visual issues)
+- `step_8.5` — visual critic verdict (required for visual issues)
+- `step_9` — video uploaded (required for visual issues)
+
+**If any required step is not tracked: go back and track it NOW.** If you did the work but forgot to track, add the tracker entry. If you skipped the work, go back and do it. Do NOT proceed to Step 10 with missing steps.
+
+---
+
 ## Step 10: Run Verify Command
 
 If the issue has a `verify_command`, run it:

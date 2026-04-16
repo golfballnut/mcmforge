@@ -61,18 +61,20 @@ When any issue is inserted into `forge.issues`, a Postgres trigger:
 ---
 
 ### Step 2: Specialist Routing — Auto-Recommend Agent
-**Status: DESIGNED (Apr 15, 2026) — building next**
+**Status: LIVE (Apr 15, 2026)**
 
 Extends the trigger to add a second comment recommending the right specialist:
 
 | Case | What happens |
 |------|-------------|
-| Specialist active | "Recommended: Map Rendering Expert" + agent ID + skills list |
-| Specialist paused / no specialist | "Fallback: Feature Builder (generalist)" + warning about more iterations |
-| No specialist AND no knowledge | "WARNING: Unknown domain — onboard specialist before dispatching" |
+| Specialist active | "Recommended: [Agent Name]" + agent ID + matched tag + priority |
+| Specialist paused | "Specialist Paused — Fallback to Generalist" + activation SQL + fallback ID |
+| No specialist, has knowledge | "No Specialist — Generalist with Knowledge" + onboarding suggestion |
+| No specialist, no knowledge | "WARNING: Unknown Domain" + 3-step remediation checklist |
 
-**Table:** `forge.tag_agent_mappings` (tag → agent_id + priority)
-**Spec:** TBD
+**Table:** `forge.tag_agent_mappings` (14 tag→agent mappings, priority-ranked)
+**Trigger:** Extended `fn_auto_knowledge_inject()` — routing runs after knowledge injection
+**Tested:** Map issue → Map Rendering Expert (paused) → Case 2 with activation instructions
 
 ---
 
@@ -166,6 +168,13 @@ Rules added to `dirtsync-issue-to-ship.md`:
 ## Changelog
 
 All workflow changes, newest first. Each entry = one shipped improvement.
+
+### 2026-04-15 — Auto-Specialist Routing (LIVE)
+**What:** Extended the auto-knowledge trigger to recommend the right specialist agent based on issue tags. Four cases: specialist active, specialist paused (with activation SQL), no specialist but knowledge exists, unknown domain warning.
+**Why:** DIRA-177 was assigned to Feature Builder (generalist) instead of Map Rendering Expert (who already knew about async style loading and glyphs). The system now tells you who to assign and warns when the specialist is paused.
+**Table added:** `forge.tag_agent_mappings` (14 mappings across 4 agents)
+**Trigger:** Extended `fn_auto_knowledge_inject()` with routing logic after knowledge injection
+**Tested:** Map issue correctly identified Map Rendering Expert (paused) and provided activation instructions + Feature Builder fallback.
 
 ### 2026-04-15 — Auto-Knowledge Injection (LIVE)
 **What:** Postgres trigger on issue creation auto-tags issues and posts matching knowledge base entries as a Required Reading comment.

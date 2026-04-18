@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { loadConfig } from './config.js';
 import { createSupabaseClient } from './supabase.js';
 import { startRunExecutor, getActiveRuns, setShuttingDown } from './loops/run-executor.js';
@@ -10,6 +12,7 @@ import { startGoalWatcher } from './loops/goal-watcher.js';
 import { startAgentAdvisor } from './loops/agent-advisor.js';
 import { startAgentApi } from './agent-api.js';
 import { logger } from './utils/logger.js';
+import { runAutoAttachScan } from './services/auto-attach-proof.js';
 
 async function main() {
   logger.info('MCM Forge Orchestrator starting');
@@ -29,6 +32,16 @@ async function main() {
   startAgentApi(supabase, agentApiPort);
 
   await startOrphanReaper(supabase, { ...config, runOnce: true });
+
+  // FORGE-253: Auto-attach any committed proof artifacts on startup
+  try {
+    const cwdResearch = path.resolve(process.cwd(), 'docs/research');
+    const attachDir = existsSync(cwdResearch) ? cwdResearch : path.resolve(config.agentHomeDir, '../../docs/research');
+    const attachResult = await runAutoAttachScan(supabase, attachDir);
+    logger.info(attachResult, 'Startup auto-attach scan complete');
+  } catch (err) {
+    logger.warn({ err }, 'Auto-attach startup scan failed — continuing');
+  }
 
   await Promise.all([
     startRunExecutor(supabase, config),

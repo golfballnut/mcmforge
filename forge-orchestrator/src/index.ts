@@ -36,7 +36,9 @@ async function main() {
   // FORGE-253: Auto-attach any committed proof artifacts on startup
   try {
     const cwdResearch = path.resolve(process.cwd(), 'docs/research');
-    const attachDir = existsSync(cwdResearch) ? cwdResearch : path.resolve(config.agentHomeDir, '../../docs/research');
+    const attachDir = existsSync(cwdResearch)
+      ? cwdResearch
+      : path.resolve(config.agentHomeDir, '../../docs/research');
     const attachResult = await runAutoAttachScan(supabase, attachDir);
     logger.info(attachResult, 'Startup auto-attach scan complete');
   } catch (err) {

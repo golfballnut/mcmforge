@@ -1,0 +1,46 @@
+
+> forge-orchestrator@0.1.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v4.1.4 /Users/stevemcmillian/llama-3-agents/Apps/projects/MCMForge/forge-orchestrator
+
+ ✓ src/agents/__tests__/visual-judge.test.ts > extractJson() > returns raw text unchanged when no fences 1ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > extractJson() > strips ```json ... ``` fences 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > extractJson() > strips bare ``` ... ``` fences 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — return shape > returns object with verdict, reason, annotatedDiffPath 1ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — return shape > annotatedDiffPath is always empty string in v1 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — PASS > returns PASS when API reports identical images 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — FAIL > returns FAIL when API reports missing UI element 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — FAIL > FAIL reason is specific — not just "images differ" 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — JSON safety > handles API response wrapped in markdown code fences 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — JSON safety > throws descriptive error if API returns non-JSON prose 1ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — file validation > throws if mockup file does not exist 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — file validation > throws if after-image does not exist 0ms
+ ✓ src/agents/__tests__/visual-judge.test.ts > judgeImages() — model selection > calls haiku model by default 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > parseIdentifierFromPath() > extracts "DIRA-196" from "dira-196-visual-proof" 1ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > parseIdentifierFromPath() > extracts "FORGE-253" from "forge-253-visual-proof" 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > parseIdentifierFromPath() > handles uppercase input "DIRA-196-visual-proof" 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > parseIdentifierFromPath() > returns null for a directory not matching the pattern 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > parseIdentifierFromPath() > returns null for empty string 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > parseIdentifierFromPath() > returns null for "visual-proof" alone (no prefix) 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns "image/png" for .png 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns "image/jpeg" for .jpg 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns "image/jpeg" for .jpeg 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns "video/webm" for .webm 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns "video/mp4" for .mp4 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns "video/quicktime" for .mov 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns "text/plain" for .txt 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > detectMimeType() > returns null for unknown extension .xyz 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > runAutoAttachScan() — empty research dir > returns {uploaded:0, skipped:0, errors:0} when no *-visual-proof dirs exist 1ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > runAutoAttachScan() — empty research dir > returns {uploaded:0, skipped:0, errors:0} when research dir does not exist 0ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > runAutoAttachScan() — idempotency > skips file when storage_path already exists in issue_attachments 1ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > runAutoAttachScan() — happy path upload > uploads a new file and returns uploaded:1, errors:0 1ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > runAutoAttachScan() — skips unknown mime types > does not upload files with unsupported extensions, no errors 1ms
+ ✓ src/services/__tests__/auto-attach-proof.test.ts > runAutoAttachScan() — skips dirs with no matching issue > skips when issue not found in DB and returns no errors 1ms
+
+ Test Files  2 passed (2)
+      Tests  33 passed (33)
+   Start at  22:31:24
+   Duration  168ms (transform 62ms, setup 0ms, import 105ms, tests 17ms, environment 0ms)
+

@@ -21,6 +21,8 @@ interface Issue {
   agent_skills?: string[] | null;
   comment_count?: number;
   attachment_count?: number;
+  stage_comments?: Array<{ body: string }>;
+  pr_url?: string | null;
 }
 
 async function getIssues(companyId: string): Promise<Issue[]> {
@@ -47,6 +49,26 @@ async function getIssues(companyId: string): Promise<Issue[]> {
     }
   }
 
+  // Fetch up to 20 most-recent comment bodies per issue for stage derivation
+  const issueIds = issues.map((i) => i.id);
+  let commentsByIssue: Record<string, Array<{ body: string }>> = {};
+  if (issueIds.length > 0) {
+    const { data: recentComments } = await supabase
+      .from("issue_comments")
+      .select("issue_id, body")
+      .in("issue_id", issueIds)
+      .order("created_at", { ascending: false })
+      .limit(Math.min(issueIds.length * 20, 1000));
+    if (recentComments) {
+      for (const c of recentComments) {
+        if (!commentsByIssue[c.issue_id]) commentsByIssue[c.issue_id] = [];
+        if (commentsByIssue[c.issue_id].length < 20) {
+          commentsByIssue[c.issue_id].push({ body: c.body });
+        }
+      }
+    }
+  }
+
   return issues.map((issue) => {
     // PostgREST returns nested arrays like: issue_comments: [{ count: 3 }]
     const rawComments = (issue as Record<string, unknown>).issue_comments;
@@ -64,6 +86,8 @@ async function getIssues(companyId: string): Promise<Issue[]> {
       agent_skills: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id]?.skills ?? null : null,
       comment_count: commentCount,
       attachment_count: attachmentCount,
+      stage_comments: commentsByIssue[issue.id] ?? [],
+      pr_url: (issue as Record<string, unknown>).pr_url as string | null ?? null,
     };
   });
 }

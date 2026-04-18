@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRealtimeIssues } from "@/lib/hooks/use-realtime";
 import Link from "next/link";
+import { deriveStage, WorkflowStage } from "@/lib/issue-stage";
+import { StagePill } from "@/components/issues/StagePill";
+import { IssueCard } from "@/components/issues/IssueCard";
 
 interface Issue {
   id: string;
@@ -21,9 +24,14 @@ interface Issue {
   agent_skills?: string[] | null;
   comment_count?: number;
   attachment_count?: number;
+  stage_comments?: Array<{ body: string }>;
+  pr_url?: string | null;
 }
 
 type FilterMode = "open" | "closed" | "all";
+type ViewMode = "list" | "card";
+
+const VIEW_MODE_KEY = "forge_issues_view_mode";
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   backlog:     { label: "Backlog",     color: "bg-[#30363d] text-[#8b949e]" },
@@ -90,6 +98,20 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
   const issues = useRealtimeIssues(initialIssues) as Issue[];
   const [filter, setFilter] = useState<FilterMode>("open");
   const [search, setSearch] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+
+  // Restore view mode from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(VIEW_MODE_KEY);
+    if (saved === "card" || saved === "list") {
+      setViewMode(saved);
+    }
+  }, []);
+
+  function handleViewMode(mode: ViewMode) {
+    setViewMode(mode);
+    localStorage.setItem(VIEW_MODE_KEY, mode);
+  }
 
   const openCount = issues.filter((i) => !CLOSED_STATUSES.includes(i.status)).length;
   const closedCount = issues.filter((i) => CLOSED_STATUSES.includes(i.status)).length;
@@ -127,6 +149,38 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {/* View toggle */}
+          <div className="flex items-center border border-[#30363d] rounded-md overflow-hidden">
+            <button
+              onClick={() => handleViewMode("list")}
+              aria-label="List view"
+              title="List view"
+              className={`p-1.5 transition-colors ${
+                viewMode === "list"
+                  ? "bg-[#1c2333] text-[#e6edf3]"
+                  : "text-[#8b949e] hover:text-[#e6edf3]"
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            </button>
+            <button
+              onClick={() => handleViewMode("card")}
+              aria-label="Card view"
+              title="Card view"
+              className={`p-1.5 transition-colors ${
+                viewMode === "card"
+                  ? "bg-[#1c2333] text-[#e6edf3]"
+                  : "text-[#8b949e] hover:text-[#e6edf3]"
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+          </div>
+
           <div className="relative">
             <svg
               className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8b949e]"
@@ -186,7 +240,7 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
         </span>
       </div>
 
-      {/* Table */}
+      {/* Content */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="w-12 h-12 rounded-full bg-[#161b22] border border-[#30363d] flex items-center justify-center mb-4">
@@ -201,99 +255,142 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
             <p className="text-[#8b949e] text-xs mt-1">Create your first issue to get started</p>
           )}
         </div>
+      ) : viewMode === "card" ? (
+        /* Card grid */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((issue) => {
+            const stage: WorkflowStage = deriveStage(
+              issue.stage_comments ?? [],
+              issue.pr_url ?? null,
+              false,
+              issue.status
+            );
+            return (
+              <IssueCard
+                key={issue.id}
+                id={issue.id}
+                identifier={issue.identifier}
+                title={issue.title}
+                status={issue.status}
+                priority={issue.priority}
+                stage={stage}
+                comment_count={issue.comment_count ?? 0}
+                attachment_count={issue.attachment_count ?? 0}
+                agent_name={issue.agent_name}
+                created_at={issue.created_at}
+              />
+            );
+          })}
+        </div>
       ) : (
+        /* List table */
         <div className="border border-[#30363d] rounded-lg overflow-hidden">
           {/* Column headers */}
-          <div className="grid grid-cols-[1fr_130px] sm:grid-cols-[120px_1fr_130px_140px_100px] gap-0 px-4 py-2 bg-[#161b22] border-b border-[#30363d]">
+          <div className="grid grid-cols-[1fr_130px] sm:grid-cols-[120px_1fr_120px_110px_130px_100px] gap-0 px-4 py-2 bg-[#161b22] border-b border-[#30363d]">
             <span className="hidden sm:block text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">ID</span>
             <span className="text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Title</span>
             <span className="text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Status</span>
+            <span className="hidden sm:block text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Stage</span>
             <span className="hidden sm:block text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider">Assignee</span>
             <span className="hidden sm:block text-[10px] font-semibold text-[#8b949e] uppercase tracking-wider text-right">Created</span>
           </div>
 
           {/* Issue rows */}
-          {filtered.map((issue) => (
-            <Link
-              key={issue.id}
-              href={`/issues/${issue.identifier ?? issue.id}`}
-              className="grid grid-cols-[1fr_130px] sm:grid-cols-[120px_1fr_130px_140px_100px] gap-0 px-4 py-3 bg-[#0d1117] border-b border-[#21262d] hover:bg-[#161b22] transition-colors group last:border-b-0"
-            >
-              {/* Identifier (desktop) */}
-              <div className="hidden sm:flex items-center">
-                <span className="font-mono text-xs font-semibold text-[#58a6ff] group-hover:text-[#79c0ff] transition-colors">
-                  {issue.identifier ?? "\u2014"}
-                </span>
-              </div>
-
-              {/* Title + priority badge + mobile counts */}
-              <div className="flex flex-col min-w-0 pr-2 justify-center">
-                <div className="flex items-center gap-2 min-w-0">
-                  {/* Mobile-only identifier (desktop has its own column) */}
-                  {issue.identifier && (
-                    <span className="sm:hidden font-mono text-[11px] font-semibold text-[#58a6ff] shrink-0">
-                      {issue.identifier}
-                    </span>
-                  )}
-                  <span className="text-sm text-[#e6edf3] truncate">{issue.title}</span>
-                  <PriorityBadge priority={issue.priority} />
+          {filtered.map((issue) => {
+            const stage: WorkflowStage = deriveStage(
+              issue.stage_comments ?? [],
+              issue.pr_url ?? null,
+              false,
+              issue.status
+            );
+            return (
+              <Link
+                key={issue.id}
+                href={`/issues/${issue.identifier ?? issue.id}`}
+                className="grid grid-cols-[1fr_130px] sm:grid-cols-[120px_1fr_120px_110px_130px_100px] gap-0 px-4 py-3 bg-[#0d1117] border-b border-[#21262d] hover:bg-[#161b22] transition-colors group last:border-b-0"
+              >
+                {/* Identifier (desktop) */}
+                <div className="hidden sm:flex items-center">
+                  <span className="font-mono text-xs font-semibold text-[#58a6ff] group-hover:text-[#79c0ff] transition-colors">
+                    {issue.identifier ?? "\u2014"}
+                  </span>
                 </div>
-                {/* Mobile-only secondary row: specialist + counts */}
-                <div className="sm:hidden flex items-center gap-2 mt-0.5 flex-wrap">
-                  {issue.agent_name && (
-                    <span className="text-[11px] text-[#8b949e] truncate">
-                      {issue.agent_name}
-                    </span>
-                  )}
-                  <CountPill icon="💬" count={issue.comment_count ?? 0} />
-                  <CountPill icon="📎" count={issue.attachment_count ?? 0} />
-                </div>
-              </div>
 
-              {/* Status + desktop counts */}
-              <div className="flex flex-col gap-1 items-start justify-center">
-                <StatusPill status={issue.status} />
-                <div className="hidden sm:flex items-center gap-2">
-                  <CountPill icon="💬" count={issue.comment_count ?? 0} />
-                  <CountPill icon="📎" count={issue.attachment_count ?? 0} />
-                </div>
-              </div>
-
-              {/* Assignee (desktop) — name + skills badges */}
-              <div className="hidden sm:flex flex-col justify-center min-w-0 pr-2">
-                {issue.agent_name ? (
-                  <>
-                    <span className="text-xs text-[#e6edf3] truncate">{issue.agent_name}</span>
-                    {issue.agent_skills && issue.agent_skills.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {issue.agent_skills.slice(0, 2).map((skill) => (
-                          <span
-                            key={skill}
-                            className="inline-flex items-center px-1.5 py-0 rounded text-[9px] font-medium bg-[#1f3358] text-[#58a6ff] border border-[#30363d] max-w-full truncate"
-                            title={skill}
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                        {issue.agent_skills.length > 2 && (
-                          <span className="text-[9px] text-[#8b949e]">
-                            +{issue.agent_skills.length - 2}
-                          </span>
-                        )}
-                      </div>
+                {/* Title + priority badge + mobile secondary row */}
+                <div className="flex flex-col min-w-0 pr-2 justify-center">
+                  <div className="flex items-center gap-2 min-w-0">
+                    {/* Mobile-only identifier */}
+                    {issue.identifier && (
+                      <span className="sm:hidden font-mono text-[11px] font-semibold text-[#58a6ff] shrink-0">
+                        {issue.identifier}
+                      </span>
                     )}
-                  </>
-                ) : (
-                  <span className="text-xs text-[#484f58]">Unassigned</span>
-                )}
-              </div>
+                    <span className="text-sm text-[#e6edf3] truncate">{issue.title}</span>
+                    <PriorityBadge priority={issue.priority} />
+                  </div>
+                  {/* Mobile-only secondary row: stage + specialist + counts */}
+                  <div className="sm:hidden flex items-center gap-2 mt-0.5 flex-wrap">
+                    <StagePill stage={stage} />
+                    {issue.agent_name && (
+                      <span className="text-[11px] text-[#8b949e] truncate">
+                        {issue.agent_name}
+                      </span>
+                    )}
+                    <CountPill icon="💬" count={issue.comment_count ?? 0} />
+                    <CountPill icon="📎" count={issue.attachment_count ?? 0} />
+                  </div>
+                </div>
 
-              {/* Date */}
-              <div className="hidden sm:flex items-center justify-end">
-                <span className="text-xs text-[#8b949e]">{formatRelativeTime(issue.created_at)}</span>
-              </div>
-            </Link>
-          ))}
+                {/* Status + desktop counts */}
+                <div className="flex flex-col gap-1 items-start justify-center">
+                  <StatusPill status={issue.status} />
+                  <div className="hidden sm:flex items-center gap-2">
+                    <CountPill icon="💬" count={issue.comment_count ?? 0} />
+                    <CountPill icon="📎" count={issue.attachment_count ?? 0} />
+                  </div>
+                </div>
+
+                {/* Stage (desktop) */}
+                <div className="hidden sm:flex items-center">
+                  <StagePill stage={stage} />
+                </div>
+
+                {/* Assignee (desktop) — name + skills badges */}
+                <div className="hidden sm:flex flex-col justify-center min-w-0 pr-2">
+                  {issue.agent_name ? (
+                    <>
+                      <span className="text-xs text-[#e6edf3] truncate">{issue.agent_name}</span>
+                      {issue.agent_skills && issue.agent_skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {issue.agent_skills.slice(0, 2).map((skill) => (
+                            <span
+                              key={skill}
+                              className="inline-flex items-center px-1.5 py-0 rounded text-[9px] font-medium bg-[#1f3358] text-[#58a6ff] border border-[#30363d] max-w-full truncate"
+                              title={skill}
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {issue.agent_skills.length > 2 && (
+                            <span className="text-[9px] text-[#8b949e]">
+                              +{issue.agent_skills.length - 2}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-xs text-[#484f58]">Unassigned</span>
+                  )}
+                </div>
+
+                {/* Date */}
+                <div className="hidden sm:flex items-center justify-end">
+                  <span className="text-xs text-[#8b949e]">{formatRelativeTime(issue.created_at)}</span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

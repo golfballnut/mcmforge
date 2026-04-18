@@ -140,10 +140,14 @@ describe('IssuesClient — list row rendering (FORGE-251)', () => {
 });
 
 describe('IssuesClient — mobile viewport responsive classes (FORGE-251)', () => {
-  it('AC5-mobile: grid has the 2-column mobile breakpoint (no fixed 120px ID col on small screens)', () => {
+  it('AC5-mobile: grid rows have the 2-column mobile breakpoint class (no fixed 120px ID col on small screens)', () => {
     const { container } = render(<IssuesClient initialIssues={MOCK_ISSUES} />);
-    // The row elements should have the mobile 2-column grid class
-    const gridRows = container.querySelectorAll('[class*="grid-cols-[1fr_"]');
-    expect(gridRows.length).toBeGreaterThanOrEqual(1);
+    // jsdom doesn't support bracket notation in CSS attr selectors.
+    // Walk the DOM manually to find elements whose class contains the mobile grid token.
+    const allElements = Array.from(container.querySelectorAll('*'));
+    const hasMobileGrid = allElements.some(
+      (el) => el.className && typeof el.className === 'string' && el.className.includes('grid-cols-[1fr_')
+    );
+    expect(hasMobileGrid).toBe(true);
   });
 });

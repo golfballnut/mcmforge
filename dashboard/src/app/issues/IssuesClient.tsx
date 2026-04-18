@@ -19,6 +19,8 @@ interface Issue {
   completed_at: string | null;
   agent_name?: string | null;
   agent_skills?: string[] | null;
+  comment_count?: number;
+  attachment_count?: number;
 }
 
 type FilterMode = "open" | "closed" | "all";
@@ -66,6 +68,18 @@ function PriorityBadge({ priority }: { priority: string }) {
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wide ${cfg.badgeClass}`}>
       {cfg.label}
+    </span>
+  );
+}
+
+function CountPill({ icon, count }: { icon: string; count: number }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 text-[11px] font-mono tabular-nums shrink-0 ${
+        count === 0 ? "text-[#484f58]" : "text-[#8b949e]"
+      }`}
+    >
+      {icon} {count}
     </span>
   );
 }
@@ -202,33 +216,47 @@ export default function IssuesClient({ initialIssues }: { initialIssues: Issue[]
           {filtered.map((issue) => (
             <Link
               key={issue.id}
-              href={`/issues/${issue.id}`}
+              href={`/issues/${issue.identifier ?? issue.id}`}
               className="grid grid-cols-[1fr_130px] sm:grid-cols-[120px_1fr_130px_140px_100px] gap-0 px-4 py-3 bg-[#0d1117] border-b border-[#21262d] hover:bg-[#161b22] transition-colors group last:border-b-0"
             >
-              {/* Identifier */}
+              {/* Identifier (desktop) */}
               <div className="hidden sm:flex items-center">
-                <span className="font-mono text-xs text-[#8b949e] group-hover:text-[#58a6ff] transition-colors">
+                <span className="font-mono text-xs font-semibold text-[#58a6ff] group-hover:text-[#79c0ff] transition-colors">
                   {issue.identifier ?? "\u2014"}
                 </span>
               </div>
 
-              {/* Title + priority badge */}
-              <div className="flex flex-col min-w-0 pr-4 justify-center">
+              {/* Title + priority badge + mobile counts */}
+              <div className="flex flex-col min-w-0 pr-2 justify-center">
                 <div className="flex items-center gap-2 min-w-0">
+                  {/* Mobile-only identifier (desktop has its own column) */}
+                  {issue.identifier && (
+                    <span className="sm:hidden font-mono text-[11px] font-semibold text-[#58a6ff] shrink-0">
+                      {issue.identifier}
+                    </span>
+                  )}
                   <span className="text-sm text-[#e6edf3] truncate">{issue.title}</span>
                   <PriorityBadge priority={issue.priority} />
                 </div>
-                {/* Mobile-only specialist line */}
-                {issue.agent_name && (
-                  <span className="sm:hidden text-[11px] text-[#8b949e] truncate mt-0.5">
-                    {issue.agent_name}
-                  </span>
-                )}
+                {/* Mobile-only secondary row: specialist + counts */}
+                <div className="sm:hidden flex items-center gap-2 mt-0.5 flex-wrap">
+                  {issue.agent_name && (
+                    <span className="text-[11px] text-[#8b949e] truncate">
+                      {issue.agent_name}
+                    </span>
+                  )}
+                  <CountPill icon="💬" count={issue.comment_count ?? 0} />
+                  <CountPill icon="📎" count={issue.attachment_count ?? 0} />
+                </div>
               </div>
 
-              {/* Status */}
-              <div className="flex items-center">
+              {/* Status + desktop counts */}
+              <div className="flex flex-col gap-1 items-start justify-center">
                 <StatusPill status={issue.status} />
+                <div className="hidden sm:flex items-center gap-2">
+                  <CountPill icon="💬" count={issue.comment_count ?? 0} />
+                  <CountPill icon="📎" count={issue.attachment_count ?? 0} />
+                </div>
               </div>
 
               {/* Assignee (desktop) — name + skills badges */}

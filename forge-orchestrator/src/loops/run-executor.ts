@@ -1,6 +1,7 @@
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { judgeImages } from '../agents/visual-judge.js';
 import { ForgeConfig } from '../config.js';
 import { getAdapter } from '../adapters/registry.js';
 import { recordCost } from '../services/cost-ledger.js';
@@ -362,6 +363,11 @@ async function executeRun(
         await checkForCritiqueHandoff(supabase, run);
       } catch (err) {
         logger.error({ err, runId: run.id }, 'Critique handoff check failed');
+      }
+      try {
+        await checkForVisualJudgeHandoff(supabase, run);
+      } catch (err) {
+        logger.error({ err, runId: run.id }, 'Visual Judge handoff check failed');
       }
       try {
         await checkForQAHandoff(supabase, run);
@@ -1121,6 +1127,103 @@ async function wakeParentIssueOwner(supabase: SupabaseClient, run: any, issueId:
     { parentIssueId: parent.id, completedSubtask: issue.title, parentAgent: parent.assignee_agent_id },
     'Woke parent issue owner — subtask completed',
   );
+}
+
+/**
+ * FORGE-253: After any successful run, if the issue has both a mockup attachment
+ * (category='mockup') and a visual-proof PNG attachment (category='visual-proof'),
+ * run the Visual Judge to compare them and post the verdict as a comment.
+ *
+ * Best-effort: failures are logged but never fail the run.
+ */
+async function checkForVisualJudgeHandoff(supabase: SupabaseClient, run: any) {
+  const issueId = run.context_snapshot?.issueId;
+  if (!issueId) return;
+
+  // Fetch mockup attachment
+  const { data: mockupAttachment } = await supabase
+    .from('issue_attachments')
+    .select('id, storage_path, filename')
+    .eq('issue_id', issueId)
+    .eq('category', 'mockup')
+    .limit(1)
+    .maybeSingle();
+
+  if (!mockupAttachment) return;
+
+  // Fetch most recent visual-proof PNG
+  const { data: proofAttachment } = await supabase
+    .from('issue_attachments')
+    .select('id, storage_path, filename')
+    .eq('issue_id', issueId)
+    .eq('category', 'visual-proof')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!proofAttachment) return;
+  if (!String(proofAttachment.filename ?? '').endsWith('.png')) return;
+
+  const os = await import('node:os');
+  const fs = await import('node:fs');
+  const pathMod = await import('node:path');
+
+  const tmpDir = os.tmpdir();
+  const mockupLocalPath = pathMod.join(tmpDir, `vj-mockup-${issueId}.png`);
+  const proofLocalPath = pathMod.join(tmpDir, `vj-proof-${issueId}.png`);
+
+  try {
+    const { data: mockupBlob, error: mockupDlErr } = await supabase.storage
+      .from('artifacts')
+      .download(mockupAttachment.storage_path);
+
+    if (mockupDlErr || !mockupBlob) {
+      logger.debug({ issueId }, 'Visual Judge: could not download mockup, skipping');
+      return;
+    }
+
+    const { data: proofBlob, error: proofDlErr } = await supabase.storage
+      .from('artifacts')
+      .download(proofAttachment.storage_path);
+
+    if (proofDlErr || !proofBlob) {
+      logger.debug({ issueId }, 'Visual Judge: could not download proof image, skipping');
+      return;
+    }
+
+    fs.writeFileSync(mockupLocalPath, Buffer.from(await mockupBlob.arrayBuffer()));
+    fs.writeFileSync(proofLocalPath, Buffer.from(await proofBlob.arrayBuffer()));
+
+    const verdict = await judgeImages(mockupLocalPath, proofLocalPath, tmpDir);
+
+    const body = [
+      `## Visual Judge Verdict: **${verdict.verdict}**`,
+      '',
+      `**Reason:** ${verdict.reason}`,
+      '',
+      verdict.verdict === 'PASS'
+        ? '_All key UI elements match the mockup._'
+        : '_FAIL detected — fix the issue identified above before marking approved._',
+    ].join('\n');
+
+    await supabase.from('issue_comments').insert({
+      company_id: run.company_id,
+      issue_id: issueId,
+      author_agent_id: null,
+      created_by_run_id: run.id,
+      body,
+    });
+
+    logger.info({ issueId, verdict: verdict.verdict }, 'Visual Judge verdict posted to issue');
+  } catch (err) {
+    logger.error({ err, issueId }, 'Visual Judge handoff failed — non-fatal');
+  } finally {
+    try {
+      const fs2 = await import('node:fs');
+      if (fs2.existsSync(mockupLocalPath)) fs2.rmSync(mockupLocalPath);
+      if (fs2.existsSync(proofLocalPath)) fs2.rmSync(proofLocalPath);
+    } catch { /* ignore cleanup errors */ }
+  }
 }
 
 async function cancelRun(supabase: SupabaseClient, runId: string, reason: string) {

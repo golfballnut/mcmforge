@@ -1,0 +1,72 @@
+============================================================
+FORGE-253: Auto-Attach Proof Artifacts — Demo
+============================================================
+
+Proof dir: forge-251-visual-proof
+Identifier: FORGE-251
+Files to process:
+  [WOULD UPLOAD] after-list.png                         → artifacts/forge-251/after-list.png
+                 mime=image/png  bytes=168794
+  [WOULD UPLOAD] before-list.png                        → artifacts/forge-251/before-list.png
+                 mime=image/png  bytes=157452
+  [WOULD UPLOAD] mobile-414.png                         → artifacts/forge-251/mobile-414.png
+                 mime=image/png  bytes=63323
+  [WOULD UPLOAD] proof-01-list-with-identifiers.png     → artifacts/forge-251/proof-01-list-with-identifiers.png
+                 mime=image/png  bytes=168828
+  [WOULD UPLOAD] proof-02-search-dira-196.png           → artifacts/forge-251/proof-02-search-dira-196.png
+                 mime=image/png  bytes=75785
+  [WOULD UPLOAD] proof-03-detail-page-identifier-url.png → artifacts/forge-251/proof-03-detail-page-identifier-url.png
+                 mime=image/png  bytes=217844
+  [WOULD UPLOAD] proof-04-copy-link-clicked.png         → artifacts/forge-251/proof-04-copy-link-clicked.png
+                 mime=image/png  bytes=217917
+  [WOULD UPLOAD] proof-05-direct-identifier-url.png     → artifacts/forge-251/proof-05-direct-identifier-url.png
+                 mime=image/png  bytes=217912
+  [WOULD UPLOAD] proof-06-detail-full.png               → artifacts/forge-251/proof-06-detail-full.png
+                 mime=image/png  bytes=217926
+  [SKIP]         screen-recording.zip                     unsupported extension
+  [WOULD UPLOAD] vitest-test-log.txt                    → artifacts/forge-251/vitest-test-log.txt
+                 mime=text/plain  bytes=4427
+
+  => Run 1: would upload 10 files
+  => Run 2: all 10 files skipped (storage_path uniqueness check)
+
+Proof dir: forge-252-visual-proof
+Identifier: FORGE-252
+Files to process:
+  [WOULD UPLOAD] after-card-view.png                    → artifacts/forge-252/after-card-view.png
+                 mime=image/png  bytes=151835
+  [WOULD UPLOAD] after-list-view.png                    → artifacts/forge-252/after-list-view.png
+                 mime=image/png  bytes=185878
+  [WOULD UPLOAD] before-list-view.png                   → artifacts/forge-252/before-list-view.png
+                 mime=image/png  bytes=168794
+  [WOULD UPLOAD] mobile-card-414.png                    → artifacts/forge-252/mobile-card-414.png
+                 mime=image/png  bytes=60615
+  [SKIP]         screen-recording.md                      unsupported extension
+  [SKIP]         stage-derivation-demo.md                 unsupported extension
+  [WOULD UPLOAD] vitest-test-log.txt                    → artifacts/forge-252/vitest-test-log.txt
+                 mime=text/plain  bytes=9499
+
+  => Run 1: would upload 5 files
+  => Run 2: all 5 files skipped (storage_path uniqueness check)
+
+Proof dir: forge-253-visual-proof
+Identifier: FORGE-253
+Files to process:
+  [SKIP]         after-workflow.md                        unsupported extension
+  [WOULD UPLOAD] auto-attach-demo-log.txt               → artifacts/forge-253/auto-attach-demo-log.txt
+                 mime=text/plain  bytes=3161
+  [SKIP]         before-workflow.md                       unsupported extension
+  [WOULD UPLOAD] visual-judge-demo-fail.png             → artifacts/forge-253/visual-judge-demo-fail.png
+                 mime=image/png  bytes=47154
+  [WOULD UPLOAD] visual-judge-demo-pass.png             → artifacts/forge-253/visual-judge-demo-pass.png
+                 mime=image/png  bytes=47400
+  [WOULD UPLOAD] vitest-test-log.txt                    → artifacts/forge-253/vitest-test-log.txt
+                 mime=text/plain  bytes=4667
+
+  => Run 1: would upload 4 files
+  => Run 2: all 4 files skipped (storage_path uniqueness check)
+
+============================================================
+Auto-attach scan logic verified: parse + mime + idempotency
+Full integration tested in: src/services/__tests__/auto-attach-proof.test.ts
+============================================================

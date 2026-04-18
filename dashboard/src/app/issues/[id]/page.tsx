@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown, CommentForm } from "./IssueActions";
 import { IssueTabs } from "./IssueTabs";
 import { AcceptanceCriteria } from "./AcceptanceCriteria";
+import { CopyLinkButton } from "./CopyLinkButton";
+import { buildIdentifierQuery } from "@/lib/resolve-issue-id";
 
 export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
@@ -66,10 +68,14 @@ interface Attachment {
 async function getIssue(id: string) {
   const supabase = await createForgeClient();
 
+  const { field, value } = buildIdentifierQuery(id);
+  // Debug breadcrumb — logs which lookup fired for future URL-routing diagnosis
+  console.debug(`[getIssue] lookup: field=${field} value=${value}`);
+
   const { data: issue } = await supabase
     .from("issues")
     .select("*")
-    .eq("id", id)
+    .eq(field, value)
     .single();
 
   if (!issue) return null;
@@ -254,15 +260,18 @@ export default async function IssueDetailPage({
 
   return (
     <div className="min-h-screen">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm mb-6">
-        <Link href="/issues" className="text-[#8b949e] hover:text-[#58a6ff] transition-colors">
-          Issues
-        </Link>
-        <svg className="w-3 h-3 text-[#8b949e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="font-mono text-[#8b949e]">{issue.identifier ?? id.slice(0, 8)}</span>
+      {/* Breadcrumb + copy-link */}
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <div className="flex items-center gap-2 text-sm">
+          <Link href="/issues" className="text-[#8b949e] hover:text-[#58a6ff] transition-colors">
+            Issues
+          </Link>
+          <svg className="w-3 h-3 text-[#8b949e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <span className="font-mono text-[#8b949e]">{issue.identifier ?? id.slice(0, 8)}</span>
+        </div>
+        <CopyLinkButton identifier={issue.identifier} issueId={issue.id} />
       </div>
 
       {/* Parent link */}
@@ -289,8 +298,11 @@ export default async function IssueDetailPage({
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Left: content */}
         <div className="flex-1 min-w-0">
-          {/* Title */}
+          {/* Title — AC7: identifier · title */}
           <h1 className="text-2xl font-semibold text-[#e6edf3] leading-tight mb-4 break-words">
+            {issue.identifier && (
+              <span className="font-mono text-[#8b949e] text-lg mr-2">{issue.identifier} ·</span>
+            )}
             {issue.title}
           </h1>
 

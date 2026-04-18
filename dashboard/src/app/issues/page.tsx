@@ -19,13 +19,15 @@ interface Issue {
   completed_at: string | null;
   agent_name?: string | null;
   agent_skills?: string[] | null;
+  comment_count?: number;
+  attachment_count?: number;
 }
 
 async function getIssues(companyId: string): Promise<Issue[]> {
   const supabase = await createForgeClient();
   const { data: issues } = await supabase
     .from("issues")
-    .select("*")
+    .select("*, issue_comments(count), issue_attachments(count)")
     .eq("company_id", companyId)
     .order("created_at", { ascending: false });
 
@@ -45,11 +47,25 @@ async function getIssues(companyId: string): Promise<Issue[]> {
     }
   }
 
-  return issues.map((issue) => ({
-    ...issue,
-    agent_name: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id]?.name ?? null : null,
-    agent_skills: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id]?.skills ?? null : null,
-  }));
+  return issues.map((issue) => {
+    // PostgREST returns nested arrays like: issue_comments: [{ count: 3 }]
+    const rawComments = (issue as Record<string, unknown>).issue_comments;
+    const rawAttachments = (issue as Record<string, unknown>).issue_attachments;
+    const commentCount = Array.isArray(rawComments)
+      ? ((rawComments as { count: number }[])[0]?.count ?? 0)
+      : 0;
+    const attachmentCount = Array.isArray(rawAttachments)
+      ? ((rawAttachments as { count: number }[])[0]?.count ?? 0)
+      : 0;
+
+    return {
+      ...issue,
+      agent_name: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id]?.name ?? null : null,
+      agent_skills: issue.assignee_agent_id ? agentMap[issue.assignee_agent_id]?.skills ?? null : null,
+      comment_count: commentCount,
+      attachment_count: attachmentCount,
+    };
+  });
 }
 
 export default async function IssuesPage() {

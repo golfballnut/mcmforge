@@ -1,0 +1,47 @@
+
+> dashboard@0.1.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v4.1.2 /Users/stevemcmillian/llama-3-agents/Apps/projects/MCMForge/dashboard
+
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns true for a valid UUID v4 1ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns false for an identifier like DIRA-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns false for a lowercase identifier dira-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns false for empty string 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns true for a UUID with uppercase hex digits 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > returns { field: "id", value: uuid } for a UUID param 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > returns { field: "identifier", value: "DIRA-196" } for uppercase identifier 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > uppercases lowercase identifier input: dira-196 → DIRA-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > uppercases mixed-case: Dira-196 → DIRA-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > handles FORGE prefix identifiers 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > handles LC prefix identifiers 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > calls fetch with the correct endpoint 2ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > sends event_name in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > includes an ISO 8601 timestamp in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > merges extra properties into the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > does NOT throw when fetch fails 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > does NOT throw when fetch returns non-ok status 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > sends Content-Type: application/json header 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > page() > sends event_name of "page_view" 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > page() > includes the path in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > page() > merges extra props 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > identify() > sends event_name of "identify" 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > identify() > includes userId in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > identify() > merges traits into the request body 0ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC1: shows identifier on every row that has one 26ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC1: row link href uses identifier when available 5ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC1: row link href falls back to UUID when no identifier 4ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC2: shows comment count of 3 on the DIRA-196 row 5ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC2: shows comment count of 0 on zero-count row (not absent) 6ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC3: shows attachment count of 2 on the DIRA-196 row 4ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC5: search by identifier prefix filters to matching rows only 77ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC5: search by partial number matches identifier 24ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC5: search by full identifier is exact match 35ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — mobile viewport responsive classes (FORGE-251) > AC5-mobile: grid rows have the 2-column mobile breakpoint class (no fixed 120px ID col on small screens) 4ms
+
+ Test Files  3 passed (3)
+      Tests  34 passed (34)
+   Start at  21:49:06
+   Duration  746ms (transform 92ms, setup 132ms, import 126ms, tests 201ms, environment 954ms)
+

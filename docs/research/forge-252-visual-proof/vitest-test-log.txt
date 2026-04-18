@@ -1,0 +1,84 @@
+
+> dashboard@0.1.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v4.1.2 /Users/stevemcmillian/llama-3-agents/Apps/projects/MCMForge/dashboard
+
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns true for a valid UUID v4 1ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns false for an identifier like DIRA-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns false for a lowercase identifier dira-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns false for empty string 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > isUUID() > returns true for a UUID with uppercase hex digits 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > returns { field: "id", value: uuid } for a UUID param 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > returns { field: "identifier", value: "DIRA-196" } for uppercase identifier 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > uppercases lowercase identifier input: dira-196 → DIRA-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > uppercases mixed-case: Dira-196 → DIRA-196 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > handles FORGE prefix identifiers 0ms
+ ✓ src/lib/__tests__/issue-routing.test.ts > buildIdentifierQuery() > handles LC prefix identifiers 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — filed > returns filed when no comments, no PR, no terminal status 1ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — filed > returns filed when only irrelevant comments exist 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — filed > returns filed when issueStatus is null and nothing else matches 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — planning > returns planning when a comment mentions Phase 0.9 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — planning > returns planning when a comment contains "planning" (case-insensitive) 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — plan_review > returns plan_review when a comment has ## Plan heading 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — plan_review > returns plan_review for # Plan heading too 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — plan_review > does NOT return plan_review when APPROVED also present (executing wins) 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — executing > returns executing when APPROVED comment exists and no PR 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — executing > APPROVED must be case-sensitive — "approved" lowercase does not trigger 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — proof_review > returns proof_review when PR URL exists and not merged 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — proof_review > returns proof_review even without APPROVED if PR is open 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — shipped > returns shipped when prMerged is true 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — shipped > returns shipped when issueStatus is "done" 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — shipped > returns shipped when issueStatus is "completed" 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — shipped > shipped wins over blocked when prMerged is true 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — shipped > shipped fires on status=done even with REJECTED comment 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — blocked > returns blocked when a comment starts with canonical # ❌ REJECTED header 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — blocked > does NOT return blocked for lowercase "blocked" in comment text (false positive prevention) 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — blocked > does NOT return blocked for "REJECTED" mid-sentence (must be line-start header) 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — blocked > blocked wins over executing (no PR scenario) 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > deriveStage() — blocked > blocked loses to shipped (status=done overrides) 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > STAGE_CONFIG > has an entry for every stage 0ms
+ ✓ src/lib/__tests__/issue-stage.test.ts > STAGE_CONFIG > every entry has a non-empty label and color string 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > calls fetch with the correct endpoint 3ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > sends event_name in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > includes an ISO 8601 timestamp in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > merges extra properties into the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > does NOT throw when fetch fails 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > does NOT throw when fetch returns non-ok status 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > track() > sends Content-Type: application/json header 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > page() > sends event_name of "page_view" 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > page() > includes the path in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > page() > merges extra props 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > identify() > sends event_name of "identify" 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > identify() > includes userId in the request body 0ms
+ ✓ src/lib/__tests__/analytics.test.ts > identify() > merges traits into the request body 0ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC1: shows identifier on every row that has one 25ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC1: row link href uses identifier when available 5ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC1: row link href falls back to UUID when no identifier 4ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC2: shows comment count of 3 on the DIRA-196 row 5ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC2: shows comment count of 0 on zero-count row (not absent) 4ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC3: shows attachment count of 2 on the DIRA-196 row 4ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC5: search by identifier prefix filters to matching rows only 75ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC5: search by partial number matches identifier 26ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — list row rendering (FORGE-251) > AC5: search by full identifier is exact match 37ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — mobile viewport responsive classes (FORGE-251) > AC5-mobile: grid rows have the 2-column mobile breakpoint class (no fixed 120px ID col on small screens) 4ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — view toggle (FORGE-252) > renders a list-view toggle button 3ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — view toggle (FORGE-252) > renders a card-view toggle button 3ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — view toggle (FORGE-252) > switches to card layout when card button is clicked 29ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — view toggle (FORGE-252) > switches back to list layout when list button is clicked 20ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — view toggle (FORGE-252) > persists card selection to localStorage 12ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — view toggle (FORGE-252) > persists list selection to localStorage 20ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — stage pills on list rows (FORGE-252) > shows "Executing" stage pill for the APPROVED issue 3ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — stage pills on list rows (FORGE-252) > shows "Shipped" stage pill for the done-status issue (switch to All tab) 15ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — stage pills on list rows (FORGE-252) > shows "Blocked" stage pill for the REJECTED issue 3ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — card layout (FORGE-252) > card grid has grid-cols-1 base class (mobile single column) 14ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — card layout (FORGE-252) > card grid has sm:grid-cols-2 tablet breakpoint class 14ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — card layout (FORGE-252) > each card shows identifier 12ms
+ ✓ src/lib/__tests__/issues-list.test.tsx > IssuesClient — card layout (FORGE-252) > card view shows stage pills on cards 22ms
+
+ Test Files  4 passed (4)
+      Tests  71 passed (71)
+   Start at  22:30:37
+   Duration  1.09s (transform 151ms, setup 241ms, import 232ms, tests 374ms, environment 1.66s)
+

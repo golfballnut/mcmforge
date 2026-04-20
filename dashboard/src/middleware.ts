@@ -1,7 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const PUBLIC_PATHS = ["/api/github/webhook"];
+
 export async function middleware(request: NextRequest) {
+  if (PUBLIC_PATHS.some(p => request.nextUrl.pathname.startsWith(p))) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(

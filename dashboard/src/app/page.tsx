@@ -140,6 +140,78 @@ async function getStats(companyId: string) {
   };
 }
 
+function weekStartUtc(now = new Date()): Date {
+  // ISO week start = Monday 00:00:00 UTC
+  const day = now.getUTCDay(); // 0 = Sunday
+  const daysSinceMonday = (day + 6) % 7;
+  const monday = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() - daysSinceMonday,
+    0, 0, 0, 0
+  ));
+  return monday;
+}
+
+async function getGateAMetrics(companyId: string) {
+  const supabase = await createForgeClient();
+
+  const weekStart = weekStartUtc().toISOString();
+  const fourWeeksAgo = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [thisWeekRes, fourWeekMergedRes, fourWeekCancelledRes] = await Promise.all([
+    supabase
+      .from("issues")
+      .select("id", { count: "exact", head: true })
+      .eq("company_id", companyId)
+      .eq("status", "done")
+      .not("pr_url", "is", null)
+      .gte("completed_at", weekStart),
+    supabase
+      .from("issues")
+      .select("id", { count: "exact", head: true })
+      .eq("company_id", companyId)
+      .eq("status", "done")
+      .not("pr_url", "is", null)
+      .gte("completed_at", fourWeeksAgo),
+    supabase
+      .from("issues")
+      .select("id", { count: "exact", head: true })
+      .eq("company_id", companyId)
+      .eq("status", "cancelled")
+      .gte("cancelled_at", fourWeeksAgo),
+  ]);
+
+  const mergesThisWeek = thisWeekRes.count ?? 0;
+  const merged4w = fourWeekMergedRes.count ?? 0;
+  const cancelled4w = fourWeekCancelledRes.count ?? 0;
+  const total4w = merged4w + cancelled4w;
+  const approvalRate = total4w > 0 ? Math.round((merged4w / total4w) * 100) : 0;
+
+  // A-week: ≥5 merges AND ≥85% approval
+  // B-week: 3–4 merges OR 70–85% approval
+  // C-week: <3 merges OR <70% approval
+  let band: "A" | "B" | "C";
+  if (mergesThisWeek >= 5 && (total4w === 0 || approvalRate >= 85)) band = "A";
+  else if (mergesThisWeek < 3 || (total4w > 0 && approvalRate < 70)) band = "C";
+  else band = "B";
+
+  return { mergesThisWeek, approvalRate, total4w, band };
+}
+
+async function getActiveCompanyGoals(companyId: string) {
+  const supabase = await createForgeClient();
+  const { data } = await supabase
+    .from("goals")
+    .select("id, title, level")
+    .eq("company_id", companyId)
+    .eq("status", "active")
+    .eq("level", "company")
+    .order("created_at", { ascending: true })
+    .limit(3);
+  return data ?? [];
+}
+
 async function getKnowledgeHealth(companyId: string) {
   const supabase = await createForgeClient();
 
@@ -181,6 +253,90 @@ async function getKnowledgeHealth(companyId: string) {
   return { total, coverage };
 }
 
+function GoalsCard({ goals }: { goals: { id: string; title: string; level: string }[] }) {
+  return (
+    <Link
+      href="/goals"
+      className="rounded-lg border p-4 flex flex-col gap-2 hover:border-[#30363d]/80 transition-colors"
+      style={{ backgroundColor: "#161b22", borderColor: "#30363d" }}
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-xs uppercase tracking-wider" style={{ color: "#8b949e" }}>
+          Active Goals
+        </span>
+        <span className="text-xs tabular-nums" style={{ color: "#8b949e" }}>
+          {goals.length}
+        </span>
+      </div>
+      {goals.length === 0 ? (
+        <p className="text-sm" style={{ color: "#8b949e" }}>
+          No active company goals
+        </p>
+      ) : (
+        <ul className="space-y-1.5">
+          {goals.map((g) => (
+            <li key={g.id} className="flex items-start gap-2 text-sm">
+              <span className="mt-[6px] w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: "#3fb950" }} />
+              <span className="truncate" style={{ color: "#e6edf3" }}>{g.title}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Link>
+  );
+}
+
+function GateACard({
+  mergesThisWeek,
+  approvalRate,
+  total4w,
+  band,
+}: {
+  mergesThisWeek: number;
+  approvalRate: number;
+  total4w: number;
+  band: "A" | "B" | "C";
+}) {
+  const bandColor = band === "A" ? "#3fb950" : band === "B" ? "#d29922" : "#f85149";
+  const bandLabel = band === "A" ? "A-week" : band === "B" ? "B-week" : "C-week";
+  return (
+    <div
+      className="rounded-lg border p-4 flex flex-col gap-2"
+      style={{ backgroundColor: "#161b22", borderColor: "#30363d" }}
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-xs uppercase tracking-wider" style={{ color: "#8b949e" }}>
+          Gate-A This Week
+        </span>
+        <span
+          className="text-xs font-mono px-2 py-0.5 rounded-full"
+          style={{ color: bandColor, backgroundColor: `${bandColor}15`, border: `1px solid ${bandColor}40` }}
+        >
+          {bandLabel}
+        </span>
+      </div>
+      <div className="flex items-baseline gap-4">
+        <div>
+          <div className="text-3xl font-bold tabular-nums" style={{ color: bandColor }}>
+            {mergesThisWeek}
+          </div>
+          <div className="text-xs" style={{ color: "#8b949e" }}>
+            merges · target ≥5
+          </div>
+        </div>
+        <div className="border-l pl-4" style={{ borderColor: "#30363d" }}>
+          <div className="text-3xl font-bold tabular-nums" style={{ color: total4w > 0 ? bandColor : "#8b949e" }}>
+            {total4w > 0 ? `${approvalRate}%` : "—"}
+          </div>
+          <div className="text-xs" style={{ color: "#8b949e" }}>
+            1st-pass approval · 4w rolling · target ≥85%
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StatCard({
   label,
   value,
@@ -213,12 +369,14 @@ export default async function HomePage() {
   const companyId = company?.id ?? "";
   const companyName = company?.name ?? "MCM Forge";
 
-  const [agents, recentRuns, stats, agentPerf, knowledgeHealth] = await Promise.all([
+  const [agents, recentRuns, stats, agentPerf, knowledgeHealth, gateA, activeGoals] = await Promise.all([
     getAgents(companyId),
     getRecentRuns(companyId),
     getStats(companyId),
     getAgentPerformance(companyId),
     getKnowledgeHealth(companyId),
+    getGateAMetrics(companyId),
+    getActiveCompanyGoals(companyId),
   ]);
 
   const latestRunMap = buildLatestRunMap(recentRuns);
@@ -264,6 +422,12 @@ export default async function HomePage() {
             accent={knowledgeHealth.coverage >= 50 ? "#3fb950" : knowledgeHealth.coverage >= 25 ? "#d29922" : "#f85149"}
           />
         </Link>
+      </div>
+
+      {/* Goals + Gate-A row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <GoalsCard goals={activeGoals} />
+        <GateACard mergesThisWeek={gateA.mergesThisWeek} approvalRate={gateA.approvalRate} total4w={gateA.total4w} band={gateA.band} />
       </div>
 
       {/* Changelog quick link */}

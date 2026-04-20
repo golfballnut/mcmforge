@@ -266,6 +266,17 @@ export default async function HomePage() {
         </Link>
       </div>
 
+      {/* Changelog quick link */}
+      <Link
+        href="/changelogs"
+        className="inline-flex items-center gap-1.5 text-sm text-[#58a6ff] hover:text-[#79c0ff] transition-colors"
+      >
+        View today&apos;s changelogs
+        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
+
       {/* Agent Performance */}
       {agentPerf.length > 0 && (
         <div>

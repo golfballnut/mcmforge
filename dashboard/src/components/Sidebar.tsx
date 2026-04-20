@@ -145,6 +145,14 @@ function IconKnowledge() {
   );
 }
 
+function IconChangelogs() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3M12 3a9 9 0 100 18 9 9 0 000-18zM3 12l-1 1m18-1l1 1" />
+    </svg>
+  );
+}
+
 function IconRuns() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -422,6 +430,12 @@ export default function Sidebar() {
             icon={<IconKnowledge />}
             label="Knowledge"
             isActive={isActive("/knowledge")}
+          />
+          <NavLink
+            href="/changelogs"
+            icon={<IconChangelogs />}
+            label="Changelogs"
+            isActive={isActive("/changelogs")}
           />
           <NavLink
             href="/runs"

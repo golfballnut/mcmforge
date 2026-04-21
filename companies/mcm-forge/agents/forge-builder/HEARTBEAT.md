@@ -207,8 +207,8 @@ curl -s -X PATCH "$FORGE_API_URL/api/agent/issues/{issueId}" \
   -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
   -H "Content-Type: application/json" \
   -d '{
-    "status": "done",
-    "comment": "Implemented [what]. Branch: agent/[slug]. PR #[number]. Build passes. [any notes]."
+    "status": "in_review",
+    "comment": "PR open. Branch: agent/[slug]. PR #[number]. Build passes. Awaiting COO review. [any notes]."
   }'
 ```
 
@@ -220,7 +220,7 @@ curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
   -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
   -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
   -H "Content-Type: application/json" \
-  -d '{"body": "[DONE] FORGE-N: <what shipped>. Branch: agent/<slug>. PR #<N>. ~$<cost> / <time>.", "tags": ["DONE"]}'
+  -d '{"body": "[DONE] FORGE-N: <what shipped>. Branch: agent/<slug>. PR #<N>. ~$<cost> / <time>. Awaiting COO review.", "tags": ["DONE"]}'
 ```
 
 ## Step 10: Append Lessons Learned

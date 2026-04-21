@@ -130,14 +130,24 @@ Do NOT skip the plan. Steve and the COO read these to verify approach before you
 
 **DO NOT burn turns retrying something that's fundamentally broken. Ask for help.**
 
+**When hitting a bail-out condition, post [BLOCKED] with options:**
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[BLOCKED] <what I tried>. Error: <exact message>. Options: (A) ..., (B) ...", "tags": ["BLOCKED"]}'
+```
+
 ## Progress Posts (after EVERY iteration)
 
-After each iteration, post a brief update to the Forge issue:
-```
-PATCH /api/agent/issues/:id
-{
-  "comment": "## Iteration <N>/8\n**Build:** PASS/FAIL\n**Tests:** X/Y\n**Grade:** X/10\n**Screenshot:** ~/screenshot-iteration-<N>.png\n**Next:** <what you'll fix>"
-}
+After each iteration, post a [PROGRESS] update:
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[PROGRESS] Iteration <N>/8\nBuild: PASS/FAIL\nTests: X/Y\nGrade: X/10\nNext: <what you will fix>", "tags": ["PROGRESS"]}'
 ```
 This lets us monitor progress in real-time. Do NOT skip this.
 
@@ -245,6 +255,16 @@ ssh dirtsyncmini@100.125.184.57 'cd /Users/dirtsyncmini/DirtSync && git add -A &
 ```
 
 ### 2. Create PR
+
+**BEFORE `gh pr create`, post [PROOF]:**
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[PROOF] Build: PASS. Tests: X/Y pass. Grade: 10/10. Iterations: N/8. Branch: agent/<slug>.", "tags": ["PROOF"]}'
+```
+
 ```bash
 ssh dirtsyncmini@100.125.184.57 'cd /Users/dirtsyncmini/DirtSync && gh pr create --base master --title "<ISSUE>: <title>" --body "## Summary
 <what changed>
@@ -287,7 +307,16 @@ PATCH /api/agent/issues/:id
 
 ## Completion
 
-Post to Forge API that the run is complete. Include:
+**Post [DONE] as your last action before exit:**
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[DONE] DIRA-N: <what shipped>. PR: <url>. Grade: 10/10. Iterations: N/8. ~$<cost>.", "tags": ["DONE"]}'
+```
+
+Also update status via PATCH:
 - Total iterations used
 - Final grade
 - PR URL (if shipped)

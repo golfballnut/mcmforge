@@ -13,6 +13,15 @@ Read: companies/dirtsync/agents/dirtsync-trail-data-engineer/LESSONS.md
 
 Extract any `Tag: GOTCHA` entries and treat them as active constraints for this run. If LESSONS.md is empty, continue — this may be your first run.
 
+**After reading lessons and identifying the target issue, post [START] BEFORE any data work:**
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[START] <issue-id>: target system <name>. Plan: query trail_lines → extract endpoints → cluster → write intersections JSON. Est: 10 min.", "tags": ["START"]}'
+```
+
 ---
 
 ## 1. Load Config and Identify the Target System
@@ -122,6 +131,15 @@ Full output is an array of these objects, sorted by `id`.
 
 ---
 
+**After clustering completes, post [PROGRESS]:**
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[PROGRESS] Queried <N> trails, <M> endpoints. Found <K> intersections. Validating now.", "tags": ["PROGRESS"]}'
+```
+
 ## 7. Validate
 
 Before writing the file:
@@ -191,7 +209,16 @@ If mbtiles rebuilt, add it to the same commit.
 
 ## 11. Post Results to Forge Issue
 
-POST a comment to the Forge issue using the output format from AGENTS.md. Include:
+**Post [PROOF] with concrete artifacts before marking done:**
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[PROOF] Trails: <N>. Endpoints: <M>. Intersections: <K>. File: <path>. Commit: <sha>. Branch: <branch>.", "tags": ["PROOF"]}'
+```
+
+Also post the detailed results using the AGENTS.md output format:
 - Trail count from Supabase
 - Endpoint count
 - Intersection count
@@ -200,7 +227,16 @@ POST a comment to the Forge issue using the output format from AGENTS.md. Includ
 
 ---
 
-## Final — Append Lessons Learned
+## Final — Append Lessons Learned and Post [DONE]
+
+**Post [DONE] as your last action before exit:**
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[DONE] <issue-id>: <system> data shipped. <K> intersections. Commit: <sha>. Branch: <branch>. ~$<cost>.", "tags": ["DONE"]}'
+```
 
 Before your session ends, review what happened during this run. For anything surprising, wrong, or newly discovered, append to `LESSONS.md`:
 

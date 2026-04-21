@@ -71,58 +71,91 @@ curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
 ```
 
 ## Step 6: Verify Build
-```bash
-cd ~/MCMForge/dashboard && npx next build
-```
-If build fails, fix it before committing. Never commit broken code.
 
-**After build passes, post [PROGRESS]:**
+Determine which sub-projects your branch touches, then verify each one:
+
+```bash
+CHANGED=$(git diff --name-only main...HEAD)
+echo "$CHANGED" | grep -q '^forge-orchestrator/' && ORCH=1 || ORCH=0
+echo "$CHANGED" | grep -q '^dashboard/'          && DASH=1 || DASH=0
+
+# Orchestrator: typecheck + tests
+[ "$ORCH" = "1" ] && cd ~/MCMForge/forge-orchestrator && npx tsc --noEmit && npx vitest run
+
+# Dashboard: full build
+[ "$DASH" = "1" ] && cd ~/MCMForge/dashboard && npx next build
+```
+
+If any check fails, fix it before committing. Never commit broken code.
+
+**After verification passes, post [PROGRESS]:**
 ```bash
 curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
   -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
   -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
   -H "Content-Type: application/json" \
-  -d '{"body": "[PROGRESS] Build passes. Committing and pushing.", "tags": ["PROGRESS"]}'
+  -d '{"body": "[PROGRESS] Verification passes. Committing and pushing.", "tags": ["PROGRESS"]}'
 ```
 
 ## Step 7: Commit, Push, PR
 
-**BEFORE `gh pr create`, post [PROOF] with concrete artifacts.**
+**BEFORE `gh pr create`, post [PROOF] with concrete artifacts that prove what the PR ships.**
 
-Rule 2 (`agent-comment-protocol.md`): any `[PROOF]` comment requires ≥1 artifact uploaded by you on this issue in the prior 10 minutes, OR the comments API returns `422 PROOF_WITHOUT_ATTACHMENT`. Upload FIRST, then comment.
+Rule 2 (`agent-comment-protocol.md`): any `[PROOF]` comment requires ≥1 artifact uploaded by you on this issue in the prior 10 minutes, OR the bundled API returns `422 PROOF_WITHOUT_ATTACHMENT`.
 
-**Upload path (G2-verified 2026-04-21):** the bundled agent API on `127.0.0.1:3200` does NOT expose `/attachments` — that route is dashboard-only. Agents running on Mini use **direct Supabase REST** to upload storage + insert the `forge.issue_attachments` row. This satisfies Rule 2 because the server checks the `issue_attachments` table, not the endpoint.
+### 7a. Choose and capture the right artifact(s)
 
 ```bash
-# a) Prepare the build-tail artifact
-cd ~/MCMForge/dashboard && npx next build 2>&1 | tail -20 > /tmp/forge-build-tail.txt
-FILENAME="build-tail-$(date +%s).txt"
-STORAGE_PATH="agent-proof/{issueId}/$FILENAME"
+CHANGED=$(git diff --name-only main...HEAD)
+TS=$(date +%s)
+ISSUE_ID="{issueId}"
 
-# b) Upload binary to Supabase storage
-curl -sS -X POST "$SUPABASE_URL/storage/v1/object/artifacts/$STORAGE_PATH" \
-  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-  -H "Content-Type: text/plain" \
-  --data-binary @/tmp/forge-build-tail.txt
+upload_artifact() {
+  local FILE="$1" FILENAME="$2"
+  local STORAGE_PATH="agent-proof/$ISSUE_ID/$FILENAME"
+  local SIZE
+  SIZE=$(wc -c < "$FILE")
+  # Upload to storage
+  curl -sS -X POST "$SUPABASE_URL/storage/v1/object/artifacts/$STORAGE_PATH" \
+    -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+    -H "Content-Type: text/plain" \
+    --data-binary @"$FILE"
+  # Insert issue_attachments row (satisfies Rule 2)
+  curl -sS -X POST "$SUPABASE_URL/rest/v1/issue_attachments" \
+    -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+    -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+    -H "Accept-Profile: forge" \
+    -H "Content-Profile: forge" \
+    -H "Content-Type: application/json" \
+    -d "{\"issue_id\":\"$ISSUE_ID\",\"uploaded_by_agent_id\":\"$FORGE_AGENT_ID\",\"filename\":\"$FILENAME\",\"mime_type\":\"text/plain\",\"size_bytes\":$SIZE,\"storage_path\":\"$STORAGE_PATH\",\"category\":\"agent_proof\"}"
+}
 
-# c) Insert forge.issue_attachments row (this is what Rule 2 checks)
-SIZE=$(wc -c < /tmp/forge-build-tail.txt)
-curl -sS -X POST "$SUPABASE_URL/rest/v1/issue_attachments" \
-  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-  -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
-  -H "Accept-Profile: forge" \
-  -H "Content-Profile: forge" \
-  -H "Content-Type: application/json" \
-  -d "{\"issue_id\":\"{issueId}\",\"uploaded_by_agent_id\":\"$FORGE_AGENT_ID\",\"filename\":\"$FILENAME\",\"mime_type\":\"text/plain\",\"size_bytes\":$SIZE,\"storage_path\":\"$STORAGE_PATH\",\"category\":\"agent_proof\"}"
+# Orchestrator changes → vitest output
+if echo "$CHANGED" | grep -q '^forge-orchestrator/'; then
+  cd ~/MCMForge/forge-orchestrator
+  npx vitest run 2>&1 | tail -40 > /tmp/forge-proof-artifact.txt
+  upload_artifact /tmp/forge-proof-artifact.txt "orchestrator-vitest-tail-$TS.txt"
+fi
 
-# d) NOW post [PROOF] — server Rule 2 check finds my attachment row and allows it
-curl -sS -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
-  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-  -H "Content-Type: application/json" \
-  -d "{\"body\": \"[PROOF] Build passes (see $FILENAME). Branch: agent/<slug>. PR title: feat(FORGE-N): ...\"}"
+# Dashboard changes → next build output
+if echo "$CHANGED" | grep -q '^dashboard/'; then
+  cd ~/MCMForge/dashboard
+  npx next build 2>&1 | tail -20 > /tmp/forge-proof-artifact.txt
+  upload_artifact /tmp/forge-proof-artifact.txt "dashboard-build-tail-$TS.txt"
+fi
 ```
 
-**Why direct-Supabase instead of the endpoint:** FORGE-275 shipped the `/attachments` route in the dashboard (`dashboard/src/app/api/agent/issues/[id]/attachments`) but NOT in the bundled agent API at `127.0.0.1:3200`. Agents on Mini can only reach the bundled API. FORGE-284 tracks adding the route to the bundled API; until that lands, direct Supabase REST is the canonical path.
+### 7b. Post [PROOF] — after upload(s)
+
+```bash
+curl -sS -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[PROOF] <what artifact proves, e.g. 63/63 orchestrator tests pass OR dashboard build passes>. Branch: agent/<slug>. PR title: feat(FORGE-N): ..."}'
+```
+
+### 7c. Commit and push
 
 ```bash
 git add <specific-files>

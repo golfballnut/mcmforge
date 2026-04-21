@@ -13,6 +13,7 @@ export const geminiAdapter: CLIAdapter = {
     const model = (config.model as string) || 'gemini-2.5-pro';
     const maxTurns = (config.maxTurnsPerRun as number) || 0;
     const timeoutSec = (config.timeoutSec as number) || 0;
+    const cliFlags = (config.cliFlags as string[]) || [];
 
     const template = input.promptTemplate ||
       'You are agent {{agent.id}} ({{agent.name}}). Execute your assigned work.';
@@ -39,6 +40,7 @@ export const geminiAdapter: CLIAdapter = {
 
     const args = ['-p', fullPrompt, '--yolo'];
     if (model) args.push('--model', model);
+    if (cliFlags.length) args.push(...cliFlags);
 
     const env: Record<string, string> = {
       ...process.env as Record<string, string>,

@@ -14,6 +14,8 @@ export const codexAdapter: CLIAdapter = {
     const model = (config.model as string) || 'codex-1';
     const maxTurns = (config.maxTurnsPerRun as number) || 0;
     const timeoutSec = (config.timeoutSec as number) || 0;
+    const sandboxMode = (config.sandboxMode as string) || '';
+    const cliFlags = (config.cliFlags as string[]) || [];
 
     const template = input.promptTemplate ||
       'You are agent {{agent.id}} ({{agent.name}}). Execute your assigned work.';
@@ -38,10 +40,18 @@ export const codexAdapter: CLIAdapter = {
     }
     const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
 
-    // Codex CLI: exec subcommand, prompt as argument (not stdin)
-    // --full-auto = auto-approve + workspace-write sandbox
-    const args = ['exec', '--full-auto', '--skip-git-repo-check'];
+    // Codex CLI: exec subcommand, prompt as argument (not stdin).
+    // sandboxMode='workspace-write' uses explicit --sandbox flag (git-safe, recommended for PRs).
+    // Omitting sandboxMode defaults to --full-auto (legacy, broader permissions).
+    const args = ['exec'];
+    if (sandboxMode) {
+      args.push('--sandbox', sandboxMode);
+    } else {
+      args.push('--full-auto');
+    }
+    args.push('--skip-git-repo-check');
     if (model) args.push('-m', model);
+    if (cliFlags.length) args.push(...cliFlags);
     // Pass prompt as positional argument
     args.push(fullPrompt);
 

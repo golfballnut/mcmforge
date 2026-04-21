@@ -167,6 +167,37 @@ export function startAgentApi(supabase: SupabaseClient<any, any, any>, port: num
         return json(res, data);
       }
 
+      // ── POST /api/agent/issues/:id/comments ──────────────
+      params = matchRoute(url, '/api/agent/issues/:id/comments');
+      if (method === 'POST' && params) {
+        if (!agentId) return json(res, { error: 'Missing x-forge-agent-id' }, 401);
+
+        const body = await parseBody(req);
+        if (!body.body) return json(res, { error: 'Missing body' }, 400);
+
+        const { data: issue, error: issueError } = await supabase
+          .from('issues')
+          .select('company_id')
+          .eq('id', params.id)
+          .single();
+        if (issueError || !issue) return json(res, { error: 'Issue not found' }, 404);
+
+        const { data, error } = await supabase
+          .from('issue_comments')
+          .insert({
+            company_id: issue.company_id,
+            issue_id: params.id,
+            author_agent_id: agentId,
+            body: body.body as string,
+            created_by_run_id: runId || null,
+          })
+          .select()
+          .single();
+
+        if (error) return json(res, { error: error.message }, 500);
+        return json(res, data, 201);
+      }
+
       // ── PATCH /api/agent/issues/:id ───────────────────────
       params = matchRoute(url, '/api/agent/issues/:id');
       if (method === 'PATCH' && params) {

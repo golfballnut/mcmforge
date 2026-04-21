@@ -15,6 +15,7 @@ export const claudeAdapter: CLIAdapter = {
     const maxTurns = (config.maxTurnsPerRun as number) || 0;
     const timeoutSec = (config.timeoutSec as number) || 0;
     const dangerouslySkipPermissions = (config.dangerouslySkipPermissions as boolean) || false;
+    const cliFlags = (config.cliFlags as string[]) || [];
 
     const template = input.promptTemplate ||
       'You are agent {{agent.id}} ({{agent.name}}). Execute your assigned work.';
@@ -49,6 +50,7 @@ export const claudeAdapter: CLIAdapter = {
     if (dangerouslySkipPermissions) args.push('--dangerously-skip-permissions');
     if (model) args.push('--model', model);
     if (maxTurns > 0) args.push('--max-turns', String(maxTurns));
+    if (cliFlags.length) args.push(...cliFlags);
 
     // Determine agent role for isolation enforcement
     const agentRole = (config.role as string) || 'engineer';

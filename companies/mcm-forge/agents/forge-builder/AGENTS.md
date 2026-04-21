@@ -7,7 +7,7 @@ companyId: 170ebe36-d689-4f15-91f1-7474df6c98cd
 adapter: claude
 model: claude-sonnet-4-6
 skills:
-  - forge
+  - mcm-forge-orchestration
   - agent-comment-protocol
   - lessons-learned-loop
   - issue-prep-rubric

@@ -87,13 +87,28 @@ curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
 
 ## Step 7: Commit, Push, PR
 
-**BEFORE `gh pr create`, post [PROOF] with concrete artifacts:**
+**BEFORE `gh pr create`, post [PROOF] with concrete artifacts.**
+
+Rule 2 (`agent-comment-protocol.md`): any `[PROOF]` comment requires ≥1 artifact uploaded by you on this issue in the prior 10 minutes, OR the comments API returns `422 PROOF_WITHOUT_ATTACHMENT`. Upload FIRST, then comment.
+
 ```bash
+# a) Capture + upload the build-tail artifact
+BUILD_TAIL=$(cd ~/MCMForge/dashboard && npx next build 2>&1 | tail -20)
+echo "$BUILD_TAIL" > /tmp/forge-build-tail.txt
+BODY_B64=$(base64 < /tmp/forge-build-tail.txt | tr -d '\n')
+
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/attachments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d "{\"filename\":\"build-tail.txt\",\"mime_type\":\"text/plain\",\"data_base64\":\"$BODY_B64\",\"category\":\"agent_proof\"}"
+
+# b) Then post [PROOF] referencing the uploaded artifact
 curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
   -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
   -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
   -H "Content-Type: application/json" \
-  -d '{"body": "[PROOF] Build tail:\n<last 5 lines of next build output>\nBranch: agent/<slug>\nPR title: feat(FORGE-N): ...", "tags": ["PROOF"]}'
+  -d '{"body": "[PROOF] Build passes (see build-tail.txt). Branch: agent/<slug>. PR title: feat(FORGE-N): ...", "tags": ["PROOF"]}'
 ```
 
 ```bash

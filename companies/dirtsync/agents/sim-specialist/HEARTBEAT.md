@@ -78,7 +78,7 @@ xcodebuild test \
 
 Post `[PROGRESS] XCUITest started — login + GPX replay.`
 
-If test harness doesn't exist yet (DIRA-218 pending), use direct `simctl` with `--uitesting-free-ride-gpx=<filename>` and manually capture screenshots at 5s/30s/55s.
+If test harness doesn't exist yet (DIRA-218 pending), use direct `simctl` with `--uitesting-gpx=<basename>.gpx` (canonical flag per `vault/agents/skills/ios-simulator-mastery.md` L-004 — **NOT** `--uitesting-free-ride-gpx=`, which does not exist) and manually capture screenshots at 5s/30s/55s.
 
 ## Step 6: Capture evidence
 
@@ -129,20 +129,70 @@ Record pass/fail for each in a small JSON.
 
 ## Step 8: Upload evidence + post [PROOF]
 
+**Rule 2 (`agent-comment-protocol.md`):** every `[PROOF]` comment requires ≥1 artifact uploaded via the **attachments endpoint** by me on this issue in the last 10 minutes, or the comments POST returns `422 PROOF_WITHOUT_ATTACHMENT`. Direct Supabase storage uploads do NOT satisfy Rule 2 — they don't create a `forge.issue_attachments` row with `uploaded_by_agent_id = me`.
+
+### 8a. Upload the primary artifact via the agent-API attachments endpoint (satisfies Rule 2)
+
 ```bash
-for F in log.txt screenshot-start.png screenshot-mid.png screenshot-end.png session.mp4 manifest.json; do
+# manifest.json is always small — use it as the Rule 2 artifact
+MANIFEST_B64=$(base64 < /tmp/qa/$ISSUE_ID/manifest.json | tr -d '\n')
+curl -sS -X POST "$FORGE_API_URL/api/agent/issues/$ISSUE_ID/attachments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d "{\"filename\":\"manifest.json\",\"mime_type\":\"application/json\",\"data_base64\":\"$MANIFEST_B64\",\"category\":\"agent_proof\"}"
+
+# First screenshot is small enough for the endpoint too — upload as a second attachment
+SHOT_B64=$(base64 < /tmp/qa/$ISSUE_ID/screenshot-end.png | tr -d '\n')
+curl -sS -X POST "$FORGE_API_URL/api/agent/issues/$ISSUE_ID/attachments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d "{\"filename\":\"screenshot-end.png\",\"mime_type\":\"image/png\",\"data_base64\":\"$SHOT_B64\",\"category\":\"agent_proof\"}"
+```
+
+Size caps on the endpoint: 10MB image / 50MB video / 2MB text. If an artifact is larger, fall back to direct Supabase storage for that file AND still upload at least one small artifact (manifest.json) via the endpoint to satisfy Rule 2.
+
+### 8b. Upload bulkier artifacts via direct Supabase storage (log.txt, session.mp4)
+
+```bash
+for F in log.txt session.mp4; do
+  case $F in
+    *.txt) MIME=text/plain ;;
+    *.mp4) MIME=video/mp4 ;;
+  esac
   curl -X POST "$SUPABASE_URL/storage/v1/object/artifacts/qa/$ISSUE_ID/$F" \
     -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-    -H "Content-Type: <type>" \
+    -H "Content-Type: $MIME" \
     --data-binary @/tmp/qa/$ISSUE_ID/$F
 done
 ```
 
-Post `[PROOF] ... ` comment with:
-- All file URLs from Supabase storage
-- Assertion table (✓/✗ per check)
-- Presence/nav service NSLog count (proof of code path execution)
-- Overall verdict: PASS (all assertions + non-zero service NSLogs) or FAIL (with failing assertion specifics)
+### 8c. Post the `[PROOF]` comment
+
+Now that Rule 2 is satisfied (step 8a), post:
+
+```
+[PROOF] <fixture> replay — verdict: <PASS|FAIL>
+
+Evidence:
+- manifest.json — attached
+- screenshot-end.png — attached
+- log.txt — $SUPABASE_URL/storage/v1/object/public/artifacts/qa/$ISSUE_ID/log.txt
+- session.mp4 — $SUPABASE_URL/storage/v1/object/public/artifacts/qa/$ISSUE_ID/session.mp4
+
+Assertions:
+| # | Check | Result |
+|---|---|---|
+| 1 | <assertion> | ✓/✗ |
+| ... |
+
+Service NSLog count (proof of code path execution):
+- RiderPresenceService: N hits (>0 = presence initialized)
+- NavigationStateMachine: N hits (>0 = nav ran)
+
+Zero hits on a service whose behavior we're claiming to verify = inconclusive, NOT pass.
+```
 
 ## Step 9: Post [DONE] + update issue
 

@@ -15,6 +15,7 @@ import { logger } from '../utils/logger.js';
 
 const DEFAULT_HOURLY_CAP_USD = 2.0;
 const TICK_INTERVAL_MS = 60_000;
+const FAIL_CLOSED_AFTER_CONSECUTIVE_ERRORS = 2;
 
 interface HourlySpend {
   agentId: string;
@@ -24,7 +25,60 @@ interface HourlySpend {
   hourlyCapCents: number;
 }
 
-async function computeHourlySpend(supabase: SupabaseClient): Promise<HourlySpend[]> {
+/** Track consecutive cost_events query failures across ticks. */
+let consecutiveQueryErrors = 0;
+
+/**
+ * Fail-closed pause: when the breaker can't measure spend (e.g. Supabase
+ * ECONNRESET), we assume the worst and pause all agents that had a run
+ * finish in the last hour. This prevents runaway burn during network
+ * flakes where the query-error path would otherwise silently skip every
+ * agent.
+ */
+async function failClosedPauseRecentlyActiveAgents(supabase: SupabaseClient): Promise<number> {
+  const oneHourAgo = new Date(Date.now() - 60 * 60_000).toISOString();
+
+  const { data: recentRuns, error: runsErr } = await supabase
+    .from('runs')
+    .select('agent_id')
+    .gte('finished_at', oneHourAgo);
+
+  if (runsErr || !recentRuns?.length) return 0;
+
+  const recentAgentIds = Array.from(
+    new Set((recentRuns as Array<{ agent_id: string }>).map((r) => r.agent_id)),
+  );
+  if (!recentAgentIds.length) return 0;
+
+  const { data: paused, error: pauseErr } = await supabase
+    .from('agents')
+    .update({
+      status: 'paused',
+      pause_reason:
+        'Circuit breaker fail-closed: cost_events query unreachable. Manual review required before unpause.',
+      paused_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .in('id', recentAgentIds)
+    .in('status', ['idle', 'running', 'active'])
+    .select('id, name');
+
+  if (pauseErr) {
+    logger.error({ err: pauseErr }, 'circuit-breaker fail-closed pause itself failed');
+    return 0;
+  }
+
+  const count = paused?.length ?? 0;
+  if (count > 0) {
+    logger.error(
+      { count, names: (paused ?? []).map((p: { name: string }) => p.name) },
+      'CIRCUIT BREAKER FAIL-CLOSED — paused recently-active agents due to cost_events unreachable',
+    );
+  }
+  return count;
+}
+
+async function computeHourlySpend(supabase: SupabaseClient): Promise<HourlySpend[] | null> {
   const oneHourAgo = new Date(Date.now() - 60 * 60_000).toISOString();
 
   // Group cost_events by agent over last hour.
@@ -34,8 +88,9 @@ async function computeHourlySpend(supabase: SupabaseClient): Promise<HourlySpend
     .gte('occurred_at', oneHourAgo);
 
   if (error) {
+    // Return null to signal "could not measure" — the caller decides fail-closed.
     logger.warn({ err: error }, 'circuit-breaker: cost_events query failed');
-    return [];
+    return null;
   }
   if (!events?.length) return [];
 
@@ -123,8 +178,25 @@ async function haltAgent(supabase: SupabaseClient, spend: HourlySpend): Promise<
     .in('status', ['queued', 'running']);
 }
 
-export async function tick(supabase: SupabaseClient): Promise<{ checked: number; tripped: number }> {
+export async function tick(
+  supabase: SupabaseClient,
+): Promise<{ checked: number; tripped: number; failClosed?: number }> {
   const spends = await computeHourlySpend(supabase);
+
+  // Fail-closed path: query errored, can't measure spend.
+  if (spends === null) {
+    consecutiveQueryErrors++;
+    if (consecutiveQueryErrors >= FAIL_CLOSED_AFTER_CONSECUTIVE_ERRORS) {
+      const failClosed = await failClosedPauseRecentlyActiveAgents(supabase);
+      return { checked: 0, tripped: 0, failClosed };
+    }
+    // First error: log, return; next tick may recover.
+    return { checked: 0, tripped: 0 };
+  }
+
+  // Success: reset the error counter
+  consecutiveQueryErrors = 0;
+
   let tripped = 0;
   for (const s of spends) {
     if (s.totalCents >= s.hourlyCapCents) {
@@ -151,7 +223,9 @@ export async function startCostCircuitBreaker(
   setInterval(async () => {
     try {
       const result = await tick(supabase);
-      if (result.tripped > 0) logger.warn(result, 'Circuit breaker activity');
+      if (result.tripped > 0 || (result.failClosed ?? 0) > 0) {
+        logger.warn(result, 'Circuit breaker activity');
+      }
     } catch (err) {
       logger.error({ err }, 'circuit-breaker tick threw');
     }

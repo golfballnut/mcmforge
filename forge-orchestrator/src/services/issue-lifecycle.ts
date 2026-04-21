@@ -8,6 +8,10 @@ export async function releaseIssueExecution(
   const issueId = run.context_snapshot?.issueId as string | undefined;
   if (!issueId) return;
 
+  // Only release the lock for issues still in the dispatch pool. Issues
+  // awaiting review / done / cancelled / blocked should keep their
+  // execution_run_id so assignment watchers don't re-checkout and spawn
+  // a wake loop. (Observed 2026-04-21 on FORGE-284: Builder→COO loop.)
   const { error } = await supabase
     .from('issues')
     .update({
@@ -15,7 +19,8 @@ export async function releaseIssueExecution(
       execution_locked_at: null,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', issueId);
+    .eq('id', issueId)
+    .in('status', ['todo', 'in_progress']);
 
   if (error) {
     logger.error({ error, issueId, runId: run.id }, 'Failed to release issue execution lock');

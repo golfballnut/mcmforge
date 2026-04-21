@@ -10,6 +10,8 @@ skills:
   - anvil-loop-guardrails
   - issue-prep-rubric
   - golden-feature
+  - agent-certification-gates
+  - mcm-forge-orchestration
 adapter: claude
 model: claude-sonnet-4-6
 ---

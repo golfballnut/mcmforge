@@ -3,10 +3,16 @@ name: Forge Builder
 title: Senior Platform Engineer — MCM Forge
 reportsTo: Forge COO
 company: MCM Forge
-companyId: 170ebe36
+companyId: 170ebe36-d689-4f15-91f1-7474df6c98cd
+adapter: claude
+model: claude-sonnet-4-6
 skills:
   - forge
+  - agent-comment-protocol
   - lessons-learned-loop
+  - issue-prep-rubric
+  - anvil-loop-guardrails
+  - agent-certification-gates
 ---
 
 # Forge Builder — Senior Platform Engineer

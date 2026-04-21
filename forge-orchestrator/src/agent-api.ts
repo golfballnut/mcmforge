@@ -2,6 +2,24 @@ import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { logger } from './utils/logger.js';
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const ALLOWED_MIMES = new Set([
+  'image/png', 'image/jpeg', 'image/gif', 'image/webp',
+  'video/mp4', 'video/webm', 'video/quicktime',
+  'text/plain', 'text/markdown', 'application/json',
+]);
+
+const ALLOWED_CATEGORIES = new Set([
+  'user_upload', 'testing', 'comparison', 'video', 'pass', 'fail', 'agent_proof',
+]);
+
+function maxBytesFor(mimeType: string): number {
+  if (mimeType.startsWith('image/')) return 10 * 1024 * 1024;
+  if (mimeType.startsWith('video/')) return 50 * 1024 * 1024;
+  return 2 * 1024 * 1024;
+}
+
 /**
  * Local agent API server — runs on localhost only.
  * Mirrors Paperclip's /api/agent/* endpoints so agents can self-serve.
@@ -196,6 +214,87 @@ export function startAgentApi(supabase: SupabaseClient<any, any, any>, port: num
 
         if (error) return json(res, { error: error.message }, 500);
         return json(res, data, 201);
+      }
+
+      // ── POST /api/agent/issues/:id/attachments ────────────
+      params = matchRoute(url, '/api/agent/issues/:id/attachments');
+      if (method === 'POST' && params) {
+        if (!agentId) return json(res, { error: 'Missing x-forge-agent-id' }, 401);
+
+        const body = await parseBody(req);
+        const { filename, mimeType, base64, category = 'agent_proof', caption = null, commentId = null } = body as {
+          filename?: string; mimeType?: string; base64?: string;
+          category?: string; caption?: string | null; commentId?: string | null;
+        };
+
+        if (!filename || !mimeType || !base64) {
+          return json(res, { error: 'Missing required fields: filename, mimeType, base64' }, 400);
+        }
+        if (!ALLOWED_MIMES.has(mimeType)) {
+          return json(res, { error: `Unsupported mimeType. Allowed: ${[...ALLOWED_MIMES].join(', ')}` }, 415);
+        }
+        if (category && !ALLOWED_CATEGORIES.has(category)) {
+          return json(res, { error: 'Invalid category' }, 400);
+        }
+
+        let fileBuffer: Buffer;
+        try {
+          fileBuffer = Buffer.from(base64, 'base64');
+        } catch {
+          return json(res, { error: 'Invalid base64 data' }, 400);
+        }
+
+        const maxBytes = maxBytesFor(mimeType);
+        if (fileBuffer.byteLength > maxBytes) {
+          return json(res, { error: `File too large. Max ${maxBytes / (1024 * 1024)}MB for ${mimeType}` }, 413);
+        }
+
+        const ext = filename.split('.').pop() ?? 'bin';
+        const rand = Math.random().toString(36).slice(2, 8);
+        const storagePath = `agent-proof/${params.id}/${Date.now()}-${rand}.${ext}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('artifacts')
+          .upload(storagePath, fileBuffer, { contentType: mimeType, upsert: false });
+
+        if (uploadError) {
+          return json(res, { error: `Storage upload failed: ${uploadError.message}` }, 500);
+        }
+
+        const supabaseUrl = process.env.SUPABASE_URL ?? '';
+        const publicUrl = `${supabaseUrl}/storage/v1/object/public/artifacts/${storagePath}`;
+
+        const { data: attachment, error: dbError } = await supabase
+          .from('issue_attachments')
+          .insert({
+            issue_id: params.id,
+            comment_id: commentId ?? null,
+            uploaded_by_agent_id: agentId,
+            filename,
+            mime_type: mimeType,
+            size_bytes: fileBuffer.byteLength,
+            storage_path: storagePath,
+            category: category ?? 'agent_proof',
+            caption: caption ?? null,
+          })
+          .select()
+          .single();
+
+        if (dbError) {
+          await supabase.storage.from('artifacts').remove([storagePath]);
+          return json(res, { error: `DB insert failed: ${dbError.message}` }, 500);
+        }
+
+        const validRunId = runId && UUID_RE.test(runId) ? runId : null;
+        return json(res, {
+          id: attachment.id,
+          storagePath,
+          publicUrl,
+          sizeBytes: fileBuffer.byteLength,
+          category: attachment.category,
+          caption: attachment.caption,
+          runId: validRunId,
+        }, 201);
       }
 
       // ── PATCH /api/agent/issues/:id ───────────────────────

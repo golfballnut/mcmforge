@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createForgeClient } from "@/lib/supabase/forge-server";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 /**
  * Rule 2 enforcement: [PROOF] comments must be backed by ≥1 upload from the
  * same agent on the same issue in the 10 minutes before the comment is posted.
@@ -15,7 +17,8 @@ const PROOF_REGEX = /^\s*\*{0,2}\[PROOF(?:[\s\]]|—)/i;
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const agentId = request.headers.get("x-forge-agent-id");
-  const runId = request.headers.get("x-forge-run-id");
+  const rawRunId = request.headers.get("x-forge-run-id");
+  const runId = rawRunId && UUID_RE.test(rawRunId) ? rawRunId : null;
   if (!agentId) return NextResponse.json({ error: "Missing x-forge-agent-id" }, { status: 401 });
 
   const body = await request.json();
@@ -66,18 +69,33 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
   }
 
+  const insertPayload = {
+    company_id: issue.company_id,
+    issue_id: id,
+    author_agent_id: agentId,
+    body: bodyText,
+    created_by_run_id: runId,
+  };
+
   const { data, error } = await supabase
     .from("issue_comments")
-    .insert({
-      company_id: issue.company_id,
-      issue_id: id,
-      author_agent_id: agentId,
-      body: bodyText,
-      created_by_run_id: runId || null,
-    })
+    .insert(insertPayload)
     .select()
     .single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (error) {
+    // FK violation on created_by_run_id — run UUID valid but not in forge.runs. Retry with null.
+    if (error.code === "23503" && runId !== null) {
+      const { data: retryData, error: retryError } = await supabase
+        .from("issue_comments")
+        .insert({ ...insertPayload, created_by_run_id: null })
+        .select()
+        .single();
+      if (retryError) return NextResponse.json({ error: retryError.message }, { status: 500 });
+      return NextResponse.json(retryData, { status: 201 });
+    }
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   return NextResponse.json(data, { status: 201 });
 }

@@ -83,6 +83,21 @@ async function claimAndExecuteNextRun(supabase: SupabaseClient, config: ForgeCon
     return;
   }
 
+  // Dummy-Proof Rule 1: no agent at G0-G2 may run autonomously.
+  // certification_gate column added 2026-04-21 per agent-certification-gates.md skill.
+  // G0=uncertified, G1=skill-complete, G2=dry-run, G3=supervised-live, G4=match-test, G5=autonomous.
+  // Runs spawned from invocation_source = 'ceo_manual' | 'steve_manual' are allowed at G1+.
+  const gate = (agent as { certification_gate?: number }).certification_gate ?? 0;
+  const isManualDispatch = run.invocation_source === 'ceo_manual' || run.invocation_source === 'steve_manual';
+  if (gate < 3 && !isManualDispatch) {
+    await cancelRun(
+      supabase,
+      run.id,
+      `Agent ${agent.name} at G${gate} — needs G3+ for autonomous dispatch (or invocation_source=ceo_manual/steve_manual)`,
+    );
+    return;
+  }
+
   // Budget enforcement: auto-pause agent if monthly spend exceeds limit
   if (agent.budget_monthly_cents > 0) {
     const startOfMonth = new Date();
@@ -315,6 +330,11 @@ async function executeRun(
       })
       .eq('id', run.id);
 
+    // Preserve paused/terminated status — never overwrite them on run completion.
+    // Bug fixed 2026-04-21 after Map Rendering Expert burned $4.02 in idle-loop:
+    // CEO set agent=paused, run-executor completed a queued run and line 321 flipped
+    // status back to 'idle' unconditionally → heartbeat woke it → repeat.
+    // Now only update status if it's currently 'running' (the state we claimed).
     await supabase
       .from('agents')
       .update({
@@ -324,7 +344,8 @@ async function executeRun(
         last_heartbeat_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
-      .eq('id', agent.id);
+      .eq('id', agent.id)
+      .eq('status', 'running'); // only flip from running — leaves paused/terminated/error untouched
 
     // O-2: Auto-heal ERROR status — if agent was in error and just succeeded, log the recovery
     if (status === 'succeeded' && agent.status === 'error') {

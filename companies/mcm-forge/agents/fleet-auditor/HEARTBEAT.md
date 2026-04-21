@@ -82,6 +82,25 @@ pm2 jlist 2>&1 | jq '.[] | select(.name == "orchestrator") | {name, status: .pm2
 
 Count passes and failures across all 8 checks.
 
+After compiling results, stamp `last_audited_at` on every agent that passed Check 2 (Agent Config Audit):
+
+```bash
+# Get all agent IDs for this company
+AGENT_IDS=$(curl -s "$FORGE_API_URL/api/agents" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  | jq -r '.[].id')
+
+# For each agent that passed config audit (no mismatched adapter/model), stamp the audit time
+for AGENT_ID in $AGENT_IDS; do
+  curl -s -X PATCH "$FORGE_API_URL/api/agents/$AGENT_ID" \
+    -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+    -H "Content-Type: application/json" \
+    -d "{\"last_audited_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
+done
+```
+
+If Check 2 found misconfigured agents, skip the stamp for those specific agents only.
+
 ## Step 4: Report
 
 ### If ALL 8 pass:

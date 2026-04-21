@@ -15,6 +15,7 @@ type Agent = {
   adapter_type: string | null;
   adapter_config: Record<string, unknown> | null;
   last_heartbeat_at: string | null;
+  last_audited_at: string | null;
   reports_to: string | null;
   skills: string[] | null;
   created_at: string;
@@ -76,6 +77,14 @@ function adapterColor(adapterType: string | null): string {
   if (t.includes("gemini")) return "text-[#58a6ff]";
   if (t.includes("codex") || t.includes("openai")) return "text-[#3fb950]";
   return "text-[#8b949e]";
+}
+
+function auditColor(timestamp: string | null): string {
+  if (!timestamp) return "text-[#8b949e]";
+  const days = (Date.now() - new Date(timestamp).getTime()) / 86_400_000;
+  if (days < 7) return "text-[#3fb950]";
+  if (days < 30) return "text-[#d29922]";
+  return "text-[#f85149]";
 }
 
 function modelFromConfig(config: Record<string, unknown> | null): string {
@@ -170,13 +179,14 @@ export default async function AgentsPage({
       ) : (
         <div className="border border-[#30363d] rounded-lg overflow-hidden">
           {/* Table header */}
-          <div className="grid grid-cols-[20px_1fr_120px_90px_160px_110px_60px] gap-x-4 px-4 py-2.5 bg-[#161b22] border-b border-[#30363d] text-xs font-medium text-[#8b949e] uppercase tracking-wide">
+          <div className="grid grid-cols-[20px_1fr_120px_90px_160px_110px_100px_60px] gap-x-4 px-4 py-2.5 bg-[#161b22] border-b border-[#30363d] text-xs font-medium text-[#8b949e] uppercase tracking-wide">
             <div />
             <div>Name</div>
             <div>Role</div>
             <div>Adapter</div>
             <div>Model</div>
             <div>Heartbeat</div>
+            <div>Audited</div>
             <div className="text-right">Skills</div>
           </div>
 
@@ -195,7 +205,7 @@ export default async function AgentsPage({
                 <Link
                   key={agent.id}
                   href={`/agents/${agent.id}`}
-                  className="grid grid-cols-[20px_1fr_120px_90px_160px_110px_60px] gap-x-4 px-4 py-3 bg-[#161b22] hover:bg-[#1c2333] transition-colors items-center cursor-pointer"
+                  className="grid grid-cols-[20px_1fr_120px_90px_160px_110px_100px_60px] gap-x-4 px-4 py-3 bg-[#161b22] hover:bg-[#1c2333] transition-colors items-center cursor-pointer"
                 >
                   {/* Status dot */}
                   <div className="flex items-center">
@@ -256,6 +266,16 @@ export default async function AgentsPage({
                   <div>
                     <span className="text-xs text-[#8b949e]">
                       {formatRelativeTime(agent.last_heartbeat_at)}
+                    </span>
+                  </div>
+
+                  {/* Last audited */}
+                  <div>
+                    <span
+                      className={`text-xs ${auditColor(agent.last_audited_at)}`}
+                      title={agent.last_audited_at ? new Date(agent.last_audited_at).toLocaleString() : "Never audited"}
+                    >
+                      {formatRelativeTime(agent.last_audited_at)}
                     </span>
                   </div>
 

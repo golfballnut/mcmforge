@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AttachmentUpload } from "./IssueActions";
+import { CommentBody } from "./CommentBody";
 
 interface Comment {
   id: string;
@@ -59,10 +60,11 @@ const SUB_PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
 };
 
 type Tab = "comments" | "subissues" | "activity" | "attachments";
-type AttachmentSubtab = "all" | "user_upload" | "testing" | "comparison" | "video" | "pass" | "fail";
+type AttachmentSubtab = "all" | "agent_proof" | "user_upload" | "testing" | "comparison" | "video" | "pass" | "fail";
 
 const ATTACHMENT_SUBTABS: { value: AttachmentSubtab; label: string; color?: string }[] = [
   { value: "all", label: "All" },
+  { value: "agent_proof", label: "Agent Proof", color: "#00d4aa" },
   { value: "pass", label: "Pass", color: "#3fb950" },
   { value: "fail", label: "Fail", color: "#f85149" },
   { value: "user_upload", label: "User Uploads" },
@@ -181,9 +183,7 @@ export function IssueTabs({
                     </div>
                     <span className="text-xs text-[#8b949e]">{formatRelativeTime(comment.created_at)}</span>
                   </div>
-                  <div className="px-4 py-3 text-sm text-[#e6edf3] leading-relaxed whitespace-pre-wrap">
-                    {comment.body}
-                  </div>
+                  <CommentBody body={comment.body} />
                   {commentAttachments.length > 0 && (
                     <div className="px-4 pb-3 flex flex-wrap gap-2">
                       {commentAttachments.map((att) => {

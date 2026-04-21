@@ -11,6 +11,7 @@ import { startMentionWatcher } from './loops/mention-watcher.js';
 import { startGoalWatcher } from './loops/goal-watcher.js';
 import { startAgentAdvisor } from './loops/agent-advisor.js';
 import { startCOORouter } from './loops/coo-router.js';
+import { startCostCircuitBreaker } from './loops/cost-circuit-breaker.js';
 import { startAgentApi } from './agent-api.js';
 import { logger } from './utils/logger.js';
 import { runAutoAttachScan } from './services/auto-attach-proof.js';
@@ -62,6 +63,14 @@ async function main() {
     logger.info('COO router: ENABLED (env COO_ROUTER_ENABLED=true)');
   } else {
     logger.info('COO router: disabled (set COO_ROUTER_ENABLED=true to activate)');
+  }
+
+  // Cost circuit breaker — ON by default (always-on safety). Disable only via env.
+  if (process.env.COST_CIRCUIT_BREAKER_DISABLED !== 'true') {
+    loops.push(startCostCircuitBreaker(supabase, config));
+    logger.info('Cost circuit breaker: ENABLED (default-on safety)');
+  } else {
+    logger.warn('Cost circuit breaker: DISABLED (env COST_CIRCUIT_BREAKER_DISABLED=true) — runaway risk');
   }
 
   await Promise.all(loops);

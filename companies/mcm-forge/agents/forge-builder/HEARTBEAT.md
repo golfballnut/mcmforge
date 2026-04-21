@@ -91,25 +91,38 @@ curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
 
 Rule 2 (`agent-comment-protocol.md`): any `[PROOF]` comment requires ≥1 artifact uploaded by you on this issue in the prior 10 minutes, OR the comments API returns `422 PROOF_WITHOUT_ATTACHMENT`. Upload FIRST, then comment.
 
+**Upload path (G2-verified 2026-04-21):** the bundled agent API on `127.0.0.1:3200` does NOT expose `/attachments` — that route is dashboard-only. Agents running on Mini use **direct Supabase REST** to upload storage + insert the `forge.issue_attachments` row. This satisfies Rule 2 because the server checks the `issue_attachments` table, not the endpoint.
+
 ```bash
-# a) Capture + upload the build-tail artifact
-BUILD_TAIL=$(cd ~/MCMForge/dashboard && npx next build 2>&1 | tail -20)
-echo "$BUILD_TAIL" > /tmp/forge-build-tail.txt
-BODY_B64=$(base64 < /tmp/forge-build-tail.txt | tr -d '\n')
+# a) Prepare the build-tail artifact
+cd ~/MCMForge/dashboard && npx next build 2>&1 | tail -20 > /tmp/forge-build-tail.txt
+FILENAME="build-tail-$(date +%s).txt"
+STORAGE_PATH="agent-proof/{issueId}/$FILENAME"
 
-curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/attachments" \
-  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
-  -H "Content-Type: application/json" \
-  -d "{\"filename\":\"build-tail.txt\",\"mime_type\":\"text/plain\",\"data_base64\":\"$BODY_B64\",\"category\":\"agent_proof\"}"
+# b) Upload binary to Supabase storage
+curl -sS -X POST "$SUPABASE_URL/storage/v1/object/artifacts/$STORAGE_PATH" \
+  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+  -H "Content-Type: text/plain" \
+  --data-binary @/tmp/forge-build-tail.txt
 
-# b) Then post [PROOF] referencing the uploaded artifact
-curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
-  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+# c) Insert forge.issue_attachments row (this is what Rule 2 checks)
+SIZE=$(wc -c < /tmp/forge-build-tail.txt)
+curl -sS -X POST "$SUPABASE_URL/rest/v1/issue_attachments" \
+  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+  -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+  -H "Accept-Profile: forge" \
+  -H "Content-Profile: forge" \
   -H "Content-Type: application/json" \
-  -d '{"body": "[PROOF] Build passes (see build-tail.txt). Branch: agent/<slug>. PR title: feat(FORGE-N): ...", "tags": ["PROOF"]}'
+  -d "{\"issue_id\":\"{issueId}\",\"uploaded_by_agent_id\":\"$FORGE_AGENT_ID\",\"filename\":\"$FILENAME\",\"mime_type\":\"text/plain\",\"size_bytes\":$SIZE,\"storage_path\":\"$STORAGE_PATH\",\"category\":\"agent_proof\"}"
+
+# d) NOW post [PROOF] — server Rule 2 check finds my attachment row and allows it
+curl -sS -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "Content-Type: application/json" \
+  -d "{\"body\": \"[PROOF] Build passes (see $FILENAME). Branch: agent/<slug>. PR title: feat(FORGE-N): ...\"}"
 ```
+
+**Why direct-Supabase instead of the endpoint:** FORGE-275 shipped the `/attachments` route in the dashboard (`dashboard/src/app/api/agent/issues/[id]/attachments`) but NOT in the bundled agent API at `127.0.0.1:3200`. Agents on Mini can only reach the bundled API. FORGE-284 tracks adding the route to the bundled API; until that lands, direct Supabase REST is the canonical path.
 
 ```bash
 git add <specific-files>

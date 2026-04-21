@@ -105,8 +105,11 @@ xcrun simctl launch $SIM $BUNDLE
 
 **Launch with UI-testing GPX arg:**
 ```bash
+# Canonical flag: --uitesting-gpx=<basename> (NOT --uitesting-free-ride-gpx=; that flag does not exist)
+# File must exist in DirtSyncApp/Resources/TestGPXRoutes/ or the arg is silently ignored.
+# See vault/agents/skills/ios-simulator-mastery.md L-004/L-005.
 xcrun simctl launch $SIM $BUNDLE \
-  --uitesting-free-ride-gpx=field-2026-04-20-west-river-corridor.gpx
+  --uitesting-gpx=field-2026-04-20-west-river-corridor.gpx
 ```
 
 **Run a specific XCUITest method:**

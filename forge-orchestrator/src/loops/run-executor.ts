@@ -183,12 +183,59 @@ async function claimAndExecuteNextRun(supabase: SupabaseClient, config: ForgeCon
   executeRun(supabase, config, run, agent);
 }
 
+/**
+ * Quota-cap fast-exit guard. If a run finished in <10s with exit=0 but posted
+ * no comment on the issue, the agent almost certainly hit a token quota and
+ * exited without doing any work. Auto-pause to break the re-spawn loop.
+ *
+ * Returns true when the agent was auto-paused; the caller should treat this as
+ * "nothing to do" so auto-continue is also skipped.
+ *
+ * Exported for unit testing.
+ */
+export async function checkAndPauseOnQuotaCap(
+  supabase: SupabaseClient,
+  agentId: string,
+  runId: string,
+  issueId: string,
+  runDurationMs: number,
+): Promise<boolean> {
+  if (runDurationMs >= 10_000) return false;
+
+  const { data: comments } = await supabase
+    .from('issue_comments')
+    .select('id')
+    .eq('issue_id', issueId)
+    .eq('created_by_run_id', runId)
+    .limit(1);
+
+  if (comments?.length) return false;
+
+  await supabase
+    .from('agents')
+    .update({
+      status: 'paused',
+      pause_reason: `auto-quota-cap: run completed in ${runDurationMs}ms with exit=0 but no progress comment — quota likely capped`,
+      paused_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', agentId)
+    .eq('status', 'running');
+
+  logger.warn(
+    { runId, durationMs: runDurationMs, agentId },
+    'Fast-exit with no progress — auto-paused agent (quota-cap guard)',
+  );
+  return true;
+}
+
 async function executeRun(
   supabase: SupabaseClient,
   config: ForgeConfig,
   run: any,
   agent: any,
 ) {
+  const runStartMs = Date.now();
   const adapter = getAdapter(agent.adapter_type);
   const abortController = new AbortController();
   const cwd = agent.adapter_config?.cwd || config.agentHomeDir;
@@ -330,6 +377,18 @@ async function executeRun(
       })
       .eq('id', run.id);
 
+    // Quota-cap fast-exit guard: runs that complete in <10s with exit=0 but post no
+    // comment have almost certainly hit a Claude quota and exited immediately.
+    // Auto-pause the agent so the assignment-watcher cannot loop.
+    const issueId = run.context_snapshot?.issueId as string | undefined;
+    let pausedForQuotaCap = false;
+    if (status === 'succeeded' && issueId) {
+      const runDurationMs = Date.now() - runStartMs;
+      pausedForQuotaCap = await checkAndPauseOnQuotaCap(
+        supabase, agent.id, run.id, issueId, runDurationMs,
+      );
+    }
+
     // Preserve paused/terminated status — never overwrite them on run completion.
     // Bug fixed 2026-04-21 after Map Rendering Expert burned $4.02 in idle-loop:
     // CEO set agent=paused, run-executor completed a queued run and line 321 flipped
@@ -403,7 +462,6 @@ async function executeRun(
     }
 
     // Auto-post run results as issue comment (agent may not have done this)
-    const issueId = run.context_snapshot?.issueId;
     const runSummary = isSilent ? null : (result.summary || resultText);
     if (issueId && runSummary && status === 'succeeded') {
       try {
@@ -426,6 +484,7 @@ async function executeRun(
     // BUT: skip if the agent reported nothing to do (prevents infinite CEO wake loops)
     const summaryLower = (result.summary || '').toLowerCase();
     const nothingToDo = isSilent
+      || pausedForQuotaCap
       || summaryLower.includes('no action needed')
       || summaryLower.includes('nothing to do')
       || summaryLower.includes('waiting for')

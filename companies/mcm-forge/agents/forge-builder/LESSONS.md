@@ -4,6 +4,16 @@ Append new entries at the top. See `vault/agents/skills/lessons-learned-loop.md`
 
 ---
 
+## FORGE-292 — Auto-continue loop: idempotency key is per-run-id, not per-issue
+
+**Date:** 2026-04-21
+**Issue:** 46 runs fired in 4.5 min when quota-capped agent exited in <10s. Existing idempotency key (`assignment-{issueId}-{hour}`) on the wakeup_request deduped the first spawn but NOT the auto-continue spawns.
+**Root cause:** Auto-continue creates wakeups with `idempotencyKey: \`continue-{issueId}-{run.id}\`` — unique per run. So each fast-exit run produced a new unique key → new run → repeat.
+**Fix:** Detect fast-exit (exit=0, <10s, no issue comment from the run) → auto-pause agent with `pause_reason='auto-quota-cap'`. Paused agent causes future queued runs to cancel. Also sets `nothingToDo=true` to skip auto-continue.
+**Outcome:** worked — all 68 tests pass, fast-exit with no comment triggers pause; with comment or slow exit does not.
+
+---
+
 ## FORGE-284 — Vitest include pattern in forge-orchestrator requires __tests__ subdirectory
 
 **Date:** 2026-04-21

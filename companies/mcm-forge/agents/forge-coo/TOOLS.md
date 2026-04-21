@@ -41,12 +41,21 @@ curl -s "$FORGE_API_URL/api/agent/issues/$ISSUE_ID/context" -H "X-Forge-Agent-Id
 
 ### Post a comment (the primary orchestration mechanism)
 ```bash
+# If I'm in an orchestrator-spawned run (FORGE_RUN_ID is a real UUID from forge.runs):
 curl -sS -X POST "$FORGE_API_URL/api/agent/issues/$ISSUE_ID/comments" \
   -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
   -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
   -H "Content-Type: application/json" \
   -d "{\"body\": \"<full comment text>\"}"
 ```
+
+**Run-ID rule (G2 dial-in finding, 2026-04-21):**
+- The comments API FK's `created_by_run_id` to `forge.runs`. Sending a random UUID that doesn't exist in `forge.runs` returns `422 comments_run_fk` constraint violation.
+- **If I'm NOT in a spawned run** (e.g., a manual CEO-proxy review, a test wake), **omit the `X-Forge-Run-Id` header entirely**. Null FK is allowed.
+- Do NOT invent a UUID or pass a non-UUID string — the API's runtime validation is weak and you'll 500 rather than fail gracefully. (Follow-up ticket filed to harden the API; until then, discipline at the caller.)
+
+**Body-escaping rule (G2 dial-in finding, 2026-04-21):**
+- Comment bodies with markdown `**bold**` markers can trip shell globbing in non-interactive SSH contexts. For any non-trivial body, write the JSON payload to a temp file first and POST with `--data @/tmp/payload.json`. Inline `-d` is fine for single-line bodies without `**` or `*`.
 
 Comments are my main output. Every routing decision, every certification promotion, every [PROOF] review ends with a comment using the exact tag grammar in `vault/agents/skills/agent-comment-protocol.md`.
 
@@ -105,27 +114,19 @@ The COO router parses these automatically and (when enabled) executes auth-gated
 
 ---
 
-## Certification gate flip (the ONLY DB write I perform directly)
+## Certification gate flip — **CEO retains authority during COO dial-in** (G0–G4)
 
-After posting a `[GATE-PASSED N]` comment on the Certification issue, I flip the agent's gate. This is narrow and audit-logged.
+**Current rule (2026-04-21):** the COO **does NOT flip certification_gate directly**. The `update_agent_gate` RPC does not exist in the `forge` schema as of today (G2 dry-run confirmed). Until one of the following lands, CEO session performs every gate flip:
 
-```bash
-# Example: promote Forge Builder from G1 to G2 after my [GATE-PASSED 2] comment.
-psql "$DATABASE_URL" -c "UPDATE forge.agents SET certification_gate = 2, updated_at = now() WHERE id = '21d39f2a-db73-45af-b4ce-abd321d70fe1';"
-```
+1. An RPC `forge.update_agent_gate(agent_id uuid, new_gate int, actor text)` is implemented as a security-definer function, OR
+2. The COO router (PR #66) is certified at G3+ and takes over authorized gate flips as a deterministic rule based on my `[GATE-PASSED N]` / `[GATE-FAILED N]` comments.
 
-If `$DATABASE_URL` is not in env (typical for agent runs), I use a Supabase Management API POST:
+**My job today:**
+- Post a `[GATE-PASSED N]` or `[GATE-FAILED N]` comment on the target agent's Certification issue with full evidence (rubric category → PASS/FAIL per checkbox + specific remediation for FAIL).
+- Tag `@ceo` in the comment so the CEO session knows to perform the flip.
+- **Never** flip the gate myself — I don't have the tool, and I shouldn't even if I did during dial-in. Evidence precedes action, and the CEO is the evidence reviewer during this period.
 
-```bash
-# Requires SUPABASE_SERVICE_ROLE_KEY (injected by orchestrator for COO only)
-curl -sS -X POST "$SUPABASE_URL/rest/v1/rpc/update_agent_gate" \
-  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-  -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"agent_id": "<uuid>", "new_gate": <N>, "actor": "forge-coo"}'
-```
-
-**Never flip a gate without the corresponding posted comment.** Evidence precedes action. Always.
+**When COO reaches G4:** revisit this. At that point Steve approves promoting my authority to self-flip via the RPC or the router, and this section updates.
 
 ---
 

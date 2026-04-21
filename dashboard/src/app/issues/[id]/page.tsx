@@ -102,7 +102,7 @@ async function getIssue(id: string) {
   const { data: rawComments } = await supabase
     .from("issue_comments")
     .select("*")
-    .eq("issue_id", id)
+    .eq("issue_id", issue.id)
     .order("created_at", { ascending: true });
 
   const comments: Comment[] = [];

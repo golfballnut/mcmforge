@@ -35,6 +35,42 @@ curl -s "$FORGE_API_URL/api/agent/issues/{issueId}/context" \
 ```
 Read the full issue description, acceptance criteria, and any comments from the COO.
 
+## Step 2.5: Check for Recent Rejection (MANDATORY)
+
+After reading context, scan the last 5 comments for a rejection from COO or CEO **posted after my last [PROOF] comment**.
+
+**Rejection signals to look for:**
+- `[COO]` or `[CEO]` prefix with any of: `rejected`, `Not approving`, `[GATE-FAILED]`, `retry`, explicit remediation instructions
+
+**If a rejection is found that postdates my last [PROOF]:**
+
+1. This is a **retry wake** — do NOT start fresh. The code is already written.
+2. Post [START] acknowledging the rejection:
+   ```bash
+   curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+     -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+     -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+     -H "Content-Type: application/json" \
+     -d '{"body": "[START] Retry per [COO] rejection at <timestamp>. Remediation: <what they asked for>. Skipping to Step 7."}'
+   ```
+3. **Skip Steps 3–6 entirely.** Jump directly to Step 7.
+4. In Step 7, follow the rejection's specific remediation (e.g. upload the correct artifact type, re-run the right test suite, fix the specific issue flagged).
+
+**Escalation guardrail — max 1 retry per wake:**
+
+If the COO/CEO's comment itself is a *second* rejection (i.e., I can see a prior retry [START] in the comments and the rejection postdates it), do NOT retry again. Instead:
+
+```bash
+curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/comments" \
+  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
+  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "[ESCALATE] @ceo: Two consecutive [PROOF] rejections on this issue. I cannot resolve this autonomously. Please review and advise before next Builder run."}'
+```
+Then exit. Do not retry a third time.
+
+**If no rejection is found:** continue to Step 3 as normal.
+
 ## Step 3: Checkout Issue
 ```bash
 curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/checkout" \

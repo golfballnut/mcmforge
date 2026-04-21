@@ -1,0 +1,236 @@
+{
+  "rideId": "2026-04-20-fluvanna",
+  "label": "Fluvanna 7.7mi drive — 9 field bugs",
+  "source": {
+    "db": "lldipxvwocpqncixlnxj (DirtSync Supabase)",
+    "rideRowId": "7f3d30f8-9bc1-4887-aaa9-a0c9327cb468",
+    "userId": "32a43c49-d6d3-4a17-945b-b8ede45d352a",
+    "startedAt": "2026-04-20T15:50:06.08Z",
+    "endedAt": "2026-04-20T16:01:30.585Z",
+    "durationSeconds": 682,
+    "distanceMeters": 12293,
+    "pointCount": 588,
+    "avgSpeedMph": 18.03,
+    "maxSpeedMph": 28.02,
+    "bbox": {
+      "firstPoint": [-78.3608770903458, 37.804271761866666, 153.91],
+      "lastPoint": [-78.26742927445906, 37.757580972788816, 118.96]
+    }
+  },
+  "artifacts": {
+    "gpxLocalStaged": "/tmp/fluvanna-2026-04-20.gpx (laptop + Mini)",
+    "gpxInAppBundle": "DirtSyncApp/Resources/TestGPXRoutes/fluvanna-2026-04-20.gpx (pending commit)",
+    "gpxInTestBundle": "DirtSyncUITests/GPXRoutes/fluvanna-2026-04-20.gpx (pending commit)",
+    "fieldDeviceVideoLaptop": "/Users/stevemcmillian/Downloads/ScreenRecording_04-20-2026 11-49-32_1.MP4 (1.2 GB, 676s)",
+    "fieldDeviceVideoCompressed": "/tmp/golden-rides/fluvanna-field-device.mp4 (compressing, 720p H.264 @ CRF 28)",
+    "supabaseTargetBucket": "ncwxeeqvujgyiggkviqq/artifacts/golden-rides/2026-04-20-fluvanna/"
+  },
+  "goldenRideOutcome": "FAIL — 9 documented bugs during this ride. Sim must reproduce all 9 on first replay, then close them one by one until a re-replay passes all assertions.",
+  "bugs": [
+    {
+      "id": "DIRA-208",
+      "priority": "P0",
+      "title": "Road Navigation Mode does not exist",
+      "ownerSpecialist": "Feature Builder (nav) + Map Rendering Expert (HUD)",
+      "assertions": [
+        {
+          "id": "DIRA-208.nav-engaged",
+          "type": "logContains",
+          "pattern": "NavigationMode.engaged",
+          "expected": {"op": ">=", "value": 1},
+          "actualFromField": 0,
+          "rationale": "Nav mode must engage when Start/Go tapped from Route Preview. In field test, never fired."
+        },
+        {
+          "id": "DIRA-208.voice-announcements",
+          "type": "logContains",
+          "pattern": "AVSpeechSynthesizer",
+          "expected": {"op": ">=", "value": 3},
+          "actualFromField": 0,
+          "rationale": "Each turn triggers 3 voice cadence points. 7-step route = 21 expected; zero is the bug."
+        },
+        {
+          "id": "DIRA-208.maneuver-card",
+          "type": "logContains",
+          "pattern": "ManeuverCard.rendered",
+          "expected": {"op": ">=", "value": 1},
+          "actualFromField": 0
+        }
+      ]
+    },
+    {
+      "id": "DIRA-209",
+      "priority": "P0",
+      "title": "Valhalla returns 32x straight-line distance for off-trail",
+      "ownerSpecialist": "Map Rendering Expert (routing infra)",
+      "assertions": [
+        {
+          "id": "DIRA-209.no-garbage-route",
+          "type": "logExcludes",
+          "pattern": "317.4 km",
+          "rationale": "The exact garbage distance observed. Must never reappear."
+        },
+        {
+          "id": "DIRA-209.no-32x-rejection",
+          "type": "logExcludes",
+          "pattern": "32.5x straight-line",
+          "rationale": "Log signature of the bug."
+        },
+        {
+          "id": "DIRA-209.our-valhalla-answers",
+          "type": "logContains",
+          "pattern": "HybridRoutingService: Valhalla response OK",
+          "expected": {"op": ">=", "value": 1},
+          "rationale": "Our own server, not Mapbox fallback, should resolve this route once roads are imported."
+        }
+      ]
+    },
+    {
+      "id": "DIRA-210",
+      "priority": "P0",
+      "title": "Arrival not detected (puck on flag, silent)",
+      "ownerSpecialist": "Feature Builder (nav state machine)",
+      "assertions": [
+        {
+          "id": "DIRA-210.arrival-fired",
+          "type": "logContains",
+          "pattern": "NavigationStateMachine.arrived",
+          "expected": {"op": "=", "value": 1},
+          "actualFromField": 0,
+          "rationale": "Within 20m of destination AND speed < 5 mph for 3+s, arrival event must fire."
+        },
+        {
+          "id": "DIRA-210.voice-arrival",
+          "type": "logContains",
+          "pattern": "You have arrived",
+          "expected": {"op": "=", "value": 1},
+          "actualFromField": 0
+        },
+        {
+          "id": "DIRA-210.video-arrival-banner",
+          "type": "videoFrameMatch",
+          "timestamp": "11:00",
+          "expected": "arrival-banner-visible",
+          "rationale": "Human review of sim video at field-equivalent 11:00 mark. Requires vision judge or manual."
+        }
+      ]
+    },
+    {
+      "id": "DIRA-211",
+      "priority": "P1",
+      "title": "Auto-recording starts at walking speed (1.2 m/s)",
+      "ownerSpecialist": "Feature Builder (ride recording threshold)",
+      "assertions": [
+        {
+          "id": "DIRA-211.no-walking-start",
+          "type": "logExcludes",
+          "pattern": "Auto-started silent recording — speed=1.2",
+          "rationale": "This exact log line is the bug. Fix means recording doesn't arm at walking pace."
+        },
+        {
+          "id": "DIRA-211.threshold-sustained",
+          "type": "customCheck",
+          "description": "Verify the 3s preceding any Auto-started event, speed samples were all >= 2.2 m/s",
+          "method": "parse log timestamps + speed values around each start event; reject if any sample within prior 3s was < 2.2 m/s"
+        }
+      ]
+    },
+    {
+      "id": "DIRA-212",
+      "priority": "P1",
+      "title": "TrailReports realtime silent CancellationError",
+      "ownerSpecialist": "Feature Builder (realtime error handling)",
+      "assertions": [
+        {
+          "id": "DIRA-212.no-silent-cancel",
+          "type": "logPattern",
+          "expression": "CancellationError AND NOT retry_scheduled",
+          "expected": {"op": "=", "value": 0},
+          "rationale": "Either no CancellationError (network OK) or a retry attempt logged within 5s."
+        },
+        {
+          "id": "DIRA-212.banner-on-3-fail",
+          "type": "videoFrameMatch",
+          "description": "When simulated 3x backoff fails, UI banner 'Community features offline' must appear",
+          "humanReview": true
+        }
+      ]
+    },
+    {
+      "id": "DIRA-213",
+      "priority": "P1",
+      "title": "Supabase presence — 100+ unsubscribed-track warnings",
+      "ownerSpecialist": "Feature Builder (fix in PR #416 under review)",
+      "assertions": [
+        {
+          "id": "DIRA-213.zero-warnings",
+          "type": "logExcludes",
+          "pattern": "You can only track your presence",
+          "rationale": "Post-fix expected count is 0. Field count was 100+ per drive."
+        },
+        {
+          "id": "DIRA-213.service-initialized",
+          "type": "logContains",
+          "pattern": "RiderPresenceService",
+          "expected": {"op": ">=", "value": 1},
+          "rationale": "Proof the service ran (per memory feedback_sim_green_without_login_means_nothing)."
+        }
+      ]
+    },
+    {
+      "id": "DIRA-214",
+      "priority": "P2",
+      "title": "Landscape stats rail text rotated 90",
+      "ownerSpecialist": "Nav HUD Polish Expert",
+      "assertions": [
+        {
+          "id": "DIRA-214.landscape-upright",
+          "type": "videoFrameMatch",
+          "description": "At any landscape frame in sim run, stats text reads horizontally",
+          "humanReview": true,
+          "goldReference": "Waze reference photo IMG_6091"
+        }
+      ]
+    },
+    {
+      "id": "DIRA-215",
+      "priority": "P2",
+      "title": "Cryptic '/:\\' glyph on road-name chip",
+      "ownerSpecialist": "Nav HUD Polish Expert",
+      "assertions": [
+        {
+          "id": "DIRA-215.no-glyph-in-road-mode",
+          "type": "videoFrameMatch",
+          "description": "Road-name chip shows road name only, no glyph, during road-mode nav",
+          "humanReview": true
+        }
+      ]
+    },
+    {
+      "id": "DIRA-216",
+      "priority": "P2",
+      "title": "Basemap stays satellite during active nav",
+      "ownerSpecialist": "Map Rendering Expert (MapStyleManager)",
+      "assertions": [
+        {
+          "id": "DIRA-216.auto-switch-to-vector",
+          "type": "logContains",
+          "pattern": "MapStyleManager.switchedToSimplifiedVector",
+          "expected": {"op": ">=", "value": 1},
+          "rationale": "On NavigationMode.engaged, style must auto-switch."
+        },
+        {
+          "id": "DIRA-216.revert-on-end",
+          "type": "logContains",
+          "pattern": "MapStyleManager.revertedToUserStyle",
+          "expected": {"op": ">=", "value": 1}
+        }
+      ]
+    }
+  ],
+  "passCriteria": "All log-based assertions green (count/pattern match), all videoFrameMatch assertions confirmed by human review OR vision judge at or above 9/10. Loop completes when every bug's assertions are green on the same sim run.",
+  "prerequisites": [
+    "DIRA-219: iOS 26.4 MapLibre crash at MapCoordinator+TrailAnnotations.swift:338 must be fixed; until then sim never reaches HUD rendering."
+  ],
+  "orchestrationContract": "DirtSync Simulator Specialist runs in golden-ride mode. On each dispatch: replay GPX via --uitesting-gpx=fluvanna-2026-04-20.gpx, capture evidence bundle, evaluate each assertion, post [PROOF] with pass/fail table. When >=1 assertion fails, identify the ownerSpecialist and post @mention for pickup. Do NOT fix application code."
+}

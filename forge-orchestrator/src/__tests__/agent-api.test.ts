@@ -73,6 +73,114 @@ async function callAttachments(
   }
 }
 
+const COMPANY_ID = 'dddddddd-dddd-dddd-dddd-dddddddddddd';
+const OTHER_AGENT_ID = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+
+function makeCommentSupabase(opts: {
+  proofCount?: number;
+  proofQueryError?: string;
+}) {
+  const gteResult = vi.fn().mockResolvedValue(
+    opts.proofQueryError
+      ? { count: null, error: { message: opts.proofQueryError } }
+      : { count: opts.proofCount ?? 0, error: null },
+  );
+  const secondEq = vi.fn().mockReturnValue({ gte: gteResult });
+  const firstEq = vi.fn().mockReturnValue({ eq: secondEq });
+
+  const commentSingle = vi.fn().mockResolvedValue({
+    data: { id: 'cmt-1', company_id: COMPANY_ID, issue_id: ISSUE_ID, author_agent_id: AGENT_ID, body: 'proof body' },
+    error: null,
+  });
+  const commentInsert = vi.fn().mockReturnValue({ select: vi.fn().mockReturnValue({ single: commentSingle }) });
+
+  return {
+    from: vi.fn().mockImplementation((table: string) => {
+      if (table === 'issues') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({ data: { company_id: COMPANY_ID }, error: null }),
+            }),
+          }),
+        };
+      }
+      if (table === 'issue_attachments') {
+        return { select: vi.fn().mockReturnValue({ eq: firstEq }) };
+      }
+      if (table === 'issue_comments') {
+        return { insert: commentInsert };
+      }
+      return {};
+    }),
+    storage: { from: vi.fn().mockReturnValue({ upload: vi.fn(), remove: vi.fn() }) },
+  };
+}
+
+async function callComments(
+  supabase: ReturnType<typeof makeCommentSupabase>,
+  body: Record<string, unknown>,
+  headers: Record<string, string> = {},
+): Promise<{ status: number; body: Record<string, unknown> }> {
+  const { startAgentApi } = await import('../agent-api.js');
+  const srv = startAgentApi(supabase as never, 0) as Server;
+  await new Promise<void>((r) => srv.once('listening', r));
+  const port = (srv.address() as { port: number }).port;
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/agent/issues/${ISSUE_ID}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-forge-agent-id': AGENT_ID,
+        ...headers,
+      },
+      body: JSON.stringify(body),
+    });
+    const json = await res.json() as Record<string, unknown>;
+    return { status: res.status, body: json };
+  } finally {
+    await new Promise<void>((r) => srv.close(() => r()));
+  }
+}
+
+describe('POST /api/agent/issues/:id/comments — Rule 2', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    process.env.SUPABASE_URL = 'https://test.supabase.co';
+  });
+
+  it('(a) [PROOF] body + no attachment → 422 PROOF_WITHOUT_ATTACHMENT', async () => {
+    const sb = makeCommentSupabase({ proofCount: 0 });
+    const { status, body } = await callComments(sb, { body: '[PROOF] screenshot shows green build' });
+    expect(status).toBe(422);
+    expect(body.error).toBe('PROOF_WITHOUT_ATTACHMENT');
+    expect(body.attachmentsFound).toBe(0);
+  });
+
+  it('(b) [PROOF] body + attachment from same agent → 201', async () => {
+    const sb = makeCommentSupabase({ proofCount: 1 });
+    const { status } = await callComments(sb, { body: '[PROOF] screenshot shows green build' });
+    expect(status).toBe(201);
+  });
+
+  it('(c) [PROOF] body + X-Forge-Proof-Bypass: true → 201 (no attachment check)', async () => {
+    const sb = makeCommentSupabase({ proofCount: 0 });
+    const { status } = await callComments(
+      sb,
+      { body: '[PROOF] screenshot shows green build' },
+      { 'x-forge-proof-bypass': 'true' },
+    );
+    expect(status).toBe(201);
+  });
+
+  it('(d) [PROOF] body + attachment query errors → 201 (fail-open)', async () => {
+    const sb = makeCommentSupabase({ proofQueryError: 'connection timeout' });
+    const { status } = await callComments(sb, { body: '**[PROOF] build tail attached' });
+    expect(status).toBe(201);
+  });
+});
+
 describe('POST /api/agent/issues/:id/attachments', () => {
   beforeEach(() => {
     vi.resetModules();

@@ -4,6 +4,8 @@ import { logger } from './utils/logger.js';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+const PROOF_REGEX = /^\s*\*{0,2}\[PROOF(?:[\s\]]|—)/i;
+
 const ALLOWED_MIMES = new Set([
   'image/png', 'image/jpeg', 'image/gif', 'image/webp',
   'video/mp4', 'video/webm', 'video/quicktime',
@@ -199,6 +201,36 @@ export function startAgentApi(supabase: SupabaseClient<any, any, any>, port: num
           .eq('id', params.id)
           .single();
         if (issueError || !issue) return json(res, { error: 'Issue not found' }, 404);
+
+        // Rule 2: [PROOF] comments require ≥1 attachment from this agent on this issue in last 10 min
+        const bodyText = body.body as string;
+        const isProof = PROOF_REGEX.test(bodyText);
+        const bypass = req.headers['x-forge-proof-bypass'] === 'true';
+
+        if (isProof && !bypass) {
+          const tenMinBefore = new Date(Date.now() - 10 * 60_000).toISOString();
+          const { count, error: attachErr } = await supabase
+            .from('issue_attachments')
+            .select('id', { count: 'exact', head: true })
+            .eq('issue_id', params.id)
+            .eq('uploaded_by_agent_id', agentId)
+            .gte('created_at', tenMinBefore);
+
+          if (attachErr) {
+            logger.warn({ err: attachErr }, '[comments POST] PROOF attachment check failed, allowing through');
+          } else if ((count ?? 0) === 0) {
+            return json(res, {
+              error: 'PROOF_WITHOUT_ATTACHMENT',
+              message:
+                'Rule 2 of agent-comment-protocol.md: [PROOF] comments require ≥1 uploaded artifact ' +
+                'from this agent on this issue in the 10 minutes before the comment. ' +
+                'Upload via POST /api/agent/issues/{id}/attachments, then repost.',
+              issueId: params.id,
+              agentId,
+              attachmentsFound: 0,
+            }, 422);
+          }
+        }
 
         const { data, error } = await supabase
           .from('issue_comments')

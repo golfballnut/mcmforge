@@ -1,6 +1,26 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createServer } from 'node:http';
 import type { Server } from 'node:http';
+import { EventEmitter } from 'node:events';
+
+const httpMock = vi.hoisted(() => ({
+  createServer: vi.fn((handler: unknown) => ({
+    _handler: handler,
+    listen: vi.fn((_port: number, _host: string, cb?: () => void) => {
+      cb?.();
+    }),
+    once: vi.fn((_event: string, cb: () => void) => cb()),
+    address: vi.fn(() => ({ port: 12345 })),
+    close: vi.fn((cb?: () => void) => cb?.()),
+  })),
+}));
+
+vi.mock('node:http', async () => {
+  const actual = await vi.importActual<typeof import('node:http')>('node:http');
+  return {
+    ...actual,
+    createServer: httpMock.createServer,
+  };
+});
 
 vi.mock('../utils/logger.js', () => ({
   logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), fatal: vi.fn() },
@@ -46,35 +66,155 @@ function makeSupabase(opts: {
   };
 }
 
+async function invokeAgentApi(
+  supabase: unknown,
+  opts: {
+    method: string;
+    url: string;
+    headers?: Record<string, string>;
+    body?: Record<string, unknown>;
+  },
+): Promise<{ status: number; body: unknown }> {
+  const { startAgentApi } = await import('../agent-api.js');
+  const srv = startAgentApi(supabase as never, 0) as Server & {
+    _handler: (req: EventEmitter & { url: string; method: string; headers: Record<string, string> }, res: {
+      writeHead: (status: number, headers: Record<string, string>) => void;
+      end: (data: string) => void;
+    }) => Promise<void>;
+  };
+
+  const req = new EventEmitter() as EventEmitter & {
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+  };
+  req.url = opts.url;
+  req.method = opts.method;
+  req.headers = opts.headers ?? {};
+
+  return new Promise((resolve) => {
+    let status = 200;
+    const res = {
+      writeHead: (nextStatus: number) => {
+        status = nextStatus;
+      },
+      end: (data: string) => {
+        resolve({ status, body: JSON.parse(data) as unknown });
+      },
+    };
+
+    void srv._handler(req, res);
+
+    if (opts.body) {
+      process.nextTick(() => {
+        req.emit('data', Buffer.from(JSON.stringify(opts.body)));
+        req.emit('end');
+      });
+    }
+  });
+}
+
 async function callAttachments(
   supabase: ReturnType<typeof makeSupabase>,
   body: Record<string, unknown>,
   headers: Record<string, string> = {},
 ): Promise<{ status: number; body: Record<string, unknown> }> {
-  const { startAgentApi } = await import('../agent-api.js');
-  const srv = startAgentApi(supabase as never, 0) as Server;
-  await new Promise<void>((r) => srv.once('listening', r));
-  const port = (srv.address() as { port: number }).port;
-
-  try {
-    const res = await fetch(`http://127.0.0.1:${port}/api/agent/issues/${ISSUE_ID}/attachments`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-forge-agent-id': AGENT_ID,
-        ...headers,
-      },
-      body: JSON.stringify(body),
-    });
-    const json = await res.json() as Record<string, unknown>;
-    return { status: res.status, body: json };
-  } finally {
-    await new Promise<void>((r) => srv.close(() => r()));
-  }
+  return invokeAgentApi(supabase, {
+    method: 'POST',
+    url: `/api/agent/issues/${ISSUE_ID}/attachments`,
+    headers: {
+      'content-type': 'application/json',
+      'x-forge-agent-id': AGENT_ID,
+      ...headers,
+    },
+    body,
+  }) as Promise<{ status: number; body: Record<string, unknown> }>;
 }
 
 const COMPANY_ID = 'dddddddd-dddd-dddd-dddd-dddddddddddd';
 const OTHER_AGENT_ID = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+const OTHER_COMPANY_ID = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+
+function makeAgentsSupabase() {
+  const rows = [
+    {
+      id: AGENT_ID,
+      name: 'Fleet Auditor',
+      role: 'auditor',
+      title: 'Fleet Auditor',
+      status: 'active',
+      company_id: COMPANY_ID,
+      adapter_type: 'codex',
+      adapter_config: { model: 'gpt-5' },
+      budget_monthly_cents: 10000,
+      last_heartbeat_at: '2026-04-21T12:00:00.000Z',
+      updated_at: '2026-04-21T12:00:00.000Z',
+    },
+    {
+      id: OTHER_AGENT_ID,
+      name: 'Forge COO',
+      role: 'coo',
+      title: 'COO',
+      status: 'active',
+      company_id: COMPANY_ID,
+      adapter_type: 'codex',
+      adapter_config: { model: 'gpt-5' },
+      budget_monthly_cents: 20000,
+      last_heartbeat_at: '2026-04-21T12:05:00.000Z',
+      updated_at: '2026-04-21T12:05:00.000Z',
+    },
+    {
+      id: '99999999-9999-9999-9999-999999999999',
+      name: 'External Agent',
+      role: 'external',
+      title: 'External',
+      status: 'active',
+      company_id: OTHER_COMPANY_ID,
+      adapter_type: 'codex',
+      adapter_config: { model: 'gpt-5' },
+      budget_monthly_cents: 30000,
+      last_heartbeat_at: '2026-04-21T12:10:00.000Z',
+      updated_at: '2026-04-21T12:10:00.000Z',
+    },
+  ];
+
+  const eq = vi.fn((field: string, value: string) => {
+    if (field === 'id') {
+      return {
+        single: vi.fn().mockResolvedValue({
+          data: rows.find((row) => row.id === value) ?? null,
+          error: null,
+        }),
+      };
+    }
+
+    return Promise.resolve({
+      data: rows
+        .filter((row) => field === 'company_id' && row.company_id === value)
+        .map(({ company_id: _companyId, ...row }) => row),
+      error: null,
+    });
+  });
+
+  return {
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnValue({ eq }),
+    }),
+    storage: { from: vi.fn().mockReturnValue({ upload: vi.fn(), remove: vi.fn() }) },
+    _eq: eq,
+  };
+}
+
+async function callAgents(
+  supabase: ReturnType<typeof makeAgentsSupabase>,
+  headers: Record<string, string> = {},
+): Promise<{ status: number; body: unknown }> {
+  return invokeAgentApi(supabase, {
+    method: 'GET',
+    url: '/api/agents',
+    headers,
+  });
+}
 
 function makeCommentSupabase(opts: {
   proofCount?: number;
@@ -122,27 +262,51 @@ async function callComments(
   body: Record<string, unknown>,
   headers: Record<string, string> = {},
 ): Promise<{ status: number; body: Record<string, unknown> }> {
-  const { startAgentApi } = await import('../agent-api.js');
-  const srv = startAgentApi(supabase as never, 0) as Server;
-  await new Promise<void>((r) => srv.once('listening', r));
-  const port = (srv.address() as { port: number }).port;
-
-  try {
-    const res = await fetch(`http://127.0.0.1:${port}/api/agent/issues/${ISSUE_ID}/comments`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-forge-agent-id': AGENT_ID,
-        ...headers,
-      },
-      body: JSON.stringify(body),
-    });
-    const json = await res.json() as Record<string, unknown>;
-    return { status: res.status, body: json };
-  } finally {
-    await new Promise<void>((r) => srv.close(() => r()));
-  }
+  return invokeAgentApi(supabase, {
+    method: 'POST',
+    url: `/api/agent/issues/${ISSUE_ID}/comments`,
+    headers: {
+      'content-type': 'application/json',
+      'x-forge-agent-id': AGENT_ID,
+      ...headers,
+    },
+    body,
+  }) as Promise<{ status: number; body: Record<string, unknown> }>;
 }
+
+describe('GET /api/agents', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it('returns 401 when X-Forge-Agent-Id header is missing', async () => {
+    const sb = makeAgentsSupabase();
+    const { status, body } = await callAgents(sb);
+    expect(status).toBe(401);
+    expect(body).toEqual({ error: 'Missing x-forge-agent-id' });
+  });
+
+  it('returns an array of same-company agents for a valid caller', async () => {
+    const sb = makeAgentsSupabase();
+    const { status, body } = await callAgents(sb, { 'x-forge-agent-id': AGENT_ID });
+
+    expect(status).toBe(200);
+    expect(Array.isArray(body)).toBe(true);
+    expect(body).toHaveLength(2);
+    expect((body as Array<Record<string, unknown>>).map((agent) => agent.id)).toEqual([
+      AGENT_ID,
+      OTHER_AGENT_ID,
+    ]);
+  });
+
+  it('does not return agents from other companies', async () => {
+    const sb = makeAgentsSupabase();
+    const { body } = await callAgents(sb, { 'x-forge-agent-id': AGENT_ID });
+
+    expect((body as Array<Record<string, unknown>>).some((agent) => agent.id === '99999999-9999-9999-9999-999999999999')).toBe(false);
+    expect(sb._eq).toHaveBeenCalledWith('company_id', COMPANY_ID);
+  });
+});
 
 describe('POST /api/agent/issues/:id/comments — Rule 2', () => {
   beforeEach(() => {

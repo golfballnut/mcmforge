@@ -420,6 +420,25 @@ export function startAgentApi(supabase: SupabaseClient<any, any, any>, port: num
         return json(res, issue, 201);
       }
 
+      // ── GET /api/agents ──────────────────────────────────
+      if (method === 'GET' && url === '/api/agents') {
+        if (!agentId) return json(res, { error: 'Missing x-forge-agent-id' }, 401);
+
+        const { data: agent } = await supabase
+          .from('agents')
+          .select('company_id')
+          .eq('id', agentId)
+          .single();
+        if (!agent) return json(res, { error: 'Agent not found' }, 404);
+
+        const { data: agents } = await supabase
+          .from('agents')
+          .select('id, name, role, title, status, adapter_type, adapter_config, budget_monthly_cents, last_heartbeat_at, updated_at')
+          .eq('company_id', agent.company_id);
+
+        return json(res, agents || []);
+      }
+
       // ── GET /api/health ───────────────────────────────────
       if (method === 'GET' && url === '/api/health') {
         return json(res, { status: 'ok', service: 'forge-agent-api' });

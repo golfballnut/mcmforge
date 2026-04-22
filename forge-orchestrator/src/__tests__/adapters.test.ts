@@ -135,6 +135,23 @@ describe('geminiAdapter', () => {
     expect(call[0].args).toContain('--yolo');
   });
 
+  it.each([
+    ['missing', {}],
+    ['empty', { model: '' }],
+    ['null', { model: null }],
+    ['auto', { model: 'auto' }],
+  ])('defaults %s model config to gemini-2.5-flash before CLI invocation', async (_name, config) => {
+    const result = await geminiAdapter.execute({ ...baseInput, config });
+    const [call] = (runChildProcess as ReturnType<typeof vi.fn>).mock.calls;
+    const args: string[] = call[0].args;
+    const modelFlagIndex = args.indexOf('-m');
+
+    expect(modelFlagIndex).toBeGreaterThanOrEqual(0);
+    expect(args[modelFlagIndex + 1]).toBe('gemini-2.5-flash');
+    expect(args).not.toContain('auto');
+    expect(result.model).toBe('gemini-2.5-flash');
+  });
+
   it('passes cliFlags to the spawned command', async () => {
     await geminiAdapter.execute({
       ...baseInput,

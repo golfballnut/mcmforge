@@ -10,7 +10,11 @@ export const geminiAdapter: CLIAdapter = {
   async execute(input: AdapterExecuteInput): Promise<AdapterExecuteResult> {
     const config = input.config;
     const command = (config.command as string) || 'gemini';
-    const model = (config.model as string) || 'gemini-2.5-pro';
+    const requestedModel = typeof config.model === 'string' ? config.model.trim() : config.model;
+    // Preview models cause RESOURCE_EXHAUSTED in production paths.
+    const model = (typeof requestedModel === 'string' && requestedModel && requestedModel.toLowerCase() !== 'auto')
+      ? requestedModel
+      : 'gemini-2.5-flash';
     const maxTurns = (config.maxTurnsPerRun as number) || 0;
     const timeoutSec = (config.timeoutSec as number) || 0;
     const cliFlags = (config.cliFlags as string[]) || [];
@@ -38,8 +42,7 @@ export const geminiAdapter: CLIAdapter = {
     }
     const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
 
-    const args = ['-p', fullPrompt, '--yolo'];
-    if (model) args.push('--model', model);
+    const args = ['-p', fullPrompt, '--yolo', '-m', model];
     if (cliFlags.length) args.push(...cliFlags);
 
     const env: Record<string, string> = {

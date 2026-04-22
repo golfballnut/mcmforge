@@ -166,4 +166,35 @@ describe('geminiAdapter', () => {
     const result = await geminiAdapter.execute({ ...baseInput, config: {} });
     expect(result.provider).toBe('google');
   });
+
+  it('returns cost when Gemini emits parseable token usage', async () => {
+    (runChildProcess as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      stdout: 'Done\nTokens used: 1,250\n',
+      stderr: '',
+      exitCode: 0,
+      signal: null,
+      timedOut: false,
+    });
+
+    const result = await geminiAdapter.execute({ ...baseInput, config: {} });
+
+    expect(result.costUsd).toBeGreaterThan(0);
+    expect(result.usage?.inputTokens).toBe(1250);
+  });
+
+  it('estimates cost when Gemini emits no parseable token usage', async () => {
+    (runChildProcess as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      stdout: 'Completed without usage output',
+      stderr: '',
+      exitCode: 0,
+      signal: null,
+      timedOut: false,
+    });
+
+    const result = await geminiAdapter.execute({ ...baseInput, config: {} });
+
+    expect(result.costUsd).toBeGreaterThan(0);
+    expect(result.costUsd).not.toBeNull();
+    expect(result.resultJson).toMatchObject({ cost_estimated: true });
+  });
 });

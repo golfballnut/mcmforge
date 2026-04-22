@@ -73,7 +73,7 @@ export const geminiAdapter: CLIAdapter = {
       onSpawn: (pid) => input.onSpawn(pid),
     });
 
-    return parseGeminiResult(result, model, billingType);
+    return parseGeminiResult(result, model, billingType, fullPrompt);
   },
 };
 
@@ -87,6 +87,7 @@ function parseGeminiResult(
   },
   defaultModel: string,
   billingType: string,
+  prompt: string,
 ): AdapterExecuteResult {
   let sessionId: string | null = null;
   let model: string | null = defaultModel;
@@ -123,10 +124,30 @@ function parseGeminiResult(
     }
   }
 
+  const plainTextUsage = parsePlainTextUsage(`${proc.stdout}\n${proc.stderr}`);
+  inputTokens ||= plainTextUsage.inputTokens;
+  outputTokens ||= plainTextUsage.outputTokens;
+  if (inputTokens === 0 && outputTokens === 0 && plainTextUsage.totalTokens > 0) {
+    inputTokens = plainTextUsage.totalTokens;
+  }
+
   // O-3: Calculate cost from tokens when not provided by CLI output
   // Gemini Flash pricing: $0.075/1M input, $0.30/1M output
   if (costUsd === null && (inputTokens > 0 || outputTokens > 0)) {
     costUsd = (inputTokens / 1_000_000) * 0.075 + (outputTokens / 1_000_000) * 0.30;
+  }
+
+  if (costUsd === null) {
+    const outputLength = (summary || proc.stdout || '').length;
+    costUsd = estimateGeminiFlashCost(prompt.length, outputLength);
+    resultJson = {
+      ...(resultJson ?? {}),
+      cost_estimated: true,
+    };
+  }
+
+  if (costUsd <= 0) {
+    costUsd = 0.000001;
   }
 
   return {
@@ -147,4 +168,27 @@ function parseGeminiResult(
     stdoutExcerpt: proc.stdout?.slice(0, 2000) || null,
     stderrExcerpt: proc.stderr?.slice(0, 2000) || null,
   };
+}
+
+function parsePlainTextUsage(text: string): {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+} {
+  const inputTokens = parseTokenCount(text, /\b(?:input|prompt)\s+tokens?\s*(?:used)?\s*[:=]\s*([\d,]+)/i);
+  const outputTokens = parseTokenCount(text, /\b(?:output|completion|response)\s+tokens?\s*(?:used)?\s*[:=]\s*([\d,]+)/i);
+  const totalTokens = parseTokenCount(text, /\b(?:total\s+)?tokens?\s+used\s*[:=]\s*([\d,]+)/i);
+
+  return { inputTokens, outputTokens, totalTokens };
+}
+
+function parseTokenCount(text: string, pattern: RegExp): number {
+  const match = text.match(pattern);
+  if (!match) return 0;
+  return Number.parseInt(match[1].replace(/,/g, ''), 10) || 0;
+}
+
+function estimateGeminiFlashCost(inputLength: number, outputLength: number): number {
+  const estimatedInputTokens = inputLength * 1.25;
+  return (estimatedInputTokens / 1000) * 0.075 + (outputLength / 1000) * 0.30;
 }

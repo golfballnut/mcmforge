@@ -229,7 +229,7 @@ export async function checkAndPauseOnQuotaCap(
   return true;
 }
 
-async function executeRun(
+export async function executeRun(
   supabase: SupabaseClient,
   config: ForgeConfig,
   run: any,
@@ -500,17 +500,32 @@ async function executeRun(
           .single();
 
         if (currentIssue && currentIssue.status === 'in_progress' && currentIssue.assignee_agent_id) {
-          await createWakeup(supabase, {
-            companyId: run.company_id,
-            agentId: currentIssue.assignee_agent_id,
-            source: 'assignment',
-            triggerDetail: `Continue: ${run.trigger_detail || 'in-progress issue'}`,
-            reason: 'Issue still in_progress after last run. Continue working.',
-            payload: { issueId, wakeReason: 'continue_work' },
-            idempotencyKey: `continue-${issueId}-${run.id}`,
-            priority: run.priority ?? 1,
-          });
-          logger.info({ issueId, agent: agent.name }, 'Auto-continue: issue still in_progress, re-waking agent');
+          const { count: recentContinueCount } = await supabase
+            .from('runs')
+            .select('id', { count: 'exact', head: true })
+            .eq('agent_id', currentIssue.assignee_agent_id)
+            .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString())
+            .contains('context_snapshot', { wakeReason: 'continue_work' });
+
+          const CONTINUE_WORK_HOURLY_CAP = 2; // hard cap to prevent self-spawn cascades (FORGE-331)
+          if ((recentContinueCount ?? 0) >= CONTINUE_WORK_HOURLY_CAP) {
+            logger.warn(
+              { issueId, agent: agent.name, recentContinueCount, cap: CONTINUE_WORK_HOURLY_CAP },
+              'Auto-continue skipped: per-agent hourly continue_work cap reached (FORGE-331 guard)',
+            );
+          } else {
+            await createWakeup(supabase, {
+              companyId: run.company_id,
+              agentId: currentIssue.assignee_agent_id,
+              source: 'assignment',
+              triggerDetail: `Continue: ${run.trigger_detail || 'in-progress issue'}`,
+              reason: 'Issue still in_progress after last run. Continue working.',
+              payload: { issueId, wakeReason: 'continue_work' },
+              idempotencyKey: `continue-${issueId}-${run.id}`,
+              priority: run.priority ?? 1,
+            });
+            logger.info({ issueId, agent: agent.name }, 'Auto-continue: issue still in_progress, re-waking agent');
+          }
         }
       } catch (err) {
         logger.debug({ err }, 'Auto-continue check failed');

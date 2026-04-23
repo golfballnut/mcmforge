@@ -55,7 +55,7 @@ Options: (A) run npm install recharts and commit package-lock update, (B) use a 
 ### [PROOF]
 Post when the PR is ready, BEFORE calling `gh pr create`. Include concrete artifacts — not assertions.
 
-**MANDATORY: Every [PROOF] comment must be accompanied by at least ONE uploaded artifact** via `POST /api/agent/issues/{id}/attachments` (the one-shot upload endpoint — see "How to Upload an Artifact" below). No upload = no proof. Steve: "I see agents talking but no screenshots or screen records of bug fixes." This rule closes that gap.
+**MANDATORY: Every [PROOF] comment must link at least ONE artifact in Google Drive** under the `MCM Forge Proof/{company}/{IDENTIFIER} — {title}/` folder (see "How to Upload an Artifact" below). No link = no proof. Steve: "I see agents talking but no screenshots or screen records of bug fixes." This rule closes that gap.
 
 **What to upload (by agent type):**
 | Agent type | Minimum artifact |
@@ -69,7 +69,7 @@ Post when the PR is ready, BEFORE calling `gh pr create`. Include concrete artif
 **What to include in the comment body:**
 - Build output (last 5-10 lines)
 - PR branch + PR command you're about to run
-- The `publicUrl` of every artifact you just uploaded (put them under an `## Artifacts` heading)
+- A `### Proof artifacts — Google Drive` heading with one hyperlink per artifact (folder link + per-file links)
 - A one-line interpretation per artifact ("after-fix screenshot shows 0 warnings in console")
 
 **Example:**
@@ -80,10 +80,11 @@ Post when the PR is ready, BEFORE calling `gh pr create`. Include concrete artif
 Branch: agent/forge-42-cost-chart
 PR: feat(FORGE-42): cost breakdown chart
 
-## Artifacts
-- https://.../artifacts/agent-proof/<issue>/curl-test.txt — `GET /api/costs 200 OK { total: 4.82 }`
-- https://.../artifacts/agent-proof/<issue>/before-chart.png — empty state, pre-fix
-- https://.../artifacts/agent-proof/<issue>/after-chart.png — rendered BarChart with 3 categories
+### Proof artifacts — Google Drive
+Folder: [MCM Forge / FORGE-42 — Cost breakdown chart](https://drive.google.com/drive/folders/…)
+- [2026-04-23_curl-test.txt](https://drive.google.com/file/d/…/view) — `GET /api/costs 200 OK { total: 4.82 }`
+- [2026-04-23_before-chart.png](https://drive.google.com/file/d/…/view) — empty state, pre-fix
+- [2026-04-23_after-chart.png](https://drive.google.com/file/d/…/view) — rendered BarChart with 3 categories
 ```
 
 ---
@@ -119,32 +120,59 @@ The `tags` field is optional metadata. The tag itself MUST appear in the body te
 
 ---
 
-## How to Upload an Artifact (for [PROOF])
+## How to Upload an Artifact (for [PROOF]) — Google Drive
 
-**Endpoint:** `POST /api/agent/issues/{issueId}/attachments` (one-shot — does Supabase storage upload + DB row atomically). Shipped in FORGE-275.
+Proof artifacts live in Google Drive, not Supabase storage. Drive handles videos + large screenshots natively, is browsable cross-device, and gives Steve a single place to curate proof over time without a separate UI.
 
-```bash
-# Base64 the file, then POST it
-B64=$(base64 -i /tmp/qa/after-chart.png)
-curl -s -X POST "$FORGE_API_URL/api/agent/issues/{issueId}/attachments" \
-  -H "X-Forge-Agent-Id: $FORGE_AGENT_ID" \
-  -H "X-Forge-Run-Id: $FORGE_RUN_ID" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"filename\": \"after-chart.png\",
-    \"mimeType\": \"image/png\",
-    \"base64\": \"$B64\",
-    \"category\": \"agent_proof\",
-    \"caption\": \"After fix: BarChart renders 3 cost categories\"
-  }"
-# Response 201: { "id", "storagePath", "publicUrl", "sizeBytes" }
+**Folder convention — agents MUST follow exactly:**
+```
+MCM Forge Proof/
+└── {company}/              ← "DirtSync", "MCM Forge", etc. (title case, spaces allowed)
+    └── {IDENTIFIER} — {title}/   ← e.g. "DIRA-267 — Waze-parity Home screen"
+        └── YYYY-MM-DD_{descriptor}.{ext}
 ```
 
-**Then paste `publicUrl` into the [PROOF] comment body.** The dashboard renders these inline so Steve can see them without clicking.
+The root `MCM Forge Proof` folder already exists at Drive ID `11nELNPmv8GmuCbhpLNTTQfYT_SY5pFPj`. Agents create the `{company}` subfolder on first use, and the `{IDENTIFIER} — {title}` subfolder on first upload for a given issue. Re-use existing folders — search by name before creating.
 
-**Size caps:** images 10 MB, video 50 MB, text/json 2 MB. If your video exceeds 50 MB, compress first: `ffmpeg -i src.mp4 -c:v libx264 -preset fast -crf 28 -vf "scale=-2:720" out.mp4` (yields ~20 MB for 10 min of sim footage).
+**Upload via `gws` CLI (available on the Mini + laptop):**
+```bash
+# 1. Find or create the issue folder (idempotent — search first)
+ISSUE_FOLDER_ID=$(gws drive files list \
+  --params "{\"q\":\"name='${IDENTIFIER} — ${TITLE}' and '${PARENT_ID}' in parents and trashed=false\",\"fields\":\"files(id)\"}" \
+  --format json 2>/dev/null \
+  | python3 -c "import json,sys; d=json.load(sys.stdin)['files']; print(d[0]['id'] if d else '')")
 
-**No upload = [PROOF] is rejected.** Don't post [PROOF] with only a text summary — the rule is there because every prior agent quietly skipped this and Steve had no visual evidence of anything that shipped.
+if [ -z "$ISSUE_FOLDER_ID" ]; then
+  ISSUE_FOLDER_ID=$(gws drive files create \
+    --json "{\"name\":\"${IDENTIFIER} — ${TITLE}\",\"mimeType\":\"application/vnd.google-apps.folder\",\"parents\":[\"${PARENT_ID}\"]}" \
+    --format json 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+fi
+
+# 2. Upload the file. gws requires the file to be inside cwd; cd to /tmp first.
+cd /tmp && FILE_ID=$(gws drive files create \
+  --json "{\"name\":\"$(date +%Y-%m-%d)_after-chart.png\",\"parents\":[\"${ISSUE_FOLDER_ID}\"],\"description\":\"After fix: BarChart renders 3 cost categories\"}" \
+  --upload after-chart.png \
+  --upload-content-type image/png \
+  --format json 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+
+# 3. Grant anyone-with-link: reader so the URL works for Steve + anyone reading the issue
+gws drive permissions create \
+  --params "{\"fileId\":\"${FILE_ID}\"}" \
+  --json '{"type":"anyone","role":"reader"}' >/dev/null 2>&1
+
+# 4. Build the shareable URL (file view link, not download)
+echo "https://drive.google.com/file/d/${FILE_ID}/view"
+```
+
+**Then paste the URL into the [PROOF] comment body** under a `### Proof artifacts — Google Drive` heading, using markdown link syntax: `[YYYY-MM-DD_descriptor.ext](https://drive.google.com/file/d/…/view)`.
+
+**Size caps:** Drive's per-file ceiling is 5 TB. Practical: keep screenshots under 10 MB (PNG compression), videos under 200 MB (transcode with `ffmpeg -c:v libx264 -preset fast -crf 28 -vf "scale=-2:720"` for ~20 MB per 10 min sim footage).
+
+**No Drive link = [PROOF] is rejected.** Don't post [PROOF] with only a text summary — the rule is there because every prior agent quietly skipped this and Steve had no visual evidence of anything that shipped.
+
+**Never delete proof folders.** Drive links are durable only while the file exists. If you need to tidy, move to `MCM Forge Proof/_archive/{company}/…` — do not trash.
+
+**Supabase storage is deprecated for new proof** — it still exists for legacy attachments (pre-2026-04-23) but all new proof goes to Drive. Don't mix links from both in the same comment.
 
 ---
 

@@ -1,5 +1,15 @@
 # Skill: Forge Coder
 
+## Single-ticket lock (READ FIRST)
+
+You are running for **exactly one ticket**. Its identifier is in env var `FORGE_ALLOWED_IDENTIFIER`. Its UUID is in `FORGE_ALLOWED_ISSUE_ID`. If either is unset, **abort immediately** with `[SCOPE-LOCK-ERROR] missing ticket env`.
+
+You do NOT have Supabase MCP access. Do not attempt to query `forge.issues`. All ticket context — body, ACs, scope_lock, reference artifacts — is pre-injected into your prompt below. If you think you need more, you are wrong; what is below is all you get.
+
+You may touch only files matching the `scope_lock.files_glob` patterns provided in the prompt. Any file path outside those patterns → abort with `[SCOPE-LOCK-ERROR] out-of-scope file: <path>`.
+
+Your work must reference `$FORGE_ALLOWED_IDENTIFIER` only — in commit messages, test file names, branch name, comments. Mentioning any other ticket identifier in your output → `[SCOPE-LOCK-ERROR] cross-ticket reference`.
+
 > Stage: 2 of 6
 > Model: Claude Sonnet 4.6, `max_turns=50`
 > Input: latest `spec` stage_artifact for the issue

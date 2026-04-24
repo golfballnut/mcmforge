@@ -76,6 +76,8 @@ export const claudeAdapter: CLIAdapter = {
 
     if (input.context.issueId) env.FORGE_ISSUE_ID = input.context.issueId as string;
     if (input.context.wakeReason) env.FORGE_WAKE_REASON = input.context.wakeReason as string;
+    if (input.context.FORGE_ALLOWED_ISSUE_ID) env.FORGE_ALLOWED_ISSUE_ID = input.context.FORGE_ALLOWED_ISSUE_ID as string;
+    if (input.context.FORGE_ALLOWED_IDENTIFIER) env.FORGE_ALLOWED_IDENTIFIER = input.context.FORGE_ALLOWED_IDENTIFIER as string;
 
     logger.info({ command, args: args.join(' '), cwd: input.cwd, hasToken: !!env.CLAUDE_CODE_OAUTH_TOKEN, promptLength: fullPrompt.length }, 'Spawning Claude CLI');
 

@@ -301,22 +301,70 @@ export async function executeRun(
       goalContext: goalContext || undefined,
     };
 
+    // Enforce tool_profile: restrict tools and inject scope lock env vars
+    const toolProfile = (agent.tool_profile as Record<string, unknown>) || {};
+    logger.debug({ agentId: agent.id, tool_profile: toolProfile }, 'Applying agent tool_profile restrictions');
+    const tpAllowedTools = (toolProfile.allowed_tools as string[] | undefined) || [];
+    const tpDeniedServers = (toolProfile.denied_mcp_servers as string[] | undefined) || [];
+    const tpIssueScope = (toolProfile.issue_scope as string | undefined) || 'full';
+
+    const toolProfileFlags: string[] = [];
+    if (tpAllowedTools.length) {
+      toolProfileFlags.push('--allowedTools', tpAllowedTools.join(','));
+    }
+    for (const server of tpDeniedServers) {
+      // Normalize: 'supabase' or 'mcp__supabase' → block pattern 'mcp__supabase__*'
+      const base = server.replace(/^mcp__/, '');
+      toolProfileFlags.push('--disallowedTools', `mcp__${base}__*`);
+    }
+
+    const enrichedAdapterConfig: Record<string, unknown> = toolProfileFlags.length
+      ? {
+          ...(agent.adapter_config || {}),
+          cliFlags: [
+            ...((agent.adapter_config?.cliFlags as string[]) || []),
+            ...toolProfileFlags,
+          ],
+        }
+      : { ...(agent.adapter_config || {}) };
+
+    // Inject scope lock env vars for single_ticket agents
+    const scopeIssueId = run.context_snapshot?.issueId as string | undefined;
+    let scopeIdentifier: string | undefined;
+    if (tpIssueScope === 'single_ticket' && scopeIssueId) {
+      try {
+        const { data: issueRow } = await supabase
+          .from('issues')
+          .select('identifier')
+          .eq('id', scopeIssueId)
+          .single();
+        scopeIdentifier = issueRow?.identifier || undefined;
+      } catch { /* non-fatal — env var just won't be set */ }
+    }
+    const contextWithScope = tpIssueScope === 'single_ticket' && scopeIssueId
+      ? {
+          ...contextWithHistory,
+          FORGE_ALLOWED_ISSUE_ID: scopeIssueId,
+          ...(scopeIdentifier ? { FORGE_ALLOWED_IDENTIFIER: scopeIdentifier } : {}),
+        }
+      : contextWithHistory;
+
     const result = await adapter.execute({
       runId: run.id,
       agent: {
         id: agent.id,
         companyId: agent.company_id,
         name: agent.name,
-        adapter_config: agent.adapter_config || {},
+        adapter_config: enrichedAdapterConfig,
       },
-      config: agent.adapter_config || {},
+      config: enrichedAdapterConfig,
       promptTemplate: agent.prompt_template,
       bootstrapPrompt: agent.bootstrap_prompt,
       instructionsFile: agent.instructions_file,
       skills: agent.skills || [],
       sessionId: agent.session_id,
       sessionParams: agent.session_params,
-      context: contextWithHistory,
+      context: contextWithScope,
       cwd,
       agentHome,
       signal: abortController.signal,

@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { logger } from './utils/logger.js';
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const PROOF_REGEX = /^\s*\*{0,2}\[PROOF(?:[\s\]]|—)/i;
 const ALLOWED_MIMES = new Set([
     'image/png', 'image/jpeg', 'image/gif', 'image/webp',
     'video/mp4', 'video/webm', 'video/quicktime',
@@ -184,6 +185,33 @@ export function startAgentApi(supabase, port) {
                     .single();
                 if (issueError || !issue)
                     return json(res, { error: 'Issue not found' }, 404);
+                // Rule 2: [PROOF] comments require ≥1 attachment from this agent on this issue in last 10 min
+                const bodyText = body.body;
+                const isProof = PROOF_REGEX.test(bodyText);
+                const bypass = req.headers['x-forge-proof-bypass'] === 'true';
+                if (isProof && !bypass) {
+                    const tenMinBefore = new Date(Date.now() - 10 * 60_000).toISOString();
+                    const { count, error: attachErr } = await supabase
+                        .from('issue_attachments')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('issue_id', params.id)
+                        .eq('uploaded_by_agent_id', agentId)
+                        .gte('created_at', tenMinBefore);
+                    if (attachErr) {
+                        logger.warn({ err: attachErr }, '[comments POST] PROOF attachment check failed, allowing through');
+                    }
+                    else if ((count ?? 0) === 0) {
+                        return json(res, {
+                            error: 'PROOF_WITHOUT_ATTACHMENT',
+                            message: 'Rule 2 of agent-comment-protocol.md: [PROOF] comments require ≥1 uploaded artifact ' +
+                                'from this agent on this issue in the 10 minutes before the comment. ' +
+                                'Upload via POST /api/agent/issues/{id}/attachments, then repost.',
+                            issueId: params.id,
+                            agentId,
+                            attachmentsFound: 0,
+                        }, 422);
+                    }
+                }
                 const { data, error } = await supabase
                     .from('issue_comments')
                     .insert({
@@ -352,6 +380,23 @@ export function startAgentApi(supabase, port) {
                 if (error)
                     return json(res, { error: error.message }, 500);
                 return json(res, issue, 201);
+            }
+            // ── GET /api/agents ──────────────────────────────────
+            if (method === 'GET' && url === '/api/agents') {
+                if (!agentId)
+                    return json(res, { error: 'Missing x-forge-agent-id' }, 401);
+                const { data: agent } = await supabase
+                    .from('agents')
+                    .select('company_id')
+                    .eq('id', agentId)
+                    .single();
+                if (!agent)
+                    return json(res, { error: 'Agent not found' }, 404);
+                const { data: agents } = await supabase
+                    .from('agents')
+                    .select('id, name, role, title, status, adapter_type, adapter_config, budget_monthly_cents, last_heartbeat_at, updated_at')
+                    .eq('company_id', agent.company_id);
+                return json(res, agents || []);
             }
             // ── GET /api/health ───────────────────────────────────
             if (method === 'GET' && url === '/api/health') {

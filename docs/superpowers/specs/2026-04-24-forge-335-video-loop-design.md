@@ -1,4 +1,4 @@
-# FORGE-293 — Video-Diff Quality Gate (Ralph Loop w/ Vision)
+# FORGE-335 — Video-Diff Quality Gate (Ralph Loop w/ Vision)
 
 **Status:** Design approved 2026-04-24
 **Owner:** CEO (acting: Claude Opus 4.7)
@@ -164,9 +164,9 @@ CREATE INDEX video_diff_runs_issue_idx ON forge.video_diff_runs (issue_id, creat
 
 **Reference clip:** `https://drive.google.com/file/d/1oZmbW3yVpf_TCqRcm-Ah0TfMnuVcJkP5/view` (Steve's 30-sec Waze iOS recording: tap search → type "KT Jewelers" → tap first result → route preview loads).
 
-**Gate proof:** Before FORGE-293, current factory would ship a NaN-regression fix that the Visual Critic rubber-stamps. After FORGE-293, Video Critic sees the freeze frames (candidate shows no keyboard at t+2s while reference shows keyboard rising), diff_score > 15, `device_log_findings` non-empty → Fixer re-enters. Exit only when sim-side freeze is fully gone.
+**Gate proof:** Before FORGE-335, current factory would ship a NaN-regression fix that the Visual Critic rubber-stamps. After FORGE-335, Video Critic sees the freeze frames (candidate shows no keyboard at t+2s while reference shows keyboard rising), diff_score > 15, `device_log_findings` non-empty → Fixer re-enters. Exit only when sim-side freeze is fully gone.
 
-## Success criteria (FORGE-293 itself)
+## Success criteria (FORGE-335 itself)
 
 1. Factory Upgrader ships all schema migrations + 3 new/updated skills + 1 new orchestrator script on a PR to MCMForge main.
 2. DIRA-277 filed with reference clip linked.

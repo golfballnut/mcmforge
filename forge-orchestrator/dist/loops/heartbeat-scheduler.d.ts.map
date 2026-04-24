@@ -1,0 +1,1 @@
+{"version":3,"file":"heartbeat-scheduler.d.ts","sourceRoot":"","sources":["../../src/loops/heartbeat-scheduler.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,uBAAuB,CAAC;AACvD,OAAO,EAAE,WAAW,EAAE,MAAM,cAAc,CAAC;AAI3C,wBAAsB,uBAAuB,CAAC,QAAQ,EAAE,cAAc,EAAE,MAAM,EAAE,WAAW,iBAY1F"}

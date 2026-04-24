@@ -1,0 +1,1105 @@
+import { mkdirSync } from 'node:fs';
+import path from 'node:path';
+import { judgeImages } from '../agents/visual-judge.js';
+import { getAdapter } from '../adapters/registry.js';
+import { recordCost } from '../services/cost-ledger.js';
+import { releaseIssueExecution, lockIssueExecution } from '../services/issue-lifecycle.js';
+import { createWakeup } from '../services/wakeup.js';
+import { indexRunResult, searchAgentHistory } from '../services/session-search.js';
+import { logger } from '../utils/logger.js';
+const activeRuns = new Map();
+let shuttingDown = false;
+export function getActiveRunCount() {
+    return activeRuns.size;
+}
+export function getActiveRuns() {
+    return activeRuns;
+}
+export function setShuttingDown() {
+    shuttingDown = true;
+}
+export async function startRunExecutor(supabase, config) {
+    logger.info({ interval: config.runPollIntervalMs }, 'Run executor started');
+    const tick = async () => {
+        // Check for newly assigned issues and create wakeups before claiming runs
+        try {
+            await checkAssignedIssues(supabase);
+        }
+        catch (err) {
+            logger.error(err, 'Issue assignment check failed');
+        }
+        if (shuttingDown || activeRuns.size >= config.maxConcurrentRuns)
+            return;
+        try {
+            await claimAndExecuteNextRun(supabase, config);
+        }
+        catch (err) {
+            logger.error(err, 'Run executor tick failed');
+        }
+    };
+    setInterval(tick, config.runPollIntervalMs);
+}
+async function claimAndExecuteNextRun(supabase, config) {
+    // Claim next queued run: respect priority, skip runs with future not_before
+    const now = new Date().toISOString();
+    const { data: queuedRuns } = await supabase
+        .from('runs')
+        .select('*, agent:agents(*)')
+        .eq('status', 'queued')
+        .or(`not_before.is.null,not_before.lte.${now}`)
+        .order('priority', { ascending: false })
+        .order('created_at', { ascending: true })
+        .limit(1);
+    if (!queuedRuns?.length)
+        return;
+    const run = queuedRuns[0];
+    const agent = run.agent;
+    const { data: claimed, error } = await supabase
+        .from('runs')
+        .update({
+        status: 'running',
+        started_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+    })
+        .eq('id', run.id)
+        .eq('status', 'queued')
+        .select()
+        .single();
+    if (error || !claimed)
+        return;
+    if (agent.status === 'paused' || agent.status === 'terminated') {
+        await cancelRun(supabase, run.id, `Agent ${agent.name} is ${agent.status}`);
+        return;
+    }
+    // Dummy-Proof Rule 1: no agent at G0-G2 may run autonomously.
+    // certification_gate column added 2026-04-21 per agent-certification-gates.md skill.
+    // G0=uncertified, G1=skill-complete, G2=dry-run, G3=supervised-live, G4=match-test, G5=autonomous.
+    // Runs spawned from invocation_source = 'ceo_manual' | 'steve_manual' are allowed at G1+.
+    const gate = agent.certification_gate ?? 0;
+    const isManualDispatch = run.invocation_source === 'ceo_manual' || run.invocation_source === 'steve_manual';
+    if (gate < 3 && !isManualDispatch) {
+        await cancelRun(supabase, run.id, `Agent ${agent.name} at G${gate} — needs G3+ for autonomous dispatch (or invocation_source=ceo_manual/steve_manual)`);
+        return;
+    }
+    // Budget enforcement: auto-pause agent if monthly spend exceeds limit
+    if (agent.budget_monthly_cents > 0) {
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+        const { data: spend } = await supabase
+            .from('cost_events')
+            .select('cost_cents')
+            .eq('agent_id', agent.id)
+            .gte('occurred_at', startOfMonth.toISOString());
+        const totalSpent = (spend || []).reduce((sum, e) => sum + (e.cost_cents || 0), 0);
+        if (totalSpent >= agent.budget_monthly_cents) {
+            logger.warn({ agent: agent.name, spent: totalSpent, budget: agent.budget_monthly_cents }, 'Agent over budget, auto-pausing');
+            await supabase.from('agents').update({
+                status: 'paused',
+                pause_reason: `Budget exceeded: $${(totalSpent / 100).toFixed(2)} of $${(agent.budget_monthly_cents / 100).toFixed(2)}`,
+                paused_at: new Date().toISOString(),
+            }).eq('id', agent.id);
+            await cancelRun(supabase, run.id, 'Agent over budget');
+            return;
+        }
+    }
+    // Approval gate: if agent requires approval, hold the run until approved
+    if (agent.approval_required) {
+        // Check if an approval already exists and is approved
+        const { data: existingApproval } = await supabase
+            .from('approvals')
+            .select('id, status')
+            .eq('run_id', run.id)
+            .limit(1);
+        if (existingApproval?.length) {
+            if (existingApproval[0].status === 'approved') {
+                // Good — approval granted, proceed
+                logger.info({ runId: run.id, agent: agent.name }, 'Approval granted — executing');
+            }
+            else if (existingApproval[0].status === 'rejected') {
+                await cancelRun(supabase, run.id, 'Approval rejected');
+                return;
+            }
+            else {
+                // Still pending — put run back to queued
+                await supabase.from('runs').update({
+                    status: 'queued',
+                    updated_at: new Date().toISOString(),
+                }).eq('id', run.id);
+                return;
+            }
+        }
+        else {
+            // No approval exists yet — create one and hold the run
+            await supabase.from('approvals').insert({
+                company_id: run.company_id,
+                type: 'run_execution',
+                requested_by_agent_id: agent.id,
+                run_id: run.id,
+                status: 'pending',
+                payload: {
+                    agentName: agent.name,
+                    triggerDetail: run.trigger_detail,
+                    context: run.context_snapshot,
+                },
+            });
+            // Put run back to queued — it'll be picked up again after approval
+            await supabase.from('runs').update({
+                status: 'queued',
+                updated_at: new Date().toISOString(),
+            }).eq('id', run.id);
+            logger.info({ runId: run.id, agent: agent.name }, 'Approval required — holding run');
+            return;
+        }
+    }
+    await supabase
+        .from('agents')
+        .update({ status: 'running', updated_at: new Date().toISOString() })
+        .eq('id', agent.id);
+    logger.info({ runId: run.id, agent: agent.name }, 'Executing run');
+    executeRun(supabase, config, run, agent);
+}
+async function executeRun(supabase, config, run, agent) {
+    const adapter = getAdapter(agent.adapter_type);
+    const abortController = new AbortController();
+    const cwd = agent.adapter_config?.cwd || config.agentHomeDir;
+    // Create agent home directory with persistent subdirs
+    const agentHome = path.join(config.agentHomeDir, agent.name.toLowerCase().replace(/\s+/g, '-'));
+    mkdirSync(path.join(agentHome, 'memory'), { recursive: true });
+    mkdirSync(path.join(agentHome, 'life'), { recursive: true });
+    // Dry-run mode: skip CLI spawn, mark run as succeeded immediately
+    if (config.dryRun) {
+        logger.info({ runId: run.id, agent: agent.name, adapterType: agent.adapter_type }, 'DRY RUN: Would spawn CLI');
+        await supabase.from('runs').update({
+            status: 'succeeded',
+            summary: `Dry run — would spawn ${agent.adapter_type} for "${run.context_snapshot?.wakeReason || 'unknown'}"`,
+            finished_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+        }).eq('id', run.id);
+        await supabase.from('agents').update({
+            status: 'idle',
+            last_heartbeat_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+        }).eq('id', agent.id);
+        activeRuns.delete(run.id);
+        return;
+    }
+    try {
+        // Inject recent history from Supabase runs table — agent memory
+        const recentHistory = await searchAgentHistory(supabase, {
+            agentId: agent.id,
+            limit: 3,
+        });
+        const historyContext = recentHistory.length > 0
+            ? recentHistory.map((h, i) => `--- Previous Run ${i + 1} (${h.createdAt}) ---\n${h.resultText.slice(0, 500)}`).join('\n\n')
+            : '';
+        // Inject goal context — agents should know the north star
+        let goalContext = '';
+        try {
+            const { data: goals } = await supabase
+                .from('goals')
+                .select('title, description, status')
+                .eq('company_id', run.company_id)
+                .in('status', ['active', 'in_progress'])
+                .order('created_at', { ascending: true })
+                .limit(5);
+            if (goals?.length) {
+                goalContext = '## Company Goals\n' + goals.map((g) => `- **${g.title}** (${g.status}): ${g.description || ''}`).join('\n');
+            }
+        }
+        catch (err) {
+            logger.debug({ err }, 'Failed to fetch goals — continuing without');
+        }
+        const contextWithHistory = {
+            ...(run.context_snapshot || {}),
+            recentHistory: historyContext || undefined,
+            goalContext: goalContext || undefined,
+        };
+        const result = await adapter.execute({
+            runId: run.id,
+            agent: {
+                id: agent.id,
+                companyId: agent.company_id,
+                name: agent.name,
+                adapter_config: agent.adapter_config || {},
+            },
+            config: agent.adapter_config || {},
+            promptTemplate: agent.prompt_template,
+            bootstrapPrompt: agent.bootstrap_prompt,
+            instructionsFile: agent.instructions_file,
+            skills: agent.skills || [],
+            sessionId: agent.session_id,
+            sessionParams: agent.session_params,
+            context: contextWithHistory,
+            cwd,
+            agentHome,
+            signal: abortController.signal,
+            onLog: async (stream, chunk) => {
+                // Keep run alive — update updated_at so orphan reaper doesn't kill us
+                await supabase.from('runs').update({ updated_at: new Date().toISOString() }).eq('id', run.id);
+                await supabase.from('run_events').insert({
+                    company_id: run.company_id,
+                    run_id: run.id,
+                    agent_id: run.agent_id,
+                    seq: Date.now(),
+                    event_type: stream,
+                    stream,
+                    message: chunk,
+                });
+            },
+            onSpawn: async (pid) => {
+                activeRuns.set(run.id, { pid, abortController });
+                await supabase
+                    .from('runs')
+                    .update({ process_pid: pid, process_started_at: new Date().toISOString() })
+                    .eq('id', run.id);
+            },
+        });
+        const status = result.timedOut ? 'timed_out'
+            : (result.exitCode === 0 ? 'succeeded' : 'failed');
+        // Detect [SILENT] marker — agent had nothing to report
+        const resultText = result.summary || result.resultJson?.result || '';
+        const isSilent = resultText.includes('[SILENT]');
+        if (isSilent) {
+            logger.info({ runId: run.id, agent: agent.name }, 'Silent run — agent had nothing to report');
+        }
+        await supabase
+            .from('runs')
+            .update({
+            status,
+            exit_code: result.exitCode,
+            signal: result.signal,
+            timed_out: result.timedOut,
+            error: result.errorMessage,
+            stdout_excerpt: result.stdoutExcerpt,
+            stderr_excerpt: result.stderrExcerpt,
+            session_id_after: result.sessionId,
+            session_params: result.sessionParams,
+            result_json: result.resultJson,
+            summary: isSilent ? '[SILENT] ' + (result.summary || 'No work to do') : result.summary,
+            input_tokens: result.usage?.inputTokens ?? 0,
+            cached_input_tokens: result.usage?.cachedInputTokens ?? 0,
+            output_tokens: result.usage?.outputTokens ?? 0,
+            cost_usd: result.costUsd,
+            model: result.model,
+            finished_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+        })
+            .eq('id', run.id);
+        // Preserve paused/terminated status — never overwrite them on run completion.
+        // Bug fixed 2026-04-21 after Map Rendering Expert burned $4.02 in idle-loop:
+        // CEO set agent=paused, run-executor completed a queued run and line 321 flipped
+        // status back to 'idle' unconditionally → heartbeat woke it → repeat.
+        // Now only update status if it's currently 'running' (the state we claimed).
+        await supabase
+            .from('agents')
+            .update({
+            status: status === 'succeeded' ? 'idle' : 'error',
+            session_id: result.clearSession ? null : (result.sessionId ?? agent.session_id),
+            session_params: result.clearSession ? null : (result.sessionParams ?? agent.session_params),
+            last_heartbeat_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+        })
+            .eq('id', agent.id)
+            .eq('status', 'running'); // only flip from running — leaves paused/terminated/error untouched
+        // O-2: Auto-heal ERROR status — if agent was in error and just succeeded, log the recovery
+        if (status === 'succeeded' && agent.status === 'error') {
+            await supabase.from('agents').update({ status: 'idle' }).eq('id', agent.id);
+            logger.info({ agentId: agent.id }, 'Auto-healed ERROR status');
+        }
+        if (result.usage && (result.usage.inputTokens > 0 || result.usage.outputTokens > 0)) {
+            await recordCost(supabase, {
+                companyId: run.company_id,
+                agentId: run.agent_id,
+                runId: run.id,
+                issueId: run.context_snapshot?.issueId,
+                projectId: run.context_snapshot?.projectId,
+                provider: result.provider ?? 'unknown',
+                model: result.model ?? 'unknown',
+                billingType: result.billingType ?? 'subscription',
+                inputTokens: result.usage.inputTokens,
+                cachedInputTokens: result.usage.cachedInputTokens ?? 0,
+                outputTokens: result.usage.outputTokens,
+                costCents: Math.round((result.costUsd ?? 0) * 100),
+            });
+        }
+        await releaseIssueExecution(supabase, run);
+        // Auto-handoffs on successful runs
+        if (status === 'succeeded') {
+            // Assembly line handoffs — order matters
+            try {
+                await checkForTestRunnerHandoff(supabase, run);
+            }
+            catch (err) {
+                logger.error({ err, runId: run.id }, 'Test Runner handoff check failed');
+            }
+            try {
+                await checkForCritiqueHandoff(supabase, run);
+            }
+            catch (err) {
+                logger.error({ err, runId: run.id }, 'Critique handoff check failed');
+            }
+            try {
+                await checkForVisualJudgeHandoff(supabase, run);
+            }
+            catch (err) {
+                logger.error({ err, runId: run.id }, 'Visual Judge handoff check failed');
+            }
+            try {
+                await checkForQAHandoff(supabase, run);
+            }
+            catch (err) {
+                logger.error({ err, runId: run.id }, 'QA handoff check failed');
+            }
+            try {
+                await checkForShipHandoff(supabase, run);
+            }
+            catch (err) {
+                logger.error({ err, runId: run.id }, 'Ship handoff check failed');
+            }
+        }
+        // Auto-post run results as issue comment (agent may not have done this)
+        const issueId = run.context_snapshot?.issueId;
+        const runSummary = isSilent ? null : (result.summary || resultText);
+        if (issueId && runSummary && status === 'succeeded') {
+            try {
+                await autoPostRunComment(supabase, run, agent, runSummary, result.costUsd);
+            }
+            catch (err) {
+                logger.debug({ err, runId: run.id }, 'Auto-post comment failed');
+            }
+        }
+        // Auto-wake parent issue owner when subtask completes
+        if (issueId && status === 'succeeded') {
+            try {
+                await wakeParentIssueOwner(supabase, run, issueId);
+            }
+            catch (err) {
+                logger.debug({ err, runId: run.id }, 'Wake parent owner failed');
+            }
+        }
+        // Auto-continue: if issue is still in_progress after run, re-wake agent to keep working
+        // BUT: skip if the agent reported nothing to do (prevents infinite CEO wake loops)
+        const summaryLower = (result.summary || '').toLowerCase();
+        const nothingToDo = isSilent
+            || summaryLower.includes('no action needed')
+            || summaryLower.includes('nothing to do')
+            || summaryLower.includes('waiting for')
+            || summaryLower.includes('all systems nominal')
+            || summaryLower.includes('inbox empty');
+        if (issueId && status === 'succeeded' && !nothingToDo) {
+            try {
+                const { data: currentIssue } = await supabase
+                    .from('issues')
+                    .select('status, assignee_agent_id')
+                    .eq('id', issueId)
+                    .single();
+                if (currentIssue && currentIssue.status === 'in_progress' && currentIssue.assignee_agent_id) {
+                    await createWakeup(supabase, {
+                        companyId: run.company_id,
+                        agentId: currentIssue.assignee_agent_id,
+                        source: 'assignment',
+                        triggerDetail: `Continue: ${run.trigger_detail || 'in-progress issue'}`,
+                        reason: 'Issue still in_progress after last run. Continue working.',
+                        payload: { issueId, wakeReason: 'continue_work' },
+                        idempotencyKey: `continue-${issueId}-${run.id}`,
+                        priority: run.priority ?? 1,
+                    });
+                    logger.info({ issueId, agent: agent.name }, 'Auto-continue: issue still in_progress, re-waking agent');
+                }
+            }
+            catch (err) {
+                logger.debug({ err }, 'Auto-continue check failed');
+            }
+        }
+        else if (nothingToDo) {
+            logger.info({ issueId, agent: agent.name }, 'Auto-continue skipped: agent reported nothing to do');
+        }
+        // Index the run result for FTS5 cross-session search
+        const indexableText = result.summary || result.resultJson?.result || '';
+        if (indexableText && !isSilent) {
+            indexRunResult(config.agentHomeDir, {
+                runId: run.id,
+                agentId: agent.id,
+                agentName: agent.name,
+                companyId: run.company_id,
+                resultText: indexableText,
+                costUsd: result.costUsd ?? null,
+                turnsUsed: result.resultJson?.num_turns ?? null,
+                status,
+                issueId: run.context_snapshot?.issueId ?? null,
+            });
+        }
+        // Retry failed runs automatically
+        if (status === 'failed' || status === 'timed_out') {
+            await maybeRetryRun(supabase, run, agent, result.errorMessage || 'Non-zero exit code');
+        }
+        logger.info({ runId: run.id, status, agent: agent.name }, 'Run completed');
+    }
+    catch (err) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        logger.error({ err, runId: run.id }, 'Run execution failed');
+        await supabase
+            .from('runs')
+            .update({
+            status: 'failed',
+            error: errorMsg,
+            finished_at: new Date().toISOString(),
+        })
+            .eq('id', run.id);
+        await supabase
+            .from('agents')
+            .update({ status: 'error', updated_at: new Date().toISOString() })
+            .eq('id', agent.id);
+        // Retry on crash/exception too
+        await maybeRetryRun(supabase, run, agent, errorMsg);
+    }
+    finally {
+        activeRuns.delete(run.id);
+    }
+}
+/**
+ * Detect issues that have been assigned to an agent (assignee_agent_id set, status='todo',
+ * no active execution lock) and create wakeup requests so the agent picks them up.
+ */
+async function checkAssignedIssues(supabase) {
+    const { data: issues, error } = await supabase
+        .from('issues')
+        .select('id, company_id, assignee_agent_id, title, project_id, priority')
+        .eq('status', 'todo')
+        .not('assignee_agent_id', 'is', null)
+        .is('execution_run_id', null)
+        .limit(10);
+    if (error) {
+        logger.error({ error }, 'Failed to query assigned issues');
+        return;
+    }
+    if (!issues?.length)
+        return;
+    // Throttle: collect which agents already have queued or running runs
+    const agentIds = [...new Set(issues.map((i) => i.assignee_agent_id))];
+    const { data: activeAgentRuns } = await supabase
+        .from('runs')
+        .select('agent_id')
+        .in('agent_id', agentIds)
+        .in('status', ['queued', 'running']);
+    const busyAgents = new Set((activeAgentRuns || []).map((r) => r.agent_id));
+    for (const issue of issues) {
+        const agentId = issue.assignee_agent_id;
+        // Skip if this agent already has work in progress — one issue at a time
+        if (busyAgents.has(agentId)) {
+            logger.debug({ issueId: issue.id, agentId }, 'Agent busy — skipping issue until current work completes');
+            continue;
+        }
+        // O-1: Per-issue dedup — skip if a run is already queued/running for this issue
+        const { data: activeRun } = await supabase
+            .from('runs')
+            .select('id')
+            .eq('context_snapshot->>issueId', issue.id)
+            .in('status', ['running', 'queued'])
+            .maybeSingle();
+        if (activeRun) {
+            logger.debug({ issueId: issue.id, agentId }, 'Issue already has active run — skipping dispatch');
+            continue;
+        }
+        // Mark this agent as busy so we don't assign a second issue in the same tick
+        busyAgents.add(agentId);
+        logger.debug({ issueId: issue.id, agentId }, 'Creating wakeup for assigned issue');
+        // Map issue priority to run priority: critical=3, high=2, medium=1, low=0
+        const priorityMap = { critical: 3, high: 2, medium: 1, low: 0 };
+        const runPriority = priorityMap[issue.priority] ?? 0;
+        const runId = await createWakeup(supabase, {
+            companyId: issue.company_id,
+            agentId,
+            source: 'assignment',
+            triggerDetail: issue.title,
+            reason: `Assigned issue: ${issue.title}`,
+            payload: {
+                issueId: issue.id,
+                projectId: issue.project_id ?? null,
+            },
+            // Use date-hour so the same issue can re-trigger each hour (not permanently blocked)
+            idempotencyKey: `assignment-${issue.id}-${new Date().toISOString().slice(0, 13)}`,
+            priority: runPriority,
+        });
+        if (runId) {
+            await lockIssueExecution(supabase, issue.id, runId);
+        }
+    }
+}
+/**
+ * After iOS Builder marks an issue 'in_review', auto-create a test run subtask
+ * assigned to the company's 'Test Runner' agent. The Test Runner builds on Mini,
+ * runs XCUITests, takes screenshots, and emails results.
+ */
+async function checkForTestRunnerHandoff(supabase, run) {
+    const issueId = run.context_snapshot?.issueId;
+    if (!issueId)
+        return;
+    // Only iOS Builder triggers Test Runner handoff
+    const { data: agent } = await supabase
+        .from('agents')
+        .select('name')
+        .eq('id', run.agent_id)
+        .single();
+    if (!agent || agent.name !== 'iOS Builder')
+        return;
+    const { data: issue } = await supabase
+        .from('issues')
+        .select('id, title, status, description, company_id, project_id')
+        .eq('id', issueId)
+        .single();
+    if (!issue || issue.status !== 'in_review')
+        return;
+    // Find the Test Runner agent
+    const { data: testRunner } = await supabase
+        .from('agents')
+        .select('id')
+        .eq('company_id', issue.company_id)
+        .eq('name', 'Test Runner')
+        .single();
+    if (!testRunner) {
+        logger.warn({ companyId: issue.company_id }, 'No Test Runner agent found — falling back to QA Rider');
+        return; // Falls through to checkForQAHandoff
+    }
+    // Idempotency
+    const { data: existing } = await supabase
+        .from('issues')
+        .select('id')
+        .eq('parent_id', issue.id)
+        .eq('assignee_agent_id', testRunner.id)
+        .limit(1);
+    if (existing && existing.length > 0) {
+        logger.debug({ issueId: issue.id }, 'Test Runner subtask already exists — skipping');
+        return;
+    }
+    const { data: company } = await supabase
+        .from('companies')
+        .select('issue_prefix, issue_counter')
+        .eq('id', issue.company_id)
+        .single();
+    const { data: updated } = await supabase
+        .from('companies')
+        .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+        .eq('id', issue.company_id)
+        .select('issue_counter')
+        .single();
+    const issueNumber = updated?.issue_counter || 1;
+    const identifier = `${company?.issue_prefix}-${issueNumber}`;
+    const description = [
+        `## Test Run: ${issue.title}`,
+        '',
+        `**Parent issue:** ${issue.id}`,
+        '',
+        '### Your Job',
+        '1. SSH to Mini, pull the branch, build',
+        '2. Run the relevant XCUITests',
+        '3. Take screenshots',
+        '4. Email screenshots to dirtsyncapp@gmail.com',
+        '5. Post results to this issue',
+        '',
+        '### Context',
+        'Read all comments on the parent issue for the iOS Builder\'s changes and branch name.',
+        '',
+        issue.description || '',
+    ].join('\n');
+    const { data: testIssue, error } = await supabase.from('issues').insert({
+        company_id: issue.company_id,
+        project_id: issue.project_id,
+        title: `Test: ${issue.title}`,
+        description,
+        status: 'todo',
+        priority: 'high',
+        assignee_agent_id: testRunner.id,
+        parent_id: issue.id,
+        issue_number: issueNumber,
+        identifier,
+        origin_kind: 'test_handoff',
+        origin_id: run.agent_id,
+    }).select('id, identifier').single();
+    if (error) {
+        logger.error({ error, issueId: issue.id }, 'Failed to create Test Runner subtask');
+        return;
+    }
+    logger.info({ testIssueId: testIssue?.id, identifier: testIssue?.identifier, parentIssue: issue.id }, 'Test Runner subtask created — assignment detector will wake Test Runner');
+}
+/**
+ * After a successful run, check if the issue was moved to 'in_review'.
+ * If so, auto-create a QA subtask assigned to the company's 'QA Rider' agent.
+ */
+async function checkForQAHandoff(supabase, run) {
+    const issueId = run.context_snapshot?.issueId;
+    if (!issueId)
+        return;
+    // 1. Confirm the issue is now in_review
+    const { data: issue } = await supabase
+        .from('issues')
+        .select('id, title, status, description, company_id, project_id')
+        .eq('id', issueId)
+        .single();
+    if (!issue || issue.status !== 'in_review')
+        return;
+    // 2. Find the QA agent for this company
+    const { data: qaAgent } = await supabase
+        .from('agents')
+        .select('id')
+        .eq('company_id', issue.company_id)
+        .eq('name', 'QA Rider')
+        .single();
+    if (!qaAgent) {
+        logger.warn({ companyId: issue.company_id }, 'No QA Rider agent found — skipping QA handoff');
+        return;
+    }
+    // 3. Check if a QA subtask already exists for this issue (idempotency)
+    const { data: existing } = await supabase
+        .from('issues')
+        .select('id')
+        .eq('parent_id', issue.id)
+        .eq('assignee_agent_id', qaAgent.id)
+        .limit(1);
+    if (existing && existing.length > 0) {
+        logger.debug({ issueId: issue.id }, 'QA subtask already exists — skipping');
+        return;
+    }
+    // 4. Increment issue counter for identifier
+    const { data: company } = await supabase
+        .from('companies')
+        .select('issue_prefix, issue_counter')
+        .eq('id', issue.company_id)
+        .single();
+    const { data: updated } = await supabase
+        .from('companies')
+        .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+        .eq('id', issue.company_id)
+        .select('issue_counter')
+        .single();
+    const issueNumber = updated?.issue_counter || 1;
+    const identifier = `${company?.issue_prefix}-${issueNumber}`;
+    // 5. Build QA description with acceptance criteria and branch info
+    const branch = run.context_snapshot?.branch || run.context_snapshot?.branchName || 'unknown';
+    const description = [
+        `## QA Verification for: ${issue.title}`,
+        '',
+        `**Branch:** \`${branch}\``,
+        `**Parent issue:** ${issue.id}`,
+        '',
+        '### Acceptance Criteria',
+        issue.description || '_No acceptance criteria provided — verify the feature works as described in the title._',
+    ].join('\n');
+    // 6. Create the QA subtask
+    const { data: qaIssue, error } = await supabase.from('issues').insert({
+        company_id: issue.company_id,
+        project_id: issue.project_id,
+        title: `QA: Verify ${issue.title}`,
+        description,
+        status: 'todo',
+        priority: 'high',
+        assignee_agent_id: qaAgent.id,
+        parent_id: issue.id,
+        issue_number: issueNumber,
+        identifier,
+        origin_kind: 'qa_handoff',
+        origin_id: run.agent_id,
+    }).select('id, identifier').single();
+    if (error) {
+        logger.error({ error, issueId: issue.id }, 'Failed to create QA subtask');
+        return;
+    }
+    logger.info({ qaIssueId: qaIssue?.id, identifier: qaIssue?.identifier, parentIssue: issue.id }, 'QA subtask created — assignment detector will wake QA Rider');
+}
+/**
+ * After QA marks an issue as 'approved', auto-create a ship subtask
+ * assigned to the company's Ship Engineer agent.
+ */
+async function checkForShipHandoff(supabase, run) {
+    const issueId = run.context_snapshot?.issueId;
+    if (!issueId)
+        return;
+    const { data: issue } = await supabase
+        .from('issues')
+        .select('id, title, status, description, company_id, project_id')
+        .eq('id', issueId)
+        .single();
+    if (!issue || issue.status !== 'approved')
+        return;
+    // Find the Ship Engineer for this company
+    const { data: shipAgent } = await supabase
+        .from('agents')
+        .select('id')
+        .eq('company_id', issue.company_id)
+        .eq('name', 'Ship Engineer')
+        .single();
+    if (!shipAgent) {
+        logger.warn({ companyId: issue.company_id }, 'No Ship Engineer agent found — skipping ship handoff');
+        return;
+    }
+    // Idempotency: check if ship subtask already exists
+    const { data: existing } = await supabase
+        .from('issues')
+        .select('id')
+        .eq('parent_id', issue.id)
+        .eq('assignee_agent_id', shipAgent.id)
+        .limit(1);
+    if (existing && existing.length > 0)
+        return;
+    // Increment issue counter
+    const { data: company } = await supabase
+        .from('companies')
+        .select('issue_prefix, issue_counter')
+        .eq('id', issue.company_id)
+        .single();
+    const { data: updated } = await supabase
+        .from('companies')
+        .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+        .eq('id', issue.company_id)
+        .select('issue_counter')
+        .single();
+    const issueNumber = updated?.issue_counter || 1;
+    const identifier = `${company?.issue_prefix}-${issueNumber}`;
+    const branch = run.context_snapshot?.branch || run.context_snapshot?.branchName || 'unknown';
+    const description = [
+        `## Ship: ${issue.title}`,
+        '',
+        `**Branch:** \`${branch}\``,
+        `**Parent issue:** ${issue.id}`,
+        `**QA Status:** Approved`,
+        '',
+        '### Instructions',
+        '1. Rebase branch on master',
+        '2. Verify build passes',
+        '3. Create PR via `gh pr create` targeting `master`',
+        '4. Post PR URL as comment on the parent issue',
+    ].join('\n');
+    const { data: shipIssue, error } = await supabase.from('issues').insert({
+        company_id: issue.company_id,
+        project_id: issue.project_id,
+        title: `Ship: ${issue.title}`,
+        description,
+        status: 'todo',
+        priority: 'high',
+        assignee_agent_id: shipAgent.id,
+        parent_id: issue.id,
+        issue_number: issueNumber,
+        identifier,
+        origin_kind: 'ship_handoff',
+        origin_id: run.agent_id,
+    }).select('id, identifier').single();
+    if (error) {
+        logger.error({ error, issueId: issue.id }, 'Failed to create ship subtask');
+        return;
+    }
+    logger.info({ shipIssueId: shipIssue?.id, identifier: shipIssue?.identifier, parentIssue: issue.id }, 'Ship subtask created — assignment detector will wake Ship Engineer');
+}
+/**
+ * After Test Runner marks an issue as 'in_review', auto-create a critique subtask
+ * assigned to the company's 'Critique Agent'. The Critique Agent grades the
+ * screenshot 10/10 or rejects with specific fixes.
+ */
+async function checkForCritiqueHandoff(supabase, run) {
+    const issueId = run.context_snapshot?.issueId;
+    if (!issueId)
+        return;
+    // Only Test Runner triggers critique handoff
+    const { data: agent } = await supabase
+        .from('agents')
+        .select('name')
+        .eq('id', run.agent_id)
+        .single();
+    if (!agent || agent.name !== 'Test Runner')
+        return;
+    // Confirm the issue is now in_review
+    const { data: issue } = await supabase
+        .from('issues')
+        .select('id, title, status, description, company_id, project_id')
+        .eq('id', issueId)
+        .single();
+    if (!issue || issue.status !== 'in_review')
+        return;
+    // Find the Critique Agent for this company
+    const { data: critiqueAgent } = await supabase
+        .from('agents')
+        .select('id')
+        .eq('company_id', issue.company_id)
+        .eq('name', 'Critique Agent')
+        .single();
+    if (!critiqueAgent) {
+        logger.warn({ companyId: issue.company_id }, 'No Critique Agent found — skipping critique handoff');
+        return;
+    }
+    // Idempotency: check if critique subtask already exists
+    const { data: existing } = await supabase
+        .from('issues')
+        .select('id')
+        .eq('parent_id', issue.id)
+        .eq('assignee_agent_id', critiqueAgent.id)
+        .limit(1);
+    if (existing && existing.length > 0) {
+        logger.debug({ issueId: issue.id }, 'Critique subtask already exists — skipping');
+        return;
+    }
+    // Increment issue counter
+    const { data: company } = await supabase
+        .from('companies')
+        .select('issue_prefix, issue_counter')
+        .eq('id', issue.company_id)
+        .single();
+    const { data: updated } = await supabase
+        .from('companies')
+        .update({ issue_counter: (company?.issue_counter || 0) + 1 })
+        .eq('id', issue.company_id)
+        .select('issue_counter')
+        .single();
+    const issueNumber = updated?.issue_counter || 1;
+    const identifier = `${company?.issue_prefix}-${issueNumber}`;
+    const description = [
+        `## Critique: ${issue.title}`,
+        '',
+        `**Parent issue:** ${issue.id}`,
+        '',
+        '### Your Job',
+        'Grade the screenshot from the Test Runner against the Gold Star spec.',
+        'Read all comments on the parent issue for the Test Runner\'s results and screenshot.',
+        'Apply your full element-by-element review. Social Media Test required.',
+        'If 10/10: mark approved. If <10/10: mark todo with specific fix list.',
+        '',
+        '### Gold Star Spec',
+        'See `companies/dirtsync/NAV-JOURNEY-SPECS.md` for measurements.',
+        '',
+        issue.description || '',
+    ].join('\n');
+    const { data: critiqueIssue, error } = await supabase.from('issues').insert({
+        company_id: issue.company_id,
+        project_id: issue.project_id,
+        title: `Critique: ${issue.title}`,
+        description,
+        status: 'todo',
+        priority: 'high',
+        assignee_agent_id: critiqueAgent.id,
+        parent_id: issue.id,
+        issue_number: issueNumber,
+        identifier,
+        origin_kind: 'critique_handoff',
+        origin_id: run.agent_id,
+    }).select('id, identifier').single();
+    if (error) {
+        logger.error({ error, issueId: issue.id }, 'Failed to create critique subtask');
+        return;
+    }
+    logger.info({ critiqueIssueId: critiqueIssue?.id, identifier: critiqueIssue?.identifier, parentIssue: issue.id }, 'Critique subtask created — assignment detector will wake Critique Agent');
+}
+/**
+ * Retry a failed run with exponential backoff.
+ * Creates a new queued run linked to the original via parent_run_id.
+ * Backoff: retry 1 = 30s, retry 2 = 120s (2min). Max 2 retries by default.
+ */
+async function maybeRetryRun(supabase, run, agent, error) {
+    const retryCount = run.retry_count ?? 0;
+    const maxRetries = run.max_retries ?? 2;
+    if (retryCount >= maxRetries) {
+        logger.info({ runId: run.id, retryCount, maxRetries }, 'Max retries reached — not retrying');
+        return;
+    }
+    // Don't retry budget overruns or cancellations
+    if (error.includes('over budget') || error.includes('Approval rejected'))
+        return;
+    const nextRetry = retryCount + 1;
+    const backoffMs = 30_000 * Math.pow(2, retryCount); // 30s, 60s, 120s
+    const notBefore = new Date(Date.now() + backoffMs).toISOString();
+    const { data: retryRun, error: insertErr } = await supabase
+        .from('runs')
+        .insert({
+        company_id: run.company_id,
+        agent_id: run.agent_id,
+        invocation_source: run.invocation_source,
+        trigger_detail: `retry #${nextRetry}: ${run.trigger_detail || 'unknown'}`,
+        status: 'queued',
+        context_snapshot: run.context_snapshot,
+        priority: run.priority ?? 0,
+        retry_count: nextRetry,
+        max_retries: maxRetries,
+        parent_run_id: run.parent_run_id || run.id,
+        not_before: notBefore,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+    })
+        .select('id')
+        .single();
+    if (insertErr) {
+        logger.error({ insertErr, runId: run.id }, 'Failed to create retry run');
+        return;
+    }
+    // Reset agent to idle so it can pick up the retry
+    await supabase.from('agents')
+        .update({ status: 'idle', updated_at: new Date().toISOString() })
+        .eq('id', agent.id);
+    logger.info({ runId: run.id, retryRunId: retryRun?.id, retryCount: nextRetry, backoffMs, notBefore }, 'Retry run queued with backoff');
+}
+/**
+ * Auto-post the run's summary as a comment on the linked issue.
+ * This ensures the pipeline always has handoff data even if the agent forgot to POST.
+ */
+async function autoPostRunComment(supabase, run, agent, summary, costUsd) {
+    const issueId = run.context_snapshot?.issueId;
+    if (!issueId)
+        return;
+    // Check if the agent already posted a comment (don't duplicate)
+    const { data: existing } = await supabase
+        .from('issue_comments')
+        .select('id')
+        .eq('issue_id', issueId)
+        .eq('created_by_run_id', run.id)
+        .limit(1);
+    if (existing?.length)
+        return; // Agent already posted
+    const costStr = costUsd ? ` | Cost: $${costUsd.toFixed(2)}` : '';
+    const body = `**${agent.name}** completed run${costStr}\n\n${summary.slice(0, 1500)}`;
+    await supabase.from('issue_comments').insert({
+        company_id: run.company_id,
+        issue_id: issueId,
+        author_agent_id: agent.id,
+        created_by_run_id: run.id,
+        body,
+    });
+    logger.debug({ issueId, agentName: agent.name }, 'Auto-posted run results as issue comment');
+}
+/**
+ * When a subtask completes, wake the owner of the parent issue so they can review.
+ * This keeps the pipeline flowing: scout finishes → CEO wakes to review.
+ */
+async function wakeParentIssueOwner(supabase, run, issueId) {
+    // Find the issue and its parent
+    const { data: issue } = await supabase
+        .from('issues')
+        .select('id, title, parent_id')
+        .eq('id', issueId)
+        .single();
+    if (!issue?.parent_id)
+        return;
+    // Find the parent issue and its assignee
+    const { data: parent } = await supabase
+        .from('issues')
+        .select('id, title, assignee_agent_id, status')
+        .eq('id', issue.parent_id)
+        .single();
+    if (!parent?.assignee_agent_id)
+        return;
+    if (parent.status === 'done')
+        return;
+    // Wake the parent's assignee to review the subtask output
+    await createWakeup(supabase, {
+        companyId: run.company_id,
+        agentId: parent.assignee_agent_id,
+        source: 'assignment',
+        triggerDetail: `Subtask completed: ${issue.title}`,
+        reason: `Your subtask "${issue.title}" has been completed. Review the results and continue with the parent issue "${parent.title}".`,
+        payload: {
+            issueId: parent.id,
+            completedSubtaskId: issue.id,
+            wakeReason: 'subtask_completed',
+        },
+        idempotencyKey: `subtask-complete-${issue.id}-${run.id}`,
+        priority: 2,
+    });
+    logger.info({ parentIssueId: parent.id, completedSubtask: issue.title, parentAgent: parent.assignee_agent_id }, 'Woke parent issue owner — subtask completed');
+}
+/**
+ * FORGE-253: After any successful run, if the issue has both a mockup attachment
+ * (category='mockup') and a visual-proof PNG attachment (category='visual-proof'),
+ * run the Visual Judge to compare them and post the verdict as a comment.
+ *
+ * Best-effort: failures are logged but never fail the run.
+ */
+async function checkForVisualJudgeHandoff(supabase, run) {
+    const issueId = run.context_snapshot?.issueId;
+    if (!issueId)
+        return;
+    // Fetch mockup attachment
+    const { data: mockupAttachment } = await supabase
+        .from('issue_attachments')
+        .select('id, storage_path, filename')
+        .eq('issue_id', issueId)
+        .eq('category', 'mockup')
+        .limit(1)
+        .maybeSingle();
+    if (!mockupAttachment)
+        return;
+    // Fetch most recent visual-proof PNG
+    const { data: proofAttachment } = await supabase
+        .from('issue_attachments')
+        .select('id, storage_path, filename')
+        .eq('issue_id', issueId)
+        .eq('category', 'visual-proof')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+    if (!proofAttachment)
+        return;
+    if (!String(proofAttachment.filename ?? '').endsWith('.png'))
+        return;
+    const os = await import('node:os');
+    const fs = await import('node:fs');
+    const pathMod = await import('node:path');
+    const tmpDir = os.tmpdir();
+    const mockupLocalPath = pathMod.join(tmpDir, `vj-mockup-${issueId}.png`);
+    const proofLocalPath = pathMod.join(tmpDir, `vj-proof-${issueId}.png`);
+    try {
+        const { data: mockupBlob, error: mockupDlErr } = await supabase.storage
+            .from('artifacts')
+            .download(mockupAttachment.storage_path);
+        if (mockupDlErr || !mockupBlob) {
+            logger.debug({ issueId }, 'Visual Judge: could not download mockup, skipping');
+            return;
+        }
+        const { data: proofBlob, error: proofDlErr } = await supabase.storage
+            .from('artifacts')
+            .download(proofAttachment.storage_path);
+        if (proofDlErr || !proofBlob) {
+            logger.debug({ issueId }, 'Visual Judge: could not download proof image, skipping');
+            return;
+        }
+        fs.writeFileSync(mockupLocalPath, Buffer.from(await mockupBlob.arrayBuffer()));
+        fs.writeFileSync(proofLocalPath, Buffer.from(await proofBlob.arrayBuffer()));
+        const verdict = await judgeImages(mockupLocalPath, proofLocalPath, tmpDir);
+        const body = [
+            `## Visual Judge Verdict: **${verdict.verdict}**`,
+            '',
+            `**Reason:** ${verdict.reason}`,
+            '',
+            verdict.verdict === 'PASS'
+                ? '_All key UI elements match the mockup._'
+                : '_FAIL detected — fix the issue identified above before marking approved._',
+        ].join('\n');
+        await supabase.from('issue_comments').insert({
+            company_id: run.company_id,
+            issue_id: issueId,
+            author_agent_id: null,
+            created_by_run_id: run.id,
+            body,
+        });
+        logger.info({ issueId, verdict: verdict.verdict }, 'Visual Judge verdict posted to issue');
+    }
+    catch (err) {
+        logger.error({ err, issueId }, 'Visual Judge handoff failed — non-fatal');
+    }
+    finally {
+        try {
+            const fs2 = await import('node:fs');
+            if (fs2.existsSync(mockupLocalPath))
+                fs2.rmSync(mockupLocalPath);
+            if (fs2.existsSync(proofLocalPath))
+                fs2.rmSync(proofLocalPath);
+        }
+        catch { /* ignore cleanup errors */ }
+    }
+}
+async function cancelRun(supabase, runId, reason) {
+    await supabase
+        .from('runs')
+        .update({
+        status: 'cancelled',
+        error: reason,
+        finished_at: new Date().toISOString(),
+    })
+        .eq('id', runId);
+}
+//# sourceMappingURL=run-executor.js.map

@@ -159,7 +159,42 @@ async function claimAndExecuteNextRun(supabase, config) {
     logger.info({ runId: run.id, agent: agent.name }, 'Executing run');
     executeRun(supabase, config, run, agent);
 }
-async function executeRun(supabase, config, run, agent) {
+/**
+ * Quota-cap fast-exit guard. If a run finished in <10s with exit=0 but posted
+ * no comment on the issue, the agent almost certainly hit a token quota and
+ * exited without doing any work. Auto-pause to break the re-spawn loop.
+ *
+ * Returns true when the agent was auto-paused; the caller should treat this as
+ * "nothing to do" so auto-continue is also skipped.
+ *
+ * Exported for unit testing.
+ */
+export async function checkAndPauseOnQuotaCap(supabase, agentId, runId, issueId, runDurationMs) {
+    if (runDurationMs >= 10_000)
+        return false;
+    const { data: comments } = await supabase
+        .from('issue_comments')
+        .select('id')
+        .eq('issue_id', issueId)
+        .eq('created_by_run_id', runId)
+        .limit(1);
+    if (comments?.length)
+        return false;
+    await supabase
+        .from('agents')
+        .update({
+        status: 'paused',
+        pause_reason: `auto-quota-cap: run completed in ${runDurationMs}ms with exit=0 but no progress comment — quota likely capped`,
+        paused_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+    })
+        .eq('id', agentId)
+        .eq('status', 'running');
+    logger.warn({ runId, durationMs: runDurationMs, agentId }, 'Fast-exit with no progress — auto-paused agent (quota-cap guard)');
+    return true;
+}
+export async function executeRun(supabase, config, run, agent) {
+    const runStartMs = Date.now();
     const adapter = getAdapter(agent.adapter_type);
     const abortController = new AbortController();
     const cwd = agent.adapter_config?.cwd || config.agentHomeDir;
@@ -215,37 +250,108 @@ async function executeRun(supabase, config, run, agent) {
             recentHistory: historyContext || undefined,
             goalContext: goalContext || undefined,
         };
+        // Enforce tool_profile: restrict tools and inject scope lock env vars
+        const toolProfile = agent.tool_profile || {};
+        logger.debug({ agentId: agent.id, tool_profile: toolProfile }, 'Applying agent tool_profile restrictions');
+        const tpAllowedTools = toolProfile.allowed_tools || [];
+        const tpDeniedServers = toolProfile.denied_mcp_servers || [];
+        const tpIssueScope = toolProfile.issue_scope || 'full';
+        const toolProfileFlags = [];
+        if (tpAllowedTools.length) {
+            toolProfileFlags.push('--allowedTools', tpAllowedTools.join(','));
+        }
+        for (const server of tpDeniedServers) {
+            // Normalize: 'supabase' or 'mcp__supabase' → block pattern 'mcp__supabase__*'
+            const base = server.replace(/^mcp__/, '');
+            toolProfileFlags.push('--disallowedTools', `mcp__${base}__*`);
+        }
+        const enrichedAdapterConfig = toolProfileFlags.length
+            ? {
+                ...(agent.adapter_config || {}),
+                cliFlags: [
+                    ...(agent.adapter_config?.cliFlags || []),
+                    ...toolProfileFlags,
+                ],
+            }
+            : { ...(agent.adapter_config || {}) };
+        // Inject scope lock env vars for single_ticket agents
+        const scopeIssueId = run.context_snapshot?.issueId;
+        let scopeIdentifier;
+        if (tpIssueScope === 'single_ticket' && scopeIssueId) {
+            try {
+                const { data: issueRow } = await supabase
+                    .from('issues')
+                    .select('identifier')
+                    .eq('id', scopeIssueId)
+                    .single();
+                scopeIdentifier = issueRow?.identifier || undefined;
+            }
+            catch { /* non-fatal — env var just won't be set */ }
+        }
+        const contextWithScope = tpIssueScope === 'single_ticket' && scopeIssueId
+            ? {
+                ...contextWithHistory,
+                FORGE_ALLOWED_ISSUE_ID: scopeIssueId,
+                ...(scopeIdentifier ? { FORGE_ALLOWED_IDENTIFIER: scopeIdentifier } : {}),
+            }
+            : contextWithHistory;
+        // M0.1: per-run monotonic seq counter. Replaces Date.now() which overflows
+        // INT4 in 2026 (~1.78e12 > ~2.1e9 max), causing every insert to silently
+        // fail and yielding 0 rows in forge.run_events across 808 lifetime runs.
+        let seqCounter = 0;
         const result = await adapter.execute({
             runId: run.id,
             agent: {
                 id: agent.id,
                 companyId: agent.company_id,
                 name: agent.name,
-                adapter_config: agent.adapter_config || {},
+                adapter_config: enrichedAdapterConfig,
             },
-            config: agent.adapter_config || {},
+            config: enrichedAdapterConfig,
             promptTemplate: agent.prompt_template,
             bootstrapPrompt: agent.bootstrap_prompt,
             instructionsFile: agent.instructions_file,
             skills: agent.skills || [],
             sessionId: agent.session_id,
             sessionParams: agent.session_params,
-            context: contextWithHistory,
+            context: contextWithScope,
             cwd,
             agentHome,
             signal: abortController.signal,
             onLog: async (stream, chunk) => {
-                // Keep run alive — update updated_at so orphan reaper doesn't kill us
-                await supabase.from('runs').update({ updated_at: new Date().toISOString() }).eq('id', run.id);
-                await supabase.from('run_events').insert({
+                const seq = ++seqCounter;
+                // Try to parse Claude/Codex stream-json events; on parse failure
+                // fall back to stream-typed event with raw line as message.
+                let eventType = stream;
+                let payload = null;
+                try {
+                    const parsed = JSON.parse(chunk);
+                    if (parsed && typeof parsed === 'object' && typeof parsed.type === 'string') {
+                        eventType = parsed.type;
+                        payload = parsed;
+                    }
+                }
+                catch {
+                    // Non-JSON line (plain stderr, partial flush, etc.) — keep stream as event_type.
+                }
+                const { error: hbErr } = await supabase
+                    .from('runs')
+                    .update({ updated_at: new Date().toISOString() })
+                    .eq('id', run.id);
+                if (hbErr)
+                    logger.warn({ err: hbErr, runId: run.id }, 'run heartbeat update failed in onLog');
+                const { error: insErr } = await supabase.from('run_events').insert({
                     company_id: run.company_id,
                     run_id: run.id,
                     agent_id: run.agent_id,
-                    seq: Date.now(),
-                    event_type: stream,
+                    seq,
+                    event_type: eventType,
                     stream,
-                    message: chunk,
+                    message: payload ? null : chunk,
+                    payload,
                 });
+                if (insErr)
+                    logger.warn({ err: insErr, runId: run.id, seq, eventType }, 'run_events insert failed');
             },
             onSpawn: async (pid) => {
                 activeRuns.set(run.id, { pid, abortController });
@@ -286,6 +392,15 @@ async function executeRun(supabase, config, run, agent) {
             updated_at: new Date().toISOString(),
         })
             .eq('id', run.id);
+        // Quota-cap fast-exit guard: runs that complete in <10s with exit=0 but post no
+        // comment have almost certainly hit a Claude quota and exited immediately.
+        // Auto-pause the agent so the assignment-watcher cannot loop.
+        const issueId = run.context_snapshot?.issueId;
+        let pausedForQuotaCap = false;
+        if (status === 'succeeded' && issueId) {
+            const runDurationMs = Date.now() - runStartMs;
+            pausedForQuotaCap = await checkAndPauseOnQuotaCap(supabase, agent.id, run.id, issueId, runDurationMs);
+        }
         // Preserve paused/terminated status — never overwrite them on run completion.
         // Bug fixed 2026-04-21 after Map Rendering Expert burned $4.02 in idle-loop:
         // CEO set agent=paused, run-executor completed a queued run and line 321 flipped
@@ -359,7 +474,6 @@ async function executeRun(supabase, config, run, agent) {
             }
         }
         // Auto-post run results as issue comment (agent may not have done this)
-        const issueId = run.context_snapshot?.issueId;
         const runSummary = isSilent ? null : (result.summary || resultText);
         if (issueId && runSummary && status === 'succeeded') {
             try {
@@ -382,6 +496,7 @@ async function executeRun(supabase, config, run, agent) {
         // BUT: skip if the agent reported nothing to do (prevents infinite CEO wake loops)
         const summaryLower = (result.summary || '').toLowerCase();
         const nothingToDo = isSilent
+            || pausedForQuotaCap
             || summaryLower.includes('no action needed')
             || summaryLower.includes('nothing to do')
             || summaryLower.includes('waiting for')
@@ -395,17 +510,29 @@ async function executeRun(supabase, config, run, agent) {
                     .eq('id', issueId)
                     .single();
                 if (currentIssue && currentIssue.status === 'in_progress' && currentIssue.assignee_agent_id) {
-                    await createWakeup(supabase, {
-                        companyId: run.company_id,
-                        agentId: currentIssue.assignee_agent_id,
-                        source: 'assignment',
-                        triggerDetail: `Continue: ${run.trigger_detail || 'in-progress issue'}`,
-                        reason: 'Issue still in_progress after last run. Continue working.',
-                        payload: { issueId, wakeReason: 'continue_work' },
-                        idempotencyKey: `continue-${issueId}-${run.id}`,
-                        priority: run.priority ?? 1,
-                    });
-                    logger.info({ issueId, agent: agent.name }, 'Auto-continue: issue still in_progress, re-waking agent');
+                    const { count: recentContinueCount } = await supabase
+                        .from('runs')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('agent_id', currentIssue.assignee_agent_id)
+                        .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString())
+                        .contains('context_snapshot', { wakeReason: 'continue_work' });
+                    const CONTINUE_WORK_HOURLY_CAP = 2; // hard cap to prevent self-spawn cascades (FORGE-331)
+                    if ((recentContinueCount ?? 0) >= CONTINUE_WORK_HOURLY_CAP) {
+                        logger.warn({ issueId, agent: agent.name, recentContinueCount, cap: CONTINUE_WORK_HOURLY_CAP }, 'Auto-continue skipped: per-agent hourly continue_work cap reached (FORGE-331 guard)');
+                    }
+                    else {
+                        await createWakeup(supabase, {
+                            companyId: run.company_id,
+                            agentId: currentIssue.assignee_agent_id,
+                            source: 'assignment',
+                            triggerDetail: `Continue: ${run.trigger_detail || 'in-progress issue'}`,
+                            reason: 'Issue still in_progress after last run. Continue working.',
+                            payload: { issueId, wakeReason: 'continue_work' },
+                            idempotencyKey: `continue-${issueId}-${run.id}`,
+                            priority: run.priority ?? 1,
+                        });
+                        logger.info({ issueId, agent: agent.name }, 'Auto-continue: issue still in_progress, re-waking agent');
+                    }
                 }
             }
             catch (err) {

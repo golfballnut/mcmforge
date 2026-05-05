@@ -11,6 +11,8 @@ export const codexAdapter = {
         const model = config.model || 'codex-1';
         const maxTurns = config.maxTurnsPerRun || 0;
         const timeoutSec = config.timeoutSec || 0;
+        const sandboxMode = config.sandboxMode || '';
+        const cliFlags = config.cliFlags || [];
         const template = input.promptTemplate ||
             'You are agent {{agent.id}} ({{agent.name}}). Execute your assigned work.';
         const prompt = renderTemplate(template, {
@@ -32,11 +34,21 @@ export const codexAdapter = {
             }
         }
         const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
-        // Codex CLI: exec subcommand, prompt as argument (not stdin)
-        // --full-auto = auto-approve + workspace-write sandbox
-        const args = ['exec', '--full-auto', '--skip-git-repo-check'];
+        // Codex CLI: exec subcommand, prompt as argument (not stdin).
+        // sandboxMode='workspace-write' uses explicit --sandbox flag (git-safe, recommended for PRs).
+        // Omitting sandboxMode defaults to --full-auto (legacy, broader permissions).
+        const args = ['exec'];
+        if (sandboxMode) {
+            args.push('--sandbox', sandboxMode);
+        }
+        else {
+            args.push('--full-auto');
+        }
+        args.push('--skip-git-repo-check');
         if (model)
             args.push('-m', model);
+        if (cliFlags.length)
+            args.push(...cliFlags);
         // Pass prompt as positional argument
         args.push(fullPrompt);
         // Each agent gets its own CODEX_HOME for session isolation

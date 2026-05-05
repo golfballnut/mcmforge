@@ -30,6 +30,12 @@ export async function runChildProcess(opts: RunOptions): Promise<RunResult> {
 
     let stdout = '';
     let stderr = '';
+    // M0.1: line-buffer stdout/stderr so onLog fires once per complete line.
+    // Claude/Codex emit JSONL via --output-format stream-json; downstream
+    // run_events handler expects one DB row per JSON event, not per arbitrary
+    // chunk boundary that may split a line across two events.
+    let stdoutBuf = '';
+    let stderrBuf = '';
     let timedOut = false;
     let timer: NodeJS.Timeout | null = null;
 
@@ -48,13 +54,25 @@ export async function runChildProcess(opts: RunOptions): Promise<RunResult> {
     child.stdout.on('data', (chunk: Buffer) => {
       const text = chunk.toString();
       stdout += text;
-      opts.onLog('stdout', text).catch(() => {});
+      stdoutBuf += text;
+      let nl: number;
+      while ((nl = stdoutBuf.indexOf('\n')) !== -1) {
+        const line = stdoutBuf.slice(0, nl);
+        stdoutBuf = stdoutBuf.slice(nl + 1);
+        if (line.length > 0) opts.onLog('stdout', line).catch(() => {});
+      }
     });
 
     child.stderr.on('data', (chunk: Buffer) => {
       const text = chunk.toString();
       stderr += text;
-      opts.onLog('stderr', text).catch(() => {});
+      stderrBuf += text;
+      let nl: number;
+      while ((nl = stderrBuf.indexOf('\n')) !== -1) {
+        const line = stderrBuf.slice(0, nl);
+        stderrBuf = stderrBuf.slice(nl + 1);
+        if (line.length > 0) opts.onLog('stderr', line).catch(() => {});
+      }
     });
 
     if (opts.stdin) {
@@ -78,6 +96,9 @@ export async function runChildProcess(opts: RunOptions): Promise<RunResult> {
 
     child.on('close', (code, signal) => {
       if (timer) clearTimeout(timer);
+      // Flush any remaining buffered partial lines (no trailing newline).
+      if (stdoutBuf.length > 0) opts.onLog('stdout', stdoutBuf).catch(() => {});
+      if (stderrBuf.length > 0) opts.onLog('stderr', stderrBuf).catch(() => {});
       resolve({ stdout, stderr, exitCode: code, signal: signal ?? null, timedOut });
     });
   });

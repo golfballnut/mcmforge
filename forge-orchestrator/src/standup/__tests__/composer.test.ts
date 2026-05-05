@@ -4,17 +4,10 @@ vi.mock('../../utils/logger.js', () => ({
   logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), fatal: vi.fn() },
 }));
 
-// Mock the Anthropic SDK
-vi.mock('@anthropic-ai/sdk', () => ({
-  default: class MockAnthropic {
-    messages = {
-      create: vi.fn().mockResolvedValue({
-        content: [{ type: 'text', text: 'Yesterday the team shipped FORGE-360 standup card. In flight: FORGE-361 KB watcher. Needs Steve: PR #97 awaits review.' }],
-        usage: { input_tokens: 150, output_tokens: 80 },
-        model: 'claude-sonnet-4-5',
-      }),
-    };
-  },
+// Mock the claude CLI subprocess (uses Max plan via CLAUDE_CODE_OAUTH_TOKEN, not Anthropic API)
+const mockRunChildProcess = vi.fn();
+vi.mock('../../utils/child-process.js', () => ({
+  runChildProcess: (opts: unknown) => mockRunChildProcess(opts),
 }));
 
 const SAMPLE_PAYLOAD = {
@@ -35,7 +28,15 @@ const SAMPLE_PAYLOAD = {
 describe('composeStandup', () => {
   beforeEach(() => {
     vi.resetModules();
-    process.env.ANTHROPIC_API_KEY = 'test-key';
+    mockRunChildProcess.mockReset();
+    process.env.CLAUDE_CODE_OAUTH_TOKEN = 'test-oauth-token';
+    mockRunChildProcess.mockResolvedValue({
+      stdout: '  Yesterday the team shipped FORGE-360 standup card. In flight: composer CLI refactor. Needs Steve: PR review.  \n',
+      stderr: '',
+      exitCode: 0,
+      signal: null,
+      timedOut: false,
+    });
   });
 
   it('returns a non-empty trimmed string', async () => {
@@ -44,23 +45,33 @@ describe('composeStandup', () => {
 
     expect(typeof result).toBe('string');
     expect(result.trim().length).toBeGreaterThan(0);
-    // Should not start/end with whitespace
     expect(result).toBe(result.trim());
   });
 
-  it('assembles prompt that includes issue title from payload', async () => {
-    // Verify indirectly: the mock returns expected text, confirming the call succeeded
+  it('spawns claude CLI with stdin prompt and Max plan OAuth token in env', async () => {
     const { composeStandup } = await import('../composer.js');
-    const result = await composeStandup(SAMPLE_PAYLOAD);
-    // If the prompt was assembled and Claude mock returned text, result is non-empty
-    expect(result.length).toBeGreaterThan(0);
+    await composeStandup(SAMPLE_PAYLOAD);
+
+    expect(mockRunChildProcess).toHaveBeenCalledTimes(1);
+    const opts = mockRunChildProcess.mock.calls[0][0];
+    expect(opts.command).toBe('claude');
+    expect(opts.args).toContain('--print');
+    expect(opts.args).toContain('--model');
+    expect(opts.stdin).toContain('FORGE-360: Standup card');
+    expect(opts.stdin).toContain('5 total, 4 succeeded, 1 failed');
+    expect(opts.env.CLAUDE_CODE_OAUTH_TOKEN).toBe('test-oauth-token');
   });
 
-  it('prompt contains run stats (total runs mentioned)', async () => {
+  it('throws when claude CLI exits non-zero', async () => {
+    mockRunChildProcess.mockResolvedValueOnce({
+      stdout: '',
+      stderr: 'auth failed',
+      exitCode: 1,
+      signal: null,
+      timedOut: false,
+    });
     const { composeStandup } = await import('../composer.js');
-    const result = await composeStandup(SAMPLE_PAYLOAD);
-    // Non-empty and trimmed
-    expect(result.length).toBeGreaterThan(0);
+    await expect(composeStandup(SAMPLE_PAYLOAD)).rejects.toThrow(/exited 1/);
   });
 
   it('output is trimmed (no leading/trailing whitespace)', async () => {

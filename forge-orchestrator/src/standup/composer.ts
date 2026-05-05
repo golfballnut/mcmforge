@@ -1,16 +1,10 @@
-import Anthropic from '@anthropic-ai/sdk';
 import type { StandupData } from './data-layer.js';
+import { runChildProcess } from '../utils/child-process.js';
 import { logger } from '../utils/logger.js';
 
-const MODEL = 'claude-sonnet-4-5';
+const MODEL = 'claude-sonnet-4-6';
 
-/**
- * Compose a ~150-word executive standup paragraph using Claude.
- * Prompt: terse, direct, no preamble. Plain markdown paragraph.
- */
 export async function composeStandup(data: StandupData): Promise<string> {
-  const client = new Anthropic();
-
   const issuesSummary = data.openIssues.length > 0
     ? data.openIssues.map((i) => `- [${i.status}] ${i.title}`).join('\n')
     : '(none)';
@@ -33,21 +27,36 @@ ${commitsSummary}
 
 Write a 1-paragraph executive standup for Steve covering: yesterday's shipped work, what's in flight, what needs his attention. Tone: terse, direct, no preamble. Format: plain markdown paragraph, ~150 words.`;
 
-  logger.debug({ model: MODEL, promptLen: prompt.length }, '[standup] calling Claude to compose standup');
+  const command = process.env.CLAUDE_COMMAND || 'claude';
+  const oauthToken = process.env.CLAUDE_CODE_OAUTH_TOKEN;
+  if (!oauthToken) {
+    logger.warn('[standup] CLAUDE_CODE_OAUTH_TOKEN not set — composer will fail to authenticate');
+  }
 
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 300,
-    messages: [{ role: 'user', content: prompt }],
+  const env: Record<string, string> = {
+    ...(process.env as Record<string, string>),
+    ...(oauthToken ? { CLAUDE_CODE_OAUTH_TOKEN: oauthToken } : {}),
+  };
+
+  logger.debug({ model: MODEL, promptLen: prompt.length }, '[standup] spawning claude CLI to compose standup');
+
+  const result = await runChildProcess({
+    command,
+    args: ['--print', '-', '--model', MODEL, '--output-format', 'text'],
+    cwd: process.cwd(),
+    env,
+    stdin: prompt,
+    timeoutSec: 60,
+    onLog: async () => {},
+    onSpawn: () => {},
   });
 
-  const text = response.content
-    .filter((block) => block.type === 'text')
-    .map((block) => (block as { type: 'text'; text: string }).text)
-    .join('\n')
-    .trim();
+  if (result.exitCode !== 0) {
+    const stderrTail = result.stderr.slice(-500);
+    throw new Error(`claude CLI exited ${result.exitCode}: ${stderrTail}`);
+  }
 
-  logger.info({ tokens: response.usage, outputLen: text.length }, '[standup] Claude response received');
-
+  const text = result.stdout.trim();
+  logger.info({ outputLen: text.length, model: MODEL }, '[standup] claude response received');
   return text;
 }

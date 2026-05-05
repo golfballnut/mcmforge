@@ -1,5 +1,7 @@
 import { createServer } from 'node:http';
 import { logger } from './utils/logger.js';
+import { fetchStandupData } from './standup/data-layer.js';
+import { composeStandup } from './standup/composer.js';
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const PROOF_REGEX = /^\s*\*{0,2}\[PROOF(?:[\s\]]|—)/i;
 const ALLOWED_MIMES = new Set([
@@ -397,6 +399,39 @@ export function startAgentApi(supabase, port) {
                     .select('id, name, role, title, status, adapter_type, adapter_config, budget_monthly_cents, last_heartbeat_at, updated_at')
                     .eq('company_id', agent.company_id);
                 return json(res, agents || []);
+            }
+            // ── POST /api/standup/run ────────────────────────────
+            if (method === 'POST' && url === '/api/standup/run') {
+                const body = await parseBody(req);
+                const { companyId } = body;
+                if (!companyId) {
+                    return json(res, { error: 'Missing required field: companyId' }, 400);
+                }
+                const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+                try {
+                    const standupData = await fetchStandupData(supabase, companyId);
+                    const bodyMd = await composeStandup(standupData);
+                    const { data, error } = await supabase
+                        .from('daily_standups')
+                        .upsert({
+                        date: today,
+                        body_md: bodyMd,
+                        company_id: companyId,
+                        source_payload: standupData,
+                        generated_at: new Date().toISOString(),
+                    }, { onConflict: 'date' })
+                        .select('*')
+                        .single();
+                    if (error) {
+                        logger.error({ err: error }, '[standup] DB upsert failed');
+                        return json(res, { error: error.message }, 500);
+                    }
+                    return json(res, data);
+                }
+                catch (err) {
+                    logger.error({ err }, '[standup] run failed');
+                    return json(res, { error: 'Standup generation failed' }, 500);
+                }
             }
             // ── GET /api/health ───────────────────────────────────
             if (method === 'GET' && url === '/api/health') {

@@ -525,7 +525,7 @@ describe('buildApprovalRow', () => {
 
   it('remaps issue_id inside payload when present', () => {
     const row = buildApprovalRow(PAPERCLIP_APPROVAL, DST_COMPANY, AGENT_ID_MAP, ISSUE_ID_MAP);
-    expect(row.payload.issue_id).toBe('new-forge-issue-id-01');
+    expect((row.payload as { issue_id: string }).issue_id).toBe('new-forge-issue-id-01');
   });
 });
 

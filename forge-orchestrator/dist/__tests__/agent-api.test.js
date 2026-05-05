@@ -347,4 +347,6 @@ describe('POST /api/agent/issues/:id/attachments', () => {
         expect(body.runId).toBeNull();
     });
 });
+// Standup route tests live in src/__tests__/standup-route.test.ts
+// (separated to avoid vi.resetModules() interference with standup module mocks)
 //# sourceMappingURL=agent-api.test.js.map

@@ -5,6 +5,22 @@
 **Total stories**: 22 (M0=5 paired, M1=7, M2=5, M3=5) — M2.5 deferred
 **Convention**: vertical slices per `.claude/commands/forge-issues.md` — each story fits one agent session (~25 turns).
 
+## M0 status: ✅ PASSED 2026-05-05
+
+DIR-VAL-2 (run `6e6be549-2870-49c9-90cc-7b214364419f`) round-tripped in 36s for $0.16. All three defects validated green:
+
+| Defect | Evidence |
+|---|---|
+| #1 run_events streaming | 21 rows, seq monotonic 1..21, 5 distinct event_types (`system`/`assistant`/`user`/`rate_limit_event`/`result`). Root cause: `seq` is INT4; `Date.now()` overflows in 2026. Fixed with closure-scoped monotonic counter. |
+| #2 bootstrap_prompt honored | First deliberate assistant turn quoted bootstrap step 1 verbatim. |
+| #3 tag preservation | `['validation','noop','runtime-smoke']` survived `fn_auto_knowledge_inject` trigger. |
+
+Branch `feat/m0-runtime-fixes`, commits `8514c30` + `c3c38e0`, tag `m0-validated`. DIR-VAL-2 retained as canonical exhibit; `DirtSync NOOP Validator` paused with `maxTurnsPerRun=12`.
+
+**Next**: M1 kickoff — invoke `/forge-issues` to materialize child issues from the M1 table below.
+
+---
+
 ## Locked decisions (2026-05-04)
 
 | # | Decision | Applies to |

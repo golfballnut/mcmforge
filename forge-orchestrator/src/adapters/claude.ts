@@ -38,7 +38,11 @@ export const claudeAdapter: CLIAdapter = {
         }
       }
     }
-    const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
+    // M0.2: prepend bootstrap_prompt (per-agent identity) above onboarding files.
+    // Final order: bootstrap → AGENTS.md/HEARTBEAT.md/SOUL.md/TOOLS.md → --- TASK --- → rendered template.
+    const bootstrap = input.bootstrapPrompt ? `${input.bootstrapPrompt}\n\n` : '';
+    const taskBody = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
+    const fullPrompt = `${bootstrap}${taskBody}`;
 
     const args = ['--print', '-', '--output-format', 'stream-json', '--verbose'];
     if (input.sessionId) {

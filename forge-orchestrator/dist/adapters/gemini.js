@@ -7,9 +7,14 @@ export const geminiAdapter = {
     async execute(input) {
         const config = input.config;
         const command = config.command || 'gemini';
-        const model = config.model || 'gemini-2.5-pro';
+        const requestedModel = typeof config.model === 'string' ? config.model.trim() : config.model;
+        // Preview models cause RESOURCE_EXHAUSTED in production paths.
+        const model = (typeof requestedModel === 'string' && requestedModel && requestedModel.toLowerCase() !== 'auto')
+            ? requestedModel
+            : 'gemini-2.5-flash';
         const maxTurns = config.maxTurnsPerRun || 0;
         const timeoutSec = config.timeoutSec || 0;
+        const cliFlags = config.cliFlags || [];
         const template = input.promptTemplate ||
             'You are agent {{agent.id}} ({{agent.name}}). Execute your assigned work.';
         const prompt = renderTemplate(template, {
@@ -31,9 +36,9 @@ export const geminiAdapter = {
             }
         }
         const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
-        const args = ['-p', fullPrompt, '--yolo'];
-        if (model)
-            args.push('--model', model);
+        const args = ['-p', fullPrompt, '--yolo', '-m', model];
+        if (cliFlags.length)
+            args.push(...cliFlags);
         const env = {
             ...process.env,
             FORGE_RUN_ID: input.runId,
@@ -60,10 +65,10 @@ export const geminiAdapter = {
             onLog: input.onLog,
             onSpawn: (pid) => input.onSpawn(pid),
         });
-        return parseGeminiResult(result, model, billingType);
+        return parseGeminiResult(result, model, billingType, fullPrompt);
     },
 };
-function parseGeminiResult(proc, defaultModel, billingType) {
+function parseGeminiResult(proc, defaultModel, billingType, prompt) {
     let sessionId = null;
     let model = defaultModel;
     let summary = null;
@@ -99,10 +104,27 @@ function parseGeminiResult(proc, defaultModel, billingType) {
             // Not JSON, skip
         }
     }
+    const plainTextUsage = parsePlainTextUsage(`${proc.stdout}\n${proc.stderr}`);
+    inputTokens ||= plainTextUsage.inputTokens;
+    outputTokens ||= plainTextUsage.outputTokens;
+    if (inputTokens === 0 && outputTokens === 0 && plainTextUsage.totalTokens > 0) {
+        inputTokens = plainTextUsage.totalTokens;
+    }
     // O-3: Calculate cost from tokens when not provided by CLI output
     // Gemini Flash pricing: $0.075/1M input, $0.30/1M output
     if (costUsd === null && (inputTokens > 0 || outputTokens > 0)) {
         costUsd = (inputTokens / 1_000_000) * 0.075 + (outputTokens / 1_000_000) * 0.30;
+    }
+    if (costUsd === null) {
+        const outputLength = (summary || proc.stdout || '').length;
+        costUsd = estimateGeminiFlashCost(prompt.length, outputLength);
+        resultJson = {
+            ...(resultJson ?? {}),
+            cost_estimated: true,
+        };
+    }
+    if (costUsd <= 0) {
+        costUsd = 0.000001;
     }
     return {
         exitCode: proc.exitCode,
@@ -122,5 +144,21 @@ function parseGeminiResult(proc, defaultModel, billingType) {
         stdoutExcerpt: proc.stdout?.slice(0, 2000) || null,
         stderrExcerpt: proc.stderr?.slice(0, 2000) || null,
     };
+}
+function parsePlainTextUsage(text) {
+    const inputTokens = parseTokenCount(text, /\b(?:input|prompt)\s+tokens?\s*(?:used)?\s*[:=]\s*([\d,]+)/i);
+    const outputTokens = parseTokenCount(text, /\b(?:output|completion|response)\s+tokens?\s*(?:used)?\s*[:=]\s*([\d,]+)/i);
+    const totalTokens = parseTokenCount(text, /\b(?:total\s+)?tokens?\s+used\s*[:=]\s*([\d,]+)/i);
+    return { inputTokens, outputTokens, totalTokens };
+}
+function parseTokenCount(text, pattern) {
+    const match = text.match(pattern);
+    if (!match)
+        return 0;
+    return Number.parseInt(match[1].replace(/,/g, ''), 10) || 0;
+}
+function estimateGeminiFlashCost(inputLength, outputLength) {
+    const estimatedInputTokens = inputLength * 1.25;
+    return (estimatedInputTokens / 1000) * 0.075 + (outputLength / 1000) * 0.30;
 }
 //# sourceMappingURL=gemini.js.map

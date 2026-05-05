@@ -1,4 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { EventEmitter } from 'node:events';
+const httpMock = vi.hoisted(() => ({
+    createServer: vi.fn((handler) => ({
+        _handler: handler,
+        listen: vi.fn((_port, _host, cb) => {
+            cb?.();
+        }),
+        once: vi.fn((_event, cb) => cb()),
+        address: vi.fn(() => ({ port: 12345 })),
+        close: vi.fn((cb) => cb?.()),
+    })),
+}));
+vi.mock('node:http', async () => {
+    const actual = await vi.importActual('node:http');
+    return {
+        ...actual,
+        createServer: httpMock.createServer,
+    };
+});
 vi.mock('../utils/logger.js', () => ({
     logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), fatal: vi.fn() },
 }));
@@ -29,28 +48,221 @@ function makeSupabase(opts) {
         _insert: insert,
     };
 }
-async function callAttachments(supabase, body, headers = {}) {
+async function invokeAgentApi(supabase, opts) {
     const { startAgentApi } = await import('../agent-api.js');
     const srv = startAgentApi(supabase, 0);
-    await new Promise((r) => srv.once('listening', r));
-    const port = srv.address().port;
-    try {
-        const res = await fetch(`http://127.0.0.1:${port}/api/agent/issues/${ISSUE_ID}/attachments`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-forge-agent-id': AGENT_ID,
-                ...headers,
+    const req = new EventEmitter();
+    req.url = opts.url;
+    req.method = opts.method;
+    req.headers = opts.headers ?? {};
+    return new Promise((resolve) => {
+        let status = 200;
+        const res = {
+            writeHead: (nextStatus) => {
+                status = nextStatus;
             },
-            body: JSON.stringify(body),
-        });
-        const json = await res.json();
-        return { status: res.status, body: json };
-    }
-    finally {
-        await new Promise((r) => srv.close(() => r()));
-    }
+            end: (data) => {
+                resolve({ status, body: JSON.parse(data) });
+            },
+        };
+        void srv._handler(req, res);
+        if (opts.body) {
+            process.nextTick(() => {
+                req.emit('data', Buffer.from(JSON.stringify(opts.body)));
+                req.emit('end');
+            });
+        }
+    });
 }
+async function callAttachments(supabase, body, headers = {}) {
+    return invokeAgentApi(supabase, {
+        method: 'POST',
+        url: `/api/agent/issues/${ISSUE_ID}/attachments`,
+        headers: {
+            'content-type': 'application/json',
+            'x-forge-agent-id': AGENT_ID,
+            ...headers,
+        },
+        body,
+    });
+}
+const COMPANY_ID = 'dddddddd-dddd-dddd-dddd-dddddddddddd';
+const OTHER_AGENT_ID = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+const OTHER_COMPANY_ID = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+function makeAgentsSupabase() {
+    const rows = [
+        {
+            id: AGENT_ID,
+            name: 'Fleet Auditor',
+            role: 'auditor',
+            title: 'Fleet Auditor',
+            status: 'active',
+            company_id: COMPANY_ID,
+            adapter_type: 'codex',
+            adapter_config: { model: 'gpt-5' },
+            budget_monthly_cents: 10000,
+            last_heartbeat_at: '2026-04-21T12:00:00.000Z',
+            updated_at: '2026-04-21T12:00:00.000Z',
+        },
+        {
+            id: OTHER_AGENT_ID,
+            name: 'Forge COO',
+            role: 'coo',
+            title: 'COO',
+            status: 'active',
+            company_id: COMPANY_ID,
+            adapter_type: 'codex',
+            adapter_config: { model: 'gpt-5' },
+            budget_monthly_cents: 20000,
+            last_heartbeat_at: '2026-04-21T12:05:00.000Z',
+            updated_at: '2026-04-21T12:05:00.000Z',
+        },
+        {
+            id: '99999999-9999-9999-9999-999999999999',
+            name: 'External Agent',
+            role: 'external',
+            title: 'External',
+            status: 'active',
+            company_id: OTHER_COMPANY_ID,
+            adapter_type: 'codex',
+            adapter_config: { model: 'gpt-5' },
+            budget_monthly_cents: 30000,
+            last_heartbeat_at: '2026-04-21T12:10:00.000Z',
+            updated_at: '2026-04-21T12:10:00.000Z',
+        },
+    ];
+    const eq = vi.fn((field, value) => {
+        if (field === 'id') {
+            return {
+                single: vi.fn().mockResolvedValue({
+                    data: rows.find((row) => row.id === value) ?? null,
+                    error: null,
+                }),
+            };
+        }
+        return Promise.resolve({
+            data: rows
+                .filter((row) => field === 'company_id' && row.company_id === value)
+                .map(({ company_id: _companyId, ...row }) => row),
+            error: null,
+        });
+    });
+    return {
+        from: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({ eq }),
+        }),
+        storage: { from: vi.fn().mockReturnValue({ upload: vi.fn(), remove: vi.fn() }) },
+        _eq: eq,
+    };
+}
+async function callAgents(supabase, headers = {}) {
+    return invokeAgentApi(supabase, {
+        method: 'GET',
+        url: '/api/agents',
+        headers,
+    });
+}
+function makeCommentSupabase(opts) {
+    const gteResult = vi.fn().mockResolvedValue(opts.proofQueryError
+        ? { count: null, error: { message: opts.proofQueryError } }
+        : { count: opts.proofCount ?? 0, error: null });
+    const secondEq = vi.fn().mockReturnValue({ gte: gteResult });
+    const firstEq = vi.fn().mockReturnValue({ eq: secondEq });
+    const commentSingle = vi.fn().mockResolvedValue({
+        data: { id: 'cmt-1', company_id: COMPANY_ID, issue_id: ISSUE_ID, author_agent_id: AGENT_ID, body: 'proof body' },
+        error: null,
+    });
+    const commentInsert = vi.fn().mockReturnValue({ select: vi.fn().mockReturnValue({ single: commentSingle }) });
+    return {
+        from: vi.fn().mockImplementation((table) => {
+            if (table === 'issues') {
+                return {
+                    select: vi.fn().mockReturnValue({
+                        eq: vi.fn().mockReturnValue({
+                            single: vi.fn().mockResolvedValue({ data: { company_id: COMPANY_ID }, error: null }),
+                        }),
+                    }),
+                };
+            }
+            if (table === 'issue_attachments') {
+                return { select: vi.fn().mockReturnValue({ eq: firstEq }) };
+            }
+            if (table === 'issue_comments') {
+                return { insert: commentInsert };
+            }
+            return {};
+        }),
+        storage: { from: vi.fn().mockReturnValue({ upload: vi.fn(), remove: vi.fn() }) },
+    };
+}
+async function callComments(supabase, body, headers = {}) {
+    return invokeAgentApi(supabase, {
+        method: 'POST',
+        url: `/api/agent/issues/${ISSUE_ID}/comments`,
+        headers: {
+            'content-type': 'application/json',
+            'x-forge-agent-id': AGENT_ID,
+            ...headers,
+        },
+        body,
+    });
+}
+describe('GET /api/agents', () => {
+    beforeEach(() => {
+        vi.resetModules();
+    });
+    it('returns 401 when X-Forge-Agent-Id header is missing', async () => {
+        const sb = makeAgentsSupabase();
+        const { status, body } = await callAgents(sb);
+        expect(status).toBe(401);
+        expect(body).toEqual({ error: 'Missing x-forge-agent-id' });
+    });
+    it('returns an array of same-company agents for a valid caller', async () => {
+        const sb = makeAgentsSupabase();
+        const { status, body } = await callAgents(sb, { 'x-forge-agent-id': AGENT_ID });
+        expect(status).toBe(200);
+        expect(Array.isArray(body)).toBe(true);
+        expect(body).toHaveLength(2);
+        expect(body.map((agent) => agent.id)).toEqual([
+            AGENT_ID,
+            OTHER_AGENT_ID,
+        ]);
+    });
+    it('does not return agents from other companies', async () => {
+        const sb = makeAgentsSupabase();
+        const { body } = await callAgents(sb, { 'x-forge-agent-id': AGENT_ID });
+        expect(body.some((agent) => agent.id === '99999999-9999-9999-9999-999999999999')).toBe(false);
+        expect(sb._eq).toHaveBeenCalledWith('company_id', COMPANY_ID);
+    });
+});
+describe('POST /api/agent/issues/:id/comments — Rule 2', () => {
+    beforeEach(() => {
+        vi.resetModules();
+        process.env.SUPABASE_URL = 'https://test.supabase.co';
+    });
+    it('(a) [PROOF] body + no attachment → 422 PROOF_WITHOUT_ATTACHMENT', async () => {
+        const sb = makeCommentSupabase({ proofCount: 0 });
+        const { status, body } = await callComments(sb, { body: '[PROOF] screenshot shows green build' });
+        expect(status).toBe(422);
+        expect(body.error).toBe('PROOF_WITHOUT_ATTACHMENT');
+        expect(body.attachmentsFound).toBe(0);
+    });
+    it('(b) [PROOF] body + attachment from same agent → 201', async () => {
+        const sb = makeCommentSupabase({ proofCount: 1 });
+        const { status } = await callComments(sb, { body: '[PROOF] screenshot shows green build' });
+        expect(status).toBe(201);
+    });
+    it('(c) [PROOF] body + X-Forge-Proof-Bypass: true → 201 (no attachment check)', async () => {
+        const sb = makeCommentSupabase({ proofCount: 0 });
+        const { status } = await callComments(sb, { body: '[PROOF] screenshot shows green build' }, { 'x-forge-proof-bypass': 'true' });
+        expect(status).toBe(201);
+    });
+    it('(d) [PROOF] body + attachment query errors → 201 (fail-open)', async () => {
+        const sb = makeCommentSupabase({ proofQueryError: 'connection timeout' });
+        const { status } = await callComments(sb, { body: '**[PROOF] build tail attached' });
+        expect(status).toBe(201);
+    });
+});
 describe('POST /api/agent/issues/:id/attachments', () => {
     beforeEach(() => {
         vi.resetModules();

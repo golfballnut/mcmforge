@@ -349,6 +349,11 @@ export async function executeRun(
         }
       : contextWithHistory;
 
+    // M0.1: per-run monotonic seq counter. Replaces Date.now() which overflows
+    // INT4 in 2026 (~1.78e12 > ~2.1e9 max), causing every insert to silently
+    // fail and yielding 0 rows in forge.run_events across 808 lifetime runs.
+    let seqCounter = 0;
+
     const result = await adapter.execute({
       runId: run.id,
       agent: {
@@ -369,17 +374,38 @@ export async function executeRun(
       agentHome,
       signal: abortController.signal,
       onLog: async (stream, chunk) => {
-        // Keep run alive — update updated_at so orphan reaper doesn't kill us
-        await supabase.from('runs').update({ updated_at: new Date().toISOString() }).eq('id', run.id);
-        await supabase.from('run_events').insert({
+        const seq = ++seqCounter;
+        // Try to parse Claude/Codex stream-json events; on parse failure
+        // fall back to stream-typed event with raw line as message.
+        let eventType: string = stream;
+        let payload: Record<string, unknown> | null = null;
+        try {
+          const parsed = JSON.parse(chunk);
+          if (parsed && typeof parsed === 'object' && typeof parsed.type === 'string') {
+            eventType = parsed.type;
+            payload = parsed;
+          }
+        } catch {
+          // Non-JSON line (plain stderr, partial flush, etc.) — keep stream as event_type.
+        }
+
+        const { error: hbErr } = await supabase
+          .from('runs')
+          .update({ updated_at: new Date().toISOString() })
+          .eq('id', run.id);
+        if (hbErr) logger.warn({ err: hbErr, runId: run.id }, 'run heartbeat update failed in onLog');
+
+        const { error: insErr } = await supabase.from('run_events').insert({
           company_id: run.company_id,
           run_id: run.id,
           agent_id: run.agent_id,
-          seq: Date.now(),
-          event_type: stream,
+          seq,
+          event_type: eventType,
           stream,
-          message: chunk,
+          message: payload ? null : chunk,
+          payload,
         });
+        if (insErr) logger.warn({ err: insErr, runId: run.id, seq, eventType }, 'run_events insert failed');
       },
       onSpawn: async (pid) => {
         activeRuns.set(run.id, { pid, abortController });

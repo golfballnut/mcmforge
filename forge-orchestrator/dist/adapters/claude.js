@@ -12,6 +12,7 @@ export const claudeAdapter = {
         const maxTurns = config.maxTurnsPerRun || 0;
         const timeoutSec = config.timeoutSec || 0;
         const dangerouslySkipPermissions = config.dangerouslySkipPermissions || false;
+        const cliFlags = config.cliFlags || [];
         const template = input.promptTemplate ||
             'You are agent {{agent.id}} ({{agent.name}}). Execute your assigned work.';
         const prompt = renderTemplate(template, {
@@ -32,7 +33,11 @@ export const claudeAdapter = {
                 }
             }
         }
-        const fullPrompt = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
+        // M0.2: prepend bootstrap_prompt (per-agent identity) above onboarding files.
+        // Final order: bootstrap → AGENTS.md/HEARTBEAT.md/SOUL.md/TOOLS.md → --- TASK --- → rendered template.
+        const bootstrap = input.bootstrapPrompt ? `${input.bootstrapPrompt}\n\n` : '';
+        const taskBody = systemContext ? `${systemContext}\n\n--- TASK ---\n${prompt}` : prompt;
+        const fullPrompt = `${bootstrap}${taskBody}`;
         const args = ['--print', '-', '--output-format', 'stream-json', '--verbose'];
         if (input.sessionId) {
             logger.info({ sessionId: input.sessionId, agentId: input.agent.id, agentName: input.agent.name }, 'Resuming Claude session');
@@ -47,6 +52,8 @@ export const claudeAdapter = {
             args.push('--model', model);
         if (maxTurns > 0)
             args.push('--max-turns', String(maxTurns));
+        if (cliFlags.length)
+            args.push(...cliFlags);
         // Determine agent role for isolation enforcement
         const agentRole = config.role || 'engineer';
         // Ensure CLAUDE_CODE_OAUTH_TOKEN propagates to child process
@@ -70,6 +77,10 @@ export const claudeAdapter = {
             env.FORGE_ISSUE_ID = input.context.issueId;
         if (input.context.wakeReason)
             env.FORGE_WAKE_REASON = input.context.wakeReason;
+        if (input.context.FORGE_ALLOWED_ISSUE_ID)
+            env.FORGE_ALLOWED_ISSUE_ID = input.context.FORGE_ALLOWED_ISSUE_ID;
+        if (input.context.FORGE_ALLOWED_IDENTIFIER)
+            env.FORGE_ALLOWED_IDENTIFIER = input.context.FORGE_ALLOWED_IDENTIFIER;
         logger.info({ command, args: args.join(' '), cwd: input.cwd, hasToken: !!env.CLAUDE_CODE_OAUTH_TOKEN, promptLength: fullPrompt.length }, 'Spawning Claude CLI');
         const result = await runChildProcess({
             command,

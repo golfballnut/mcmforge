@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import DashboardClient from "./DashboardClient";
+import StandupCard from "@/components/StandupCard";
 
 export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
@@ -212,6 +213,18 @@ async function getActiveCompanyGoals(companyId: string) {
   return data ?? [];
 }
 
+async function getLatestStandup(companyId: string) {
+  const supabase = await createForgeClient();
+  const { data } = await supabase
+    .from("daily_standups")
+    .select("date, body_md, company_id, generated_at")
+    .eq("company_id", companyId)
+    .order("date", { ascending: false })
+    .limit(1)
+    .single();
+  return data ?? null;
+}
+
 async function getKnowledgeHealth(companyId: string) {
   const supabase = await createForgeClient();
 
@@ -369,7 +382,7 @@ export default async function HomePage() {
   const companyId = company?.id ?? "";
   const companyName = company?.name ?? "MCM Forge";
 
-  const [agents, recentRuns, stats, agentPerf, knowledgeHealth, gateA, activeGoals] = await Promise.all([
+  const [agents, recentRuns, stats, agentPerf, knowledgeHealth, gateA, activeGoals, latestStandup] = await Promise.all([
     getAgents(companyId),
     getRecentRuns(companyId),
     getStats(companyId),
@@ -377,6 +390,7 @@ export default async function HomePage() {
     getKnowledgeHealth(companyId),
     getGateAMetrics(companyId),
     getActiveCompanyGoals(companyId),
+    getLatestStandup(companyId),
   ]);
 
   const latestRunMap = buildLatestRunMap(recentRuns);
@@ -400,6 +414,9 @@ export default async function HomePage() {
             : "All agents idle"}
         </p>
       </div>
+
+      {/* Daily Standup Card */}
+      <StandupCard companyId={companyId} initialStandup={latestStandup} />
 
       {/* Stats bar */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">

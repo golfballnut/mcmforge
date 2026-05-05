@@ -8,6 +8,7 @@ import { recordCost } from '../services/cost-ledger.js';
 import { releaseIssueExecution, lockIssueExecution } from '../services/issue-lifecycle.js';
 import { createWakeup } from '../services/wakeup.js';
 import { indexRunResult, searchAgentHistory } from '../services/session-search.js';
+import { resolveWorkspace } from '../workspace/resolver.js';
 import { logger } from '../utils/logger.js';
 
 const activeRuns = new Map<string, { pid: number; abortController: AbortController }>();
@@ -238,7 +239,12 @@ export async function executeRun(
   const runStartMs = Date.now();
   const adapter = getAdapter(agent.adapter_type);
   const abortController = new AbortController();
-  const cwd = agent.adapter_config?.cwd || config.agentHomeDir;
+  // M1.6: route through workspace resolver so per-issue worktrees get created
+  // and tracked in forge.execution_workspaces. Falls back to adapter_config.cwd
+  // (project_primary) or agentHomeDir as before.
+  const workspace = await resolveWorkspace(supabase, config, agent, run);
+  const cwd = workspace.cwd;
+  logger.info({ runId: run.id, agent: agent.name, strategy: workspace.strategy, cwd, branchName: workspace.branchName }, 'Workspace resolved');
 
   // Create agent home directory with persistent subdirs
   const agentHome = path.join(config.agentHomeDir, agent.name.toLowerCase().replace(/\s+/g, '-'));

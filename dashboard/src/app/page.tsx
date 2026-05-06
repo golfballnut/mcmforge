@@ -416,7 +416,11 @@ export default async function HomePage() {
       </div>
 
       {/* Daily Standup Card */}
-      <StandupCard companyId={companyId} initialStandup={latestStandup} />
+      <StandupCard
+        companyId={companyId}
+        initialStandup={latestStandup}
+        isProduction={process.env.VERCEL === "1"}
+      />
 
       {/* Stats bar */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">

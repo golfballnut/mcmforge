@@ -13,6 +13,7 @@ interface StandupRow {
 interface StandupCardProps {
   companyId: string;
   initialStandup?: StandupRow | null;
+  isProduction?: boolean;
 }
 
 function formatDate(iso: string): string {
@@ -28,6 +29,7 @@ function formatDate(iso: string): string {
 export default function StandupCard({
   companyId,
   initialStandup,
+  isProduction = false,
 }: StandupCardProps) {
   const [standup, setStandup] = useState<StandupRow | null>(
     initialStandup ?? null
@@ -110,19 +112,29 @@ export default function StandupCard({
             </span>
           )}
         </div>
-        <button
-          onClick={regenerate}
-          disabled={loading}
-          data-testid="standup-regenerate-btn"
-          className="text-xs px-3 py-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{
-            backgroundColor: loading ? "#21262d" : "#21262d",
-            color: loading ? "#8b949e" : "#58a6ff",
-            border: "1px solid #30363d",
-          }}
-        >
-          {loading ? "Generating..." : "Regenerate"}
-        </button>
+        {isProduction ? (
+          <span
+            data-testid="standup-cron-hint"
+            className="text-xs"
+            style={{ color: "#8b949e" }}
+          >
+            Generates daily at 7am ET
+          </span>
+        ) : (
+          <button
+            onClick={regenerate}
+            disabled={loading}
+            data-testid="standup-regenerate-btn"
+            className="text-xs px-3 py-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: loading ? "#21262d" : "#21262d",
+              color: loading ? "#8b949e" : "#58a6ff",
+              border: "1px solid #30363d",
+            }}
+          >
+            {loading ? "Generating..." : "Regenerate"}
+          </button>
+        )}
       </div>
 
       {/* Body */}

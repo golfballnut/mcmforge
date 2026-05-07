@@ -16,15 +16,24 @@ Stand up a self-hosted Twenty CRM instance on the Mac Mini, accessible at `https
 
 Twenty is the system-of-record for customer/supplier data across all portfolio companies. Until it exists, no agent can read or write CRM data. This WO makes it real and proves the multi-workspace isolation model before WO-4 wires integrations.
 
+## Pre-decisions (locked in 2026-05-07, post-WO-1)
+
+These collapsed open questions before brainstorming. Do not re-debate.
+
+- **Public URL:** `crm.mcmforge.com` subdomain (one DNS record on existing zone). NOT a Vercel rewrite under `mcmforge.com/crm/*` — Vercel can't reach the Mini's Tailnet IP and proxying Twenty's websockets/cookies/GraphQL through Vercel rewrites breaks subtly.
+- **Tunnel:** Cloudflare Tunnel (resolves the "Tailscale+Caddy OR Cloudflare Tunnel" toss-up below). Public-reachable, free tier handles our load, no inbound port on the Mini, terminates TLS upstream.
+- **Pam's auth (Links Choice operator):** workspace-scoped Twenty Member account with her own Twenty password. Twenty Community Edition has no SSO — that's a Pro feature and the WO already lists SSO as out of scope. She gets Member (not Admin) on the Links Choice workspace only; she literally cannot see other portfolio cos. When SSO lands in Phase 2, her account flips to OIDC without changing her workflow.
+
 ## Definition of done
 
 - [ ] Twenty Docker stack running on Mac Mini (PM2 or launchd-managed).
 - [ ] 5 workspaces created: `links-choice`, `gbn`, `hgb`, `mcm-forge`, `dirtsync`.
 - [ ] Steve can sign in to each workspace (single email, workspace switcher).
+- [ ] Pam invited to Links Choice workspace as Member (own Twenty password); cannot see other workspaces.
 - [ ] Links Choice workspace seeded with: 5 supplier contacts, 5 customer contacts, 3 deals, sample activities (manual or imported from existing data).
 - [ ] Per-workspace API keys generated; values pasted into Supabase Vault or local `.env` for staging.
 - [ ] Webhook subscriptions configured: `contact.created`, `contact.updated`, `opportunity.stage.changed`, `activity.created` → `https://mcmforge.com/api/webhooks/twenty?workspace=<slug>` (endpoint is stubbed in WO-4 — for now subscription points at a placeholder that returns 200).
-- [ ] HTTPS access via Tailscale + Caddy OR Cloudflare Tunnel (pick during build).
+- [ ] HTTPS access at `crm.mcmforge.com` via Cloudflare Tunnel (decision locked in pre-decisions section above).
 - [ ] Health check: `GET /healthz` returns 200 from Mac Mini and from Vercel preview.
 - [ ] PR merged.
 

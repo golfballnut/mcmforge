@@ -256,6 +256,9 @@ function SectionHeader({
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const STORAGE_KEY_AGENTS = "sidebar_agents_collapsed";
+const STORAGE_KEY_PROJECTS = "sidebar_projects_collapsed";
+
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -264,6 +267,11 @@ export default function Sidebar() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [liveCount, setLiveCount] = useState(0);
   const [inboxCount, setInboxCount] = useState(0);
+
+  // Collapse state — default collapsed per FORGE-363 spec
+  const [agentsCollapsed, setAgentsCollapsed] = useState(true);
+  const [projectsCollapsed, setProjectsCollapsed] = useState(true);
+  const [collapseHydrated, setCollapseHydrated] = useState(false);
 
   // Derive companies list from context for icon rail
   const companies = ctxCompanies.map(c => ({ ...c, status: "active" }));
@@ -312,6 +320,31 @@ export default function Sidebar() {
 
     fetchData();
   }, [ctxCompany?.id]);
+
+  // Hydrate collapse state from localStorage (runs once on mount)
+  useEffect(() => {
+    try {
+      const storedAgents = localStorage.getItem(STORAGE_KEY_AGENTS);
+      const storedProjects = localStorage.getItem(STORAGE_KEY_PROJECTS);
+      if (storedAgents !== null) setAgentsCollapsed(storedAgents === "true");
+      if (storedProjects !== null) setProjectsCollapsed(storedProjects === "true");
+    } catch {
+      // localStorage not available (SSR guard)
+    }
+    setCollapseHydrated(true);
+  }, []);
+
+  function toggleAgents() {
+    const next = !agentsCollapsed;
+    setAgentsCollapsed(next);
+    try { localStorage.setItem(STORAGE_KEY_AGENTS, String(next)); } catch {}
+  }
+
+  function toggleProjects() {
+    const next = !projectsCollapsed;
+    setProjectsCollapsed(next);
+    try { localStorage.setItem(STORAGE_KEY_PROJECTS, String(next)); } catch {}
+  }
 
   useEffect(() => {
     setLiveCount(agents.filter((a) => a.status === "running").length);
@@ -372,7 +405,7 @@ export default function Sidebar() {
       </div>
 
       {/* ── Main Sidebar ── */}
-      <div className="w-[248px] bg-[#0d1117] flex flex-col min-h-0">
+      <div className="w-[248px] bg-[#0d1117] flex flex-col h-full overflow-hidden">
         {/* Company header */}
         <div className="px-4 py-3 flex items-center justify-between shrink-0">
           <span className="text-sm font-semibold text-[#e6edf3] truncate">
@@ -465,9 +498,27 @@ export default function Sidebar() {
           />
         </div>
 
-        {/* PROJECTS section */}
-        <SectionHeader label="Projects" onAdd={() => {}} />
-        <div className="space-y-0.5 pb-1">
+        {/* PROJECTS section — collapsible */}
+        <button
+          data-testid="sidebar-projects-group-label"
+          onClick={toggleProjects}
+          className="px-4 pt-4 pb-1 flex items-center justify-between w-full text-left focus:outline-none"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#8b949e]">
+            Projects
+          </span>
+          <svg
+            className={`w-3 h-3 text-[#8b949e] transition-transform ${projectsCollapsed ? "" : "rotate-180"}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div
+          data-testid="sidebar-projects-list"
+          className="space-y-0.5 pb-1"
+          style={{ display: projectsCollapsed ? "none" : undefined }}
+        >
           {projects.length === 0 ? (
             <p className="px-4 py-1.5 text-xs text-[#484f58]">No projects</p>
           ) : (
@@ -489,9 +540,38 @@ export default function Sidebar() {
           )}
         </div>
 
-        {/* AGENTS section — scrollable */}
-        <SectionHeader label="Agents" onAdd={() => {}} />
-        <div className="flex-1 overflow-y-auto pb-2 space-y-0.5 min-h-0">
+        {/* AGENTS section — collapsible with localStorage persistence */}
+        <button
+          data-testid="sidebar-agents-group-label"
+          onClick={toggleAgents}
+          className="px-4 pt-4 pb-1 flex items-center justify-between w-full text-left focus:outline-none"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#8b949e]">
+            Agents
+          </span>
+          <span className="text-[#8b949e] flex items-center gap-1">
+            {liveCount > 0 && (
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-[#00d4aa]/15 text-[#00d4aa]">
+                {liveCount} live
+              </span>
+            )}
+            <svg
+              className={`w-3 h-3 transition-transform ${agentsCollapsed ? "" : "rotate-180"}`}
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </button>
+        <div
+          data-testid="sidebar-agents-list"
+          className="overflow-y-auto pb-2 space-y-0.5 min-h-0"
+          style={{
+            flex: agentsCollapsed ? "0 0 0px" : "1 1 auto",
+            overflow: agentsCollapsed ? "hidden" : undefined,
+            display: agentsCollapsed ? "none" : undefined,
+          }}
+        >
           {agents.length === 0 ? (
             <p className="px-4 py-2 text-xs text-[#484f58]">No agents yet</p>
           ) : (
@@ -527,7 +607,7 @@ export default function Sidebar() {
                   {isRunning && (
                     <span className="ml-auto flex items-center gap-1 text-[10px] text-[#00d4aa] shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#00d4aa] animate-pulse" />
-                      1 live
+                      live
                     </span>
                   )}
                 </Link>
@@ -535,6 +615,9 @@ export default function Sidebar() {
             })
           )}
         </div>
+
+        {/* Spacer — pushes Company section to bottom when agents collapsed */}
+        <div className="flex-1" />
 
         {/* COMPANY section — fixed at bottom */}
         <div className="shrink-0 border-t border-[#21262d]">

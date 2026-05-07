@@ -1,6 +1,7 @@
 import { createForgeClient } from "@/lib/supabase/forge-server";
 import { getActiveCompany } from "@/lib/get-active-company";
 import Link from "next/link";
+import AgentPerformanceTable from "@/components/AgentPerformanceTable";
 
 export const revalidate = 0; // Cookie-dependent (active company) — must render per-request
 
@@ -273,6 +274,11 @@ export default async function AgentsPage({
           </div>
         </div>
       )}
+
+      {/* Agent Performance — relocated from home page (FORGE-363) */}
+      <div className="mt-8">
+        <AgentPerformanceTable companyId={company?.id ?? ""} />
+      </div>
     </div>
   );
 }

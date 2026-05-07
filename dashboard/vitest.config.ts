@@ -8,6 +8,9 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     globals: true,
+    // Exclude Playwright e2e specs — they run via `npm run test:e2e`, not vitest
+    exclude: ['node_modules/**', 'e2e/**', '**/*.spec.ts'],
+    include: ['src/**/*.test.{ts,tsx}'],
   },
   resolve: {
     alias: {

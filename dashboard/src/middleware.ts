@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // authenticate via the `x-forge-agent-id` header (FORGE-275); redirecting
 // them to `/login` makes every proof upload / comment POST fail silently
 // with HTTP 307. GitHub webhooks are HMAC-authenticated server-side.
-const PUBLIC_PATHS = ["/api/github/webhook", "/api/agent"];
+const PUBLIC_PATHS = ["/api/github/webhook", "/api/agent", "/api/webhooks/formbricks"];
 
 export async function middleware(request: NextRequest) {
   if (PUBLIC_PATHS.some(p => request.nextUrl.pathname.startsWith(p))) {

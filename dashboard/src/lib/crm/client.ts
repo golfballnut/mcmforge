@@ -11,7 +11,15 @@ export async function findContactByEmail(
   email: string,
   client?: SupabaseLike,
 ): Promise<Contact | null> {
-  throw new Error('not implemented');
+  const supabase = client ?? await createForgeClient();
+  const { data, error } = await supabase
+    .from('crm_contacts')
+    .select('*')
+    .eq('company_id', companyId)
+    .eq('email', email)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as Contact | null) ?? null;
 }
 
 export async function createContact(

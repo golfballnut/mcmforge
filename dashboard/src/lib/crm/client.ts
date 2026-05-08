@@ -29,7 +29,7 @@ export async function createContact(
   const supabase = client ?? await createForgeClient();
   const { data, error } = await supabase
     .from('crm_contacts')
-    .insert(input as Record<string, unknown>)
+    .insert(input as unknown as Record<string, unknown>)
     .select('*')
     .single();
   if (error) throw error;
@@ -86,7 +86,7 @@ export async function logActivity(
   const supabase = client ?? await createForgeClient();
   const { data, error } = await supabase
     .from('crm_activities')
-    .insert(input as Record<string, unknown>)
+    .insert(input as unknown as Record<string, unknown>)
     .select('*')
     .single();
   if (error) throw error;

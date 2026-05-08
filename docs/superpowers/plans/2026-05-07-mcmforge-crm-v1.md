@@ -504,10 +504,19 @@ import type { Contact } from '../crm/types';
 function mockClient(opts: { single?: { data: unknown; error: unknown } } = {}) {
   const single = vi.fn().mockResolvedValue(opts.single ?? { data: null, error: null });
   const maybeSingle = vi.fn().mockResolvedValue(opts.single ?? { data: null, error: null });
-  const eq = vi.fn().mockReturnValue({ eq, single, maybeSingle, limit: vi.fn().mockReturnValue({ eq }) });
-  const select = vi.fn().mockReturnValue({ eq });
+  const chain = {} as {
+    eq: ReturnType<typeof vi.fn>;
+    single: typeof single;
+    maybeSingle: typeof maybeSingle;
+    limit: ReturnType<typeof vi.fn>;
+  };
+  chain.eq = vi.fn(() => chain);
+  chain.single = single;
+  chain.maybeSingle = maybeSingle;
+  chain.limit = vi.fn(() => chain);
+  const select = vi.fn().mockReturnValue(chain);
   const from = vi.fn().mockReturnValue({ select });
-  return { from, _single: single, _eq: eq, _select: select, _maybeSingle: maybeSingle } as never;
+  return { from, _single: single, _eq: chain.eq, _select: select, _maybeSingle: maybeSingle } as never;
 }
 
 describe('findContactByEmail', () => {

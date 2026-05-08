@@ -80,7 +80,17 @@ export async function logActivity(
   input: NewActivity,
   client?: SupabaseLike,
 ): Promise<Activity> {
-  throw new Error('not implemented');
+  if (!input.contact_id && !input.account_id) {
+    throw new Error('logActivity requires contact_id or account_id');
+  }
+  const supabase = client ?? await createForgeClient();
+  const { data, error } = await supabase
+    .from('crm_activities')
+    .insert(input as Record<string, unknown>)
+    .select('*')
+    .single();
+  if (error) throw error;
+  return data as Activity;
 }
 
 export async function listActivitiesForContact(

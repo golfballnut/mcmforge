@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { findContactByEmail, createContact, updateContact, findOrCreateAccount } from '../crm/client';
+import { findContactByEmail, createContact, updateContact, findOrCreateAccount, logActivity } from '../crm/client';
 import type { Contact } from '../crm/types';
 
 function mockClient(opts: { single?: { data: unknown; error: unknown } } = {}) {
@@ -118,5 +118,28 @@ describe('findOrCreateAccount', () => {
     const result = await findOrCreateAccount('co-1', 'newco.com', 'NewCo', client);
     expect(result).toMatchObject({ id: 'a-2', domain: 'newco.com' });
     expect(insert).toHaveBeenCalled();
+  });
+});
+
+describe('logActivity', () => {
+  it('inserts and returns the activity', async () => {
+    const fake = { id: 'act-1', kind: 'note', body: 'hi' };
+    const single = vi.fn().mockResolvedValue({ data: fake, error: null });
+    const select = vi.fn().mockReturnValue({ single });
+    const insert = vi.fn().mockReturnValue({ select });
+    const from = vi.fn().mockReturnValue({ insert });
+    const client = { from } as never;
+    const result = await logActivity(
+      { company_id: 'co-1', contact_id: 'c-1', kind: 'note', body: 'hi', actor_kind: 'human' },
+      client,
+    );
+    expect(result).toMatchObject({ id: 'act-1', kind: 'note' });
+  });
+
+  it('throws when neither contact_id nor account_id is set', async () => {
+    const client = { from: vi.fn() } as never;
+    await expect(
+      logActivity({ company_id: 'co-1', kind: 'note', actor_kind: 'human' }, client),
+    ).rejects.toThrow(/contact_id or account_id/);
   });
 });

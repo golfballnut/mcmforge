@@ -80,7 +80,9 @@ CREATE INDEX IF NOT EXISTS idx_forge_issues_contact_id ON forge.issues(contact_i
 
 -- ─── Activity timeline view ────────────────────────────────────────────────
 
-CREATE OR REPLACE VIEW forge.crm_activity_timeline AS
+CREATE OR REPLACE VIEW forge.crm_activity_timeline
+WITH (security_invoker = true)
+AS
 SELECT
   id, company_id, contact_id, account_id, issue_id,
   kind, subject, body, actor_kind, actor_id, occurred_at,
@@ -106,6 +108,24 @@ FROM forge.issue_events ie
 JOIN forge.issues i        ON i.id = ie.issue_id
 LEFT JOIN forge.crm_contacts c ON c.id = i.contact_id
 WHERE i.contact_id IS NOT NULL;
+
+-- ─── updated_at triggers ───────────────────────────────────────────────────
+
+CREATE OR REPLACE FUNCTION forge.set_updated_at()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_crm_accounts_set_updated_at
+  BEFORE UPDATE ON forge.crm_accounts
+  FOR EACH ROW EXECUTE FUNCTION forge.set_updated_at();
+
+CREATE TRIGGER trg_crm_contacts_set_updated_at
+  BEFORE UPDATE ON forge.crm_contacts
+  FOR EACH ROW EXECUTE FUNCTION forge.set_updated_at();
 
 -- ─── RLS ───────────────────────────────────────────────────────────────────
 

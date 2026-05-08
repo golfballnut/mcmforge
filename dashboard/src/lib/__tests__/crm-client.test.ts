@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { findContactByEmail, createContact, updateContact, findOrCreateAccount, logActivity } from '../crm/client';
+import { findContactByEmail, createContact, updateContact, findOrCreateAccount, logActivity, listActivitiesForContact, listActivitiesForAccount } from '../crm/client';
 import type { Contact } from '../crm/types';
 
 function mockClient(opts: { single?: { data: unknown; error: unknown } } = {}) {
@@ -141,5 +141,37 @@ describe('logActivity', () => {
     await expect(
       logActivity({ company_id: 'co-1', kind: 'note', actor_kind: 'human' }, client),
     ).rejects.toThrow(/contact_id or account_id/);
+  });
+});
+
+describe('listActivitiesForContact', () => {
+  it('queries crm_activity_timeline filtered by contact_id, ordered desc', async () => {
+    const rows = [
+      { id: 'e1', occurred_at: '2026-05-07T01:00:00Z', kind: 'note', source: 'explicit' },
+      { id: 'e2', occurred_at: '2026-05-07T00:00:00Z', kind: 'comment', source: 'derived_issue_event' },
+    ];
+    const limit = vi.fn().mockResolvedValue({ data: rows, error: null });
+    const order = vi.fn().mockReturnValue({ limit });
+    const eq = vi.fn().mockReturnValue({ order });
+    const select = vi.fn().mockReturnValue({ eq });
+    const from = vi.fn().mockReturnValue({ select });
+    const client = { from } as never;
+    const result = await listActivitiesForContact('c-1', 50, client);
+    expect(result).toHaveLength(2);
+    expect(from).toHaveBeenCalledWith('crm_activity_timeline');
+    expect(eq).toHaveBeenCalledWith('contact_id', 'c-1');
+  });
+});
+
+describe('listActivitiesForAccount', () => {
+  it('queries crm_activity_timeline filtered by account_id', async () => {
+    const limit = vi.fn().mockResolvedValue({ data: [], error: null });
+    const order = vi.fn().mockReturnValue({ limit });
+    const eq = vi.fn().mockReturnValue({ order });
+    const select = vi.fn().mockReturnValue({ eq });
+    const from = vi.fn().mockReturnValue({ select });
+    const client = { from } as never;
+    await listActivitiesForAccount('a-1', 50, client);
+    expect(eq).toHaveBeenCalledWith('account_id', 'a-1');
   });
 });

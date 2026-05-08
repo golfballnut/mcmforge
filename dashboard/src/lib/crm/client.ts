@@ -98,7 +98,15 @@ export async function listActivitiesForContact(
   limit: number = 100,
   client?: SupabaseLike,
 ): Promise<TimelineEntry[]> {
-  throw new Error('not implemented');
+  const supabase = client ?? await createForgeClient();
+  const { data, error } = await supabase
+    .from('crm_activity_timeline')
+    .select('*')
+    .eq('contact_id', contactId)
+    .order('occurred_at', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as TimelineEntry[];
 }
 
 export async function listActivitiesForAccount(
@@ -106,7 +114,15 @@ export async function listActivitiesForAccount(
   limit: number = 100,
   client?: SupabaseLike,
 ): Promise<TimelineEntry[]> {
-  throw new Error('not implemented');
+  const supabase = client ?? await createForgeClient();
+  const { data, error } = await supabase
+    .from('crm_activity_timeline')
+    .select('*')
+    .eq('account_id', accountId)
+    .order('occurred_at', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as TimelineEntry[];
 }
 
 export async function searchCrm(

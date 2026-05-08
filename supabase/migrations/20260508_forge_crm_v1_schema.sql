@@ -154,4 +154,42 @@ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
+-- ─── Cross-portfolio search RPC ────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION forge.crm_search(q TEXT, max_results INT DEFAULT 50)
+RETURNS TABLE (
+  kind         TEXT,
+  id           UUID,
+  title        TEXT,
+  detail       TEXT,
+  portfolio_co TEXT
+)
+LANGUAGE sql STABLE
+AS $$
+  SELECT 'contact'::TEXT,
+         c.id,
+         COALESCE(NULLIF(TRIM(CONCAT_WS(' ', c.first_name, c.last_name)), ''), c.email),
+         c.email,
+         co.name
+  FROM forge.crm_contacts c
+  JOIN forge.companies co ON co.id = c.company_id
+  WHERE c.email      ILIKE '%' || q || '%'
+     OR c.first_name ILIKE '%' || q || '%'
+     OR c.last_name  ILIKE '%' || q || '%'
+
+  UNION ALL
+
+  SELECT 'account'::TEXT,
+         a.id,
+         a.name,
+         a.domain,
+         co.name
+  FROM forge.crm_accounts a
+  JOIN forge.companies co ON co.id = a.company_id
+  WHERE a.name   ILIKE '%' || q || '%'
+     OR a.domain ILIKE '%' || q || '%'
+  LIMIT max_results;
+$$;
+
+GRANT EXECUTE ON FUNCTION forge.crm_search(TEXT, INT) TO authenticated;
+
 COMMIT;

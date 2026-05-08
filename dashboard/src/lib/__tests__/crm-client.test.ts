@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { findContactByEmail, createContact, updateContact, findOrCreateAccount, logActivity, listActivitiesForContact, listActivitiesForAccount } from '../crm/client';
+import { findContactByEmail, createContact, updateContact, findOrCreateAccount, logActivity, listActivitiesForContact, listActivitiesForAccount, searchCrm } from '../crm/client';
 import type { Contact } from '../crm/types';
 
 function mockClient(opts: { single?: { data: unknown; error: unknown } } = {}) {
@@ -173,5 +173,22 @@ describe('listActivitiesForAccount', () => {
     const client = { from } as never;
     await listActivitiesForAccount('a-1', 50, client);
     expect(eq).toHaveBeenCalledWith('account_id', 'a-1');
+  });
+});
+
+describe('searchCrm', () => {
+  it('returns flat results from RPC across contacts + accounts', async () => {
+    const rpcResult = {
+      data: [
+        { kind: 'contact', id: 'c-1', title: 'A B', detail: 'a@b.com', portfolio_co: 'MCM Forge' },
+        { kind: 'account', id: 'a-1', title: 'Acme',  detail: 'acme.com', portfolio_co: 'GBN' },
+      ],
+      error: null,
+    };
+    const rpc = vi.fn().mockResolvedValue(rpcResult);
+    const client = { rpc } as never;
+    const result = await searchCrm('a', 50, client);
+    expect(result).toHaveLength(2);
+    expect(rpc).toHaveBeenCalledWith('crm_search', { q: 'a', max_results: 50 });
   });
 });

@@ -130,5 +130,8 @@ export async function searchCrm(
   limit: number = 50,
   client?: SupabaseLike,
 ): Promise<Array<{ kind: 'contact' | 'account'; id: string; title: string; detail: string | null; portfolio_co: string }>> {
-  throw new Error('not implemented');
+  const supabase = client ?? await createForgeClient();
+  const { data, error } = await supabase.rpc('crm_search', { q, max_results: limit });
+  if (error) throw error;
+  return (data ?? []) as Array<{ kind: 'contact' | 'account'; id: string; title: string; detail: string | null; portfolio_co: string }>;
 }

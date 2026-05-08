@@ -26,7 +26,14 @@ export async function createContact(
   input: NewContact,
   client?: SupabaseLike,
 ): Promise<Contact> {
-  throw new Error('not implemented');
+  const supabase = client ?? await createForgeClient();
+  const { data, error } = await supabase
+    .from('crm_contacts')
+    .insert(input as Record<string, unknown>)
+    .select('*')
+    .single();
+  if (error) throw error;
+  return data as Contact;
 }
 
 export async function updateContact(

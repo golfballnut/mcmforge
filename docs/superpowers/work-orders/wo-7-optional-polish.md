@@ -42,7 +42,7 @@ This WO is complete when one or more of the three sub-deliverables below ships. 
 - [ ] Form built in Formbricks for at least 2 of: GBN, HGB, MCM Forge.
 - [ ] Embed deployed on each portfolio co's website.
 - [ ] Webhook routing in MCMForge already supports `?company=<slug>` from WO-4 — verify each new co's `forge.companies.slug` is correct.
-- [ ] Per-co Twenty workspace seeded with at least 5 contacts.
+- [ ] Per-co `forge.crm_*` seed: at least 1 `forge.crm_accounts` row + 5 `forge.crm_contacts` for each portfolio co getting a form. (CRM lives in MCMForge per WO-2 — no Twenty workspace.)
 - [ ] Per-co `links-choice-supplier-intake` agent cloned + parameterized for each new co (knowledge entries per co).
 - [ ] Manual end-to-end test per new co.
 - [ ] PR merged.

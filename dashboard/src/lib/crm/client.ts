@@ -58,7 +58,22 @@ export async function findOrCreateAccount(
   fallbackName: string,
   client?: SupabaseLike,
 ): Promise<Account> {
-  throw new Error('not implemented');
+  const supabase = client ?? await createForgeClient();
+  const { data: existing, error: findErr } = await supabase
+    .from('crm_accounts')
+    .select('*')
+    .eq('company_id', companyId)
+    .eq('domain', domain)
+    .maybeSingle();
+  if (findErr) throw findErr;
+  if (existing) return existing as Account;
+  const { data: created, error: insertErr } = await supabase
+    .from('crm_accounts')
+    .insert({ company_id: companyId, name: fallbackName, domain })
+    .select('*')
+    .single();
+  if (insertErr) throw insertErr;
+  return created as Account;
 }
 
 export async function logActivity(

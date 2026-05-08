@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { findContactByEmail, createContact, updateContact } from '../crm/client';
+import { findContactByEmail, createContact, updateContact, findOrCreateAccount } from '../crm/client';
 import type { Contact } from '../crm/types';
 
 function mockClient(opts: { single?: { data: unknown; error: unknown } } = {}) {
@@ -89,5 +89,34 @@ describe('updateContact', () => {
   it('throws on supabase error', async () => {
     const client = mockUpdateClient(null, { message: 'rls denied' });
     await expect(updateContact('c-1', { status: 'won' }, client)).rejects.toThrow();
+  });
+});
+
+describe('findOrCreateAccount', () => {
+  it('returns existing account when domain matches', async () => {
+    const fake = { id: 'a-1', company_id: 'co-1', name: 'Acme', domain: 'acme.com' };
+    const findSingle = vi.fn().mockResolvedValue({ data: fake, error: null });
+    const findEq = vi.fn().mockReturnValue({ eq: vi.fn().mockReturnValue({ maybeSingle: findSingle }) });
+    const select = vi.fn().mockReturnValue({ eq: findEq });
+    const from = vi.fn().mockReturnValue({ select });
+    const client = { from } as never;
+    const result = await findOrCreateAccount('co-1', 'acme.com', 'Acme', client);
+    expect(result).toMatchObject({ id: 'a-1', domain: 'acme.com' });
+  });
+
+  it('creates new account when no domain match', async () => {
+    const created = { id: 'a-2', company_id: 'co-1', name: 'NewCo', domain: 'newco.com' };
+    const findMaybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+    const findEq2 = vi.fn().mockReturnValue({ maybeSingle: findMaybeSingle });
+    const findEq1 = vi.fn().mockReturnValue({ eq: findEq2 });
+    const select = vi.fn().mockReturnValue({ eq: findEq1 });
+    const insertSingle = vi.fn().mockResolvedValue({ data: created, error: null });
+    const insertSelect = vi.fn().mockReturnValue({ single: insertSingle });
+    const insert = vi.fn().mockReturnValue({ select: insertSelect });
+    const from = vi.fn().mockReturnValue({ select, insert });
+    const client = { from } as never;
+    const result = await findOrCreateAccount('co-1', 'newco.com', 'NewCo', client);
+    expect(result).toMatchObject({ id: 'a-2', domain: 'newco.com' });
+    expect(insert).toHaveBeenCalled();
   });
 });

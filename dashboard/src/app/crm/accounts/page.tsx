@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { createForgeClient } from '@/lib/supabase/forge-server';
 import { getActiveCompany } from '@/lib/get-active-company';
 import { AccountsClient } from './AccountsClient';
@@ -23,7 +24,7 @@ export default async function AccountsListPage() {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold text-white">Accounts</h1>
-        <a href="/crm/accounts/new" className="px-3 py-1.5 bg-[#238636] text-white rounded text-sm hover:bg-[#2ea043]">+ New account</a>
+        <Link href="/crm/accounts/new" className="px-3 py-1.5 bg-[#238636] text-white rounded text-sm hover:bg-[#2ea043]">+ New account</Link>
       </div>
       <AccountsClient initialAccounts={accounts} />
     </div>

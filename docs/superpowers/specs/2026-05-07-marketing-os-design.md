@@ -19,18 +19,16 @@ Replaces ClickUp (forms + tasks + light automation) for the operator team (2–4
 
 ## 2. Stack
 
-Four components. Each owns one thing. None overlap.
+Three components. Each owns one thing. None overlap.
 
 | Component | Choice | What it owns | Hosting |
 |---|---|---|---|
-| **CRM** | Twenty (twentyhq/twenty) | Customers / suppliers / contacts / deals / activities. The truth. | Self-host Docker on Mac Mini (Phase 1); evaluate Cloud later. |
-| **PM / Tasks** | **Build into MCMForge** | Issues, kanban, custom fields, saved views, "my work", bulk ops. The work-in-flight state. | Vercel (existing). |
+| **CRM + PM/Tasks + Agent shell + Approvals** | **Build into MCMForge** | Customers / suppliers / contacts / accounts / activities (CRM) · Issues, kanban, custom fields, saved views, bulk ops (PM) · Mission Control, Inbox, /approvals, agent runs, Drive, Gmail (shell). Single Postgres, single source of truth. | Vercel (existing). |
 | **Forms** | Formbricks (formbricks/formbricks) | Public intake forms on portfolio company sites. Submission webhooks. | Self-host Docker on Mac Mini. |
-| **Agent shell + approvals** | MCMForge (existing) | Mission Control, Inbox, /approvals, agent runs, Drive integration, Gmail send. | Vercel (existing). |
+
+**Why build the CRM into MCMForge instead of self-hosting Twenty (decision 2026-05-07, post-WO-1):** The agent-driven marketing flow's value is in the integration of CRM data with task state, agent drafts, and human approvals. Twenty is generic and would have required a webhook/REST translation layer between two Postgres databases, eventual-consistency edge cases, AGPL compliance for our fork, and an extra Docker stack on the Mini (app + Postgres + Redis + BullMQ + Cloudflare Tunnel). Building CRM views on top of `forge.*` adds ~10 days, gives us single-source-of-truth, agent-native activity timelines, in-place approvals on contact pages, and cross-portfolio search — none of which is feasible in Twenty without significant plugin work. We accept the polish gap (Notion-style inline editing, custom-field UI builder) since those features aren't on the team's daily workflow path. See `docs/superpowers/specs/2026-05-07-mcmforge-crm-design.md` for the full CRM spec.
 
 **Why build the PM layer instead of using Plane:** MCMForge already has `forge.issues` (483 rows), `forge.issue_comments` (1,937 rows), `forge.issue_events`, `/issues` page, and multi-tenancy by `company_id`. The gap to a Plane-equivalent for *this team's* needs is ~20 working days. Plane's surplus features (time tracking, custom roles, audit logs, AI charts, native mobile) are not on the team's actual usage path.
-
-**Why Twenty (not NocoBase):** DB-enforced workspace isolation maps cleanly to 5 portfolio companies with no leakage even with leaked API keys. Modern Notion-like UI the team will adopt. AGPL is fine for internal use. NocoBase's free tier lacks DB-RLS and paywalls inbound webhooks.
 
 **Why Formbricks (not building):** Form-builder UIs (drag-drop, embed SDK, validation logic) are 3+ weeks of dead-weight work. Formbricks does it free with a clean JS embed.
 
@@ -41,45 +39,46 @@ Four components. Each owns one thing. None overlap.
 ### Component map (day-1 loop, Links Choice supplier intake)
 
 ```
-┌────────────┐    webhook    ┌──────────┐    REST     ┌─────────┐
-│ Formbricks │ ─────────────►│   Forge  │ ──────────► │  Twenty │
-│  (intake)  │               │ (router) │             │  (CRM)  │
-└────────────┘               └────┬─────┘             └─────────┘
-                                  │
-                           creates │
-                                  ▼
-                            ┌─────────────┐
-                            │ forge.issues│ ◄── agent reads + drafts
-                            │   (task)    │     (knowledge + CRM history)
-                            └──────┬──────┘
-                                   │
-                          shows in │
-                                   ▼
-                          ┌─────────────────┐
-                          │ MCMForge Inbox  │
-                          │ (Pam approves)  │
-                          └────────┬────────┘
-                                   │ on approve
-                                   ▼
-                          ┌──────────────────────────┐
-                          │ Gmail send + log to      │
-                          │ Twenty activity + close  │
-                          │ task in forge.issues     │
-                          └──────────────────────────┘
+┌────────────┐    webhook    ┌─────────────────────────────────────────┐
+│ Formbricks │ ─────────────►│            MCMForge (Vercel)             │
+│  (intake)  │               │                                          │
+└────────────┘               │  /api/webhooks/formbricks                │
+                             │            │                             │
+                             │            ▼                             │
+                             │  forge.crm_accounts ◄── lib/crm/client   │
+                             │  forge.crm_contacts                      │
+                             │  forge.crm_activities      (single DB,   │
+                             │  forge.issues (contact_id)  one truth)   │
+                             │            │                             │
+                             │            ▼                             │
+                             │  /crm/contacts/[id]  (Pam sees timeline) │
+                             │  /inbox              (Pam approves)      │
+                             │            │                             │
+                             │            │ on approve                  │
+                             │            ▼                             │
+                             │  Gmail send + log forge.crm_activities   │
+                             │  + close forge.issues                    │
+                             └─────────────────────────────────────────┘
+                                          ▲
+                                          │ direct SQL (service role)
+                                  ┌───────┴───────┐
+                                  │ Forge agents  │
+                                  │ (orchestrator)│
+                                  └───────────────┘
 ```
 
 ### Data ownership principles
 
-- **Twenty** owns customer/supplier records. The truth.
-- **MCMForge `forge.issues`** owns work-in-flight state (tasks, kanban, status, assignee).
+- **`forge.crm_*` (in MCMForge)** owns customer/supplier records — accounts, contacts, activities. The truth.
+- **`forge.issues` (in MCMForge)** owns work-in-flight state — tasks, kanban, status, assignee. Issues link to contacts via `forge.issues.contact_id` (nullable).
 - **Formbricks** owns intake form definitions and raw submissions.
-- **MCMForge** owns agents, approvals, and the team's daily view (Inbox + Mission Control).
+- **MCMForge dashboard** owns agents, approvals, and the team's daily view (Inbox, Mission Control, CRM views).
 
 ### Integration principles
 
-- **Webhooks IN** from Twenty, Formbricks, Plane-equiv (i.e., MCMForge itself) → routed through `/api/webhooks/{source}` on MCMForge.
-- **REST OUT** from MCMForge agents to Twenty + Formbricks for writes.
-- **Postgres triggers + Supabase realtime** for events internal to `forge.*` schema (zero-latency agent reactions to MCMForge-local state changes).
+- **Webhooks IN** from Formbricks → `/api/webhooks/formbricks` on MCMForge. (No CRM webhooks needed — CRM is local.)
+- **Direct SQL** for everything internal: agents read/write CRM via the service-role Supabase client. No internal REST/GraphQL layer.
+- **Postgres triggers + Supabase realtime** for events internal to `forge.*` schema (zero-latency agent reactions to state changes).
 - **Drive + Gmail** via existing Workspace MCP server.
 - **NetSuite + ShipStation** = read-only future integrations (Phase 2 — out of scope here).
 
@@ -89,10 +88,10 @@ Four components. Each owns one thing. None overlap.
 
 Each of the 5 portfolio companies (Links Choice, GBN, HGB, MCM Forge, DirtSync) gets:
 
-- **Its own Twenty workspace** — DB-enforced isolation. Single user, 5 workspaces, switcher in UI. One agent API key per workspace — no cross-leakage.
+- **Its own `forge.companies` row** — already exists. All `forge.issues`, `forge.issue_comments`, `forge.crm_contacts`, `forge.crm_accounts`, `forge.crm_activities`, etc. carry `company_id` for tenant isolation.
 - **Its own Formbricks environment** — separate forms, separate webhook secrets.
-- **Its own `forge.companies` row** — already exists. All `forge.issues`, `forge.issue_comments`, etc. carry `company_id` for tenant isolation.
 - **Shared MCMForge dashboard** — single instance, multi-tenant via `company_id`. Agents see all companies; the team filters per-co via the existing Mission Control.
+- **Cross-portfolio search** is a first-class feature (`/crm/search`) — strictly impossible in Twenty's workspace model, native here.
 
 **Phase 1** ships isolation for **Links Choice only**. Workspaces for the other 4 are stubbed but not populated until each company's Phase 2 onboarding.
 
@@ -106,17 +105,18 @@ Each of the 5 portfolio companies (Links Choice, GBN, HGB, MCM Forge, DirtSync) 
 
 1. **Form submission** — Formbricks captures: name, email, phone, ball brand, estimated quantity, photos (up to 3), notes.
 2. **Webhook fires** to `https://mcmforge.com/api/webhooks/formbricks?company=links-choice`. HMAC-signed.
-3. **Forge router** (`/api/webhooks/formbricks`) verifies HMAC, looks up portfolio co by URL param, persists to `forge.form_submissions` (new table — see §7 schema), and:
-   - Calls Twenty REST: create-or-update Contact in Links Choice workspace (match by email).
-   - Calls Twenty REST: create Opportunity in supplier-pipeline stage `incoming`.
-   - Inserts `forge.issues` row in `links-choice / supplier-intake` board, status `drafting`, assigned to the Links Choice supplier-intake agent.
-4. **Agent picks up** the new issue (existing routine pattern). Reads `forge.knowledge` for current LC supplier pricing rules + reads Twenty activity history for this email (if returning supplier). Drafts a reply (price quote + photo-confirmation request + next steps). Saves draft to Drive (existing Workspace MCP).
-5. **Agent updates** the issue: status → `awaiting_approval`. Inserts `forge.issue_events` for activity feed. Sets `approval_payload` JSONB containing draft body + Drive doc URL + form data summary.
-6. **MCMForge Inbox** auto-surfaces the issue to Pam (existing Inbox card system). Card shows: source form data, draft preview, Drive doc link, "Approve / Reject / Edit" actions.
+3. **Forge router** (`/api/webhooks/formbricks`) verifies HMAC, looks up portfolio co by URL param, persists to `forge.form_submissions` (new table — see §7 schema), and (all in one DB transaction via `lib/crm/client.ts`):
+   - `findOrCreateAccount` by email domain (Links Choice supplier).
+   - `findContactByEmail` or `createContact`, attached to that account, status `lead`.
+   - `logActivity` of kind `note` with the form payload as body.
+   - Inserts `forge.issues` row in `links-choice / supplier-intake` board, status `drafting`, `contact_id` set to the new contact, assigned to the Links Choice supplier-intake agent.
+4. **Agent picks up** the new issue (existing routine pattern). Reads `forge.knowledge` for current LC supplier pricing rules + queries `forge.crm_activity_timeline` for this contact (returning supplier history). Drafts a reply (price quote + photo-confirmation request + next steps). Saves draft to Drive (existing Workspace MCP).
+5. **Agent updates** the issue: status → `awaiting_approval`. Inserts `forge.issue_events` for activity feed (these auto-derive into the contact's timeline via the SQL view). Sets `approval_payload` JSONB containing draft body + Drive doc URL + form data summary.
+6. **MCMForge Inbox** auto-surfaces the issue to Pam (existing Inbox card system). Card shows: source form data, draft preview, Drive doc link, contact link to `/crm/contacts/[id]`, "Approve / Reject / Edit" actions.
 7. **Pam clicks Approve.** MCMForge:
    - Calls Gmail send (Workspace MCP).
-   - Calls Twenty REST: log activity (type `email`, body summary, link to Drive doc) on the Contact + Opportunity.
-   - Updates `forge.issues` status → `closed`. Adds `forge.issue_events` for the close.
+   - `logActivity` of kind `email_sent` linked to the contact + issue with the draft body.
+   - Updates `forge.issues` status → `closed` and contact status → `qualified` (or whatever rule applies). Adds `forge.issue_events` for the close.
    - If Pam edited, draft is overwritten before send and `forge.issue_events` carries the diff.
 
 **End-to-end SLO:** form submission to draft-in-inbox in < 60 seconds. Pam-approve to email-sent in < 5 seconds.
@@ -142,20 +142,28 @@ Each of the 5 portfolio companies (Links Choice, GBN, HGB, MCM Forge, DirtSync) 
 **Out of scope (deferred or never):**
 - Time tracking, custom roles / RBAC, audit logs, AI charts, native iOS/Android apps, Gantt charts, multi-language, intake-form builder (Formbricks does this).
 
-### 6.2 CRM (Twenty)
+### 6.2 CRM (build into MCMForge)
 
-**In scope:**
-- Self-host Twenty Docker stack on Mac Mini.
-- Provision 5 workspaces (Links Choice live; other 4 stubbed).
-- Standard objects: Companies, Contacts, Deals, Activities. Custom fields per portfolio co as needed (added later).
-- API keys per workspace.
-- Webhook subscriptions: `contact.created`, `contact.updated`, `opportunity.stage.changed`, `activity.created` → `mcmforge.com/api/webhooks/twenty`.
-- HTTPS via Tailscale + Caddy or Cloudflare Tunnel (existing pattern).
+**In scope (v1):**
+- Three new `forge.*` tables: `forge.crm_accounts`, `forge.crm_contacts`, `forge.crm_activities`. JSONB custom fields. RLS enabled.
+- New nullable column `forge.issues.contact_id` linking issues to contacts.
+- SQL view `forge.crm_activity_timeline` that UNIONs explicit activities with auto-derived rows from `forge.issue_events` — agent-native timeline with no double-writes.
+- Pages under `dashboard/src/app/crm/`: `/crm`, `/crm/contacts`, `/crm/contacts/[id]`, `/crm/accounts`, `/crm/accounts/[id]`, `/crm/search`.
+- Agent's-eye preview panel on contact detail (shows knowledge summary + on-demand draft preview).
+- Cross-portfolio search across all 5 portfolio cos.
+- TypeScript client `dashboard/src/lib/crm/client.ts` (typed Supabase service-role calls): `findContactByEmail`, `createContact`, `findOrCreateAccount`, `logActivity`, `listActivitiesForContact`, `previewAgentDraft`.
+- Per-portfolio-company custom-field schemas in `dashboard/src/lib/crm/custom-fields/<slug>.ts`.
 
-**Out of scope:**
-- Twenty Cloud migration (Phase 2 if self-host gets noisy).
-- Custom Twenty plugins (none needed).
-- Email/calendar sync (Phase 2 — Gmail integration via MCMForge for now).
+**Out of scope (deferred):**
+- Notion-style inline editing (form-based modals in v1; revisit after WO-5).
+- Kanban deal pipeline (Contact `status` field is enough for v1).
+- Custom-field UI builder (TypeScript-config only).
+- Bulk CSV import (manual + Formbricks intake only; CSV in WO-7 polish).
+- Email/calendar sync (auto-derived from issues only in v1).
+- Multi-contact-per-issue (one `contact_id` on issues; extend with link table when needed).
+- Tenant-isolation policies via `user_companies` (permissive `authenticated_all` policy in v1, matches WO-1 pattern; future RBAC WO).
+
+Full spec: [`docs/superpowers/specs/2026-05-07-mcmforge-crm-design.md`](2026-05-07-mcmforge-crm-design.md).
 
 ### 6.3 Forms (Formbricks)
 
@@ -173,12 +181,12 @@ Each of the 5 portfolio companies (Links Choice, GBN, HGB, MCM Forge, DirtSync) 
 ### 6.4 Agent shell + approvals (MCMForge — extend existing)
 
 **In scope (delta over what's already shipped):**
-- Webhook receivers: `/api/webhooks/formbricks`, `/api/webhooks/twenty`.
-- REST clients: `dashboard/src/lib/integrations/twenty.ts` and `dashboard/src/lib/integrations/formbricks.ts` (typed).
-- New tables: `forge.form_submissions`, `forge.crm_links` (maps `forge.issues.id` ↔ Twenty contact/deal IDs).
-- Inbox card schema extension: `approval_payload` JSONB + render rules for draft + Drive link.
+- Webhook receivers: `/api/webhooks/formbricks` (only — CRM is local).
+- Typed CRM client: `dashboard/src/lib/crm/client.ts` (see §6.2). No Twenty REST client needed.
+- New table: `forge.form_submissions`. (Drops `forge.crm_links` — issues link to contacts directly via `forge.issues.contact_id`.)
+- Inbox card schema extension: `approval_payload` JSONB + render rules for draft + Drive link + linked contact.
 - Outbound Gmail-send action wired to approval flow (uses existing Workspace MCP).
-- Activity logger: on approve, write to Twenty Activities + close `forge.issues`.
+- Activity logger: on approve, calls `logActivity` (kind `email_sent`) and closes `forge.issues`.
 
 **Already shipped (no change):**
 - `/`, `/inbox`, `/approvals`, `/agents`, `/projects`, `/goals`, `/routines`, `/runs`, `/knowledge`, `/changelogs`, `/costs`, `/skills`.
@@ -206,17 +214,10 @@ CREATE TABLE forge.form_submissions (
   UNIQUE (source, external_id)
 );
 
--- Bridge: forge.issues ↔ Twenty objects
-CREATE TABLE forge.crm_links (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  company_id UUID NOT NULL REFERENCES forge.companies(id),
-  issue_id UUID NOT NULL REFERENCES forge.issues(id),
-  twenty_workspace_slug TEXT NOT NULL,      -- 'links-choice'
-  twenty_object_type TEXT NOT NULL,         -- 'contact' | 'opportunity' | 'company'
-  twenty_object_id TEXT NOT NULL,           -- Twenty record id
-  created_at TIMESTAMPTZ DEFAULT now(),
-  UNIQUE (issue_id, twenty_object_type, twenty_object_id)
-);
+-- CRM tables: see docs/superpowers/specs/2026-05-07-mcmforge-crm-design.md §4
+-- forge.crm_accounts, forge.crm_contacts, forge.crm_activities
+-- Plus column add: forge.issues.contact_id (nullable FK to forge.crm_contacts)
+-- Plus view: forge.crm_activity_timeline
 
 -- Saved views (PM layer)
 CREATE TABLE forge.views (
@@ -229,11 +230,11 @@ CREATE TABLE forge.views (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Per-portfolio-company integration secrets (Twenty API keys, Formbricks HMAC, etc.)
+-- Per-portfolio-company integration secrets (Formbricks HMAC, future webhook secrets, etc.)
 CREATE TABLE forge.secrets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID NOT NULL REFERENCES forge.companies(id),
-  key TEXT NOT NULL,                        -- 'twenty_api_key' | 'formbricks_hmac' | ...
+  key TEXT NOT NULL,                        -- 'formbricks_hmac' | future integrations
   value_encrypted TEXT NOT NULL,            -- pgsodium-encrypted; service role only
   created_at TIMESTAMPTZ DEFAULT now(),
   rotated_at TIMESTAMPTZ,
@@ -260,14 +261,13 @@ ALTER TABLE forge.issues ADD COLUMN approval_payload JSONB;
 ## 8. Auth & hosting
 
 **Phase 1 (this PRD):**
-- MCMForge: Vercel (existing). Auth: Supabase Auth (existing).
-- Twenty: self-host on Mac Mini. Per-workspace API key, scoped to workspace. No SSO with MCMForge in Phase 1.
+- MCMForge: Vercel (existing). Auth: Supabase Auth (existing). CRM lives here too.
 - Formbricks: self-host on Mac Mini OR Formbricks Cloud Free. Decided in WO-3 based on self-host noise.
 - Mini orchestrator: existing PM2 (no change).
 
 **Phase 2 (out of scope, future ticket):**
-- SSO across all 4 — likely OIDC via Supabase Auth as IdP. Twenty needs Pro tier or community-OIDC plugin.
-- Custom domain mapping for Twenty (`crm.mcmforge.com`).
+- Per-portfolio-company tenant isolation via real RBAC (separate WO).
+- Granular per-user permissions on CRM tables (currently permissive `authenticated_all`).
 
 ---
 
@@ -277,25 +277,25 @@ ALTER TABLE forge.issues ADD COLUMN approval_payload JSONB;
 
 | Trigger | Source | Path |
 |---|---|---|
-| Form submitted | Formbricks | webhook → `/api/webhooks/formbricks` → `forge.form_submissions` insert → `forge.issues` insert (status=`drafting`) → existing routine picks up |
-| CRM record changed | Twenty | webhook → `/api/webhooks/twenty` → log to `forge.issue_events` if linked, optionally create issue if rule matches |
+| Form submitted | Formbricks | webhook → `/api/webhooks/formbricks` → `forge.form_submissions` insert → CRM upsert via `lib/crm/client.ts` → `forge.issues` insert (status=`drafting`, `contact_id` set) → existing routine picks up |
 | Issue status → `awaiting_approval` | MCMForge internal | Postgres trigger → Supabase realtime → MCMForge Inbox auto-refresh |
+| Contact updated | MCMForge internal | Postgres trigger on `forge.crm_contacts` → optionally create issue per rule (e.g., status flip to `qualified` triggers follow-up) |
 
 ### Imperative (agent → system)
 
 | Action | Target | Path |
 |---|---|---|
-| Read CRM history for contact | Twenty | `lib/twenty.ts` → REST `/rest/contacts/{id}/activities` |
-| Create CRM contact + opportunity | Twenty | `lib/twenty.ts` → REST `POST /rest/contacts`, `POST /rest/opportunities` |
+| Read CRM history for contact | `forge.crm_activity_timeline` view | `lib/crm/client.ts` → `listActivitiesForContact(contactId)` (single SQL via service role) |
+| Create CRM contact + account | `forge.crm_contacts` + `forge.crm_accounts` | `lib/crm/client.ts` → `findOrCreateAccount`, `createContact` |
 | Save draft to Drive | Drive (Workspace MCP) | existing path |
 | Send approved email | Gmail (Workspace MCP) | existing path |
-| Log activity in Twenty | Twenty | `lib/twenty.ts` → REST `POST /rest/activities` |
+| Log CRM activity | `forge.crm_activities` | `lib/crm/client.ts` → `logActivity` |
 
 ### Auth
 
-- Each portfolio company → its own Twenty API key, stored in `forge.secrets` (pgsodium-encrypted, service role read only).
 - Formbricks webhook → HMAC secret per environment, stored in `forge.secrets`.
 - MCMForge server actions pull keys at runtime via Supabase service role from `forge.secrets`. Never exposed to the browser bundle.
+- CRM access uses the existing dashboard auth (Supabase Auth) — RLS handles tenant scoping; no per-portfolio API keys needed since CRM is internal.
 
 ---
 
@@ -308,9 +308,9 @@ ALTER TABLE forge.issues ADD COLUMN approval_payload JSONB;
    - Source form data (collapsed, expandable).
    - Agent draft (full text, editable inline).
    - Link to Drive doc (canonical version).
-   - "From Twenty:" — contact's prior activity (last 3, linked).
+   - "From CRM:" — contact's prior activity (last 3 from `forge.crm_activity_timeline`, linked to `/crm/contacts/[id]`).
    - Buttons: **Approve & Send · Edit Draft · Reject · Send Back to Agent (with note)**.
-3. On **Approve & Send**: email goes out, `forge.issues` closes, Twenty Activity logged. Toast: "Sent to {recipient}."
+3. On **Approve & Send**: email goes out, `forge.issues` closes, `forge.crm_activities` row inserted (kind `email_sent`). Toast: "Sent to {recipient}."
 4. On **Edit Draft**: inline editor. Save → redraft is sent on Approve.
 5. On **Reject**: `forge.issues` status → `rejected`. Reason logged. No email sent.
 6. On **Send Back**: `forge.issues` status → `drafting`. Note appended to comments. Agent re-runs.
@@ -325,15 +325,15 @@ Marketing-OS ships in 7 work orders. Each WO is self-contained (a fresh Claude s
 
 | WO | Title | Effort | Depends on |
 |---|---|---|---|
-| **WO-1** | Pre-flight cleanup (RLS on 10 tables · `run_events.seq` INT4 fix · FORGE-364 Telegram secrets) | 1 day | none |
-| **WO-2** | Twenty self-host on Mac Mini + 5 workspaces stubbed + Links Choice live | 3 days | WO-1 |
+| **WO-1** | ✅ **Shipped 2026-05-07.** Pre-flight cleanup (RLS on 10 tables · `run_events.seq` INT4→BIGINT fix · Telegram webhook activation) | 1 day | none |
+| **WO-2** | MCMForge CRM v1 (`forge.crm_*` schema · contacts/accounts/activities pages · agent's-eye preview · cross-portfolio search · `lib/crm/client.ts`) | 10 days | WO-1 |
 | **WO-3** | Formbricks self-host or cloud + Links Choice supplier intake form + JS embed | 2 days | WO-1 |
-| **WO-4** | MCMForge integration layer (webhook receivers · REST clients · `forge.form_submissions` + `forge.crm_links` + JSONB columns · approval_payload schema) | 3 days | WO-2, WO-3 |
-| **WO-5** | PM/Tasks UI extensions (Kanban · saved views · custom fields · bulk ops · "my work" · activity feed polish · responsive mobile · CSV importer) | 6 days | WO-1 |
-| **WO-6** | Day-1 end-to-end (Links Choice supplier form → Twenty → forge.issues → agent draft → MCMForge Inbox → Pam approve → Gmail send + Twenty Activity log) | 3 days | WO-4, WO-5 |
-| **WO-7** | Optional polish (Cycles · ClickUp CSV migration · GBN/HGB/MCM Forge supplier-intake forms) | 3 days | WO-6 |
+| **WO-4** | MCMForge integration layer (Formbricks webhook receiver · `forge.form_submissions` · approval_payload schema · agent runtime wiring to CRM client) | 2 days | WO-2, WO-3 |
+| **WO-5** | PM/Tasks UI extensions (Kanban · saved views · custom fields on issues · bulk ops · "my work" · activity feed polish · responsive mobile · ClickUp CSV importer) | 6 days | WO-1 |
+| **WO-6** | Day-1 end-to-end (Links Choice supplier form → forge.crm_* upsert → forge.issues → agent draft → MCMForge Inbox → Pam approve → Gmail send + activity logged) | 3 days | WO-4, WO-5 |
+| **WO-7** | Optional polish (Cycles · ClickUp CSV migration · GBN/HGB/MCM Forge supplier-intake forms · CRM bulk import) | 3 days | WO-6 |
 
-**Total: ~21 working days = 4-5 weeks** with focused agent-driven build.
+**Total: ~26 working days ≈ 5 weeks** with focused agent-driven build. (Was 21 days with Twenty; CRM-in-MCMForge adds 7 days to WO-2 but removes 1 day from WO-4 and the runtime cost of Twenty self-host operations.)
 
 ---
 
@@ -347,7 +347,8 @@ Marketing-OS ships in 7 work orders. Each WO is self-contained (a fresh Claude s
 - **Audit logs at PM layer.** `forge.issue_events` is sufficient.
 - **AI charts / dashboards.** Out of M0; possible later.
 - **Multi-language.** English only.
-- **Twenty SSO with MCMForge.** Phase 2.
+- **Notion-style inline editing on CRM views.** Form-based modals only in v1.
+- **Custom-field UI builder.** TypeScript-config only in v1.
 - **Telegram intake** (FORGE-365 schema migration handles this separately as a discrete WO post-Marketing-OS).
 
 ---
@@ -357,11 +358,11 @@ Marketing-OS ships in 7 work orders. Each WO is self-contained (a fresh Claude s
 The system is "shipped" when:
 
 1. Pam can submit a Links Choice supplier-intake form on `linkschoice.com`.
-2. Within 60 seconds: a Twenty contact + opportunity exist in the Links Choice workspace.
-3. Within 60 seconds: a `forge.issues` row exists with status `awaiting_approval` and an agent-drafted reply in `approval_payload`.
-4. Pam sees the approval card in MCMForge Inbox at `/`.
+2. Within 60 seconds: a `forge.crm_contacts` row exists in the Links Choice workspace, attached to a `forge.crm_accounts` row keyed by email domain, with an initial `forge.crm_activities` entry.
+3. Within 60 seconds: a `forge.issues` row exists with status `awaiting_approval`, `contact_id` set, and an agent-drafted reply in `approval_payload`.
+4. Pam sees the approval card in MCMForge Inbox at `/`, with a link to the contact at `/crm/contacts/[id]`.
 5. Pam clicks Approve. Email is sent via Gmail to the supplier within 5 seconds.
-6. Twenty Activity is logged on the contact + opportunity.
+6. A `forge.crm_activities` row of kind `email_sent` is inserted, linked to the contact + issue.
 7. `forge.issues` row closes. Mission Control reflects the close in the standup card the next morning.
 
 If any of these 7 fail, ship is incomplete.
@@ -372,11 +373,13 @@ If any of these 7 fail, ship is incomplete.
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| Twenty self-host on Mini gets noisy (crashes, upgrade pain) | Medium | High | Fall back to Twenty Cloud Free; host CRM API on Vercel proxy. |
+| CRM polish gap (no inline editing, no kanban, no UI field-builder) frustrates daily users | Medium | Medium | Ship v1, gather feedback, prioritize follow-on UX work in WO-5. The differentiated features (single source of truth, agent-native timeline, cross-portfolio search, in-place approvals) carry the weight while polish lags. |
+| Cross-portfolio search slows past ~200ms once contacts cross 10k | Low | Low | Add `pg_trgm` GIN indexes on email/name/domain when threshold hit. |
+| Agent-draft preview burns tokens on idle clicks | Medium | Low | Rate-limit per contact (1 call per 30s); cache last result for 5 min. |
+| Activity-timeline view performance at scale | Low | Medium | Indexed `contact_id` on issues; cap UI to last 100 events; revisit with materialized view if reads slow. |
 | Formbricks JS embed breaks on `linkschoice.com` (theme conflicts) | Low | Medium | Iframe fallback documented in WO-3. |
-| Twenty API rate limits hit during agent fleet ramp | Low | Medium | Per-workspace key + local response cache in MCMForge. |
-| `forge.run_events.seq` INT4 overflow before WO-1 ships | Medium | High | WO-1 ships first. |
-| Webhook delivery loses events under load | Low | High | Idempotency on `forge.form_submissions.external_id` UNIQUE; redelivery via Formbricks/Twenty admin UIs. |
+| RLS regression breaks dashboard reads after CRM ships | Low | High | WO-1 smoke-test pattern (route-by-route on Vercel preview); rollback is per-policy `DROP POLICY`. |
+| Webhook delivery loses events under load | Low | High | Idempotency on `forge.form_submissions.external_id` UNIQUE; redelivery via Formbricks admin UI. |
 | Agent drafts hallucinate pricing for Links Choice | Medium | High | `forge.knowledge` has source-of-truth pricing; agent must cite knowledge entry; if no entry, refuses to quote. |
 | Pam's approval volume exceeds capacity | Low | Medium | Surface velocity in Mission Control; if backlog grows, add second human approver. |
 | Scope creep into NetSuite/ShipStation Phase 2 | High | Medium | Out-of-scope list is canonical; ticket new asks separately. |
@@ -387,7 +390,7 @@ If any of these 7 fail, ship is incomplete.
 
 - **Marketing-OS** — this system.
 - **Portfolio company** — one of Steve's 5 businesses (Links Choice, GBN, HGB, MCM Forge, DirtSync).
-- **Workspace** — Twenty's tenant unit. One per portfolio company.
+- **CRM (in MCMForge)** — `forge.crm_accounts`, `forge.crm_contacts`, `forge.crm_activities` and the views/pages built on them. See `docs/superpowers/specs/2026-05-07-mcmforge-crm-design.md`.
 - **Inbox** — MCMForge's `/inbox` page where pending approvals surface.
 - **Approval card** — UI element in Inbox showing form data + agent draft + buttons.
 - **Mission Control** — MCMForge home page (`/`) — daily standup + Inbox + Live Agents + Gate-A.

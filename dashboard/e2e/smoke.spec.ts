@@ -14,9 +14,14 @@ import { test, expect } from '@playwright/test';
 // - Visual diffs against a baseline (Visual Critic uses screenshots from /test-results)
 
 const PAGES = [
-  { path: '/issues', label: 'issues' },
-  { path: '/runs', label: 'runs' },
-  { path: '/agents', label: 'agents' },
+  { path: '/issues',         label: 'issues' },
+  { path: '/runs',           label: 'runs' },
+  { path: '/agents',         label: 'agents' },
+  { path: '/crm',            label: 'crm-landing' },
+  { path: '/crm/contacts',   label: 'crm-contacts' },
+  { path: '/crm/accounts',   label: 'crm-accounts' },
+  { path: '/crm/activities', label: 'crm-activities' },
+  { path: '/crm/search',     label: 'crm-search' },
 ];
 
 for (const { path, label } of PAGES) {

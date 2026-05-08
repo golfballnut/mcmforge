@@ -10,7 +10,7 @@
 
 ## Goal
 
-Wire all preceding WOs together for the Links Choice supplier-intake workflow. Supplier fills out form → 60 seconds later, Pam sees an approval card with the agent's draft reply, the supplier's CRM record, and a Drive doc link. Pam clicks Approve → email sends, Twenty Activity logged, task closes. End-to-end. This is the proof the system works.
+Wire all preceding WOs together for the Links Choice supplier-intake workflow. Supplier fills out form → 60 seconds later, Pam sees an approval card with the agent's draft reply, the supplier's CRM record (in `/crm/contacts/[id]`), and a Drive doc link. Pam clicks Approve → email sends, `forge.crm_activities` logged, task closes. End-to-end. This is the proof the system works.
 
 ## Why this WO exists
 
@@ -21,24 +21,24 @@ Until WO-6 ships, we have a CRM (WO-2), a form (WO-3), an integration layer (WO-
 PRD §13 acceptance criteria, copied verbatim:
 
 - [ ] Pam can submit a Links Choice supplier-intake form on `linkschoice.com`.
-- [ ] Within 60 seconds: a Twenty contact + opportunity exist in the Links Choice workspace.
-- [ ] Within 60 seconds: a `forge.issues` row exists with status `awaiting_approval` and an agent-drafted reply in `approval_payload`.
-- [ ] Pam sees the approval card in MCMForge Inbox at `/`.
+- [ ] Within 60 seconds: `forge.crm_contacts` + `forge.crm_accounts` rows exist for the submitter, with an initial `forge.crm_activities` entry of kind `note` containing the form payload.
+- [ ] Within 60 seconds: a `forge.issues` row exists with status `awaiting_approval`, `contact_id` set, and an agent-drafted reply in `approval_payload`.
+- [ ] Pam sees the approval card in MCMForge Inbox at `/`, with a link to the contact at `/crm/contacts/[id]`.
 - [ ] Pam clicks Approve. Email is sent via Gmail to the supplier within 5 seconds.
-- [ ] Twenty Activity is logged on the contact + opportunity.
+- [ ] A `forge.crm_activities` row of kind `email_sent` is inserted, linked to the contact + issue.
 - [ ] `forge.issues` row closes. Mission Control reflects the close in the standup card the next morning.
 - [ ] PR merged.
 
 ## In scope
 
 ### Agent draft logic (`forge-orchestrator/agents/links-choice-supplier-intake/`)
-- Reads the `forge.issues` row + linked `forge.form_submissions.parsed` payload.
-- Calls Twenty REST to read prior activity for the contact (if returning supplier).
+- Reads the `forge.issues` row + linked `forge.form_submissions.parsed` payload + `issues.contact_id`.
+- Calls `lib/crm/client.ts` `listActivitiesForContact(contactId)` to read prior activity (returning supplier history) — single SQL query, no REST round-trip.
 - Reads `forge.knowledge` for current LC supplier pricing rules (must cite knowledge entry; refuses to quote if absent).
 - Drafts a reply: greeting, price quote (or refusal-with-reason), photo confirmation request, next steps.
 - Saves draft to Drive via Workspace MCP — folder per portfolio co.
 - Updates `forge.issues.approval_payload` JSONB with: `{draft_text, drive_doc_url, summary, prior_activity_summary, knowledge_citations[]}`.
-- Sets status → `awaiting_approval`. Inserts `forge.issue_events`.
+- Sets status → `awaiting_approval`. Inserts `forge.issue_events` (these auto-derive into the contact's timeline via the CRM view from WO-2).
 
 ### Approval card UX (extends existing `/inbox`)
 - Card renders for issues with status `awaiting_approval` and `approval_payload` not null.
@@ -46,7 +46,7 @@ PRD §13 acceptance criteria, copied verbatim:
 - Buttons: Approve & Send · Edit Draft · Reject · Send Back to Agent.
 
 ### Action handlers (`dashboard/src/app/inbox/actions.ts`)
-- `approveAndSend(issueId, editedDraft?)`: sends Gmail via Workspace MCP, calls Twenty `logActivity` on contact + opportunity, updates `forge.issues` to `closed`, inserts `forge.issue_events`.
+- `approveAndSend(issueId, editedDraft?)`: sends Gmail via Workspace MCP, calls `lib/crm/client.ts` `logActivity` (kind `email_sent`) linked to contact + issue, updates `forge.issues` to `closed`, inserts `forge.issue_events`.
 - `reject(issueId, reason)`: status → `rejected`, log reason, no email.
 - `sendBack(issueId, note)`: status → `drafting`, append comment, agent re-runs.
 
@@ -76,14 +76,14 @@ PRD §13 acceptance criteria, copied verbatim:
 3. Build agent draft logic against fixture data (mocked submission); TDD with snapshot tests for draft text shape.
 4. Approval card UI next — render an existing `awaiting_approval` issue, verify all sections show.
 5. Action handlers last — Gmail send is the riskiest external call, mock it in tests.
-6. E2E test in Playwright: submit form via Formbricks API → wait for approval card → click Approve → assert Gmail mock called + Twenty mock activity logged + issue closed.
-7. Manual end-to-end on Vercel preview: real form submission, real Twenty workspace, real Gmail send to test address.
+6. E2E test in Playwright: submit form via Formbricks API → wait for approval card → click Approve → assert Gmail mock called + `forge.crm_activities` row inserted (kind `email_sent`) + issue closed.
+7. Manual end-to-end on Vercel preview: real form submission, real Gmail send to test address, verify `/crm/contacts/[id]` reflects everything.
 
 ## Test plan
 
 ### Unit (Vitest)
 - Draft generator: returns text matching expected sections, cites knowledge entry, refuses to quote when no knowledge match.
-- Action handlers: state transitions correct, side effects (Gmail/Twenty) called once per approval.
+- Action handlers: state transitions correct, side effects (Gmail send + `logActivity` insert) called once per approval.
 
 ### E2E (Playwright)
 - `tests/e2e/day-1-loop.spec.ts`: full happy path.

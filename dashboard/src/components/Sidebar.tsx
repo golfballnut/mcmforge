@@ -170,6 +170,15 @@ function IconApprovals() {
   );
 }
 
+function IconCRM() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+        d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-5a4 4 0 11-8 0 4 4 0 018 0zm6 0a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  );
+}
+
 // ─── Project dot colors (cycle through these) ────────────────────────────────
 
 const PROJECT_COLORS = [
@@ -457,6 +466,12 @@ export default function Sidebar() {
             icon={<IconIssues />}
             label="Issues"
             isActive={isActive("/issues")}
+          />
+          <NavLink
+            href="/crm"
+            icon={<IconCRM />}
+            label="CRM"
+            isActive={isActive("/crm")}
           />
           <NavLink
             href="/knowledge"

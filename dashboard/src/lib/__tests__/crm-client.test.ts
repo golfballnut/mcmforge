@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { findContactByEmail, createContact } from '../crm/client';
+import { findContactByEmail, createContact, updateContact } from '../crm/client';
 import type { Contact } from '../crm/types';
 
 function mockClient(opts: { single?: { data: unknown; error: unknown } } = {}) {
@@ -66,5 +66,28 @@ describe('createContact', () => {
     await expect(
       createContact({ company_id: 'co-1', email: 'dup@example.com' }, client),
     ).rejects.toThrow();
+  });
+});
+
+function mockUpdateClient(returnRow: unknown, error: unknown = null) {
+  const single = vi.fn().mockResolvedValue({ data: returnRow, error });
+  const select = vi.fn().mockReturnValue({ single });
+  const eq = vi.fn().mockReturnValue({ select });
+  const update = vi.fn().mockReturnValue({ eq });
+  const from = vi.fn().mockReturnValue({ update });
+  return { from, _update: update, _eq: eq } as never;
+}
+
+describe('updateContact', () => {
+  it('patches and returns updated row', async () => {
+    const fake = { id: 'c-1', status: 'qualified' };
+    const client = mockUpdateClient(fake);
+    const result = await updateContact('c-1', { status: 'qualified' }, client);
+    expect(result).toMatchObject({ id: 'c-1', status: 'qualified' });
+  });
+
+  it('throws on supabase error', async () => {
+    const client = mockUpdateClient(null, { message: 'rls denied' });
+    await expect(updateContact('c-1', { status: 'won' }, client)).rejects.toThrow();
   });
 });

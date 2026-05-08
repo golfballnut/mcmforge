@@ -41,7 +41,15 @@ export async function updateContact(
   patch: Partial<NewContact>,
   client?: SupabaseLike,
 ): Promise<Contact> {
-  throw new Error('not implemented');
+  const supabase = client ?? await createForgeClient();
+  const { data, error } = await supabase
+    .from('crm_contacts')
+    .update({ ...patch, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select('*')
+    .single();
+  if (error) throw error;
+  return data as Contact;
 }
 
 export async function findOrCreateAccount(

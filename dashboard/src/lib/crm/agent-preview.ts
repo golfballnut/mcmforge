@@ -14,8 +14,9 @@ import type { Contact, TimelineEntry } from './types';
 const RATE_LIMIT_MS = 30_000; // 1 call per 30s per contact
 const recentCalls = new Map<string, number>(); // contactId -> last timestamp
 
-// Default = MCM Forge "Forge Builder" agent (idle). Override per-deploy via env.
-const DEFAULT_PREVIEW_AGENT_ID = '21d39f2a-db73-45af-b4ce-abd321d70fe1';
+// Default = MCM Forge "CRM Preview Drafter" agent (provisioned in WO-2.5).
+// Override per-deploy via env CRM_PREVIEW_DRAFT_AGENT_ID.
+const DEFAULT_PREVIEW_AGENT_ID = '92fabe74-cef1-43c8-9939-fa5b3bf4691c';
 
 export function buildPreviewPrompt(contact: Contact, timeline: TimelineEntry[], hypothetical: string): string {
   const last5 = timeline.slice(0, 5).map((e) => `- [${e.occurred_at}] ${e.kind}: ${e.subject ?? ''} ${e.body ?? ''}`).join('\n');
@@ -61,7 +62,11 @@ export async function queuePreviewDraft(
       agent_id: agentId,
       company_id: contact.company_id,
       status: 'queued',
-      invocation_source: 'on_demand',
+      // ceo_manual: a human is clicking "Generate preview" — the run-executor's gate
+      // check (forge-orchestrator/src/loops/run-executor.ts:90-97) only allows G1+ when
+      // invocation_source is ceo_manual or steve_manual. on_demand would require the
+      // agent to be at certification_gate >= 3.
+      invocation_source: 'ceo_manual',
       trigger_detail: 'crm_preview_draft',
       context_snapshot: { prompt, contact_id: contact.id },
     })

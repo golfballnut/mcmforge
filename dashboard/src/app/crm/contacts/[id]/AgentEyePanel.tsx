@@ -30,8 +30,18 @@ export function AgentEyePanel({ contact, timeline }: { contact: Contact; timelin
       esRef.current = es;
       es.addEventListener('event', (e) => {
         try {
-          const evt = JSON.parse((e as MessageEvent).data) as { event_type?: string; payload?: { text?: string } };
-          if (evt.payload?.text) setDraft((prev) => prev + evt.payload!.text);
+          const evt = JSON.parse((e as MessageEvent).data) as {
+            event_type?: string;
+            payload?: { message?: { content?: Array<{ type?: string; text?: string }> } };
+          };
+          // Real Claude stream-json shape: payload.message.content[] is an array of
+          // { type: 'text' | 'tool_use' | ..., text?: string }. We append every text chunk.
+          const chunks = evt.payload?.message?.content ?? [];
+          for (const c of chunks) {
+            if (c?.type === 'text' && typeof c.text === 'string') {
+              setDraft((prev) => prev + c.text);
+            }
+          }
         } catch { /* ignore parse errors */ }
       });
       es.addEventListener('done', () => { setStreaming(false); es.close(); });

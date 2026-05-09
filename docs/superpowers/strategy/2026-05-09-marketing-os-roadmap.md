@@ -75,9 +75,9 @@ A through H = 10/10. Anything less is debt we know about.
 
 ---
 
-## 4. The path: 3 WOs to close the gap
+## 4. The path: 4 WOs to close the gap
 
-Sequencing matters. Each WO unblocks the next.
+Sequencing matters. Each WO unblocks the next. WOs 1-3 get to 10/10 reliable; WO-4 makes it Pam-shaped.
 
 ### WO-OUTBOUND-SEND — close the loop (Step 6 ❌ → ✅)
 
@@ -149,19 +149,42 @@ Sequencing matters. Each WO unblocks the next.
 
 ---
 
+### WO-UI-REDESIGN — Pam-shaped dashboard (Step 4 polish)
+
+**Why fourth:** today's dashboard has 13 top-level routes that grew organically. It's functional for Steve (who knows the data model) but will confuse Pam. **A redesign before the loop is closed is speculative** — we'd be designing for an assumed workflow. After the 3 WOs ship, we have real usage data to design from.
+
+**Scope:**
+- Role-aware navigation: operator (Pam-mode) sees `/inbox`, `/crm`, daily standup; admin (Steve-mode) sees everything.
+- Information hierarchy: collapse infra routes (`/runs`, `/agents`, `/skills`, `/knowledge` admin) under a single Admin shelf.
+- Mission Control becomes the actual "one place to start" for both roles.
+- Approval card refresh: incorporate lessons from WO-OUTBOUND-SEND (likely cleanup of inline editing, recipient confirmation, send-undo toast).
+- CRM list/detail polish: use real load data from WO-NS-READ-MIRROR to set sane defaults (pagination, sort, filter chips).
+- Mobile responsive sweep — Pam will check from her phone.
+
+**Out of scope for this WO:** new feature work disguised as "redesign." The redesign is *layout + hierarchy + role gating*, not new capabilities.
+
+**Effort:** ~5-7 days (design + build + reviews).
+
+**Acceptance:** Pam is given login credentials. Without prior training, she can complete the morning loop (open Inbox, approve a draft, see it sent, see the activity logged) within 5 minutes of first login.
+
+**After this ships:** the system is **10/10 + Pam-shaped**. Ready to onboard a second human.
+
+---
+
 ## 5. Sequencing rationale
 
 ```
-WO-OUTBOUND-SEND ──► WO-NS-READ-MIRROR ──► WO-BRAND-VOICE
-   (2 days)              (5-7 days)           (2.5 days)
+WO-OUTBOUND-SEND ──► WO-NS-READ-MIRROR ──► WO-BRAND-VOICE ──► WO-UI-REDESIGN
+   (2 days)              (5-7 days)           (2.5 days)         (5-7 days)
 
-   closes the loop       fills the data       gives the voice
-   7.5 / 10              9 / 10               10 / 10
+   closes the loop       fills the data       gives the voice    Pam-shaped UX
+   7.5 / 10              9 / 10               10 / 10            10 / 10 + onboarding-ready
 ```
 
 - **Outbound first** because it unlocks every later improvement. Without send, NS mirroring just makes prettier drafts that Pam still copy-pastes.
 - **NS mirror second** because LC/GBN/HGB drafts get fundamentally smarter once history is visible. Brand voice without facts is style without substance.
-- **Brand voice last** because it's the polish layer; with facts in place, voice sharpens what's already correct. (Voice without facts ≈ a more confident generic email — worse, not better.)
+- **Brand voice third** because it's the polish layer; with facts in place, voice sharpens what's already correct. (Voice without facts ≈ a more confident generic email — worse, not better.)
+- **UI redesign fourth** because dashboard polish without a closed loop = polishing a half-built room. The 3 prior WOs reveal where UI friction actually lives; design with data, not speculation.
 
 ---
 
@@ -221,17 +244,53 @@ If any of 1-7 fail consistently, ship is incomplete.
 
 ---
 
-## 10. Next step
+## 10. Process discipline (locked 2026-05-09)
+
+**Every WO that ships from this roadmap follows the same chain. No exceptions.**
+
+```
+1. brainstorming               (skill: superpowers:brainstorming)
+   └─ produces: spec at docs/superpowers/specs/YYYY-MM-DD-<wo>-design.md
+   └─ HARD-GATE: no code, no scaffolding, until Steve approves the design
+
+2. writing-plans               (skill: superpowers:writing-plans)
+   └─ produces: implementation plan at docs/superpowers/plans/YYYY-MM-DD-<wo>-plan.md
+   └─ task-by-task, TDD discipline encoded per-step
+
+3. test-driven development     (skill: superpowers:test-driven-development)
+   └─ failing test FIRST · minimal impl · green · commit
+   └─ applies to every implementation step in the plan
+
+4. subagent-driven execution   (skill: superpowers:subagent-driven-development)
+   └─ fresh subagent per task · two-stage review (spec compliance + code quality)
+   └─ exception: trivial git/file ops handled inline by controller, with disclosure
+
+5. ship                        (PR + CI + Vercel preview + Steve approves preview + merge)
+```
+
+**Calibration on "perfect":** TDD gives us *tested behavior*, not perfection. The two-stage review catches design and quality drift. Production monitoring (post-WO-MEASURE) catches what tests miss. Targeting **"tested, reviewed, reliable"** — not "perfect." Perfect is a trap; reliable is shipped.
+
+**Skill failure modes to watch for** (these appear in red flags lists across the skills):
+- Skipping brainstorm because "this is simple" → the brainstorming HARD-GATE rejects this
+- Implementing before plan approval → writing-plans gates this
+- "Compiles ≠ works" → TDD requires actual behavior tests, not just type checks
+- Reviewer skipped → subagent-driven-development requires both spec + quality reviews
+
+---
+
+## 11. Next step
 
 After Steve approves this strategy doc:
 
-1. Open the brainstorm for **WO-OUTBOUND-SEND** (the first of the 3 WOs).
-2. Brainstorm → spec → plan → build → ship.
+1. Open the brainstorm for **WO-OUTBOUND-SEND** (the first of the 4 WOs).
+2. Brainstorm → spec → plan → TDD build → subagent review → ship.
 3. Re-grade the system. Confirm 7.5/10.
 4. Repeat for WO-NS-READ-MIRROR.
 5. Re-grade. Confirm 9/10.
 6. Repeat for WO-BRAND-VOICE.
 7. Re-grade. Confirm 10/10.
-8. Then revisit ADRs (rails follow workload).
+8. Repeat for WO-UI-REDESIGN.
+9. Re-grade. Confirm 10/10 + Pam-onboarding-ready.
+10. Then revisit ADRs (rails follow workload).
 
 End of strategy.

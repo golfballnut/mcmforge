@@ -14,7 +14,7 @@
 | Decision | Choice | Rationale |
 |---|---|---|
 | Hosting | **Formbricks Cloud Free** | Mac Mini at 94% RAM (15G/16G) at dispatch — already past WO-3's own self-host trigger. Docker not installed. Self-host adds 2–4GB Docker Desktop + 1–2GB Formbricks stack + tunnel maintenance to a Mini that's already strained. Links Choice supplier intake is low-volume (B2B), 200/mo Cloud Free cap is plenty. |
-| Embed location | **Dedicated `/sell-us-balls` page**, no homepage CTA | Smaller PR, single embed location, shareable URL for Pam's email signature. Homepage CTA can be added in WO-6 when the loop is live end-to-end. |
+| Embed location | **`forms.forms.linkschoice.com/sell-us-balls`** — Vercel subdomain hosted from the existing `golfballnut/linkschoice-marketing` Next.js repo. No page on `linkschoice.com` itself. | Original plan assumed `linkschoice.com` was Next.js. Steve clarified 2026-05-09: storefront is Shopify. Embedding Formbricks JS into a Liquid template is fragile (theme conflicts, no clean React mount). Hosting on a Vercel subdomain keeps the form on a Links-Choice-branded URL while letting us own the runtime. Smaller PR, single embed location, shareable URL for Pam's email signature. |
 | Form schema ownership | **Claude builds it via Formbricks Cloud admin UI during WO-3 session.** Pam onboards in WO-7. | Embed PR cannot be blocked on "waiting for Pam to design fields." Fields are locked in §3 below. |
 | WO-3 slice boundary | **Slice A only** (this WO): stub webhook + dark form page. **Slice B** (HMAC verify + dedupe + CRM writes) = WO-4. | Prevents conflating "stub returns 200" with "supplier intake works." |
 | Dark page strategy | `<meta name="robots" content="noindex,nofollow"/>`, no nav link, no sitemap entry, no homepage CTA. Reachable only by direct URL. | Page must not accept real traffic until WO-4 ships, or Pam fills the form, sees a confirmation, and submission silently goes to /dev/null. |
@@ -27,11 +27,11 @@
 
 ```
 ┌──────────────────────────┐         HMAC-signed POST
-│  linkschoice.com         │   ┌────────────────────────┐
+│  forms.linkschoice.com   │   ┌────────────────────────┐
 │  /sell-us-balls          │   │ Formbricks Cloud Free  │
-│  (dark — noindex,        │ ─▶│ - Form definition      │ ─┐
-│   no nav link)           │   │ - Submission storage   │  │
-│  <FormbricksEmbed/>      │   │ - Webhook config       │  │
+│  (Vercel subdomain;      │ ─▶│ - Form definition      │ ─┐
+│   dark — noindex)        │   │ - Submission storage   │  │
+│  <FormbricksMount/>      │   │ - Webhook config       │  │
 └──────────────────────────┘   └────────────────────────┘  │
                                                             │
                                                             ▼
@@ -179,7 +179,7 @@ Stored in 1Password during WO-3 session for future rotation.
 | 5 | Submission lands in Formbricks admin | Within 5s of submit |
 | 6 | Webhook delivered to MCMForge | Vercel function logs show POST to `/api/webhooks/formbricks?company=links-choice` with 200 + logged payload, within 3s |
 | 7 | HMAC signature is correct (independent script) | `scripts/verify-formbricks-hmac.ts` reads the most recent payload + signature from logs, computes HMAC-SHA256 against staged secret, asserts match. Proves the secret was delivered correctly even though route doesn't verify. |
-| 8 | Page is dark | `curl https://linkschoice.com/sell-us-balls -I` → `x-robots-tag` includes `noindex`. No homepage link, no sitemap entry. |
+| 8 | Page is dark | `curl https://forms.linkschoice.com/sell-us-balls -I` → `x-robots-tag` includes `noindex`. No homepage link, no sitemap entry. |
 | 9 | No DB write | After test submission, `SELECT count(*) FROM forge.form_submissions` returns 0 (table doesn't exist yet anyway — that's WO-4). |
 
 ---

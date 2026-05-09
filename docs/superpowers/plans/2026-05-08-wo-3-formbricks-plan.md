@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship Slice A of WO-3 — a Formbricks Cloud Free supplier-intake form for Links Choice, embedded on a dark page at `linkschoice.com/sell-us-balls`, posting HMAC-signed webhooks to a stub receiver on `mcmforge.com` that logs and 200s.
+**Goal:** Ship Slice A of WO-3 — a Formbricks Cloud Free supplier-intake form for Links Choice, embedded on a dark page at `forms.linkschoice.com/sell-us-balls`, posting HMAC-signed webhooks to a stub receiver on `mcmforge.com` that logs and 200s.
 
 **Architecture:** Two repos, two PRs. Formbricks Cloud Free hosts the form (rationale: Mac Mini at 94% RAM at dispatch, Docker not installed). MCMForge dashboard adds a pure stub webhook route — no HMAC verify, no DB writes — those land in WO-4. linkschoice-marketing adds a `noindex` page with the Formbricks JS SDK. Page stays unlinked until WO-4 ships, so Pam can't accidentally fill out a form that goes nowhere.
 
@@ -318,7 +318,7 @@ WO-3 Slice A. Adds a stub receiver at `/api/webhooks/formbricks` that logs the p
 
 **Hosting decision:** Formbricks Cloud Free chosen. Mac Mini was at 94% RAM (15G/16G) at WO-3 dispatch on 2026-05-08, and Docker was not installed. Self-host can be revisited in WO-7 polish if volume justifies it.
 
-**Slice boundary:** This PR is **not** the supplier-intake feature. The form page on linkschoice.com is shipping in a separate PR and stays dark (`noindex`, no nav link, no sitemap entry) until WO-4 wires up persistence. Conflating "stub returns 200" with "supplier intake works" is the failure mode this boundary prevents.
+**Slice boundary:** This PR is **not** the supplier-intake feature. The form page on `forms.linkschoice.com` is shipping in a separate PR and stays dark (`noindex`, no link from the Shopify storefront, no sitemap entry) until WO-4 wires up persistence. Conflating "stub returns 200" with "supplier intake works" is the failure mode this boundary prevents.
 
 ## Test plan
 
@@ -455,6 +455,13 @@ Add under `### Currently shipped / load-bearing`:
 ## Phase 3 — linkschoice-marketing page
 
 Repo: `golfballnut/linkschoice-marketing`. Branch: `feature/sell-us-balls`. Working dir: `/Users/stevemcmillian/llama-3-agents/Apps/projects/linkschoice-marketing`.
+
+**Prereq (Steve, ~5 min):**
+1. In Vercel → `linkschoice-marketing` project → Settings → Domains → add `forms.linkschoice.com`.
+2. At Steve's DNS provider, add a CNAME record: `forms.linkschoice.com` → `cname.vercel-dns.com` (TTL 300 fine).
+3. Wait for Vercel to verify (usually <5 min).
+
+This is required because `linkschoice.com` is Shopify; we host the form on a Vercel-served subdomain so we can use `<FormbricksMount/>` cleanly without fighting Shopify Liquid theme conflicts.
 
 ### Task 12: Branch off main
 
@@ -674,7 +681,7 @@ WO-3 Slice A. Adds `/sell-us-balls` with the Formbricks Cloud Free supplier-inta
 
 - [x] Local dev render (Chrome desktop): page renders, embed is inline DOM (not iframe)
 - [x] Mobile Safari render on real iPhone: correct keyboards, photo picker works
-- [ ] After merge: production URL `https://linkschoice.com/sell-us-balls` returns the embed; `curl -I` confirms `x-robots-tag: noindex`
+- [ ] After merge: production URL `https://forms.linkschoice.com/sell-us-balls` returns the embed; `curl -I` confirms `x-robots-tag: noindex`
 
 Spec: `MCMForge: docs/superpowers/specs/2026-05-08-wo-3-formbricks-design.md`
 
@@ -696,13 +703,13 @@ Do this **after** both PRs are merged and Vercel has deployed both production si
 - [ ] **Step 1: Confirm the page is dark**
 
 ```bash
-curl -I https://linkschoice.com/sell-us-balls 2>&1 | grep -i robots
+curl -I https://forms.linkschoice.com/sell-us-balls 2>&1 | grep -i robots
 ```
 
 Expected: `x-robots-tag: noindex, nofollow` (or similar — Next emits the metadata as either `<meta>` only, or `x-robots-tag` header depending on config). If neither header nor `<meta>` is present in the page source, fail the task.
 
 ```bash
-curl -s https://linkschoice.com/sell-us-balls | grep -i 'robots'
+curl -s https://forms.linkschoice.com/sell-us-balls | grep -i 'robots'
 ```
 
 Expected: `<meta name="robots" content="noindex, nofollow"/>` in the HTML.
@@ -721,7 +728,7 @@ curl -s https://linkschoice.com/sitemap.xml 2>/dev/null | grep -c 'sell-us-balls
 
 Expected: `0`.
 
-- [ ] **Step 3: Open `https://linkschoice.com/sell-us-balls`**
+- [ ] **Step 3: Open `https://forms.linkschoice.com/sell-us-balls`**
 
 - [ ] **Step 4: Fill all fields with traceable test data**
 

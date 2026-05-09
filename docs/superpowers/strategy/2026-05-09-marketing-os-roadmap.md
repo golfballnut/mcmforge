@@ -75,9 +75,9 @@ A through H = 10/10. Anything less is debt we know about.
 
 ---
 
-## 4. The path: 4 WOs to close the gap
+## 4. The path: 5 WOs to close the gap
 
-Sequencing matters. Each WO unblocks the next. WOs 1-3 get to 10/10 reliable; WO-4 makes it Pam-shaped.
+Sequencing matters. Each WO unblocks the next. WOs 1-3 get to 10/10 reliable; WO-4 makes agents *learn*; WO-5 makes the system Pam-shaped.
 
 ### WO-OUTBOUND-SEND — close the loop (Step 6 ❌ → ✅)
 
@@ -149,15 +149,52 @@ Sequencing matters. Each WO unblocks the next. WOs 1-3 get to 10/10 reliable; WO
 
 ---
 
+### WO-AGENT-MEMORY — agents that get smarter (Layer 4 of agent architecture)
+
+**Why fourth:** WOs 1-3 give the agent **facts** (NS) + **voice** (knowledge) + a **closed loop** (send). With those in place, every run produces real signal — Pam's edits, Pam's approvals, Pam's rejections — that can teach the next run. Without explicit memory architecture, every spawn is amnesia: the agent draws no lesson from yesterday's correction. WO-AGENT-MEMORY is the difference between *agents that work today* and *agents that get better forever*.
+
+**Architecture:** 5-layer per-agent model — Identity (`forge.agents` + AGENTS.md frontmatter) + Instructions (AGENTS.md body) + Knowledge (`forge.knowledge`, already shipped) + **Memory (NEW: `forge.agent_memory` + `forge.agent_memory_proposed` tables)** + Run history (`forge.runs`/`run_events`, already shipped).
+
+**Scope:**
+- New tables:
+  - `forge.agent_memory` — active memories: `id, agent_id, company_id, kind, body, source_run_id, status, created_at, superseded_at`. `kind` is one of: `correction`, `win`, `failure`, `context`. `status` is `active | superseded | archived`.
+  - `forge.agent_memory_proposed` — pending: same shape + `proposed_by_run_id` + `proposed_at`. Pam approves before promotion.
+- New routine: **Memory Consolidator** — fires after each run (or daily batch). Reads run transcript + Pam's edits + outcome. Extracts candidate lessons. Writes to `forge.agent_memory_proposed`.
+- New retrieval helper: `dashboard/src/lib/agents/memory-loader.ts` — at agent spawn time, queries active memories scoped to (agent_id, company_id), ranks by relevance to the current task, injects top N into agent context.
+- New Inbox card type: "Proposed memory" — shows the lesson, source run, candidate body. Pam clicks Approve / Reject / Edit.
+- New `/agents/[id]/memory` page: list of active memories, with per-memory edit/supersede/archive actions.
+- Forgetting is intentional: superseded memories stay in DB (audit trail) but aren't loaded at spawn.
+
+**Out of scope for this WO:** Agent Insights panel (the "agent surfaces patterns to Pam") — that's UX surface that lives in WO-UI-REDESIGN. The plumbing exists here; the surface ships next.
+
+**Effort:** ~5 days.
+- Schema + migration (~half day)
+- Memory Consolidator routine (~1.5 days)
+- Retrieval helper + spawn-time integration (~half day)
+- Inbox card + approve/reject flow (~1 day)
+- /agents/[id]/memory admin page (~half day)
+- Testing + integration (~1 day)
+
+**Acceptance:**
+- After 1 week of live runs, at least 5 proposed memories per active agent surface in Pam's Inbox.
+- Pam approves at least one. The next run by that agent demonstrably uses the approved memory (visible in run transcript: "agent context included memory: <body>").
+- A blind A/B test: same prompt, agent with memory vs without. Pam scores the with-memory draft 4+/5 vs the without-memory draft on "fits how I'd write it."
+
+**After this ships:** the system is **10/10 + learning**. Agents get better every week.
+
+---
+
 ### WO-UI-REDESIGN — Pam-shaped dashboard (Step 4 polish)
 
-**Why fourth:** today's dashboard has 13 top-level routes that grew organically. It's functional for Steve (who knows the data model) but will confuse Pam. **A redesign before the loop is closed is speculative** — we'd be designing for an assumed workflow. After the 3 WOs ship, we have real usage data to design from.
+**Why fifth:** today's dashboard has 13 top-level routes that grew organically. It's functional for Steve (who knows the data model) but will confuse Pam. **A redesign before the loop is closed AND agents are learning is speculative** — we'd be designing for an assumed workflow without the Agent Insights surfaces that emerge from WO-AGENT-MEMORY. After the 4 prior WOs ship, we have real usage data to design from.
 
 **Scope:**
 - Role-aware navigation: operator (Pam-mode) sees `/inbox`, `/crm`, daily standup; admin (Steve-mode) sees everything.
 - Information hierarchy: collapse infra routes (`/runs`, `/agents`, `/skills`, `/knowledge` admin) under a single Admin shelf.
 - Mission Control becomes the actual "one place to start" for both roles.
 - Approval card refresh: incorporate lessons from WO-OUTBOUND-SEND (likely cleanup of inline editing, recipient confirmation, send-undo toast).
+- **Agent Insights panel:** weekly digest surfaced in Mission Control where each agent shows what it learned (from WO-AGENT-MEMORY): "I noticed Pam priced 8/12 supplier replies at $0.40-0.45/ball — should I default there?" Pam approves/rejects insights to trigger memory updates.
+- **Memory approval Inbox card type** (proposed in WO-AGENT-MEMORY, polished here): clean card UX for "agent proposed a new memory — approve / edit / reject."
 - CRM list/detail polish: use real load data from WO-NS-READ-MIRROR to set sane defaults (pagination, sort, filter chips).
 - Mobile responsive sweep — Pam will check from her phone.
 
@@ -174,17 +211,18 @@ Sequencing matters. Each WO unblocks the next. WOs 1-3 get to 10/10 reliable; WO
 ## 5. Sequencing rationale
 
 ```
-WO-OUTBOUND-SEND ──► WO-NS-READ-MIRROR ──► WO-BRAND-VOICE ──► WO-UI-REDESIGN
-   (2 days)              (5-7 days)           (2.5 days)         (5-7 days)
+WO-OUTBOUND-SEND ──► WO-NS-READ-MIRROR ──► WO-BRAND-VOICE ──► WO-AGENT-MEMORY ──► WO-UI-REDESIGN
+   2 days              5-7 days             2.5 days           ~5 days             5-7 days
 
-   closes the loop       fills the data       gives the voice    Pam-shaped UX
-   7.5 / 10              9 / 10               10 / 10            10 / 10 + onboarding-ready
+   close the loop      fill the data        give the voice     learn over time     Pam-shaped UX
+   7.5 / 10            9 / 10               10 / 10            10 / 10 + learning  10 / 10 + onboarding-ready
 ```
 
 - **Outbound first** because it unlocks every later improvement. Without send, NS mirroring just makes prettier drafts that Pam still copy-pastes.
 - **NS mirror second** because LC/GBN/HGB drafts get fundamentally smarter once history is visible. Brand voice without facts is style without substance.
 - **Brand voice third** because it's the polish layer; with facts in place, voice sharpens what's already correct. (Voice without facts ≈ a more confident generic email — worse, not better.)
-- **UI redesign fourth** because dashboard polish without a closed loop = polishing a half-built room. The 3 prior WOs reveal where UI friction actually lives; design with data, not speculation.
+- **Agent memory fourth** because once agents have facts + voice + a closed loop, every run produces real signal worth distilling. Without explicit memory, every spawn is amnesia. Agents only get smarter if we build the pipe.
+- **UI redesign fifth** because dashboard polish without a closed loop AND learning agents = polishing a half-built room. The 4 prior WOs reveal where UI friction actually lives, AND surface what insights need rendering (Agent Insights panel, memory approval cards). Design with data, not speculation.
 
 ---
 
@@ -282,15 +320,17 @@ If any of 1-7 fail consistently, ship is incomplete.
 
 After Steve approves this strategy doc:
 
-1. Open the brainstorm for **WO-OUTBOUND-SEND** (the first of the 4 WOs).
+1. Open the brainstorm for **WO-OUTBOUND-SEND** (the first of the 5 WOs).
 2. Brainstorm → spec → plan → TDD build → subagent review → ship.
 3. Re-grade the system. Confirm 7.5/10.
 4. Repeat for WO-NS-READ-MIRROR.
 5. Re-grade. Confirm 9/10.
 6. Repeat for WO-BRAND-VOICE.
 7. Re-grade. Confirm 10/10.
-8. Repeat for WO-UI-REDESIGN.
-9. Re-grade. Confirm 10/10 + Pam-onboarding-ready.
-10. Then revisit ADRs (rails follow workload).
+8. Repeat for WO-AGENT-MEMORY.
+9. Re-grade. Confirm 10/10 + learning agents.
+10. Repeat for WO-UI-REDESIGN.
+11. Re-grade. Confirm 10/10 + Pam-onboarding-ready.
+12. Then revisit ADRs (rails follow workload).
 
 End of strategy.

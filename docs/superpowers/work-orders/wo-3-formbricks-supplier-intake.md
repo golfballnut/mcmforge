@@ -1,10 +1,39 @@
 # WO-3 — Formbricks + Links Choice supplier intake form
 
 **Parent PRD:** [`2026-05-07-marketing-os-design.md`](../specs/2026-05-07-marketing-os-design.md) §6.3
-**Status:** Ready to dispatch
-**Depends on:** WO-1
-**Estimated effort:** 2 days
-**Branch:** `feature/wo-3-formbricks`
+**Status:** ⏸️ **PAUSED 2026-05-09** — see [Pause notes](#pause-notes-2026-05-09) below.
+**Depends on:** WO-1, plus MCMForge end-to-end robustness (gate added 2026-05-09)
+**Estimated effort:** 2 days (original Formbricks plan) → re-estimate when resumed; native build is 3-4 days
+**Branch:** `feature/wo-3-formbricks` (original) · `feature/wo-3-formbricks-stub` closed via PR #108
+
+---
+
+## Pause notes (2026-05-09)
+
+**Decision:** Defer WO-3 until MCMForge can robustly receive, persist, and react to form submissions end-to-end.
+
+**Why paused:**
+- A form that delivers submissions to a CRM/agent loop that isn't proven creates a backlog of dropped intake. Wrong order.
+- Robustness in WO-2 (CRM v1, shipped) and WO-4 (agent integration) needs to be validated under real workload first.
+
+**Architecture decision (locked when resumed):**
+- **Drop Formbricks.** No third-party SaaS for form hosting.
+- **Native build:** React form hosted on `forms.linkschoice.com` (Vercel subdomain) — `linkschoice.com` storefront is Shopify, can't embed JS cleanly.
+- **Form code lives in MCMForge dashboard repo.** Single deploy. Form posts same-origin to a Vercel API route in `dashboard/src/app/api/forms/...` — no HMAC needed since it's our origin.
+- **Photos → Supabase Storage** (presigned upload URLs).
+- **Spam protection:** TBD when resumed (Steve to pick — Cloudflare Turnstile, hCaptcha, or honeypot-only).
+- **Metadata → `forge.form_submissions`** (table created in WO-4).
+
+**Closed PR:** [#108](https://github.com/golfballnut/mcmforge/pull/108) — Formbricks stub receiver. Closed 2026-05-09. Spec + plan docs on the branch (`feature/wo-3-formbricks-stub`) preserved as historical record of the Formbricks path.
+
+**Cleanup done 2026-05-09:**
+- HMAC secret deleted from `/tmp/wo3-formbricks-hmac.secret`.
+- `FORMBRICKS_HMAC_SECRET` removed from `dashboard/.env.local`.
+- No code merged to `main` from the WO-3 effort.
+
+**Resume gate:** WO-3 v2 spec written + dispatched only after Steve confirms MCMForge handles WO-2 + WO-4 production load reliably.
+
+---
 
 ---
 
